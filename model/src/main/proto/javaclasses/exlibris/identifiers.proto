@@ -20,7 +20,7 @@
 
 syntax = "proto3";
 
-package spine.quickstart;
+package javaclasses.exlibris;
 
 import "spine/options.proto";
 
