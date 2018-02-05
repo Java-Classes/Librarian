@@ -82,14 +82,3 @@ message LoanId {
     // An automatically generated identifier based on a date.
     string value = 1;
 }
-//The same as the bookId.
-message InventoryId {
-    BookId book_id=1;
-}
-
-message InventoryItemId {
-
-}
-message UserId {
-    EmailAddress email =1;
-}
