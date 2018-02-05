@@ -31,6 +31,8 @@ option java_outer_classname = "IdentifiersProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
+import "spine/net/email_address.proto";
+
 // An ID of a book in library.
 //
 message BookId {
@@ -40,17 +42,45 @@ message BookId {
     ISBN62 isbn62 = 1;
 }
 
-//The same as the bookId.
-message InventoryId {
-    BookId book_id=1;
+// An ID of a user.
+//
+// An identifier is represented by User email address of the next type:
+// <Name>.<Surname>@teamdev.com
+//
+message UserId {
+
+    // User's e-mail.
+    spine.net.EmailAddress email =1;
 }
 
+// An ID of a inventory.
+//
+// An identifier is represented by BookId.
+//
+message InventoryId {
+
+    // An identifier of a book. Contains ISBN base62.
+    BookId book_id = 1;
+}
+
+// An ID of a inventory item.
+//
+// An identifier is represented by BookId and item number.
+//
 message InventoryItemId {
 
+    // An identifier of a book. Contains ISBN base62.
+    BookId book_id = 1;
+    // Input by librarian.
+    int32 item_number = 2;
 }
+
+// An ID of a loan.
+//
+// An identifier is represented by based on a date.
+//
 message LoanId {
 
-}
-message UserId {
-    EmailAddress email =1;
+    // An automatically generated identifier based on a date.
+    string value = 1;
 }

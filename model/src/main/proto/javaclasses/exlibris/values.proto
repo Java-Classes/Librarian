@@ -97,5 +97,3 @@ message RFID {
 message EmailAddress {
     string value = 1;
 }
-
-
