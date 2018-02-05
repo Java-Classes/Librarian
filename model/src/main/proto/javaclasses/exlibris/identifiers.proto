@@ -40,3 +40,14 @@ message BookId {
     ISBN62 isbn62 = 1;
 }
 
+//The same as the bookId.
+message InventoryId {
+    BookId book_id=1;
+}
+
+message InventoryItemId {
+
+}
+message LoanId {
+
+}

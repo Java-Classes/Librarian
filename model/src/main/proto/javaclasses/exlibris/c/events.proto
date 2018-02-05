@@ -31,6 +31,8 @@ option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
 import "javaclasses/exlibris/identifiers.proto";
+import "javaclasses/exlibris/values.proto";
+import "google/protobuf/timestamp.proto";
 
 //An event when librarian add new book to the library.
 //
@@ -51,7 +53,7 @@ message InventoryAppended {
     InventoryItemId inventoryItemId = 2;
 
     //Optional field: exists when book has RFID mark.
-    optional RFID rfid = 3;
+    RFID rfid = 3;
     //Librarian who appended.
     UserId librarian_id = 4;
     google.protobuf.Timestamp when_appended = 5;
