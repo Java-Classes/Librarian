@@ -183,7 +183,6 @@ message InventoryDecreased {
         string custom_reason = 7;
     }
 }
-}
 
 //An event when user had 2 days to take the book but he didn't.
 message ReservationPickUpPeriodExpired {
@@ -199,3 +198,4 @@ message ReservationPickUpPeriodExpired {
 message InventoryRemoved {
     InventoryId inventory_id = 1;
     google.protobuf.Timestamp when_removed = 2;
+}
