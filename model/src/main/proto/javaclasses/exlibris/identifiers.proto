@@ -36,6 +36,7 @@ option java_generate_equals_and_hash = true;
 message BookId {
 
     // ISBN with base62 representation of BookId.
+    //
     ISBN62 isbn62 = 1;
 }
 
@@ -80,4 +81,15 @@ message LoanId {
 
     // An automatically generated identifier based on a date.
     string value = 1;
+}
+//The same as the bookId.
+message InventoryId {
+    BookId book_id=1;
+}
+
+message InventoryItemId {
+
+}
+message UserId {
+    EmailAddress email =1;
 }
