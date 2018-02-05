@@ -36,12 +36,12 @@ import "google/protobuf/timestamp.proto";
 
 // An event fired when librarian adds new book to the library.
 //
-// React on BookAdded
-//
 message InventoryCreated {
 
     // The same as the bookId.
     InventoryId inventory_id = 1;
+
+    // When inventory was created.
     google.protobuf.Timestamp when_created = 2;
 }
 
@@ -51,28 +51,34 @@ message InventoryCreated {
 //
 message InventoryAppended {
 
-    InventoryId inventoryId = 1;
+    // An identifier of the inventory.
+    InventoryId inventory_id = 1;
 
     // Identifier of the new created item.
-    InventoryItemId inventoryItemId = 2;
+    InventoryItemId inventory_item_id = 2;
 
-    // Optional field: exists when book has RFID mark.
+    // Optional field: exists when book has Rfid mark.
     RFID rfid = 3;
 
     // Librarian who appended.
     UserId librarian_id = 4;
+
+    // When inventory was appended.
     google.protobuf.Timestamp when_appended = 5;
 }
 
 // Event appears when either inventory appended or book returned and there is no reservation.
+//
 // Book becomes public available.
 //
 message BookBecameAvailable {
-
+    // An identifier of the inventory.
     InventoryId inventory_id = 1;
 
     //Identifier of the invetory item which became available.
     InventoryItemId inventory_item_id = 2;
+
+    // When book became available.
     google.protobuf.Timestamp when_became_available = 3;
 }
 
@@ -84,6 +90,7 @@ message BookBecameAvailable {
 //
 message BookReadyToPickup {
 
+    // An identifier of the inventory.
     InventoryId inventory_id = 1;
 
     // Identifier of the invetory item which became ready to pickup.
@@ -91,7 +98,11 @@ message BookReadyToPickup {
 
     // User who can take this book during 2 days.
     UserId for_whom = 3;
+
+    // When the book became ready to pickup.
     google.protobuf.Timestamp when_became_ready_to_pickup = 4;
+
+    // The pickup deadline of the book.
     google.protobuf.Timestamp pick_up_deadline = 5;
 }
 
@@ -102,8 +113,13 @@ message BookReadyToPickup {
 //
 message ReservationAdded {
 
+    // An identifier of the inventory.
     InventoryId inventory_id = 1;
+
+    // User who reserved the book.
     UserId for_whom_reserved = 2;
+
+    // Time when reservation was added.
     google.protobuf.Timestamp when_created = 3;
 }
 
@@ -113,9 +129,16 @@ message ReservationAdded {
 //
 message BookBorrowed {
 
+    // An identifier of the inventory.
     InventoryId inventory_id = 1;
+
+    // An identifier of the item.
     InventoryItemId inventory_item_id = 2;
+
+    // User who borrowed the book.
     UserId who_borrowed = 3;
+
+    // Time when user borrowed the book.
     google.protobuf.Timestamp when_borrowed = 4;
 }
 
@@ -123,10 +146,13 @@ message BookBorrowed {
 //
 message ReservationBecameLoan {
 
+    // An identifier of the inventory.
     InventoryId inventory_id = 1;
 
     //User whose reservation became loan.
     UserId user_id = 2;
+
+    // When reservation became loan.
     google.protobuf.Timestamp when_became_loan = 3;
 }
 
@@ -134,7 +160,10 @@ message ReservationBecameLoan {
 //
 message LoanBecameOverdue {
 
+    // An identifier of the inventory.
     InventoryId inventory_id = 1;
+
+    // An identifier of the loan.
     LoanId loan_id = 2;
 
     // Date when book was expected, so overdue period can be calculated.
@@ -147,9 +176,16 @@ message LoanBecameOverdue {
 //
 message LoanPeriodExtended {
 
+    // An identifier of the inventory.
     InventoryId inventory_id = 1;
+
+    // An identifier of the loan.
     LoanId loan_id = 2;
+
+    // Time of the prevoius due date.
     google.protobuf.Timestamp previous_due_date = 3;
+
+    // Time of the new due date.
     google.protobuf.Timestamp new_due_date = 4;
 }
 
@@ -159,9 +195,16 @@ message LoanPeriodExtended {
 //
 message BookReturned {
 
+    // An identifier of the inventory.
     InventoryId inventory_id = 1;
+
+    // An identifier of the item in inventory.
     InventoryItemId inventory_item_id = 2;
+
+    // User who returned the book.
     UserId who_returned = 3;
+
+    // Time when user returned the book.
     google.protobuf.Timestamp when_returned = 4;
 }
 
@@ -171,22 +214,34 @@ message BookReturned {
 //
 message BookLost {
 
+    // An identifier of the inventory.
     InventoryId inventory_id = 1;
+
+    // An identifier of the item in inventory.
     InventoryItemId inventory_item_id = 2;
-    UserId whoLost = 3;
-    google.protobuf.Timestamp whenLost = 4;
+
+    // User who lost the book.
+    UserId who_lost = 3;
+
+    // Time when user lost the book.
+    google.protobuf.Timestamp when_lost = 4;
 }
 
 // An event fired when user or system cancel the reservation.
 //
 // Can be canceled for these reasons:
-// 1)User canceled reservation. In this case whoCanceled is id of reader.
-// 2)System cancel reservation because book is removed. In this case whoCanceled is botId.
+// 1. User canceled reservation. In this case whoCanceled is id of reader.
+// 2. System cancel reservation because book is removed. In this case whoCanceled is botId.
 //
 message ReservationCanceled {
 
+    // An identifier of the inventory.
     InventoryId inventory_id = 1;
+
+    // User who canceled the reservation.
     UserId who_canceled = 2;
+
+    // Time when user canceled the reservation.
     google.protobuf.Timestamp when_canceled = 3;
 }
 
@@ -196,11 +251,16 @@ message ReservationCanceled {
 //
 message InventoryDecreased {
 
+    // An identifier of the inventory.
     InventoryId inventory_id = 1;
+
+    // An identifier of the item.
     InventoryItemId inventory_item_id = 2;
 
     // Librarian who decreased the inventory.
     UserId librarian_id = 3;
+
+    // Time when inventory was decreased.
     google.protobuf.Timestamp when_decreased = 4;
 
     // Book can be lost or outdated.
@@ -215,8 +275,13 @@ message InventoryDecreased {
 //
 message ReservationPickUpPeriodExpired {
 
+    // An identifier of the inventory.
     InventoryId inventory_id = 1;
+
+    // User whose pickup period expired.
     UserId user_id = 2;
+
+    // Time when pickup period expired.
     google.protobuf.Timestamp when_expired = 3;
 }
 
@@ -226,7 +291,10 @@ message ReservationPickUpPeriodExpired {
 //
 message InventoryRemoved {
 
+    // An identifier of the inventory.
     InventoryId inventory_id = 1;
+
+    // Time when inventory was removed.
     google.protobuf.Timestamp when_removed = 2;
 }
 
@@ -236,22 +304,37 @@ message InventoryRemoved {
 //
 message BookAdded {
 
-    // Generated value based on ISBN.
-    BookId book_id=1;
-    BookDetails book=2;
-    UserId librarian_id=3;
-    google.protobuf.Timestamp when_added=4;
+    // An identifier of the book.
+    BookId book_id = 1;
+
+    // Book details.
+    BookDetails book = 2;
+
+    // Librarian who added the book.
+    UserId librarian_id = 3;
+
+    // Time when book was added.
+    google.protobuf.Timestamp when_added = 4;
 }
 
 //An event when librarian changes incorrect info about the book.
 //
 message BookUpdated {
 
-    BookId book_id=1;
-    BookDetails current_book_details=2;
-    BookDetails new_book_details=3;
-    UserId librarian_id=4;
-    google.protobuf.Timestamp when_updated=5;
+    // An identifier of the book.
+    BookId book_id = 1;
+
+    // Details of the current book.
+    BookDetails current_book_details = 2;
+
+    // New book details.
+    BookDetails new_book_details = 3;
+
+    // Librarian who updated the book.
+    UserId librarian_id = 4;
+
+    // Time when book was updated.
+    google.protobuf.Timestamp when_updated = 5;
 }
 
 // An event when librarian removes book from library.
@@ -262,16 +345,21 @@ message BookUpdated {
 //
 message BookRemoved {
 
-    BookId book_id=1;
-    UserId librarian_id=2;
-    google.protobuf.Timestamp when_removed=3;
+    // An identifier of the book.
+    BookId book_id = 1;
+
+    // Librarian who removed the book.
+    UserId librarian_id = 2;
+
+    // Time when book was removed.
+    google.protobuf.Timestamp when_removed = 3;
 
     // The reason of removing book.
     //
     // Book could be remove with one of the next reason:
-    // 1) Book was lost.
-    // 2) Book was outdated.
-    // 3) Custom reason that describes by librarian .
+    // 1. Book was lost.
+    // 2. Book was outdated.
+    // 3. Custom reason that describes by librarian .
     oneof book_removal_reason {
         bool lost = 4;
         bool outDated = 5;
