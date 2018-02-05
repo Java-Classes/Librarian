@@ -266,7 +266,12 @@ message BookRemoved {
     UserId librarian_id=2;
     google.protobuf.Timestamp when_removed=3;
 
-    //Reason contains string value.
+    // The reason of removing book.
+    //
+    // Book could be remove with one of the next reason:
+    // 1) Book was lost.
+    // 2) Book was outdated.
+    // 3) Custom reason that describes by librarian .
     oneof book_removal_reason {
         bool lost = 4;
         bool outDated = 5;
