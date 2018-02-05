@@ -177,7 +177,12 @@ message InventoryDecreased {
     google.protobuf.Timestamp when_decreased = 4;
 
     //    Book can be lost or outdated.
-    WriteBookOffReason reason = 5;
+    oneof write_off_reason {
+        bool lost = 5;
+        bool outdated = 6;
+        string custom_reason = 7;
+    }
+}
 }
 
 //An event when user had 2 days to take the book but he didn't.

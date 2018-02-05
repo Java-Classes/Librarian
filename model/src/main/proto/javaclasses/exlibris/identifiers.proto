@@ -52,5 +52,5 @@ message LoanId {
 
 }
 message UserId {
-
+    EmailAddress email =1;
 }
