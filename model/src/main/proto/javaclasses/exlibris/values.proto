@@ -83,10 +83,5 @@ message RFID {
 
     string rfid = 1;
 }
-// Message that consist of user’s email.
-//
-message EmailAddress {
-    string value = 1;
-}
 
 

@@ -31,6 +31,8 @@ option java_outer_classname = "IdentifiersProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
+import "spine/net/email_address.proto";
+
 // An ID of a book in library.
 //
 message BookId {
@@ -48,7 +50,7 @@ message BookId {
 message UserId {
 
     // User's e-mail.
-    EmailAddress email =1;
+    spine.net.EmailAddress email =1;
 }
 
 // An ID of a inventory.
