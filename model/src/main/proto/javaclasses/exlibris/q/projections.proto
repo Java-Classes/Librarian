@@ -26,75 +26,11 @@ import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.quickstart";
 option java_package = "javaclasses.exlibris";
-option java_outer_classname = "ValuesProto";
+option java_outer_classname = "IdentifiersProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-// Value that generated from decimal ISBN.
-//
-message Isbn62 {
+import "spine/net/email_address.proto";
 
-    // String representation of ISBN with base62.
-    //
-    string value = 1;
-}
-
-// All information about book.
-//
-message BookDetails {
-
-    BookCoverUrl cover = 1;
-    BookTitle title = 2;
-    repeated Author authors = 3;
-    BookDescription description = 4;
-    repeated Category categories = 5;
-}
-
-// URL for book cover.
-//
-message BookCoverUrl {
-
-    string url = 1;
-}
-
-// Book’s title.
-//
-message BookTitle {
-
-    string title = 1;
-}
-
-// Full author’s name.
-//
-message Author {
-
-    string author_name = 1;
-}
-
-// Full book’s description.
-//
-message BookDescription {
-
-    string book_description = 1;
-}
-
-// The name of category.
-//
-message Category {
-
-    string category = 1;
-}
-
-// Unique mark for book.
-//
-message Rfid {
-
-    string value = 1;
-}
-
-// The string representation of user’s email address in the next type:
-// <Name>.<Surname>@teamdev.com
-//
-message EmailAddress {
-    string value = 1;
-}
+// *** This is projections for UI role reader ***
+// *** This is projections for UI role librarian ***
