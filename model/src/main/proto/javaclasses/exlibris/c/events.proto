@@ -180,8 +180,8 @@ message BookLost {
 // An event fired when user or system cancel the reservation.
 //
 // Can be canceled for these reasons:
-// 1)User canceled reservation. In this case whoCanceled is id of reader.
-// 2)System cancel reservation because book is removed. In this case whoCanceled is botId.
+// 1. User canceled reservation. In this case whoCanceled is id of reader.
+// 2. System cancel reservation because book is removed. In this case whoCanceled is botId.
 //
 message ReservationCanceled {
 
@@ -269,9 +269,9 @@ message BookRemoved {
     // The reason of removing book.
     //
     // Book could be remove with one of the next reason:
-    // 1) Book was lost.
-    // 2) Book was outdated.
-    // 3) Custom reason that describes by librarian .
+    // 1. Book was lost.
+    // 2. Book was outdated.
+    // 3. Custom reason that describes by librarian .
     oneof book_removal_reason {
         bool lost = 4;
         bool outDated = 5;
