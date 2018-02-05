@@ -39,48 +39,90 @@ import "google/protobuf/timestamp.proto";
 message Book {
 
     // An ID of the book.
-    //
     BookId book_id = 1;
 
     // A book’s details.
-    //
     BookDetails book_details = 2;
 }
 
-//Defines a state for `Inventory` aggregate.
+// Defines a state for `Inventory` aggregate.
 //
 message Inventory {
 
+    // An ID of the inventory.
     InventoryId inventory_id = 1;
+
+    // An ID of the book.
     BookId book_id = 2;
+
+    // The list of all inventory items.
     repeated InventoryItem inventory_items = 3;
+
+    // The list of all reservations for all items.
+    //
+    // If reservations are absent the list is empty.
     repeated Reservation reservations = 4;
+
+    // The list of all loans for all items.
     repeated LoanId loans = 5;
 }
 
+// Defines a state for `InventoryItem`.
+//
 message InventoryItem {
 
+    // An identifier for concrete item.
     InventoryItemId inventory_item_id = 1;
+
+    // Item could have one of next status.
     oneof item_status {
+
+        // When book stay in the library.
         bool in_library = 2;
+
+        // When book was borrowed by smb.
         bool borrowed = 3;
+
+        // When book was lost.
         bool lost = 4;
     }
+
+    // An identifier of user who is related to the book.
+    //
+    // An ID exists when book `lost` or `in_library`
     UserId user_id = 5;
 }
 
+// Defines a state for `Reservation`.
+//
 message Reservation {
 
+    // An ID of the book.
     BookId book_id = 1;
+
+    // An ID of user who reserved book.
     UserId who_reserved = 2;
+
+    // A time of creating reservation.
     google.protobuf.Timestamp when_created = 3;
 }
 
+// Defines a state for `Loan`.
+//
 message Loan {
 
+    // An ID of loan period.
     LoanId loan_id = 1;
+
+    // An ID for concrete item.
     InventoryItemId inventory_item_id = 2;
-    UserId user_id = 3;
+
+    // An ID of reader who borrowed book.
+    UserId who_borrowed = 3;
+
+    // A time of borrowing book.
     google.protobuf.Timestamp when_taken = 4;
+
+    // A time when book has to be returned.
     google.protobuf.Timestamp when_due = 5;
 }

@@ -195,6 +195,7 @@ message ReservationPickUpPeriodExpired {
 //An event fired when librarian remove book from the library.
 //
 //React on BookRemove.
+//
 message InventoryRemoved {
     InventoryId inventory_id = 1;
     google.protobuf.Timestamp when_removed = 2;
