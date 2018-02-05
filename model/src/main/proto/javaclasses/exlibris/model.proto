@@ -23,24 +23,64 @@ syntax = "proto3";
 package javaclasses.exlibris;
 
 import "spine/options.proto";
+import "javaclasses/exlibris/values.proto";
 
 option (type_url_prefix) = "type.spine.quickstart";
 option java_package = "javaclasses.exlibris";
-option java_outer_classname = "TaskProto";
+option java_outer_classname = "ModelProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
 import "javaclasses/exlibris/identifiers.proto";
+import "google/protobuf/timestamp.proto";
 
-// Defines a state for `Task` aggregate.
+// Defines a state for `Book` aggregate.
 //
-message Task {
+message Book {
 
-    // An ID of the task.
+    // An ID of the book.
     //
-    BookId id = 1;
+    BookId book_id = 1;
 
-    // A title of the task.
+    // A book’s details.
     //
-    string title = 2 [(required) = true];
+    BookDetails book_details = 2;
+}
+
+//Defines a state for `Inventory` aggregate.
+//
+message Inventory {
+
+    InventoryId inventory_id = 1;
+    BookId book_id = 2;
+    repeated InventoryItem inventory_items = 3;
+    repeated Reservation reservations = 4;
+    repeated LoanId loans = 5;
+}
+
+message InventoryItem {
+
+    InventoryItemId inventory_item_id = 1;
+    oneof item_status {
+        bool in_library = 2;
+        bool borrowed = 3;
+        bool lost = 4;
+    }
+    UserId user_id = 5;
+}
+
+message Reservation {
+
+    BookId book_id = 1;
+    UserId who_reserved = 2;
+    google.protobuf.Timestamp when_created = 3;
+}
+
+message Loan {
+
+    LoanId loan_id = 1;
+    InventoryItemId inventory_item_id = 2;
+    UserId user_id = 3;
+    google.protobuf.Timestamp when_taken = 4;
+    google.protobuf.Timestamp when_due = 5;
 }

@@ -37,7 +37,7 @@ message ISBN62 {
     //
     string value = 1;
 }
-// Message that consist of all information about book.
+// All information about book.
 //
 message BookDetails {
 
@@ -48,42 +48,44 @@ message BookDetails {
     repeated Category categories = 5;
 }
 
-// Message that consist of URL for book cover.
+// URL for book cover.
 //
 message BookCoverURL {
 
     string url = 1;
 }
-// Message that consist of title of book.
+// Book’s title.
 //
 message BookTitle {
 
     string title = 1;
 }
-// Message that consist of author’s name.
+// Full author’s name.
 //
 message Author {
 
     string author_name = 1;
 }
-// Message that consist of book’s description.
+// Full book’s description.
 //
 message BookDescription {
 
     string book_description = 1;
 }
-// Message that consist of book’s category name.
+// The name of category.
 //
 message Category {
 
     string category = 1;
 }
-
+// Unique mark for book.
+//
 message RFID {
 
     string rfid = 1;
 }
-// Message that consist of user’s email.
+// The string representation of user’s email address in the next type:
+// <Name>.<Surname>@teamdev.com
 //
 message EmailAddress {
     string value = 1;
