@@ -25,7 +25,7 @@ package javaclasses.exlibris;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.quickstart";
-option java_package = "io.spine.quickstart";
+option java_package = "javaclasses.exlibris";
 option java_outer_classname = "TaskProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
@@ -38,8 +38,7 @@ message Task {
 
     // An ID of the task.
     //
-    TaskId id = 1;
-
+    BookId id = 1;
 
     // A title of the task.
     //

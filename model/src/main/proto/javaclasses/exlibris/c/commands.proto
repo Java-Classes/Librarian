@@ -23,25 +23,25 @@ syntax = "proto3";
 package javaclasses.exlibris.c;
 
 import "spine/options.proto";
+import "javaclasses/exlibris/values.proto";
 
 option (type_url_prefix) = "type.spine.quickstart";
-option java_package = "io.spine.quickstart.c";
+option java_package = "javaclasses.exlibris.c";
 option java_outer_classname = "CommandsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
 import "javaclasses/exlibris/identifiers.proto";
 
-// A command to create a new task.
+// A command to add a new book to library.
 //
-message CreateTask {
+message AddBook {
 
-    // ID of a task to create.
+    // ID of a book to create.
     //
-    TaskId id = 1;
+    BookId id = 1;
 
-
-    // A title for the new task.
+    // A details for the new book.
     //
-    string title = 2 [(required) = true];
+    BookDetails book_details = 2;
 }
