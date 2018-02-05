@@ -35,12 +35,16 @@ import "javaclasses/exlibris/model.proto";
 
 // *** This is projections for UI role reader ***
 
+// Appears after click on the book cover like pop-up dialog window.
+//
 message BookDetailsView {
 
     BookView book_view = 1;
     BookDescription book_description = 2;
 }
 
+// Consists of main book information.
+//
 message BookView {
 
     BookCoverUrl book_cover_url = 1;
