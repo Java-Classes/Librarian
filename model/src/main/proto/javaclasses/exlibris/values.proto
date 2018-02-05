@@ -37,6 +37,7 @@ message ISBN62 {
     //
     string value = 1;
 }
+
 // All information about book.
 //
 message BookDetails {
@@ -61,6 +62,7 @@ message BookTitle {
 
     string title = 1;
 }
+
 // Full author’s name.
 //
 message Author {
@@ -70,21 +72,20 @@ message Author {
 
 // Full book’s description.
 //
-
 message BookDescription {
 
     string book_description = 1;
 }
+
 // The name of category.
 //
-
 message Category {
 
     string category = 1;
 }
+
 // Unique mark for book.
 //
-
 message RFID {
 
     string rfid = 1;
