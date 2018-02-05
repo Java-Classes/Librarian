@@ -68,7 +68,7 @@ message UpdateBook {
 
 // An attempt to remove the book.
 //
-//In case of a successful command propagation, the book is removed.
+// In case of a successful command propagation, the book is removed.
 // Cannot be applied to the missing book.
 //
 message RemoveBook {
@@ -81,3 +81,147 @@ message RemoveBook {
     }
     google.protobuf.Timestamp when_removed = 5;
 }
+
+// Append item to the book inventory.
+// In case of a successful command propagation,
+// appended book becomes available or ready to pickup for the user who borrowed it.
+//
+message AppendInventory {
+
+    // An identifier of a inventory.
+    InventoryId intentory_id = 1;
+
+    // An identifier of a inventory item.
+    InventoryItemId inventoryItem_id = 2;
+
+    // Optional field: exists when book has RFID mark.
+    RFID rfid = 3;
+}
+
+// An attempt to borrow a book.
+//
+// In case of a successful command propagation, the book is borrowed by reader.
+// If book was reserved, then {@code Reservation} became {@code Loan}.
+//
+// Cannot be applied to the book that is reserved by another user.
+//
+message BorrowBook {
+
+    // An identifier of an inventory item.
+    InventoryItemId intentoryItem_id = 1;
+
+    // An identifier of the user, who borrows the book.
+    UserId user_id = 2;
+}
+
+
+// An attempt to reserve the book.
+//
+// In case of a successful command propagation, the book is reserved.
+// Cannot be applied if the book has already borrowed or reserved by current reader.
+//
+message ReserveBook {
+
+    // An identifier of an inventory.
+    InventoryId intentory_id = 1;
+
+    // An identifier of the user, who reserves the book.
+    UserId user_id = 2;
+}
+
+// An attempt to cancel the reservation.
+//
+// In case of a successful command propagation, the reservation is canceled.
+// Cannot be applied to the missing reservation.
+//
+message CancelReservation {
+
+    // An identifier of an inventory.
+    InventoryId intentory_id = 1;
+
+    // An identifier of the user, who cancles the book reservation.
+    UserId user_id = 2;
+}
+
+// An attempt to extend the loan period.
+//
+// In case of a successful command propagation, the loan period is extended.
+// Cannot be applied if the book has been reserved by another user.
+//
+message ExtendLoanPeriod {
+
+    // An identifier of loan period.
+    LoanId loan_id = 1;
+
+    // New due date of loan.
+    google.protobuf.Timestamp newDueDate = 2;
+}
+
+// Loan period marks overdue if the reader hasn't return the book in time.
+//
+message MarkLoanOverdue {
+
+    // An identifier of loan period.
+    LoanId loan_id = 1;
+}
+
+// Reservation expires if the reader hasn't taken the book in 2 days.
+//
+message MarkReservationExpired {
+
+    // An identifier of an inventory.
+    InventoryId intentory_id = 1;
+
+    // An identifier of the user, which book reservation expires.
+    UserId user_id = 2;
+}
+
+// An attempt to return the book.
+//
+// In case of a successful command propagation, the book is returned.
+// Cannot be applied to the missing or not borrowed book.
+//
+message ReturnBook {
+
+    // An identifier of an inventory.
+    InventoryId intentory_id = 1;
+
+    // An identifier of an inventory item.
+    InventoryItemId inventoryItem_id = 2;
+
+    // An identifier of the user, who returns the book.
+    UserId user_id = 3;
+}
+
+// An attempt to report the lost book.
+//
+// In case of a successful command propagation, the book is reported as lost.
+//
+message ReportLostBook {
+
+    // An identifier of an inventory item.
+    InventoryItemId inventoryItem_id = 1;
+
+    // An identifier of the user, who has lost the book.
+    UserId whoLost = 2;
+}
+
+// An attempt to write off the book.
+//
+// In case of a successful command propagation, the book is written off.
+// Cannot be applied to the missing book.
+//
+message WriteBookOf {
+
+    // An identifier of an inventory item.
+    InventoryItemId inventoryItem_id = 1;
+
+    // Reasons for write book off.
+    oneof reason {
+        bool lost = 2;
+        bool outDated = 3;
+        string custom_reason = 4;
+    }
+}
+
+
