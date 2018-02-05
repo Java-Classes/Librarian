@@ -20,28 +20,73 @@
 
 syntax = "proto3";
 
-package javaclasses.exlibris.c;
+package javaclasses.exlibris;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.quickstart";
-option java_package = "javaclasses.exlibris.c";
-option java_outer_classname = "EventsProto";
+option java_package = "javaclasses.exlibris";
+option java_outer_classname = "ValuesProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-import "javaclasses/exlibris/identifiers.proto";
-
-// An event telling about a successful creation of a task.
+// Value that generated from decimal ISBN.
 //
-message TaskCreated {
-
-    // An ID of the created task.
+message ISBN62 {
+    // String representation of ISBN with base62.
     //
-    BookId id = 1;
-
-
-    // A title of the created task.
-    //
-    string title = 2 [(required) = true];
+    string value = 1;
 }
+// Message that consist of all information about book.
+//
+message BookDetails {
+
+    BookCoverURL cover = 1;
+    BookTitle title = 2;
+    repeated Author authors = 3;
+    BookDescription description = 4;
+    repeated Category categories = 5;
+}
+
+// Message that consist of URL for book cover.
+//
+message BookCoverURL {
+
+    string url = 1;
+}
+// Message that consist of title of book.
+//
+message BookTitle {
+
+    string title = 1;
+}
+// Message that consist of author’s name.
+//
+message Author {
+
+    string author_name = 1;
+}
+// Message that consist of book’s description.
+//
+message BookDescription {
+
+    string book_description = 1;
+}
+// Message that consist of book’s category name.
+//
+message Category {
+
+    string category = 1;
+}
+
+message RFID {
+
+    string rfid = 1;
+}
+// Message that consist of user’s email.
+//
+message EmailAddress {
+    string value = 1;
+}
+
+
