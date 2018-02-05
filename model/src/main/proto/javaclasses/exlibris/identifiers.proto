@@ -23,18 +23,20 @@ syntax = "proto3";
 package javaclasses.exlibris;
 
 import "spine/options.proto";
+import "javaclasses/exlibris/values.proto";
 
 option (type_url_prefix) = "type.spine.quickstart";
-option java_package = "io.spine.serverapp";
+option java_package = "javaclasses.exlibris";
 option java_outer_classname = "IdentifiersProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-// An ID of a task.
+// An ID of a book in library.
 //
-message TaskId {
+message BookId {
 
-    // String representation of UUID.
+    // ISBN with base62 representation of BookId.
     //
-    string value = 1;
+    ISBN62 isbn62 = 1;
 }
+
