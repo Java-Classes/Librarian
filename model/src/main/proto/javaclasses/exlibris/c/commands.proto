@@ -55,7 +55,7 @@ message AddBook {
 //
 message UpdateBook {
 
-    // ID of a book to create.
+    // An ID of a book to update.
     BookId book_id = 1;
 
     // A new details for the existed book.
@@ -69,11 +69,21 @@ message UpdateBook {
 //
 message RemoveBook {
 
+    // ID of a book to remove.
     BookId bok_id = 1;
+
+    // The reason of removing book.
+    //
+    // Book could be remove with one of the next reason:
+    // 1) Book was lost.
+    // 2) Book was outdated.
+    // 3) Custom reason that describes by librarian .
     oneof book_removal_reason {
         bool lost = 2;
         bool outDated = 3;
         string custom_reason = 4;
     }
+
+    // A time when book was removed.
     google.protobuf.Timestamp when_removed = 5;
 }
