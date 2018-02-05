@@ -37,7 +37,7 @@ import "google/protobuf/timestamp.proto";
 // An attempt to create the new book.
 //
 // In case of a successful command propagation, the book is added.
-// Cannot be applied to the existing book.
+// not be applied to the existing book.
 //
 message AddBook {
 
@@ -101,7 +101,7 @@ message AppendInventory {
 // An attempt to borrow a book.
 //
 // In case of a successful command propagation, the book is borrowed by reader.
-// If book was reserved, then {@code Reservation} became {@code Loan}.
+// If book was reserved, then `Reservation` became `Loan`.
 //
 // Cannot be applied to the book that is reserved by another user.
 //
@@ -139,7 +139,7 @@ message CancelReservation {
     // An identifier of an inventory.
     InventoryId intentory_id = 1;
 
-    // An identifier of the user, who cancles the book reservation.
+    // An identifier of the user, who cancels the book reservation.
     UserId user_id = 2;
 }
 
@@ -172,7 +172,7 @@ message MarkReservationExpired {
     // An identifier of an inventory.
     InventoryId intentory_id = 1;
 
-    // An identifier of the user, which book reservation expires.
+    // An identifier of the user, whose book reservation expires.
     UserId user_id = 2;
 }
 
@@ -223,5 +223,3 @@ message WriteBookOf {
         string custom_reason = 4;
     }
 }
-
-
