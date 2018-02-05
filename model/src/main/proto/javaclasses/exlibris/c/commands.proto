@@ -75,9 +75,9 @@ message RemoveBook {
     // The reason of removing book.
     //
     // Book could be remove with one of the next reason:
-    // 1. Book was lost.
-    // 2. Book was outdated.
-    // 3. Custom reason that describes by librarian.
+    // 1) Book was lost.
+    // 2) Book was outdated.
+    // 3) Custom reason that describes by librarian.
     oneof book_removal_reason {
         bool lost = 2;
         bool outdated = 3;

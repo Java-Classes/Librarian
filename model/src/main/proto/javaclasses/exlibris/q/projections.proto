@@ -20,66 +20,17 @@
 
 syntax = "proto3";
 
-package javaclasses.exlibris.q;
+package javaclasses.exlibris;
 
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.quickstart";
-option java_package = "javaclasses.exlibris.q";
-option java_outer_classname = "ProjectionsProto";
+option java_package = "javaclasses.exlibris";
+option java_outer_classname = "IdentifiersProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-import "javaclasses/exlibris/values.proto";
-import "javaclasses/exlibris/model.proto";
+import "spine/net/email_address.proto";
 
 // *** This is projections for UI role reader ***
-
-message BookDetailsView {
-
-    BookView book_view = 1;
-    BookDescription book_description = 2;
-}
-
-message BookView {
-
-    BookCoverUrl book_cover_url = 1;
-    BookTitle title = 2;
-    repeated Author author = 3;
-    oneof book_status {
-        bool borrowed = 4;
-        bool reserved = 5;
-        bool available = 6;
-        bool expected_soon = 7;
-        bool overdue = 8;
-    }
-}
-
-// Dialog window with book information.
-//
-// When user scans the book to borrow or to return depending of his actions he can see next variants:
-// 1. User tries to borrow book the first time -> welcome page with license confirmation.
-// 2. User tries to borrow book -> success borrowing page with OK button.
-// 3. User tries to borrow unavailable book -> cannot borrow book page with explanation.
-// 4. User tries to return borrowed book -> successful return page.
-//
-message DialogWindow {
-
-    BookView book_view = 1;
-}
-
-// Represents home page. Books are sorted according to their status:
-//
-// 1. Overdue.
-// 2. Borrowed.
-// 3. Reserved.
-//
-// (or maybe some more sorting: for example for new "hot" books).
-//
-message HomePage {
-
-    repeated Book book = 1;
-    repeated Category category = 2;
-
-}
 // *** This is projections for UI role librarian ***

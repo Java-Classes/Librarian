@@ -23,6 +23,7 @@ syntax = "proto3";
 package javaclasses.exlibris;
 
 import "spine/options.proto";
+import "javaclasses/exlibris/values.proto";
 
 option (type_url_prefix) = "type.spine.quickstart";
 option java_package = "javaclasses.exlibris";
@@ -31,8 +32,6 @@ option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
 import "spine/net/email_address.proto";
-import "javaclasses/exlibris/values.proto";
-
 
 // An ID of a book in library.
 //
