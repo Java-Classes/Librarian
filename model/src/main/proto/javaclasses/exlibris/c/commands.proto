@@ -32,16 +32,52 @@ option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
 import "javaclasses/exlibris/identifiers.proto";
+import "google/protobuf/timestamp.proto";
 
-// A command to add a new book to library.
+// An attempt to create the new book.
+//
+// In case of a successful command propagation, the book is added.
+// Cannot be applied to the existing book.
 //
 message AddBook {
 
     // ID of a book to create.
     //
-    BookId id = 1;
+    BookId book_id = 1;
 
     // A details for the new book.
     //
     BookDetails book_details = 2;
+}
+
+// An attempt to update the book.
+//
+// In case of a successful command propagation, the book is updated.
+// Cannot be applied to the missing book.
+//
+message UpdateBook {
+
+    // ID of a book to create.
+    //
+    BookId book_id = 1;
+
+    // A new details for the existed book.
+    //
+    BookDetails book_details = 2;
+}
+
+// An attempt to remove the book.
+//
+//In case of a successful command propagation, the book is removed.
+// Cannot be applied to the missing book.
+//
+message RemoveBook {
+
+    BookId bok_id = 1;
+    oneof book_removal_reason {
+        bool lost = 2;
+        bool outDated = 3;
+        string custom_reason = 4;
+    }
+    google.protobuf.Timestamp when_removed = 5;
 }
