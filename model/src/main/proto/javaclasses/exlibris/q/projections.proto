@@ -95,11 +95,11 @@ message HomePage {
 //
 message AddBookView {
 
-    //List of book categories.
+    // List of book categories.
     repeated Category categories = 1;
 }
 
-// View for editing book.
+// View for updating book.
 //
 // View consists of fields for edit book details.
 //
@@ -120,7 +120,7 @@ message UpdateBookView {
     // Year of publication of the book.
     Year year = 5;
 
-    // Categories of book.
+    // Book categories.
     repeated Category categories = 6;
 
     // Full book’s description.
@@ -133,7 +133,7 @@ message UpdateBookView {
 //
 message AppendInventoryView {
 
-    // An identifier is represented by BookId.
+    // An identifier is represented by book id.
     InventoryId inventory_id = 2;
 }
 
@@ -152,7 +152,7 @@ message BookCompactHistory {
 
 // View with information about book’s loan.
 //
-// View consists of fields about inventory item,
+// View consists of fields with inventory item,
 // users who borrowed the book and their taken on and due on dates.
 //
 message LoanDetails {
@@ -180,7 +180,7 @@ message BookFullHistory {
     // URL for book cover.
     spine.net.Url url = 1;
 
-    //
+    // List of inventory item record.
     repeated InventoryItemRecord inventory_item_record = 2;
 }
 
@@ -190,7 +190,7 @@ message BookFullHistory {
 //
 message InventoryItemRecord {
 
-    // An identifier is represented by BookId and item number.
+    // An identifier is represented by book id and item number.
     InventoryItemId inventory_item_id = 1;
 
     // One of the actions is assigned to the inventory item.
@@ -261,10 +261,10 @@ message InventoryDetails {
     repeated Author authors = 2;
 
     // Amount of available books.
-    int32 availableItems = 3;
+    int32 available_items = 3;
 
     // Amount of books.
-    int32 itemsSize = 4;
+    int32 items_size = 4;
 
     // Amount of overdue books.
     int32 overdue = 5;
@@ -286,11 +286,11 @@ message InventoryByBookView {
 // View with information about inventory.
 //
 // View consists of fields with book title, authors,
-// available books, amount overdue book.
+// available books, amount of overdue book.
 //
 message InventoryView {
 
-    // Details about inventory.
+    // Inventory details.
     InventoryDetails inventory_details = 1;
 }
 
