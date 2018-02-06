@@ -98,3 +98,8 @@ message Rfid {
 
     string value = 1;
 }
+
+// Year of publication of the book.
+message Year {
+    string year = 1;
+}

@@ -87,3 +87,253 @@ message HomePage {
     repeated Category category = 2;
 }
 // *** This is projections for UI role librarian ***
+// View for adding book.
+//
+// View consists of fields for writing book details.
+//
+message AddBookView {
+
+    //List of book categories.
+    repeated Category categories = 1;
+}
+
+// View for editing book.
+//
+// View consists of fields for edit book details.
+//
+message UpdateBookView {
+
+    // URL for book cover.
+    spine.net.Url url = 1;
+
+    // Value that generated from decimal ISBN.
+    Isbn62 isbn = 2;
+
+    // Book’s title.
+    BookTitle title = 3;
+
+    // Full author’s name.
+    repeated Author authors = 4;
+
+    // Year of publication of the book.
+    Year year = 5;
+
+    // Categories of book.
+    repeated Category categories = 6;
+
+    // Full book’s description.
+    BookDescription description = 7;
+}
+
+// View for appending inventory.
+//
+// The second step of wizard of adding book items.
+//
+message AppendInventoryView {
+
+    // An identifier is represented by BookId.
+    InventoryId inventory_id = 2;
+}
+
+// View with compact information about book’s loans.
+//
+// Librarian sees all users that borrow book and the loan’s period.
+//
+message BookCompactHistory {
+
+    // URL for book cover.
+    spine.net.Url url = 1;
+
+    // List of user's loan details.
+    repeated LoanDetails loans = 2;
+}
+
+// View with information about book’s loan.
+//
+// View consists of fields about inventory item,
+// users who borrowed the book and their taken on and due on dates.
+//
+message LoanDetails {
+
+    // An identifier of a book. Contains ISBN base62.
+    InventoryItemId inventory_item_id = 1;
+
+    // An identifier is represented by User email address.
+    UserId user_id = 2;
+
+    // The time when book was borrowed.
+    google.protobuf.Timestamp when_taken = 3;
+
+    // The time when book should be returned.
+    google.protobuf.Timestamp when_due = 4;
+}
+
+// View with full information about book’s record.
+//
+// Librarian sees all users that borrow book,
+// reserve, lost, return, or extend loan period with date of every record.
+//
+message BookFullHistory {
+
+    // URL for book cover.
+    spine.net.Url url = 1;
+
+    //
+    repeated InventoryItemRecord inventory_item_record = 2;
+}
+
+// View with information about inventory item record.
+//
+// View consists of fields about inventory item, actions and action date.
+//
+message InventoryItemRecord {
+
+    // An identifier is represented by BookId and item number.
+    InventoryItemId inventory_item_id = 1;
+
+    // One of the actions is assigned to the intevntory item.
+    oneof bookrecord {
+        bool borrowed = 2;
+        bool reserved = 3;
+        bool loan_period_extended = 4;
+        bool returned = 5;
+        bool lost = 6;
+    }
+
+    // The time when the action was did.
+    google.protobuf.Timestamp action_date = 7;
+}
+
+
+// Details about book.
+//
+// View consists of all about book.
+// Url cover, book title, authors, isbn, year of publication,
+// categories, book desctiption.
+//
+message DetailsView {
+
+    // URL for book cover.
+    spine.net.Url url = 1;
+
+    // Book’s title.
+    BookTitle title = 2;
+
+    // Full author’s name.
+    repeated Author authors = 3;
+
+    // Value that generated from decimal ISBN.
+    Isbn62 isbn = 4;
+
+    // Year of publication of the book.
+    Year year = 5;
+
+    // List of categories.
+    repeated Category categories = 6;
+
+    // Full book’s description.
+    BookDescription book_desctiption = 7;
+}
+
+// View contains a book loan in inventory.
+//
+// View consists of fields about inventory items,
+// users who borrowed the book and their taken on and due on dates.
+//
+message ExtendedInventoryView {
+
+    // List with information about book’s loan.
+    repeated LoanDetails loan_details = 1;
+}
+
+// Details about inventory.
+//
+// View consists of fields about book title, authors,
+// available books, amount overdue book.
+//
+message InventoryDetails {
+
+    // Book’s title.
+    BookTitle book_title = 1;
+
+    // Full author’s name.
+    repeated Author authors = 2;
+
+    // Amount of available books.
+    int32 availableItems = 3;
+
+    // Amount of books.
+    int32 itemsSize = 4;
+
+    // Amount overdue book.
+    int32 overdue = 5;
+}
+
+// Inventory state of the current book.
+//
+// View consists of book cover and loan details.
+//
+message InventoryByBookView {
+
+    // URL for book cover.
+    spine.net.Url url = 1;
+
+    // Information about book’s loan.
+    repeated LoanDetails loan_details = 3;
+}
+
+// View with information about inventory.
+//
+// View consists of fields about book title, authors,
+// available books, amount overdue book.
+//
+message InventoryView {
+
+    // Details about inventory.
+    InventoryDetails inventory_details = 1;
+}
+
+message LostBook {
+    InventoryItemId inventory_item_id = 1;
+    BookTitle book_title = 2;
+    repeated Author authors = 3;
+    UserId user_id = 4;
+    google.protobuf.Timestamp reported_on = 5;
+}
+
+message LostBookView {
+    repeated LostBook lost_books = 1;
+}
+
+message ReadersView {
+    repeated UserDetails user_details = 1;
+}
+
+message UserDetails {
+    UserId user_id = 1;
+    string username = 2;
+    int32 currently_reading = 3;
+    int32 reservations = 4;
+    int32 orverdue = 5;
+}
+
+message ReservationView {
+    spine.net.Url url = 1;
+    ReservationDetails reservation_details = 2;
+}
+
+message ReservationDetails {
+    BookTitle book_title = 1;
+    repeated Author authors = 2;
+    UserId user_id = 3;
+    google.protobuf.Timestamp made_on = 4;
+}
+
+message UserHistoryExtendedView {
+    UserId user_id = 1;
+    repeated InventoryItemRecord inventory_item_record = 2;
+}
+
+message UserHistoryView {
+    repeated LoanDetails loan_details = 1;
+}
