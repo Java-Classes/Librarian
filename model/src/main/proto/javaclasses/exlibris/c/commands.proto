@@ -101,7 +101,7 @@ message AppendInventory {
     InventoryItemId inventory_item_id = 2;
 
     // Optional field: exists when book has RFID mark.
-    RFID rfid = 3;
+    Rfid rfid = 3;
 }
 
 // An attempt to borrow a book.
