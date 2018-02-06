@@ -23,7 +23,6 @@ syntax = "proto3";
 package javaclasses.exlibris.c;
 
 import "spine/options.proto";
-import "javaclasses/exlibris/values.proto";
 
 option (type_url_prefix) = "type.spine.quickstart";
 option java_package = "javaclasses.exlibris.c";
@@ -31,8 +30,9 @@ option java_outer_classname = "CommandsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-import "javaclasses/exlibris/identifiers.proto";
 import "google/protobuf/timestamp.proto";
+import "javaclasses/exlibris/identifiers.proto";
+import "javaclasses/exlibris/values.proto";
 
 // An attempt to create the new book.
 //
@@ -119,7 +119,6 @@ message BorrowBook {
     // An identifier of the user, who borrows the book.
     UserId user_id = 2;
 }
-
 
 // An attempt to reserve the book.
 //

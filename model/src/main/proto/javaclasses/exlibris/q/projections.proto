@@ -30,6 +30,7 @@ option java_outer_classname = "ProjectionsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
+import "spine/net/url.proto";
 import "javaclasses/exlibris/values.proto";
 import "javaclasses/exlibris/model.proto";
 
@@ -47,7 +48,7 @@ message BookDetailsView {
 //
 message BookView {
 
-    BookCoverUrl book_cover_url = 1;
+    spine.net.Url book_cover_url = 1;
     BookTitle title = 2;
     repeated Author author = 3;
     oneof book_status {

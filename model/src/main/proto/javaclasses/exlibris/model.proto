@@ -114,7 +114,7 @@ message Loan {
     // An ID of loan period.
     LoanId loan_id = 1;
 
-    // An ID for concrete item.
+    // An ID of concrete item.
     InventoryItemId inventory_item_id = 2;
 
     // An ID of reader who borrowed book.

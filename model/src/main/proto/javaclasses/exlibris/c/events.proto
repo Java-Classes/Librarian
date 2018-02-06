@@ -237,21 +237,21 @@ message InventoryRemoved {
 message BookAdded {
 
     // Generated value based on ISBN.
-    BookId book_id=1;
-    BookDetails book=2;
-    UserId librarian_id=3;
-    google.protobuf.Timestamp when_added=4;
+    BookId book_id = 1;
+    BookDetails book = 2;
+    UserId librarian_id = 3;
+    google.protobuf.Timestamp when_added = 4;
 }
 
 //An event when librarian changes incorrect info about the book.
 //
 message BookUpdated {
 
-    BookId book_id=1;
-    BookDetails current_book_details=2;
-    BookDetails new_book_details=3;
-    UserId librarian_id=4;
-    google.protobuf.Timestamp when_updated=5;
+    BookId book_id = 1;
+    BookDetails current_book_details = 2;
+    BookDetails new_book_details = 3;
+    UserId librarian_id = 4;
+    google.protobuf.Timestamp when_updated = 5;
 }
 
 // An event when librarian removes book from library.
@@ -262,9 +262,9 @@ message BookUpdated {
 //
 message BookRemoved {
 
-    BookId book_id=1;
-    UserId librarian_id=2;
-    google.protobuf.Timestamp when_removed=3;
+    BookId book_id = 1;
+    UserId librarian_id = 2;
+    google.protobuf.Timestamp when_removed = 3;
 
     // The reason of removing book.
     //
