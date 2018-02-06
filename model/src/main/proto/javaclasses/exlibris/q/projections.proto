@@ -30,9 +30,11 @@ option java_outer_classname = "ProjectionsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
+import "google/protobuf/timestamp.proto";
 import "spine/net/url.proto";
 import "javaclasses/exlibris/values.proto";
 import "javaclasses/exlibris/model.proto";
+import "javaclasses/exlibris/identifiers.proto";
 
 // *** This is projections for UI role reader ***
 
@@ -203,7 +205,6 @@ message InventoryItemRecord {
     // The time when the action was did.
     google.protobuf.Timestamp action_date = 7;
 }
-
 
 // Details about book.
 //
