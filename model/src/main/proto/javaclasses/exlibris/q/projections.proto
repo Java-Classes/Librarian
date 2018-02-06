@@ -157,7 +157,7 @@ message BookCompactHistory {
 //
 message LoanDetails {
 
-    // An identifier of a book. Contains ISBN base62.
+    // An identifier of a book. Contains ISBN base62 and number that inputted by librarian.
     InventoryItemId inventory_item_id = 1;
 
     // An identifier is represented by User email address.
@@ -193,8 +193,8 @@ message InventoryItemRecord {
     // An identifier is represented by BookId and item number.
     InventoryItemId inventory_item_id = 1;
 
-    // One of the actions is assigned to the intevntory item.
-    oneof bookrecord {
+    // One of the actions is assigned to the inventory item.
+    oneof book_record {
         bool borrowed = 2;
         bool reserved = 3;
         bool loan_period_extended = 4;
@@ -208,8 +208,8 @@ message InventoryItemRecord {
 
 // Details about book.
 //
-// View consists of all about book.
-// Url cover, book title, authors, isbn, year of publication,
+// View consists of all information about book.
+// URL cover, book title, authors, isbn, year of publication,
 // categories, book desctiption.
 //
 message DetailsView {
@@ -238,7 +238,7 @@ message DetailsView {
 
 // View contains a book loan in inventory.
 //
-// View consists of fields about inventory items,
+// View consists of fields with information about inventory items,
 // users who borrowed the book and their taken on and due on dates.
 //
 message ExtendedInventoryView {
@@ -249,8 +249,8 @@ message ExtendedInventoryView {
 
 // Details about inventory.
 //
-// View consists of fields about book title, authors,
-// available books, amount overdue book.
+// View consists of fields with book title, authors,
+// available books, amount of overdue books.
 //
 message InventoryDetails {
 
@@ -266,7 +266,7 @@ message InventoryDetails {
     // Amount of books.
     int32 itemsSize = 4;
 
-    // Amount overdue book.
+    // Amount of overdue books.
     int32 overdue = 5;
 }
 
@@ -285,7 +285,7 @@ message InventoryByBookView {
 
 // View with information about inventory.
 //
-// View consists of fields about book title, authors,
+// View consists of fields with book title, authors,
 // available books, amount overdue book.
 //
 message InventoryView {
