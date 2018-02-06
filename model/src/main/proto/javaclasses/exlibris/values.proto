@@ -91,9 +91,7 @@ message RFID {
     string rfid = 1;
 }
 
-// The string representation of user’s email address in the next type:
-// <Name>.<Surname>@teamdev.com
-//
-message EmailAddress {
-    string value = 1;
+// Year of publication of the book.
+message Year {
+    string year = 1;
 }
