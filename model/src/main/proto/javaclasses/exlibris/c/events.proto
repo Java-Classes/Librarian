@@ -38,7 +38,7 @@ import "google/protobuf/timestamp.proto";
 //
 message InventoryCreated {
 
-    // The same as the bookId.
+    // The identifier of inventory.
     InventoryId inventory_id = 1;
 
     // When inventory was created.
