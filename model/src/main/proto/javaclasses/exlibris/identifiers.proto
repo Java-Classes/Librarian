@@ -1,29 +1,28 @@
-/*
- * Copyright 2017, TeamDev Ltd. All rights reserved.
- *
- * Redistribution and use in source and/or binary forms, with or without
- * modification, must retain the above copyright notice and the following
- * disclaimer.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+//
+// Copyright 2018, TeamDev Ltd. All rights reserved.
+//
+// Redistribution and use in source and/or binary forms, with or without
+// modification, must retain the above copyright notice and the following
+// disclaimer.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
 
 syntax = "proto3";
 
 package javaclasses.exlibris;
 
 import "spine/options.proto";
-import "javaclasses/exlibris/values.proto";
 
 option (type_url_prefix) = "type.spine.quickstart";
 option java_package = "javaclasses.exlibris";
@@ -32,14 +31,20 @@ option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
 import "spine/net/email_address.proto";
+import "javaclasses/exlibris/values.proto";
 
 // An ID of a book in library.
 //
 message BookId {
 
-    // ISBN with base62 representation of BookId.
+    // We generated book’s ID that contains ISBN code with base62.
     //
-    ISBN62 isbn62 = 1;
+    // ISBN is an unique code that every book edition has to determinate itself.
+    // This code usually has ten or thirteen symbols.
+    // To increase readability we convert that code from decimal format to code with base62.
+    // Example: ISBN:9780134685991, ISBN62:2mBSCRqZ
+    //
+    Isbn62 isbn62 = 1;
 }
 
 // An ID of a user.
@@ -50,12 +55,12 @@ message BookId {
 message UserId {
 
     // User's e-mail.
-    spine.net.EmailAddress email =1;
+    spine.net.EmailAddress email = 1;
 }
 
 // An ID of a inventory.
 //
-// An identifier is represented by BookId.
+// An identifier is represented by `BookId`.
 //
 message InventoryId {
 
@@ -65,7 +70,7 @@ message InventoryId {
 
 // An ID of a inventory item.
 //
-// An identifier is represented by BookId and item number.
+// An identifier is represented by `BookId` and item number.
 //
 message InventoryItemId {
 
