@@ -38,21 +38,38 @@ import "javaclasses/exlibris/identifiers.proto";
 
 // *** This is projections for UI role reader ***
 
-// Appears after click on the book cover like pop-up dialog window.
+// Appears after click on the book’s cover like pop-up dialog window.
 //
 message BookDetailsView {
 
+    // View with short book’s information.
     BookView book_view = 1;
+
+    // The full book description.
     BookDescription book_description = 2;
 }
 
-// Consists of main book information.
+// Consists of main book’s information.
 //
 message BookView {
 
+    // The book’s cover.
     spine.net.Url book_cover_url = 1;
+
+    // The book’s title.
     BookTitle title = 2;
+
+    // The list of the book’s authors
     repeated Author author = 3;
+
+    // The book can has one of the next status:
+    //
+    // 1. Borrowed — when book is borrowed by user.
+    // 2. Reserved — when book is reserved by user.
+    // 3. Available — when book is available to borrow or reserve.
+    // 4. Expected soon — when book is not available now, but user can reserve it.
+    // 5. Overdue — when book was borrowed by user but still doesn’t returned.
+    //
     oneof book_status {
         bool borrowed = 4;
         bool reserved = 5;
@@ -62,7 +79,7 @@ message BookView {
     }
 }
 
-// Dialog window with book information.
+// Dialog window with book’s information.
 //
 // When user scans the book to borrow or to return depending of his actions he can see next variants:
 // 1. User tries to borrow book the first time -> welcome page with license confirmation.
@@ -72,6 +89,7 @@ message BookView {
 //
 message DialogWindow {
 
+    // View with short book’s information.
     BookView book_view = 1;
 }
 
@@ -85,10 +103,15 @@ message DialogWindow {
 //
 message HomePage {
 
-    repeated Book book = 1;
+    // View with short book’s information.
+    repeated BookView book_view = 1;
+    
+    // Book categories.
     repeated Category category = 2;
 }
+
 // *** This is projections for UI role librarian ***
+
 // View for adding book.
 //
 // View consists of fields for writing book details.
@@ -101,12 +124,12 @@ message AddBookView {
 
 // View for updating book.
 //
-// View consists of fields for edit book details.
+// View consists of fields for updating book details.
 //
 message UpdateBookView {
 
     // URL for book cover.
-    spine.net.Url url = 1;
+    spine.net.Url cover_url = 1;
 
     // Value that generated from decimal ISBN.
     Isbn62 isbn = 2;
@@ -123,13 +146,13 @@ message UpdateBookView {
     // Book categories.
     repeated Category categories = 6;
 
-    // Full book’s description.
+    // Full book description.
     BookDescription description = 7;
 }
 
 // View for appending inventory.
 //
-// The second step of wizard of adding book items.
+// The second step of adding book.
 //
 message AppendInventoryView {
 
@@ -201,7 +224,6 @@ message InventoryItemRecord {
         bool returned = 5;
         bool lost = 6;
     }
-
     // The time when the action was did.
     google.protobuf.Timestamp action_date = 7;
 }
@@ -294,47 +316,115 @@ message InventoryView {
     InventoryDetails inventory_details = 1;
 }
 
+// Informaton about the book that was lost.
+//
 message LostBook {
+
+    // An identifier of the book that was lost.
     InventoryItemId inventory_item_id = 1;
+
+    // A title of the book that was lost.
     BookTitle book_title = 2;
+
+    // The list of authors.
     repeated Author authors = 3;
+
+    // An identifier of the user who lost the book.
     UserId user_id = 4;
+
+    // The time when was reported about book losing.
     google.protobuf.Timestamp reported_on = 5;
 }
 
+// The wiew with information about lost books.
+//
 message LostBookView {
+
+    // The list of all books that were lost.
     repeated LostBook lost_books = 1;
 }
 
+// All current readers and their summary.
+//
 message ReadersView {
+
+    // The list of the concrete user’s summary.
     repeated UserDetails user_details = 1;
 }
 
+// Information about users.
+//
 message UserDetails {
+
+    // An identifier of the user.
     UserId user_id = 1;
+
+    // A name of user in the library.
     string username = 2;
+
+    // The amount of borrowed by user books now.
     int32 currently_reading = 3;
+
+    // The amount of reserved by user books now.
     int32 reservations = 4;
+
+    // The amount of books that user return with lateness or hasn’t return at all.
     int32 orverdue = 5;
 }
 
+// Contains the information about all reservations of the current book.
+//
 message ReservationView {
-    spine.net.Url url = 1;
-    ReservationDetails reservation_details = 2;
+
+    // An URL of the book’s cover.
+    spine.net.Url cover_url = 2;
+
+    // The details of the reservation.
+    ReservationDetails reservation_details = 3;
 }
 
+// Information about reservations.
+//
 message ReservationDetails {
+
+    // A title of the book.
     BookTitle book_title = 1;
+
+    // List of the book authors.
     repeated Author authors = 2;
+
+    // An identifier of the user who reserved book.
     UserId user_id = 3;
+
+    // Time when user reserved the book.
     google.protobuf.Timestamp made_on = 4;
 }
 
+// Full user history includes all user’s events.
+//
+// Events:
+//
+// 1. Borrowed.
+// 2. Reserved.
+// 3. Loan period extended.
+// 4. Returned
+// 5. Lost
+//
 message UserHistoryExtendedView {
+
+    // An identifier of user.
     UserId user_id = 1;
+
+    // Collection of all user’s actions.
     repeated InventoryItemRecord inventory_item_record = 2;
 }
 
+// Compact version of the user history.
+//
+// Contains all user's loans.
+//
 message UserHistoryView {
+
+    // Details consist of taken on date, due on date, returned on date.
     repeated LoanDetails loan_details = 1;
 }
