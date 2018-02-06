@@ -129,7 +129,7 @@ message AddBookView {
 message UpdateBookView {
 
     // URL for book cover.
-    spine.net.Url cover_url = 1;
+    spine.net.Url book_cover_url = 1;
 
     // Value that generated from decimal ISBN.
     Isbn62 isbn = 2;
@@ -167,7 +167,7 @@ message AppendInventoryView {
 message BookCompactHistory {
 
     // URL for book cover.
-    spine.net.Url url = 1;
+    spine.net.Url book_cover_url = 1;
 
     // List of user's loan details.
     repeated LoanDetails loans = 2;
@@ -201,7 +201,7 @@ message LoanDetails {
 message BookFullHistory {
 
     // URL for book cover.
-    spine.net.Url url = 1;
+    spine.net.Url book_cover_url = 1;
 
     // List of inventory item record.
     repeated InventoryItemRecord inventory_item_record = 2;
@@ -237,7 +237,7 @@ message InventoryItemRecord {
 message DetailsView {
 
     // URL for book cover.
-    spine.net.Url url = 1;
+    spine.net.Url book_cover_url = 1;
 
     // Book’s title.
     BookTitle title = 2;
@@ -299,7 +299,7 @@ message InventoryDetails {
 message InventoryByBookView {
 
     // URL for book cover.
-    spine.net.Url url = 1;
+    spine.net.Url book_cover_url = 1;
 
     // Information about book’s loan.
     repeated LoanDetails loan_details = 3;
@@ -377,7 +377,7 @@ message UserDetails {
 message ReservationView {
 
     // An URL of the book’s cover.
-    spine.net.Url cover_url = 2;
+    spine.net.Url book_cover_url = 2;
 
     // The details of the reservation.
     ReservationDetails reservation_details = 3;

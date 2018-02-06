@@ -32,7 +32,6 @@ option java_generate_equals_and_hash = true;
 
 import "google/protobuf/timestamp.proto";
 import "javaclasses/exlibris/identifiers.proto";
-import "javaclasses/exlibris/model.proto";
 
 // Rejection when librarian tries to add existing book.
 //
