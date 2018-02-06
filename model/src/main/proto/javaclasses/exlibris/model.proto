@@ -31,8 +31,8 @@ option java_outer_classname = "ModelProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-import "javaclasses/exlibris/identifiers.proto";
 import "google/protobuf/timestamp.proto";
+import "javaclasses/exlibris/identifiers.proto";
 
 // Defines a state for `Book` aggregate.
 //
