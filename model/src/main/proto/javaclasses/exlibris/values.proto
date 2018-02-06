@@ -57,6 +57,13 @@ message BookDetails {
     repeated Category categories = 5;
 }
 
+// URL for book cover.
+//
+message BookCoverURL {
+
+    string url = 1;
+}
+
 // Book’s title.
 //
 message BookTitle {
@@ -90,4 +97,9 @@ message Category {
 message Rfid {
 
     string value = 1;
+}
+
+// Year of publication of the book.
+message Year {
+    string year = 1;
 }
