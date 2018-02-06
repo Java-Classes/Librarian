@@ -37,7 +37,12 @@ import "javaclasses/exlibris/values.proto";
 //
 message BookId {
 
-    // ISBN with base62 representation of BookId.
+    // We generated book’s ID that contains ISBN code with base62.
+    //
+    // ISBN is an unique code that every book edition has to determinate itself.
+    // This code usually has ten or thirteen symbols.
+    // To increase readability we convert that code from decimal format to code with base62.
+    // Example: ISBN:9780134685991, ISBN62:2mBSCRqZ
     //
     Isbn62 isbn62 = 1;
 }

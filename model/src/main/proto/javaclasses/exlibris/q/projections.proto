@@ -85,6 +85,5 @@ message HomePage {
 
     repeated Book book = 1;
     repeated Category category = 2;
-
 }
 // *** This is projections for UI role librarian ***
