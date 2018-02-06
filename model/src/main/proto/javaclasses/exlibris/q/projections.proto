@@ -140,20 +140,20 @@ message UpdateBookView {
     // Year of publication of the book.
     Year year = 5;
 
-    // Categories of book.
+    // Book categories.
     repeated Category categories = 6;
 
-    // Full book’s description.
+    // Full book description.
     BookDescription description = 7;
 }
 
 // View for appending inventory.
 //
-// The second step of wizard of adding book items.
+// The step of adding book.
 //
 message AppendInventoryView {
 
-    // An identifier is represented by BookId.
+    // An identifier is represented by `BookId`.
     InventoryId inventory_id = 2;
 }
 
@@ -255,14 +255,14 @@ message ReadersView {
     repeated UserDetails user_details = 1;
 }
 
-// The necessary for librarian information about users.
+// Information about users.
 //
 message UserDetails {
 
     // An identifier of the user.
     UserId user_id = 1;
 
-    // An name of user in the library.
+    // A name of user in the library.
     string username = 2;
 
     // The amount of borrowed by user books now.
@@ -271,7 +271,7 @@ message UserDetails {
     // The amount of reserved by user books now.
     int32 reservations = 4;
 
-    // The amount of books that user return with lateness or doesn’t return at all.
+    // The amount of books that user return with lateness or hasn’t return at all.
     int32 orverdue = 5;
 }
 
@@ -286,14 +286,14 @@ message ReservationView {
     ReservationDetails reservation_details = 3;
 }
 
-// The necessary for librarian information about reservations.
+// Information about reservations.
 //
 message ReservationDetails {
 
-    // An title of the book.
+    // A title of the book.
     BookTitle book_title = 1;
 
-    // List of the book’s authors.
+    // List of the book authors.
     repeated Author authors = 2;
 
     // An identifier of the user who reserved book.
@@ -324,7 +324,7 @@ message UserHistoryExtendedView {
 
 // Compact version of the user history.
 //
-// Contains all user's loan.
+// Contains all user's loans.
 //
 message UserHistoryView {
 
