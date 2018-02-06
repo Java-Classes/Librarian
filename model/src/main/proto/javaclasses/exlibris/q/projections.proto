@@ -35,6 +35,7 @@ import "spine/net/url.proto";
 import "javaclasses/exlibris/values.proto";
 import "javaclasses/exlibris/identifiers.proto";
 import "javaclasses/exlibris/model.proto";
+import "javaclasses/exlibris/identifiers.proto";
 
 // *** This is projections for UI role reader ***
 
@@ -64,11 +65,11 @@ message BookView {
 
     // The book can has one of the next status:
     //
-    //  1. Borrowed — when book is borrowed by user.
-    //  2. Reserved — when book is reserved by user.
-    //  3. Available — when book is available to borrow or reserve.
-    //  4. Expected soon — when book is not available now, but user can reserve it.
-    //  5. Overdue — when book was borrowed by user but still doesn’t returned.
+    // 1. Borrowed — when book is borrowed by user.
+    // 2. Reserved — when book is reserved by user.
+    // 3. Available — when book is available to borrow or reserve.
+    // 4. Expected soon — when book is not available now, but user can reserve it.
+    // 5. Overdue — when book was borrowed by user but still doesn’t returned.
     //
     oneof book_status {
         bool borrowed = 4;
@@ -89,7 +90,7 @@ message BookView {
 //
 message DialogWindow {
 
-    //View with short book’s information.
+    // View with short book’s information.
     BookView book_view = 1;
 }
 
@@ -103,7 +104,10 @@ message DialogWindow {
 //
 message HomePage {
 
-    repeated Book book = 1;
+    // View with short book’s information.
+    repeated BookView book_view = 1;
+    
+    // Book categories.
     repeated Category category = 2;
 }
 
@@ -111,17 +115,17 @@ message HomePage {
 
 // View for adding book.
 //
-// View consist of fields for writing book details.
+// View consists of fields for writing book details.
 //
 message AddBookView {
 
-    //List of book categories.
+    // List of book categories.
     repeated Category categories = 1;
 }
 
-// View for editing book.
+// View for updating book.
 //
-// View consist of fields for edit book details.
+// View consists of fields for updating book details.
 //
 message UpdateBookView {
 
@@ -149,38 +153,71 @@ message UpdateBookView {
 
 // View for appending inventory.
 //
-// The step of adding book.
+// The second step of adding book.
 //
 message AppendInventoryView {
 
-    // An identifier is represented by `BookId`.
+    // An identifier is represented by book id.
     InventoryId inventory_id = 2;
 }
 
+// View with compact information about book’s loans.
 //
-//
-//
+// Librarian sees all users that borrow book and the loan’s period.
 //
 message BookCompactHistory {
-    spine.net.Url cover_url = 1;
+
+    // URL for book cover.
+    spine.net.Url url = 1;
+
+    // List of user's loan details.
     repeated LoanDetails loans = 2;
 }
 
+// View with information about book’s loan.
+//
+// View consists of fields with inventory item,
+// users who borrowed the book and their taken on and due on dates.
+//
 message LoanDetails {
+
+    // An identifier of a book. Contains ISBN base62 and number that inputted by librarian.
     InventoryItemId inventory_item_id = 1;
+
+    // An identifier is represented by User email address.
     UserId user_id = 2;
+
+    // The time when book was borrowed.
     google.protobuf.Timestamp when_taken = 3;
+
+    // The time when book should be returned.
     google.protobuf.Timestamp when_due = 4;
 }
 
+// View with full information about book’s record.
+//
+// Librarian sees all users that borrow book,
+// reserve, lost, return, or extend loan period with date of every record.
+//
 message BookFullHistory {
-    spine.net.Url cover_url = 1;
+
+    // URL for book cover.
+    spine.net.Url url = 1;
+
+    // List of inventory item record.
     repeated InventoryItemRecord inventory_item_record = 2;
 }
 
+// View with information about inventory item record.
+//
+// View consists of fields about inventory item, actions and action date.
+//
 message InventoryItemRecord {
 
+    // An identifier is represented by book id and item number.
     InventoryItemId inventory_item_id = 1;
+
+    // One of the actions is assigned to the inventory item.
     oneof book_record {
         bool borrowed = 2;
         bool reserved = 3;
@@ -188,34 +225,95 @@ message InventoryItemRecord {
         bool returned = 5;
         bool lost = 6;
     }
+    // The time when the action was did.
     google.protobuf.Timestamp action_date = 7;
 }
 
+// Details about book.
+//
+// View consists of all information about book.
+// URL cover, book title, authors, isbn, year of publication,
+// categories, book desctiption.
+//
 message DetailsView {
-    BookView book_view = 1;
-    Year year = 2;
-    BookDescription book_desctiption = 3;
-    repeated Category categories = 4;
+
+    // URL for book cover.
+    spine.net.Url url = 1;
+
+    // Book’s title.
+    BookTitle title = 2;
+
+    // Full author’s name.
+    repeated Author authors = 3;
+
+    // Value that generated from decimal ISBN.
+    Isbn62 isbn = 4;
+
+    // Year of publication of the book.
+    Year year = 5;
+
+    // List of categories.
+    repeated Category categories = 6;
+
+    // Full book’s description.
+    BookDescription book_desctiption = 7;
 }
 
+// View contains a book loan in inventory.
+//
+// View consists of fields with information about inventory items,
+// users who borrowed the book and their taken on and due on dates.
+//
 message ExtendedInventoryView {
+
+    // List with information about book’s loan.
     repeated LoanDetails loan_details = 1;
 }
 
+// Details about inventory.
+//
+// View consists of fields with book title, authors,
+// available books, amount of overdue books.
+//
 message InventoryDetails {
+
+    // Book’s title.
     BookTitle book_title = 1;
+
+    // Full author’s name.
     repeated Author authors = 2;
-    int32 availableItems = 3;
-    int32 itemsSize = 4;
+
+    // Amount of available books.
+    int32 available_items = 3;
+
+    // Amount of books.
+    int32 items_size = 4;
+
+    // Amount of overdue books.
+    int32 overdue = 5;
 }
 
+// Inventory state of the current book.
+//
+// View consists of book cover and loan details.
+//
 message InventoryByBookView {
+
+    // URL for book cover.
     spine.net.Url url = 1;
-    repeated InventoryDetails inventory_details = 2;
+
+    // Information about book’s loan.
     repeated LoanDetails loan_details = 3;
 }
 
+// View with information about inventory.
+//
+// View consists of fields with book title, authors,
+// available books, amount of overdue book.
+//
 message InventoryView {
+
+    // Inventory details.
     InventoryDetails inventory_details = 1;
 }
 
