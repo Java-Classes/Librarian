@@ -1,0 +1,89 @@
+//
+// Copyright 2018, TeamDev Ltd. All rights reserved.
+//
+// Redistribution and use in source and/or binary forms, with or without
+// modification, must retain the above copyright notice and the following
+// disclaimer.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+
+syntax = "proto3";
+
+package javaclasses.exlibris.q;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.quickstart";
+option java_package = "javaclasses.exlibris.q";
+option java_outer_classname = "ProjectionsProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+import "spine/net/url.proto";
+import "javaclasses/exlibris/values.proto";
+import "javaclasses/exlibris/model.proto";
+
+// *** This is projections for UI role reader ***
+
+// Appears after click on the book cover like pop-up dialog window.
+//
+message BookDetailsView {
+
+    BookView book_view = 1;
+    BookDescription book_description = 2;
+}
+
+// Consists of main book information.
+//
+message BookView {
+
+    spine.net.Url book_cover_url = 1;
+    BookTitle title = 2;
+    repeated Author author = 3;
+    oneof book_status {
+        bool borrowed = 4;
+        bool reserved = 5;
+        bool available = 6;
+        bool expected_soon = 7;
+        bool overdue = 8;
+    }
+}
+
+// Dialog window with book information.
+//
+// When user scans the book to borrow or to return depending of his actions he can see next variants:
+// 1. User tries to borrow book the first time -> welcome page with license confirmation.
+// 2. User tries to borrow book -> success borrowing page with OK button.
+// 3. User tries to borrow unavailable book -> cannot borrow book page with explanation.
+// 4. User tries to return borrowed book -> successful return page.
+//
+message DialogWindow {
+
+    BookView book_view = 1;
+}
+
+// Represents home page. Books are sorted according to their status:
+//
+// 1. Overdue.
+// 2. Borrowed.
+// 3. Reserved.
+//
+// (or maybe some more sorting: for example for new "hot" books).
+//
+message HomePage {
+
+    repeated Book book = 1;
+    repeated Category category = 2;
+}
+// *** This is projections for UI role librarian ***
