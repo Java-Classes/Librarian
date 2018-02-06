@@ -38,7 +38,7 @@ import "google/protobuf/timestamp.proto";
 //
 message InventoryCreated {
 
-    // The identifier of inventory.
+    // The identifier of the inventory.
     InventoryId inventory_id = 1;
 
     // When inventory was created.
@@ -47,14 +47,14 @@ message InventoryCreated {
 
 // An event fired when librarian adds new items to inventory.
 //
-// Appended book becomes or ready to pickup for the user who borrowed it or available.
+// Appended book becomes or ready to pickup for the user who reserved it or available.
 //
 message InventoryAppended {
 
     // An identifier of the inventory.
     InventoryId inventory_id = 1;
 
-    // Identifier of the new created item.
+    // An identifier of the new created item.
     InventoryItemId inventory_item_id = 2;
 
     // Optional field: exists when book has RFID mark.
@@ -67,24 +67,25 @@ message InventoryAppended {
     google.protobuf.Timestamp when_appended = 5;
 }
 
-// Event appears when either inventory appended or book returned and there is no reservation.
+// Event appears when inventory appended or book returned and there is no reservation.
 //
 // Book becomes public available.
 //
 message BookBecameAvailable {
+
     // An identifier of the inventory.
     InventoryId inventory_id = 1;
 
-    //Identifier of the invetory item which became available.
+    // An identifier of the invetory item which became available.
     InventoryItemId inventory_item_id = 2;
 
     // When book became available.
     google.protobuf.Timestamp when_became_available = 3;
 }
 
-// An event when  book is available for 1 user to take it.
+// An event when  book is available for the user to take it, if he has reservation.
 //
-// Appears when either inventory appended or book returned.
+// Appears when inventory appended or book returned.
 //
 // In 2 days this opportunity disappear and the reservation expires.
 //
@@ -93,7 +94,7 @@ message BookReadyToPickup {
     // An identifier of the inventory.
     InventoryId inventory_id = 1;
 
-    // Identifier of the invetory item which became ready to pickup.
+    // An identifier of the invetory item which became ready to pickup.
     InventoryItemId inventory_item_id = 2;
 
     // User who can take this book during 2 days.
@@ -106,7 +107,7 @@ message BookReadyToPickup {
     google.protobuf.Timestamp pick_up_deadline = 5;
 }
 
-// An event when user reserve the book.
+// An event when user reserves the book.
 //
 // If a queue on book exists then reader will be added to the queue.
 // Else if book is available then reader has 2 days to borrow book.
@@ -123,7 +124,7 @@ message ReservationAdded {
     google.protobuf.Timestamp when_created = 3;
 }
 
-// Event when user borrows book.
+// An event when user borrows book.
 //
 // Triggers 'reservation became loan' if the book was reserved.
 //
@@ -149,7 +150,7 @@ message ReservationBecameLoan {
     // An identifier of the inventory.
     InventoryId inventory_id = 1;
 
-    //User whose reservation became loan.
+    // User whose reservation became loan.
     UserId user_id = 2;
 
     // When reservation became loan.
@@ -182,7 +183,7 @@ message LoanPeriodExtended {
     // An identifier of the loan.
     LoanId loan_id = 2;
 
-    // Time of the prevoius due date.
+    // Time of the previous due date.
     google.protobuf.Timestamp previous_due_date = 3;
 
     // Time of the new due date.
@@ -223,15 +224,15 @@ message BookLost {
     // User who lost the book.
     UserId who_lost = 3;
 
-    // Time when user lost the book.
-    google.protobuf.Timestamp when_lost = 4;
+    // Time when user reported that he had lost the book.
+    google.protobuf.Timestamp when_reported = 4;
 }
 
 // An event fired when user or system cancel the reservation.
 //
 // Can be canceled for these reasons:
-// 1. User canceled reservation. In this case whoCanceled is id of reader.
-// 2. System cancel reservation because book is removed. In this case whoCanceled is botId.
+// 1. User canceled reservation. In this case `who_canceled` is id of reader.
+// 2. System cancel reservation because book is removed. In this case `who_canceled` is `bot_id`.
 //
 message ReservationCanceled {
 
@@ -245,9 +246,9 @@ message ReservationCanceled {
     google.protobuf.Timestamp when_canceled = 3;
 }
 
-// An event when librarian decrease current inventory.
+// An event when librarian decreases current inventory.
 //
-// Can cancel reservation if it is the last one in current inventory.
+// An event can cancels the reservation if it is the last one in current inventory.
 //
 message InventoryDecreased {
 
@@ -285,9 +286,7 @@ message ReservationPickUpPeriodExpired {
     google.protobuf.Timestamp when_expired = 3;
 }
 
-// An event fired when librarian remove book from the library.
-//
-// React on BookRemove.
+// An event fired when librarian removes book from the library.
 //
 message InventoryRemoved {
 
@@ -362,7 +361,7 @@ message BookRemoved {
     // 3. Custom reason that describes by librarian .
     oneof book_removal_reason {
         bool lost = 4;
-        bool outDated = 5;
+        bool outdated = 5;
         string custom_reason = 6;
     }
 }
