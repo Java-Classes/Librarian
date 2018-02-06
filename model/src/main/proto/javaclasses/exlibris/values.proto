@@ -86,7 +86,7 @@ message Category {
 
 // Unique mark for book.
 //
-message RFID {
+message Rfid {
 
     string rfid = 1;
 }
