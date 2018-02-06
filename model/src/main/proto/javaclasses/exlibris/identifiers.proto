@@ -60,7 +60,7 @@ message UserId {
 
 // An ID of a inventory.
 //
-// An identifier is represented by BookId.
+// An identifier is represented by `BookId`.
 //
 message InventoryId {
 
@@ -70,7 +70,7 @@ message InventoryId {
 
 // An ID of a inventory item.
 //
-// An identifier is represented by BookId and item number.
+// An identifier is represented by `BookId` and item number.
 //
 message InventoryItemId {
 
