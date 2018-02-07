@@ -35,8 +35,8 @@ import "spine/net/url.proto";
 import "javaclasses/exlibris/identifiers.proto";
 import "javaclasses/exlibris/values.proto";
 
-// Information about book.
-// Consists authors and categories, and status.
+// Information about the book.
+// Contains authors, categories, and status.
 //
 message BookItem {
 
@@ -49,7 +49,7 @@ message BookItem {
     // Categories of the book.
     repeated Category categories = 3;
 
-    // List of the author's full name.
+    // List of the author full names.
     AuthorName author = 4;
 
     // The book can has one of the following status:
@@ -58,7 +58,7 @@ message BookItem {
     // 2. Reserved — when book is reserved by user.
     // 3. Available — when book is available to borrow or reserve.
     // 4. Expected soon — when book is not available now, but user can reserve it.
-    // 5. Overdue — when book was borrowed by user but still isn’t returned.
+    // 5. Overdue — when book was borrowed by user but still not returned.
     oneof book_status {
         bool borrowed = 5;
         bool reserved = 6;
@@ -68,9 +68,9 @@ message BookItem {
     }
 }
 
-// Information about loan of the book.
+// Information about the loan of the book.
 //
-// Consists of fields with inventory item,
+// Contains inventory item,
 // users who borrowed the book and their taken on and due on dates.
 //
 message LoanDetails {
@@ -81,32 +81,32 @@ message LoanDetails {
     // An identifier is represented by user's email address.
     UserId user_id = 2;
 
-    // The time when book was borrowed.
+    // The time when the book was borrowed.
     google.protobuf.Timestamp when_taken = 3;
 
-    // The time when book should be returned.
+    // The time when the book should be returned.
     google.protobuf.Timestamp when_due = 4;
 }
 
 // Detailed information about the inventory.
 //
-// View consists of fields with book title, authors, book location.
+// Contains book title, authors, book location.
 //
 message InventoryDetails {
 
     // Book title.
     BookTitle book_title = 1;
 
-    // List of the author's full name.
+    // List of the author full names.
     AuthorName author_names = 2;
 
     // List of information about the location of books.
-    repeated InventoryItem items = 3;
+    repeated InventoryItemLocation items = 3;
 }
 
 // Information about the location of books.
 //
-message InventoryItem {
+message InventoryItemLocation {
 
     // One of the location where the book is located.
     oneof book_location {
@@ -120,7 +120,7 @@ message InventoryItem {
 //
 message ReservationDetails {
 
-    // An identifier of the user who reserved book.
+    // An identifier of the user who reserved the book.
     UserId user_id = 1;
 
     // Time when user reserved the book.
@@ -129,11 +129,11 @@ message ReservationDetails {
 
 // Information about inventory item record.
 //
-// Consists of fields about inventory item, actions and action date.
+// Contains inventory item, actions and action date.
 //
 message InventoryItemRecord {
 
-    // An identifier is represented by book id and item number.
+    // An identifier is represented by book ID and item number.
     InventoryItemId inventory_item_id = 1;
 
     // An identifier is represented by user's email address.
@@ -153,12 +153,12 @@ message InventoryItemRecord {
 
 // Information about the history of the loan of the book.
 //
-// Consists of fields with inventory item,
+// Contains inventory item,
 // users who borrowed the book and their taken on, due on, and returned on dates.
 //
 message LoanDetailsHistory {
 
-    // An identifier of a book.
+    // An identifier of the book.
     InventoryItemId inventory_item_id = 1;
 
     // An identifier is represented by user's email address.
@@ -184,8 +184,8 @@ message LostBook {
     // A title of the book that was lost.
     BookTitle book_title = 2;
 
-    // List of the author's full name.
-    repeated AuthorName author_names = 3;
+    // List of the author full names.
+    AuthorName author_names = 3;
 
     // An identifier of the user who lost the book.
     UserId user_id = 4;
