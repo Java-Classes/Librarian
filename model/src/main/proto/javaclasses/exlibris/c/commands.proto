@@ -24,7 +24,7 @@ package javaclasses.exlibris.c;
 
 import "spine/options.proto";
 
-option (type_url_prefix) = "type.spine.quickstart";
+option (type_url_prefix) = "type.javaclasses.exlibris";
 option java_package = "javaclasses.exlibris.c";
 option java_outer_classname = "CommandsProto";
 option java_multiple_files = true;
@@ -88,7 +88,7 @@ message RemoveBook {
     google.protobuf.Timestamp when_removed = 5;
 }
 
-// Append item to the book inventory.
+// Append the item to the book inventory.
 // In case of a successful command propagation,
 // appended book becomes available or ready to pickup for the user who borrowed it.
 //
@@ -106,7 +106,7 @@ message AppendInventory {
 
 // An attempt to borrow a book.
 //
-// In case of a successful command propagation, the book is borrowed by reader.
+// In case of a successful command propagation, the book is borrowed by user.
 // If book was reserved, then reservation became loan.
 //
 // Cannot be applied to the book that is reserved by another user.
@@ -123,7 +123,7 @@ message BorrowBook {
 // An attempt to reserve the book.
 //
 // In case of a successful command propagation, the book is reserved.
-// Cannot be applied if the book has already borrowed or reserved by current reader.
+// Will be regected  if the book has already borrowed or reserved by current user.
 //
 message ReserveBook {
 
@@ -151,7 +151,7 @@ message CancelReservation {
 // An attempt to extend the loan period.
 //
 // In case of a successful command propagation, the loan period is extended.
-// Cannot be applied if the book has been reserved by another user.
+// Will be rejected if the book has been reserved by another user.
 //
 message ExtendLoanPeriod {
 
@@ -162,7 +162,7 @@ message ExtendLoanPeriod {
     google.protobuf.Timestamp new_due_date = 2;
 }
 
-// Loan period marks overdue if the reader hasn't return the book in time.
+//  Marks the loan period as overdue if the user hasn't return the book in time.
 //
 message MarkLoanOverdue {
 
@@ -170,7 +170,7 @@ message MarkLoanOverdue {
     LoanId loan_id = 1;
 }
 
-// Reservation expires if the reader hasn't taken the book in 2 days.
+// Mark reservation as expired if the user hasn't taken the book in 2 days.
 //
 message MarkReservationExpired {
 
@@ -184,7 +184,7 @@ message MarkReservationExpired {
 // An attempt to return the book.
 //
 // In case of a successful command propagation, the book is returned.
-// Cannot be applied to the missing or not borrowed book.
+// Cannot be applied to the missing or non-borrowed book.
 //
 message ReturnBook {
 
@@ -216,15 +216,11 @@ message ReportLostBook {
 // In case of a successful command propagation, the book is written off.
 // Cannot be applied to the missing book.
 //
-message WriteBookOf {
+message WriteBookOff {
 
     // An identifier of an inventory item.
     InventoryItemId inventory_item_id = 1;
 
-    // Reasons for write book off.
-    oneof reason {
-        bool lost = 2;
-        bool outDated = 3;
-        string custom_reason = 4;
-    }
+    // Reasons to write book off.
+    WriteOffReason write_book_off_reason = 2;
 }
