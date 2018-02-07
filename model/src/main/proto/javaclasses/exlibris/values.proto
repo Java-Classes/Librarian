@@ -81,7 +81,7 @@ message BookTitle {
 //
 message AuthorName {
 
-    spine.people.PersonName author_name = 1;
+    repeated spine.people.PersonName author_name = 1;
 }
 
 // Full book description.
