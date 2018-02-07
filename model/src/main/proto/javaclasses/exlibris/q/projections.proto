@@ -100,7 +100,7 @@ message BookExtendedView {
     // The book title.
     BookTitle title = 3;
 
-    // The list of author’s names.
+    // The list of author’s name.
     repeated AuthorName author_names = 4;
 
     // Value that generated from ISBN.
