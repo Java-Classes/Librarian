@@ -31,8 +31,9 @@ option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
 import "google/protobuf/timestamp.proto";
-import "javaclasses/exlibris/identifiers.proto";
 import "spine/net/url.proto";
+import "javaclasses/exlibris/identifiers.proto";
+import "javaclasses/exlibris/values.proto";
 
 // Consists of main book’s information.
 //
@@ -47,8 +48,8 @@ message BookItem {
     // Categories of the book.
     repeated Category categories = 3;
 
-    // The list of the book’s authors
-    repeated Author author = 4;
+    // todo: docs
+    AuthorName author = 4;
 
     // The book can has one of the next status:
     //
@@ -88,4 +89,112 @@ message LoanDetails {
 
     // The time when book should be returned.
     google.protobuf.Timestamp when_due = 4;
+}
+
+// Details about inventory.
+//
+// View consists of fields with book title, authors,
+// available books, amount of overdue books.
+//
+message InventoryDetails {
+
+    // book title.
+    BookTitle book_title = 1;
+
+    // todo : dima
+    AuthorName author_names = 2;
+
+    // List with information about books.
+    repeated InventoryItem items = 3;
+}
+
+//
+//
+message InventoryItem {
+
+    //
+    oneof book_location {
+        LoanDetails loan = 1;
+        bool in_library_inventory = 2;
+        bool lost = 3;
+    }
+}
+
+// Information about reservations.
+//
+message ReservationDetails {
+
+    // An identifier of the user who reserved book.
+    UserId user_id = 1;
+
+    // Time when user reserved the book.
+    google.protobuf.Timestamp made_on = 2;
+}
+
+// View with information about inventory item record.
+//
+// View consists of fields about inventory item, actions and action date.
+//
+message InventoryItemRecord {
+
+    // An identifier is represented by book id and item number.
+    InventoryItemId inventory_item_id = 1;
+
+    //
+    UserId user_id = 2;
+
+    // One of the actions is assigned to the inventory item.
+    oneof book_record {
+        bool borrowed = 3;
+        bool reserved = 4;
+        bool loan_period_extended = 5;
+        bool returned = 6;
+        bool lost = 7;
+    }
+    // The time when the action was did.
+    google.protobuf.Timestamp action_date = 8;
+}
+
+// View with information about book’s loan.
+//
+// View consists of fields with inventory item,
+// users who borrowed the book and their taken on and due on dates.
+//
+message LoanDetailsHistory {
+
+    // An identifier of a book. Contains ISBN base62 and number that inputted by librarian.
+    InventoryItemId inventory_item_id = 1;
+
+    // An identifier is represented by User email address.
+    // todo: if book in library id is library inventory
+    UserId user_id = 2;
+
+    // The time when book was borrowed.
+    google.protobuf.Timestamp when_taken = 3;
+
+    // The time when book should be returned.
+    google.protobuf.Timestamp when_due = 4;
+
+    // The time when the book was returned.
+    google.protobuf.Timestamp returned_on = 5;
+}
+
+// Informaton about the book that was lost.
+//
+message LostBook {
+
+    // An identifier of the book that was lost.
+    InventoryItemId inventory_item_id = 1;
+
+    // A title of the book that was lost.
+    BookTitle book_title = 2;
+
+    // The list of authors.
+    repeated AuthorName author_names = 3;
+
+    // An identifier of the user who lost the book.
+    UserId user_id = 4;
+
+    // The time when was reported about book losing.
+    google.protobuf.Timestamp reported_on = 5;
 }

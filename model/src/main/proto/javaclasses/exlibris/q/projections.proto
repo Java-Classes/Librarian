@@ -39,18 +39,18 @@ import "javaclasses/exlibris/q/values.proto";
 // *** This is projections for UI role reader ***
 
 
-/// !!!
+///
 // Appears after click on the book’s cover like pop-up dialog window.
 //
 message BookDetailsView {
 
-    // View with short book’s information.
-    BookItem book_view = 1;
+    // Short book information.
+    BookItem book_item = 1;
 
     // The full book description.
     BookDescription book_description = 2;
 }
-/// !!!
+///
 
 // *** This is projections for UI role librarian ***
 
@@ -63,50 +63,6 @@ message CategoriesView {
     repeated Category categories = 1;
 }
 
-// View for updating book.
-//
-// View consists of fields for updating book details.
-//
-message ExtendedBookView {
-
-    //
-    BookId book_id = 1;
-
-    // URL for book cover.
-    spine.net.Url cover_url = 2;
-    spine.net.Url book_cover_url = 1;
-
-    // Value that generated from decimal ISBN.
-    Isbn62 isbn = 3;
-
-    // Book’s title.
-    BookTitle title = 4;
-    // book title.
-    BookTitle title = 3;
-
-    // Full author’s name.
-    repeated Author authors = 5;
-    repeated AuthorName author_names = 4;
-
-    // Year of publication of the book.
-    Year year = 6;
-
-    // Book categories.
-    repeated Category categories = 7;
-
-    // Full book description.
-    BookDescription description = 8;
-}
-
-// View for appending inventory.
-//
-// The second step of adding book.
-//
-message AppendInventoryView {
-
-    // An identifier is represented by book id.
-    InventoryId inventory_id = 2;
-}
 
 // View with compact information about book’s loans.
 //
@@ -114,8 +70,9 @@ message AppendInventoryView {
 //
 message BookCompactHistory {
 
-    // URL for book cover.
-    spine.net.Url url = 1;
+
+    //
+    InventoryId inventory_id = 1;
 
     // List of user's loan details.
     repeated LoanDetails loans = 2;
@@ -130,33 +87,14 @@ message BookCompactHistory {
 //
 message BookFullHistory {
 
-    // URL for book cover.
-    spine.net.Url book_cover_url = 1;
+
+    //
+    InventoryId inventory_id = 1;
 
     // List of inventory item record.
     repeated InventoryItemRecord inventory_item_record = 2;
 }
 
-// View with information about inventory item record.
-//
-// View consists of fields about inventory item, actions and action date.
-//
-message InventoryItemRecord {
-
-    // An identifier is represented by book id and item number.
-    InventoryItemId inventory_item_id = 1;
-
-    // One of the actions is assigned to the inventory item.
-    oneof book_record {
-        bool borrowed = 2;
-        bool reserved = 3;
-        bool loan_period_extended = 4;
-        bool returned = 5;
-        bool lost = 6;
-    }
-    // The time when the action was did.
-    google.protobuf.Timestamp action_date = 7;
-}
 
 // Details about book.
 //
@@ -164,49 +102,33 @@ message InventoryItemRecord {
 // URL cover, book title, authors, isbn, year of publication,
 // categories, book desctiption.
 //
-message DetailsView {
+message BookExtendedView {
+
+    //
+    BookId book_id = 1;
 
     // URL for book cover.
-    spine.net.Url book_cover_url = 1;
+    spine.net.Url book_cover_url = 2;
 
     // Book’s title.
-    BookTitle title = 2;
+    BookTitle title = 3;
 
     // Full author’s name.
-    repeated AuthorName author_names = 3;
+    repeated AuthorName author_names = 4;
 
     // Value that generated from decimal ISBN.
-    Isbn62 isbn = 4;
+    Isbn62 isbn = 5;
 
     // Year of publication of the book.
-    Year year = 5;
+    Year year = 6;
 
     // List of categories.
-    repeated Category categories = 6;
+    repeated Category categories = 7;
 
     // Full book description.
-    BookDescription book_desctiption = 7;
+    BookDescription book_desctiption = 8;
 }
 
-// Details about inventory.
-//
-// View consists of fields with book title, authors,
-// available books, amount of overdue books.
-//
-message InventoryDetails {
-
-    // book title.
-    BookTitle book_title = 1;
-
-    // Full author’s name.
-    // todo : change
-    repeated Author authors = 2;
-    repeated AuthorName author_names = 2;
-
-    // List with information about book’s loan.
-    repeated LoanDetails loan_details = 3;
-
-}
 
 // Inventory state of the current book.
 //
@@ -214,12 +136,14 @@ message InventoryDetails {
 //
 message InventoryByBookView {
 
-    // URL for book cover.
-    spine.net.Url book_cover_url = 1;
 
     // Information about book loan.
-    repeated LoanDetails loan_details = 3;
+    InventoryDetails inventory_details = 3;
+
+
 }
+
+
 
 // View with information about inventory.
 //
@@ -228,29 +152,11 @@ message InventoryByBookView {
 //
 message InventoryView {
 
-    // Inventory details.
-    InventoryDetails inventory_details = 1;
+    // Inventories details.
+    repeated InventoryDetails inventory_details = 1;
 }
 
-// Informaton about the book that was lost.
-//
-message LostBook {
 
-    // An identifier of the book that was lost.
-    InventoryItemId inventory_item_id = 1;
-
-    // A title of the book that was lost.
-    BookTitle book_title = 2;
-
-    // The list of authors.
-    repeated AuthorName author_names = 3;
-
-    // An identifier of the user who lost the book.
-    UserId user_id = 4;
-
-    // The time when was reported about book losing.
-    google.protobuf.Timestamp reported_on = 5;
-}
 
 // The wiew with information about lost books.
 //
@@ -272,6 +178,8 @@ message ReadersView {
 //
 message UserDetails {
 
+    // todo: dima - count!!!
+
     // An identifier of the user.
     UserId user_id = 1;
 
@@ -292,29 +200,14 @@ message UserDetails {
 //
 message ReservationView {
 
-    // An URL of the book cover.
-    spine.net.Url book_cover_url = 2;
+    //
+    InventoryId inventory_id = 1;
+
 
     // The details of the reservation.
     ReservationDetails reservation_details = 3;
 }
 
-// Information about reservations.
-//
-message ReservationDetails {
-
-    // A title of the book.
-    BookTitle book_title = 1;
-
-    // List of the book authors.
-    repeated AuthorName author_names = 2;
-
-    // An identifier of the user who reserved book.
-    UserId user_id = 3;
-
-    // Time when user reserved the book.
-    google.protobuf.Timestamp made_on = 4;
-}
 
 // Full user history includes all user’s events.
 //
@@ -326,7 +219,7 @@ message ReservationDetails {
 // 4. Returned
 // 5. Lost
 //
-message UserHistoryExtendedView {
+message ExtendedUserHistoryView {
 
     // An identifier of user.
     UserId user_id = 1;
@@ -339,8 +232,13 @@ message UserHistoryExtendedView {
 //
 // Contains all user's loans.
 //
-message UserHistoryView {
+message CompactUserHistoryView {
 
     // Details consist of taken on date, due on date, returned on date.
-    repeated LoanDetails loan_details = 1;
+    repeated LoanDetailsHistory loan_details = 1;
+}
+
+message CoverUrlView {
+    // URL for book cover.
+    spine.net.Url book_cover_url = 1;
 }
