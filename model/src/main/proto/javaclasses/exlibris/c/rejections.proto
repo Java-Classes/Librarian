@@ -69,13 +69,14 @@ message CannotUpdateMissingBook {
     BookId book_id = 1;
 
     // Librarian who tried to update book.
-    UserId user_id = 2;
+    UserId librarian_id = 2;
 
     // Time when librarian tried to update missing book.
     google.protobuf.Timestamp when_rejected = 3;
 }
 
-// Rejection when user tries to borrow borrowed or unavailable book.
+// Rejection when user tries to borrow either the book that borrowed by himself
+// or there are no available items.
 //
 message CannotBorrowBook {
 
@@ -93,8 +94,8 @@ message CannotBorrowBook {
 
     // Reason why book cannot be borrowed.
     oneof cannot_borrow_reason {
-        bool borrowed = 5;
-        bool unavailable = 6;
+        bool already_borrowed = 5;
+        bool no_available_items = 6;
     }
 }
 
@@ -135,9 +136,9 @@ message CannotExtendLoanPeriod {
     google.protobuf.Timestamp when_rejected = 4;
 }
 
-// Rejection when user tries to return unborrowed book.
+// Rejection when user tries to return non-borrowed book.
 //
-message BookIsntBorrowed {
+message CannotReturnNonBorrowedBook {
 
     // An identifier of the inventory.
     InventoryId inventory_id = 1;
@@ -152,7 +153,7 @@ message BookIsntBorrowed {
     google.protobuf.Timestamp when_rejected = 4;
 }
 
-// Rejection when user tries to return missing book.
+// Rejection when user tries to return the missing `InventoryItem`.
 //
 message CannotReturnMissingBook {
 
@@ -191,7 +192,7 @@ message CannotWriteMissingBookOff {
     InventoryId inventory_id = 1;
 
     // Librarian who tried to write missing book off.
-    UserId user_id = 2;
+    UserId librarian_id = 2;
 
     // Inventory item identifier.
     InventoryItemId inventory_item_id = 3;

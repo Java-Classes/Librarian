@@ -24,35 +24,41 @@ package javaclasses.exlibris;
 
 import "spine/options.proto";
 
-option (type_url_prefix) = "type.spine.quickstart";
+option (type_url_prefix) = "type.javaclasses.exlibris";
 option java_package = "javaclasses.exlibris";
 option java_outer_classname = "ValuesProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
 import "spine/net/url.proto";
+import "spine/people/person_name.proto";
 
 // Value that generated from decimal ISBN.
 //
 message Isbn62 {
 
-    // We generated book’s ID that contains ISBN code with base62.
+    // We generated book ID that contains ISBN code with the base62 algorithm.
     //
-    // ISBN is an unique code that every book edition has to determinate itself.
+    // ISBN is a unique code that every book publisher has to determinate itself.
+    //
     // This code usually has ten or thirteen symbols.
+    //
     // To increase readability we convert that code from decimal format to code with base62.
-    // Example: ISBN:9780134685991, ISBN62:2mBSCRqZ
+    //
+    // Example:
+    // Original ISBN:    9780134685991,
+    // Generated ISBN62: 2mBSCRqZ.
     //
     string value = 1;
 }
 
-// All information about book.
+// All information about the book.
 //
 message BookDetails {
 
     spine.net.Url cover_url = 1;
     BookTitle title = 2;
-    repeated Author authors = 3;
+    repeated AuthorName authors = 3;
     BookDescription description = 4;
     repeated Category categories = 5;
 }
@@ -64,7 +70,7 @@ message BookCoverURL {
     string url = 1;
 }
 
-// Book’s title.
+// book title.
 //
 message BookTitle {
 
@@ -73,12 +79,12 @@ message BookTitle {
 
 // Full author’s name.
 //
-message Author {
+message AuthorName {
 
-    string author_name = 1;
+    spine.people.PersonName author_name = 1;
 }
 
-// Full book’s description.
+// Full book description.
 //
 message BookDescription {
 
@@ -89,10 +95,10 @@ message BookDescription {
 //
 message Category {
 
-    string category = 1;
+    string value = 1;
 }
 
-// Unique mark for book.
+// A radio-frequency identification mark for the book.
 //
 message Rfid {
 
@@ -101,5 +107,17 @@ message Rfid {
 
 // Year of publication of the book.
 message Year {
+
     string year = 1;
+}
+
+// Reasons to write book off.
+//
+message WriteOffReason {
+
+    oneof write_off_reason {
+        bool lost = 1;
+        bool outdated = 2;
+        string custom_reason = 3;
+    }
 }

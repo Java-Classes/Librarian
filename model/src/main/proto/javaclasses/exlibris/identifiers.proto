@@ -24,7 +24,7 @@ package javaclasses.exlibris;
 
 import "spine/options.proto";
 
-option (type_url_prefix) = "type.spine.quickstart";
+option (type_url_prefix) = "type.javaclasses.exlibris";
 option java_package = "javaclasses.exlibris";
 option java_outer_classname = "IdentifiersProto";
 option java_multiple_files = true;
@@ -37,24 +37,17 @@ import "javaclasses/exlibris/values.proto";
 //
 message BookId {
 
-    // We generated book’s ID that contains ISBN code with base62.
-    //
-    // ISBN is an unique code that every book edition has to determinate itself.
-    // This code usually has ten or thirteen symbols.
-    // To increase readability we convert that code from decimal format to code with base62.
-    // Example: ISBN:9780134685991, ISBN62:2mBSCRqZ
-    //
+    // We generated book ID that contains ISBN code with the base62 algorithm.
     Isbn62 isbn62 = 1;
 }
 
 // An ID of a user.
 //
-// An identifier is represented by User email address of the next type:
-// <Name>.<Surname>@teamdev.com
+// An identifier is represented by User email address.
 //
 message UserId {
 
-    // User's e-mail.
+    // The user's e-mail.
     spine.net.EmailAddress email = 1;
 }
 
@@ -64,7 +57,7 @@ message UserId {
 //
 message InventoryId {
 
-    // An identifier of a book. Contains ISBN base62.
+    // An identifier of a book.
     BookId book_id = 1;
 }
 
@@ -74,18 +67,19 @@ message InventoryId {
 //
 message InventoryItemId {
 
-    // An identifier of a book. Contains ISBN base62.
+    // An identifier of a book.
     BookId book_id = 1;
-    // Input by librarian.
+
+    // The sequential number that entered by the librarian.
     int32 item_number = 2;
 }
 
-// An ID of a loan.
+// An identifier of a loan.
 //
-// An identifier is represented by based on a date.
+// An identifier is based on a date of creation.
 //
 message LoanId {
 
-    // An automatically generated identifier based on a date.
-    string value = 1;
+    // An automatically generated identifier based on a date of creation.
+    int64 value = 1;
 }
