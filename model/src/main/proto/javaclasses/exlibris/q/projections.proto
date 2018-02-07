@@ -207,8 +207,11 @@ message ExtendedUserHistoryView {
 //
 message CompactUserHistoryView {
 
+    // An identifier of the user.
+    UserId user_id = 1;
+
     // Details consist of taken on date, due on date, returned on date.
-    repeated LoanDetailsHistory loan_details = 1;
+    repeated LoanDetailsHistory loan_details = 2;
 }
 
 // The view that consist of the book cover.
