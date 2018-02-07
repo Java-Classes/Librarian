@@ -41,7 +41,7 @@ import "javaclasses/exlibris/values.proto";
 //
 message AddBook {
 
-    // ID of a book to create.
+    // An identifier of the book to create.
     BookId book_id = 1;
 
     // A details for the new book.
@@ -55,10 +55,10 @@ message AddBook {
 //
 message UpdateBook {
 
-    // An ID of a book to update.
+    // An identifier of a book to update.
     BookId book_id = 1;
 
-    // A new details for the existed book.
+    // New details for the existed book.
     BookDetails book_details = 2;
 }
 
@@ -69,7 +69,7 @@ message UpdateBook {
 //
 message RemoveBook {
 
-    // ID of a book to remove.
+    // An identifier of a book to remove.
     BookId bok_id = 1;
 
     // The reason of removing book.
@@ -77,7 +77,7 @@ message RemoveBook {
     // Book could be remove with one of the next reason:
     // 1. Book was lost.
     // 2. Book was outdated.
-    // 3. Custom reason that describes by librarian.
+    // 3. Custom reason that is described by librarian.
     oneof book_removal_reason {
         bool lost = 2;
         bool outdated = 3;
@@ -88,16 +88,18 @@ message RemoveBook {
     google.protobuf.Timestamp when_removed = 5;
 }
 
-// Append the item to the book inventory.
+// Append the book inventory.
+//
 // In case of a successful command propagation,
 // appended book becomes available or ready to pickup for the user who borrowed it.
+// `@see events.proto.InventoryAppended`
 //
 message AppendInventory {
 
-    // An identifier of a inventory.
+    // An identifier of the inventory.
     InventoryId intentory_id = 1;
 
-    // An identifier of a inventory item.
+    // An identifier of the inventory item.
     InventoryItemId inventory_item_id = 2;
 
     // Optional field: exists when book has RFID mark.
@@ -113,7 +115,7 @@ message AppendInventory {
 //
 message BorrowBook {
 
-    // An identifier of an inventory item.
+    // An identifier of the inventory item.
     InventoryItemId intentory_item_id = 1;
 
     // An identifier of the user, who borrows the book.
@@ -122,12 +124,12 @@ message BorrowBook {
 
 // An attempt to reserve the book.
 //
-// In case of a successful command propagation, the book is reserved.
-// Will be regected  if the book has already borrowed or reserved by current user.
+// In case of a successful command propagation, the book will be reserved.
+// Will be rejected if the book has already borrowed or reserved by current user.
 //
 message ReserveBook {
 
-    // An identifier of an inventory.
+    // An identifier of the inventory.
     InventoryId intentory_id = 1;
 
     // An identifier of the user, who reserves the book.
@@ -141,7 +143,7 @@ message ReserveBook {
 //
 message CancelReservation {
 
-    // An identifier of an inventory.
+    // An identifier of the inventory.
     InventoryId intentory_id = 1;
 
     // An identifier of the user, who cancels the book reservation.
@@ -155,10 +157,10 @@ message CancelReservation {
 //
 message ExtendLoanPeriod {
 
-    // An identifier of loan period.
+    // An identifier of the loan period.
     LoanId loan_id = 1;
 
-    // New due date of loan.
+    // New due date of the loan.
     google.protobuf.Timestamp new_due_date = 2;
 }
 
@@ -166,11 +168,11 @@ message ExtendLoanPeriod {
 //
 message MarkLoanOverdue {
 
-    // An identifier of loan period.
+    // An identifier of the loan period.
     LoanId loan_id = 1;
 }
 
-// Mark reservation as expired if the user hasn't taken the book in 2 days.
+// Mark reservation as expired.
 //
 message MarkReservationExpired {
 
@@ -186,9 +188,11 @@ message MarkReservationExpired {
 // In case of a successful command propagation, the book is returned.
 // Cannot be applied to the missing or non-borrowed book.
 //
+// `@see events.proto.BookReturned`
+//
 message ReturnBook {
 
-    // An identifier of an inventory.
+    // An identifier of the inventory.
     InventoryId intentory_id = 1;
 
     // An identifier of an inventory item.
@@ -213,12 +217,12 @@ message ReportLostBook {
 
 // An attempt to write off the book.
 //
-// In case of a successful command propagation, the book is written off.
+// In case of a successful command propagation, the book will be written off.
 // Cannot be applied to the missing book.
 //
 message WriteBookOff {
 
-    // An identifier of an inventory item.
+    // An identifier of the inventory item.
     InventoryItemId inventory_item_id = 1;
 
     // Reasons to write book off.
