@@ -33,7 +33,7 @@ option java_generate_equals_and_hash = true;
 import "spine/net/email_address.proto";
 import "javaclasses/exlibris/values.proto";
 
-// An ID of a book in library.
+// An identifier of a book in library.
 //
 message BookId {
 
@@ -41,7 +41,7 @@ message BookId {
     Isbn62 isbn62 = 1;
 }
 
-// An ID of a user.
+// An identifier of a user.
 //
 // An identifier is represented by user email address.
 //
@@ -51,7 +51,7 @@ message UserId {
     spine.net.EmailAddress email = 1;
 }
 
-// An ID of the inventory.
+// An identifier of the inventory.
 //
 // An identifier is represented by `BookId`.
 //
@@ -61,7 +61,7 @@ message InventoryId {
     BookId book_id = 1;
 }
 
-// An ID of the inventory item.
+// An identifier of the inventory item.
 //
 // An identifier is represented by `BookId` and item number.
 //

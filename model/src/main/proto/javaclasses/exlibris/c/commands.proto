@@ -41,7 +41,7 @@ import "javaclasses/exlibris/values.proto";
 //
 message AddBook {
 
-    // An identifier of a book to create.
+    // An identifier of the book to create.
     BookId book_id = 1;
 
     // A details for the new book.
@@ -89,8 +89,10 @@ message RemoveBook {
 }
 
 // Append the book inventory.
+//
 // In case of a successful command propagation,
 // appended book becomes available or ready to pickup for the user who borrowed it.
+// `@see events.proto.InventoryAppended`
 //
 message AppendInventory {
 
@@ -185,6 +187,8 @@ message MarkReservationExpired {
 //
 // In case of a successful command propagation, the book is returned.
 // Cannot be applied to the missing or non-borrowed book.
+//
+// `@see events.proto.BookReturned`
 //
 message ReturnBook {
 

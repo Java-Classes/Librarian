@@ -351,7 +351,7 @@ message BookRemoved {
 
     // The reason of removing book.
     //
-    // Book could be removed with one of the next reason:
+    // Book could be removed with one of the following reasons:
     // 1. Book was outdated.
     // 2. Custom reason which is described by librarian.
     oneof book_removal_reason {
