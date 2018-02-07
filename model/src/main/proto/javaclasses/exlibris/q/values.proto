@@ -24,7 +24,7 @@ package javaclasses.exlibris.q;
 
 import "spine/options.proto";
 
-option (type_url_prefix) = "type.spine.quickstart"; //todo: change
+option (type_url_prefix) = "type.javaclasses.exlibris";
 option java_package = "javaclasses.exlibris.q";
 option java_outer_classname = "ValuesProjectionsProto";
 option java_multiple_files = true;
@@ -35,30 +35,30 @@ import "spine/net/url.proto";
 import "javaclasses/exlibris/identifiers.proto";
 import "javaclasses/exlibris/values.proto";
 
-// Consists of main book’s information.
+// Information about book.
+// Consists authors and categories, and status.
 //
 message BookItem {
 
-    // The book’s cover.
+    // Book cover.
     spine.net.Url book_cover_url = 1;
 
-    // The book’s title.
+    // Book title.
     BookTitle title = 2;
 
     // Categories of the book.
     repeated Category categories = 3;
 
-    // todo: docs
+    // List of the author's full name.
     AuthorName author = 4;
 
-    // The book can has one of the next status:
+    // The book can has one of the following status:
     //
     // 1. Borrowed — when book is borrowed by user.
     // 2. Reserved — when book is reserved by user.
     // 3. Available — when book is available to borrow or reserve.
     // 4. Expected soon — when book is not available now, but user can reserve it.
-    // 5. Overdue — when book was borrowed by user but still doesn’t returned.
-    //
+    // 5. Overdue — when book was borrowed by user but still isn’t returned.
     oneof book_status {
         bool borrowed = 5;
         bool reserved = 6;
@@ -66,22 +66,19 @@ message BookItem {
         bool expected_soon = 8;
         bool overdue = 9;
     }
-
-
 }
 
-// View with information about book’s loan.
+// Information about loan of the book.
 //
-// View consists of fields with inventory item,
+// Consists of fields with inventory item,
 // users who borrowed the book and their taken on and due on dates.
 //
 message LoanDetails {
 
-    // An identifier of a book. Contains ISBN base62 and number that inputted by librarian.
+    // An identifier of a book.
     InventoryItemId inventory_item_id = 1;
 
-    // An identifier is represented by User email address.
-    // todo: if book in library id is library inventory
+    // An identifier is represented by user's email address.
     UserId user_id = 2;
 
     // The time when book was borrowed.
@@ -91,28 +88,27 @@ message LoanDetails {
     google.protobuf.Timestamp when_due = 4;
 }
 
-// Details about inventory.
+// Detailed information about the inventory.
 //
-// View consists of fields with book title, authors,
-// available books, amount of overdue books.
+// View consists of fields with book title, authors, book location.
 //
 message InventoryDetails {
 
-    // book title.
+    // Book title.
     BookTitle book_title = 1;
 
-    // todo : dima
+    // List of the author's full name.
     AuthorName author_names = 2;
 
-    // List with information about books.
+    // List of information about the location of books.
     repeated InventoryItem items = 3;
 }
 
-//
+// Information about the location of books.
 //
 message InventoryItem {
 
-    //
+    // One of the location where the book is located.
     oneof book_location {
         LoanDetails loan = 1;
         bool in_library_inventory = 2;
@@ -131,16 +127,16 @@ message ReservationDetails {
     google.protobuf.Timestamp made_on = 2;
 }
 
-// View with information about inventory item record.
+// Information about inventory item record.
 //
-// View consists of fields about inventory item, actions and action date.
+// Consists of fields about inventory item, actions and action date.
 //
 message InventoryItemRecord {
 
     // An identifier is represented by book id and item number.
     InventoryItemId inventory_item_id = 1;
 
-    //
+    // An identifier is represented by user's email address.
     UserId user_id = 2;
 
     // One of the actions is assigned to the inventory item.
@@ -155,18 +151,17 @@ message InventoryItemRecord {
     google.protobuf.Timestamp action_date = 8;
 }
 
-// View with information about book’s loan.
+// Information about the history of the loan of the book.
 //
-// View consists of fields with inventory item,
-// users who borrowed the book and their taken on and due on dates.
+// Consists of fields with inventory item,
+// users who borrowed the book and their taken on, due on, and returned on dates.
 //
 message LoanDetailsHistory {
 
-    // An identifier of a book. Contains ISBN base62 and number that inputted by librarian.
+    // An identifier of a book.
     InventoryItemId inventory_item_id = 1;
 
-    // An identifier is represented by User email address.
-    // todo: if book in library id is library inventory
+    // An identifier is represented by user's email address.
     UserId user_id = 2;
 
     // The time when book was borrowed.
@@ -189,7 +184,7 @@ message LostBook {
     // A title of the book that was lost.
     BookTitle book_title = 2;
 
-    // The list of authors.
+    // List of the author's full name.
     repeated AuthorName author_names = 3;
 
     // An identifier of the user who lost the book.
