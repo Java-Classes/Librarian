@@ -1,0 +1,91 @@
+//
+// Copyright 2018, TeamDev Ltd. All rights reserved.
+//
+// Redistribution and use in source and/or binary forms, with or without
+// modification, must retain the above copyright notice and the following
+// disclaimer.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+
+syntax = "proto3";
+
+package javaclasses.exlibris.q;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.quickstart"; //todo: change
+option java_package = "javaclasses.exlibris.q";
+option java_outer_classname = "ValuesProjectionsProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+import "google/protobuf/timestamp.proto";
+import "javaclasses/exlibris/identifiers.proto";
+import "spine/net/url.proto";
+
+// Consists of main book’s information.
+//
+message BookItem {
+
+    // The book’s cover.
+    spine.net.Url book_cover_url = 1;
+
+    // The book’s title.
+    BookTitle title = 2;
+
+    // Categories of the book.
+    repeated Category categories = 3;
+
+    // The list of the book’s authors
+    repeated Author author = 4;
+
+    // The book can has one of the next status:
+    //
+    // 1. Borrowed — when book is borrowed by user.
+    // 2. Reserved — when book is reserved by user.
+    // 3. Available — when book is available to borrow or reserve.
+    // 4. Expected soon — when book is not available now, but user can reserve it.
+    // 5. Overdue — when book was borrowed by user but still doesn’t returned.
+    //
+    oneof book_status {
+        bool borrowed = 5;
+        bool reserved = 6;
+        bool available = 7;
+        bool expected_soon = 8;
+        bool overdue = 9;
+    }
+
+
+}
+
+// View with information about book’s loan.
+//
+// View consists of fields with inventory item,
+// users who borrowed the book and their taken on and due on dates.
+//
+message LoanDetails {
+
+    // An identifier of a book. Contains ISBN base62 and number that inputted by librarian.
+    InventoryItemId inventory_item_id = 1;
+
+    // An identifier is represented by User email address.
+    // todo: if book in library id is library inventory
+    UserId user_id = 2;
+
+    // The time when book was borrowed.
+    google.protobuf.Timestamp when_taken = 3;
+
+    // The time when book should be returned.
+    google.protobuf.Timestamp when_due = 4;
+}

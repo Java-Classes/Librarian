@@ -35,90 +35,31 @@ import "spine/net/url.proto";
 import "javaclasses/exlibris/values.proto";
 import "javaclasses/exlibris/model.proto";
 import "javaclasses/exlibris/identifiers.proto";
-
+import "javaclasses/exlibris/q/values.proto";
 // *** This is projections for UI role reader ***
 
+
+/// !!!
 // Appears after click on the book’s cover like pop-up dialog window.
 //
 message BookDetailsView {
 
     // View with short book’s information.
-    BookView book_view = 1;
+    BookItem book_view = 1;
 
     // The full book description.
     BookDescription book_description = 2;
 }
-
-// Consists of main book’s information.
-//
-message BookView {
-
-    // The book’s cover.
-    spine.net.Url book_cover_url = 1;
-
-    // The book’s title.
-    BookTitle title = 2;
-
-    // The list of the book’s authors
-    repeated Author author = 3;
-
-    // The book can has one of the next status:
-    //
-    // 1. Borrowed — when book is borrowed by user.
-    // 2. Reserved — when book is reserved by user.
-    // 3. Available — when book is available to borrow or reserve.
-    // 4. Expected soon — when book is not available now, but user can reserve it.
-    // 5. Overdue — when book was borrowed by user but still doesn’t returned.
-    //
-    oneof book_status {
-        bool borrowed = 4;
-        bool reserved = 5;
-        bool available = 6;
-        bool expected_soon = 7;
-        bool overdue = 8;
-    }
-}
-
-// Dialog window with book’s information.
-//
-// When user scans the book to borrow or to return depending of his actions he can see next variants:
-// 1. User tries to borrow book the first time -> welcome page with license confirmation.
-// 2. User tries to borrow book -> success borrowing page with OK button.
-// 3. User tries to borrow unavailable book -> cannot borrow book page with explanation.
-// 4. User tries to return borrowed book -> successful return page.
-//
-message DialogWindow {
-
-    // View with short book’s information.
-    BookView book_view = 1;
-}
-
-// Represents home page. Books are sorted according to their status:
-//
-// 1. Overdue.
-// 2. Borrowed.
-// 3. Reserved.
-//
-// (or maybe some more sorting: for example for new "hot" books).
-//
-message HomePage {
-
-    // View with short book’s information.
-    repeated BookView book_view = 1;
-    
-    // Book categories.
-    repeated Category category = 2;
-}
+/// !!!
 
 // *** This is projections for UI role librarian ***
 
-// View for adding book.
-//
-// View consists of fields for writing book details.
-//
-message AddBookView {
 
-    // List of book categories.
+//
+//
+message CategoriesView {
+
+    //
     repeated Category categories = 1;
 }
 
@@ -126,28 +67,31 @@ message AddBookView {
 //
 // View consists of fields for updating book details.
 //
-message UpdateBookView {
+message ExtendedBookView {
+
+    //
+    BookId book_id = 1;
 
     // URL for book cover.
-    spine.net.Url cover_url = 1;
+    spine.net.Url cover_url = 2;
 
     // Value that generated from decimal ISBN.
-    Isbn62 isbn = 2;
+    Isbn62 isbn = 3;
 
     // Book’s title.
-    BookTitle title = 3;
+    BookTitle title = 4;
 
     // Full author’s name.
-    repeated Author authors = 4;
+    repeated Author authors = 5;
 
     // Year of publication of the book.
-    Year year = 5;
+    Year year = 6;
 
     // Book categories.
-    repeated Category categories = 6;
+    repeated Category categories = 7;
 
     // Full book description.
-    BookDescription description = 7;
+    BookDescription description = 8;
 }
 
 // View for appending inventory.
@@ -173,25 +117,7 @@ message BookCompactHistory {
     repeated LoanDetails loans = 2;
 }
 
-// View with information about book’s loan.
-//
-// View consists of fields with inventory item,
-// users who borrowed the book and their taken on and due on dates.
-//
-message LoanDetails {
 
-    // An identifier of a book. Contains ISBN base62 and number that inputted by librarian.
-    InventoryItemId inventory_item_id = 1;
-
-    // An identifier is represented by User email address.
-    UserId user_id = 2;
-
-    // The time when book was borrowed.
-    google.protobuf.Timestamp when_taken = 3;
-
-    // The time when book should be returned.
-    google.protobuf.Timestamp when_due = 4;
-}
 
 // View with full information about book’s record.
 //
@@ -258,17 +184,6 @@ message DetailsView {
     BookDescription book_desctiption = 7;
 }
 
-// View contains a book loan in inventory.
-//
-// View consists of fields with information about inventory items,
-// users who borrowed the book and their taken on and due on dates.
-//
-message ExtendedInventoryView {
-
-    // List with information about book’s loan.
-    repeated LoanDetails loan_details = 1;
-}
-
 // Details about inventory.
 //
 // View consists of fields with book title, authors,
@@ -280,16 +195,12 @@ message InventoryDetails {
     BookTitle book_title = 1;
 
     // Full author’s name.
+    // todo : change
     repeated Author authors = 2;
 
-    // Amount of available books.
-    int32 available_items = 3;
+    // List with information about book’s loan.
+    repeated LoanDetails loan_details = 3;
 
-    // Amount of books.
-    int32 items_size = 4;
-
-    // Amount of overdue books.
-    int32 overdue = 5;
 }
 
 // Inventory state of the current book.
