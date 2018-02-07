@@ -25,7 +25,7 @@ package javaclasses.exlibris;
 import "spine/options.proto";
 import "javaclasses/exlibris/values.proto";
 
-option (type_url_prefix) = "type.spine.quickstart";
+option (type_url_prefix) = "type.javaclasses.exlibris";
 option java_package = "javaclasses.exlibris";
 option java_outer_classname = "ModelProto";
 option java_multiple_files = true;
@@ -41,7 +41,7 @@ message Book {
     // An ID of the book.
     BookId book_id = 1;
 
-    // A book’s details.
+    // A book details.
     BookDetails book_details = 2;
 }
 
@@ -100,10 +100,10 @@ message Reservation {
     // An ID of the book.
     BookId book_id = 1;
 
-    // An ID of user who reserved book.
+    // An ID of the user who reserved the book.
     UserId who_reserved = 2;
 
-    // A time of creating reservation.
+    // A time of creating a reservation.
     google.protobuf.Timestamp when_created = 3;
 }
 
@@ -117,7 +117,7 @@ message Loan {
     // An ID of concrete item.
     InventoryItemId inventory_item_id = 2;
 
-    // An ID of reader who borrowed book.
+    // An ID of user who borrowed book.
     UserId who_borrowed = 3;
 
     // A time of borrowing book.

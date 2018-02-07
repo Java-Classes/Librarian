@@ -24,7 +24,7 @@ package javaclasses.exlibris.q;
 
 import "spine/options.proto";
 
-option (type_url_prefix) = "type.spine.quickstart";
+option (type_url_prefix) = "type.javaclasses.exlibris";
 option java_package = "javaclasses.exlibris.q";
 option java_outer_classname = "ProjectionsProto";
 option java_multiple_files = true;
@@ -74,15 +74,19 @@ message ExtendedBookView {
 
     // URL for book cover.
     spine.net.Url cover_url = 2;
+    spine.net.Url book_cover_url = 1;
 
     // Value that generated from decimal ISBN.
     Isbn62 isbn = 3;
 
     // Book’s title.
     BookTitle title = 4;
+    // book title.
+    BookTitle title = 3;
 
     // Full author’s name.
     repeated Author authors = 5;
+    repeated AuthorName author_names = 4;
 
     // Year of publication of the book.
     Year year = 6;
@@ -119,7 +123,7 @@ message BookCompactHistory {
 
 
 
-// View with full information about book’s record.
+// View with full information about book record.
 //
 // Librarian sees all users that borrow book,
 // reserve, lost, return, or extend loan period with date of every record.
@@ -127,7 +131,7 @@ message BookCompactHistory {
 message BookFullHistory {
 
     // URL for book cover.
-    spine.net.Url url = 1;
+    spine.net.Url book_cover_url = 1;
 
     // List of inventory item record.
     repeated InventoryItemRecord inventory_item_record = 2;
@@ -163,13 +167,13 @@ message InventoryItemRecord {
 message DetailsView {
 
     // URL for book cover.
-    spine.net.Url url = 1;
+    spine.net.Url book_cover_url = 1;
 
     // Book’s title.
     BookTitle title = 2;
 
     // Full author’s name.
-    repeated Author authors = 3;
+    repeated AuthorName author_names = 3;
 
     // Value that generated from decimal ISBN.
     Isbn62 isbn = 4;
@@ -180,7 +184,7 @@ message DetailsView {
     // List of categories.
     repeated Category categories = 6;
 
-    // Full book’s description.
+    // Full book description.
     BookDescription book_desctiption = 7;
 }
 
@@ -191,12 +195,13 @@ message DetailsView {
 //
 message InventoryDetails {
 
-    // Book’s title.
+    // book title.
     BookTitle book_title = 1;
 
     // Full author’s name.
     // todo : change
     repeated Author authors = 2;
+    repeated AuthorName author_names = 2;
 
     // List with information about book’s loan.
     repeated LoanDetails loan_details = 3;
@@ -210,9 +215,9 @@ message InventoryDetails {
 message InventoryByBookView {
 
     // URL for book cover.
-    spine.net.Url url = 1;
+    spine.net.Url book_cover_url = 1;
 
-    // Information about book’s loan.
+    // Information about book loan.
     repeated LoanDetails loan_details = 3;
 }
 
@@ -238,7 +243,7 @@ message LostBook {
     BookTitle book_title = 2;
 
     // The list of authors.
-    repeated Author authors = 3;
+    repeated AuthorName author_names = 3;
 
     // An identifier of the user who lost the book.
     UserId user_id = 4;
@@ -255,7 +260,7 @@ message LostBookView {
     repeated LostBook lost_books = 1;
 }
 
-// All current readers and their summary.
+// All current users and their summary.
 //
 message ReadersView {
 
@@ -287,8 +292,8 @@ message UserDetails {
 //
 message ReservationView {
 
-    // An URL of the book’s cover.
-    spine.net.Url cover_url = 2;
+    // An URL of the book cover.
+    spine.net.Url book_cover_url = 2;
 
     // The details of the reservation.
     ReservationDetails reservation_details = 3;
@@ -302,7 +307,7 @@ message ReservationDetails {
     BookTitle book_title = 1;
 
     // List of the book authors.
-    repeated Author authors = 2;
+    repeated AuthorName author_names = 2;
 
     // An identifier of the user who reserved book.
     UserId user_id = 3;
