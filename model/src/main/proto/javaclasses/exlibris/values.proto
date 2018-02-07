@@ -63,38 +63,35 @@ message BookDetails {
     repeated Category categories = 5;
 }
 
-// URL for book cover.
-//
-message BookCoverURL {
-
-    string url = 1;
-}
-
-// book title.
+// Book title.
 //
 message BookTitle {
 
-    string title = 1;
+    // Book title.
+    string value = 1;
 }
 
 // Full author’s name.
 //
 message AuthorName {
 
-    repeated spine.people.PersonName author_name = 1;
+    // Author name can be complicated and different if the authors are from different countries.
+    repeated spine.people.PersonName value = 1;
 }
 
 // Full book description.
 //
 message BookDescription {
 
-    string book_description = 1;
+    // Book description.
+    string value = 1;
 }
 
-// The name of category.
+// The name of the category.
 //
 message Category {
 
+    // Category name;
     string value = 1;
 }
 
@@ -102,19 +99,22 @@ message Category {
 //
 message Rfid {
 
+    // RFID.
     string value = 1;
 }
 
 // Year of publication of the book.
 message Year {
 
-    string year = 1;
+    // Year.
+    string value = 1;
 }
 
-// Reasons to write book off.
+// Reasons to write the book off.
 //
 message WriteOffReason {
 
+    // Reasons why a librarian can write the book off.
     oneof write_off_reason {
         bool lost = 1;
         bool outdated = 2;

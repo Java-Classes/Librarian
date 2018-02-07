@@ -34,25 +34,25 @@ option java_generate_equals_and_hash = true;
 import "google/protobuf/timestamp.proto";
 import "javaclasses/exlibris/identifiers.proto";
 
-// Defines a state for `Book` aggregate.
+// Defines a state of the `Book` aggregate.
 //
 message Book {
 
-    // An ID of the book.
+    // An identifier of the book.
     BookId book_id = 1;
 
     // A book details.
     BookDetails book_details = 2;
 }
 
-// Defines a state for `Inventory` aggregate.
+// Defines a state of the `Inventory` aggregate.
 //
 message Inventory {
 
-    // An ID of the inventory.
+    // An identifier of the inventory.
     InventoryId inventory_id = 1;
 
-    // An ID of the book.
+    // An identifier of the book.
     BookId book_id = 2;
 
     // The list of all inventory items.
@@ -67,11 +67,11 @@ message Inventory {
     repeated LoanId loans = 5;
 }
 
-// Defines a state for `InventoryItem`.
+// Defines a state of the `InventoryItem`.
 //
 message InventoryItem {
 
-    // An identifier for concrete item.
+    // An identifier for the concrete item.
     InventoryItemId inventory_item_id = 1;
 
     // Item could have one of next status.
@@ -87,42 +87,42 @@ message InventoryItem {
         bool lost = 4;
     }
 
-    // An identifier of user who is related to the book.
+    // An identifier of the user who is related to the book.
     //
     // An ID exists when book `lost` or `in_library`
     UserId user_id = 5;
 }
 
-// Defines a state for `Reservation`.
+// Defines a state of the `Reservation`.
 //
 message Reservation {
 
-    // An ID of the book.
+    // An identifier of the book.
     BookId book_id = 1;
 
-    // An ID of the user who reserved the book.
+    // An identifier of the user who reserved the book.
     UserId who_reserved = 2;
 
-    // A time of creating a reservation.
+    // Time of creating the reservation.
     google.protobuf.Timestamp when_created = 3;
 }
 
-// Defines a state for `Loan`.
+// Defines a state of the `Loan`.
 //
 message Loan {
 
-    // An ID of loan period.
+    // An identifier of the loan period.
     LoanId loan_id = 1;
 
-    // An ID of concrete item.
+    // An identifier of the concrete item.
     InventoryItemId inventory_item_id = 2;
 
-    // An ID of user who borrowed book.
+    // An identifier of the user who borrowed book.
     UserId who_borrowed = 3;
 
-    // A time of borrowing book.
+    // Time when the book was borrowed.
     google.protobuf.Timestamp when_taken = 4;
 
-    // A time when book has to be returned.
+    // Time when the book should be returned.
     google.protobuf.Timestamp when_due = 5;
 }
