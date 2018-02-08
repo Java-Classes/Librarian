@@ -37,17 +37,20 @@ import "spine/people/person_name.proto";
 //
 message Isbn62 {
 
-    // We generated book ID that contains ISBN code with the base62 algorithm.
+    // Book dentifier that contains ISBN code with the base62 algorithm.
     //
-    // ISBN is a unique code that every book publisher has to determinate itself.
+    // ISBN is the unique code that every book publisher has to determinate itself.
     //
     // This code usually has ten or thirteen symbols.
     //
-    // To increase readability we convert that code from decimal format to code with base62.
+    // To increase readability the code is converted from decimal format to code with base62.
+    //
+    // Base62 there is notation that represents number using the following characters:
+    // 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
     //
     // Example:
-    // Original ISBN:    9780134685991,
-    // Generated ISBN62: 2mBSCRqZ.
+    // Original ISBN in decimal notation:    9780134685991,
+    // Generated ISBN62 in base62 notation:  2mBSCRqZ.
     //
     string value = 1;
 }
@@ -56,58 +59,78 @@ message Isbn62 {
 //
 message BookDetails {
 
-    spine.net.Url cover_url = 1;
+    // URL of the book cover.
+    spine.net.Url book_cover_url = 1;
+
+    // DTO of the book title.
     BookTitle title = 2;
-    repeated AuthorName authors = 3;
-    BookDescription description = 4;
+
+    // The list of the authors' names.
+    AuthorName author = 3;
+
+    // DTO of the book synopsis.
+    BookSynopsis synopsis = 4;
+
+    // List of book categories.
     repeated Category categories = 5;
+}
+
+// URL of the book cover.
+//
+message BookCoverURL {
+
+    // The link of the image storage place.
+    string value = 1;
 }
 
 // Book title.
 //
 message BookTitle {
 
-    // Book title.
-    string value = 1;
+    // Book title and book subtitle concatenation.
+    string title = 1;
 }
 
-// Full author’s name.
+// The list of the authors' names.
 //
 message AuthorName {
 
-    // Author name can be complicated and different if the authors are from different countries.
-    repeated spine.people.PersonName value = 1;
+    // The list of the authors' names.
+    repeated spine.people.PersonName author_name = 1;
 }
 
-// Full book description.
+// A synopsis is a brief summary of the major points.
 //
-message BookDescription {
+message BookSynopsis {
 
-    // Book description.
-    string value = 1;
+    // Book synopsis.
+    string book_synopsis = 1;
 }
 
 // The name of the category.
 //
 message Category {
 
-    // Category name;
+    // The division within a system of classification which book has.
+    //
+    // For example, the book could has one of the following categories:
+    // android, cloud technologies, management, code quality, CQRS, etc.
     string value = 1;
 }
 
-// A radio-frequency identification mark for the book.
+// The radio-frequency identification mark for the book.
 //
 message Rfid {
 
-    // RFID.
+    // Contains the numeric code for simplifying reading.
     string value = 1;
 }
 
-// Year of publication of the book.
+// Book publication year.
 message Year {
 
-    // Year.
-    string value = 1;
+    // Book publication year.
+    int32 year = 1;
 }
 
 // Reasons to write the book off.

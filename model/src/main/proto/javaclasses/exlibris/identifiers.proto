@@ -41,7 +41,7 @@ message BookId {
     Isbn62 isbn62 = 1;
 }
 
-// An identifier of a user.
+// An identifier of the user.
 //
 // An identifier is represented by user email address.
 //
@@ -67,16 +67,16 @@ message InventoryId {
 //
 message InventoryItemId {
 
-    // An identifier of a book.
+    // An identifier of the book.
     BookId book_id = 1;
 
     // The sequential number that entered by the librarian.
     int32 item_number = 2;
 }
 
-// An identifier of a loan.
+// An identifier of the loan.
 //
-// An identifier is based on a date of creation.
+// An identifier is based on the date of creation.
 //
 message LoanId {
 

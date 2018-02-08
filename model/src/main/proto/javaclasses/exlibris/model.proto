@@ -34,18 +34,18 @@ option java_generate_equals_and_hash = true;
 import "google/protobuf/timestamp.proto";
 import "javaclasses/exlibris/identifiers.proto";
 
-// Defines a state of the `Book` aggregate.
+// `Book` aggregate.
 //
 message Book {
 
     // An identifier of the book.
     BookId book_id = 1;
 
-    // A book details.
+    // Book details.
     BookDetails book_details = 2;
 }
 
-// Defines a state of the `Inventory` aggregate.
+// `Inventory` aggregate.
 //
 message Inventory {
 
@@ -67,14 +67,14 @@ message Inventory {
     repeated LoanId loans = 5;
 }
 
-// Defines a state of the `InventoryItem`.
+// State for `InventoryItem`.
 //
 message InventoryItem {
 
     // An identifier for the concrete item.
     InventoryItemId inventory_item_id = 1;
 
-    // Item could have one of next status.
+    // Item could have one of the following statuses.
     oneof item_status {
 
         // When book stay in the library.
@@ -89,11 +89,11 @@ message InventoryItem {
 
     // An identifier of the user who is related to the book.
     //
-    // An ID exists when book `lost` or `in_library`
+    // An identifier exists when book `lost` or `in_library`
     UserId user_id = 5;
 }
 
-// Defines a state of the `Reservation`.
+// State for `Reservation`.
 //
 message Reservation {
 
@@ -107,7 +107,7 @@ message Reservation {
     google.protobuf.Timestamp when_created = 3;
 }
 
-// Defines a state of the `Loan`.
+// State for `Loan`.
 //
 message Loan {
 

@@ -78,10 +78,10 @@ message BookItem {
 //
 message LoanDetails {
 
-    // An identifier of a book.
+    // The identifier of the book.
     InventoryItemId inventory_item_id = 1;
 
-    // An identifier is represented by user's email address.
+    // The identifier is represented by user's email address.
     UserId user_id = 2;
 
     // The time when the book was borrowed.
@@ -123,7 +123,7 @@ message InventoryItemLocation {
 //
 message ReservationDetails {
 
-    // An identifier of the user who reserved the book.
+    // The identifier of the user who reserved the book.
     UserId user_id = 1;
 
     // Time when user reserved the book.
@@ -136,10 +136,10 @@ message ReservationDetails {
 //
 message InventoryItemRecord {
 
-    // An identifier is represented by book ID and item number.
+    // The identifier is represented by book ID and item number.
     InventoryItemId inventory_item_id = 1;
 
-    // An identifier is represented by user's email address.
+    // The identifier is represented by user's email address.
     UserId user_id = 2;
 
     // One of the actions is assigned to the inventory item.
@@ -161,10 +161,10 @@ message InventoryItemRecord {
 //
 message LoanDetailsHistory {
 
-    // An identifier of the book.
+    // The identifier of the book.
     InventoryItemId inventory_item_id = 1;
 
-    // An identifier is represented by user's email address.
+    // The identifier is represented by user's email address.
     UserId user_id = 2;
 
     // The time when book was borrowed.
@@ -181,16 +181,16 @@ message LoanDetailsHistory {
 //
 message LostBook {
 
-    // An identifier of the book that was lost.
+    // The identifier of the book that was lost.
     InventoryItemId inventory_item_id = 1;
 
-    // A title of the book that was lost.
+    // The title of the book that was lost.
     BookTitle book_title = 2;
 
     // List of the author full names.
     AuthorName author_names = 3;
 
-    // An identifier of the user who lost the book.
+    // The identifier of the user who lost the book.
     UserId user_id = 4;
 
     // The time when was reported about book losing.

@@ -44,8 +44,8 @@ message BookDetailsView {
     // Short book information.
     BookItem book_item = 1;
 
-    // The full book description.
-    BookDescription book_description = 2;
+    // The full book synopsis.
+    BookSynopsis book_synopsis = 2;
 }
 
 // The view with the list of categories.
@@ -83,11 +83,11 @@ message BookFullHistory {
     repeated InventoryItemRecord inventory_item_record = 2;
 }
 
-// An extend information about the book.
+// An extendede information about the book.
 //
-// The view consists of all information about the book:
+// The view contains book information:
 // URL cover, book title, authors, ISBN, year of publication,
-// categories, and description.
+// categories, and synopsis.
 //
 message BookExtendedView {
 
@@ -100,8 +100,8 @@ message BookExtendedView {
     // The book title.
     BookTitle title = 3;
 
-    // The list of author’s name.
-    repeated AuthorName author_names = 4;
+    // The list of authors’ names.
+    AuthorName author_names = 4;
 
     // Value that generated from ISBN.
     Isbn62 isbn = 5;
@@ -112,11 +112,11 @@ message BookExtendedView {
     // List of categories.
     repeated Category categories = 7;
 
-    // Full book description.
-    BookDescription book_desctiption = 8;
+    // Full book synopsis.
+    BookSynopsis book_synopsis = 8;
 }
 
-// Inventory state of the current book.
+// Inventory state of the particular book.
 //
 message InventoryByBookView {
 
@@ -143,7 +143,7 @@ message LostBookView {
     repeated LostBook lost_books = 1;
 }
 
-// All current users and their summary.
+// All particular users and their summary.
 //
 message ReadersView {
 
@@ -171,7 +171,7 @@ message UserDetails {
     int32 count_of_overdue_books = 5;
 }
 
-// Contains the information about all reservations of the current book.
+// Contains the information about all reservations of the particular book.
 //
 message ReservationView {
 
@@ -207,14 +207,11 @@ message ExtendedUserHistoryView {
 //
 message CompactUserHistoryView {
 
-    // An identifier of the user.
-    UserId user_id = 1;
-
-    // Details consist of taken on date, due on date, returned on date.
-    repeated LoanDetailsHistory loan_details = 2;
+    // Details contains taken on date, due on date, returned on date.
+    repeated LoanDetailsHistory loan_details = 1;
 }
 
-// The view that consist of the book cover.
+// The view that contains the book cover.
 //
 message CoverView {
 
