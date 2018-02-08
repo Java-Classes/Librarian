@@ -62,7 +62,7 @@ message CategoriesView {
 //
 message BookCompactHistory {
 
-    // The identifier of the inventory.
+    // An identifier of the inventory.
     InventoryId inventory_id = 1;
 
     // List of user's loan details.
@@ -76,14 +76,14 @@ message BookCompactHistory {
 //
 message BookFullHistory {
 
-    // The identifier of the inventory.
+    // An identifier of the inventory.
     InventoryId inventory_id = 1;
 
     // The list of the inventory item record.
     repeated InventoryItemRecord inventory_item_record = 2;
 }
 
-// The extended information about the book.
+// An extendede information about the book.
 //
 // The view contains book information:
 // URL cover, book title, authors, ISBN, year of publication,
@@ -91,7 +91,7 @@ message BookFullHistory {
 //
 message BookExtendedView {
 
-    // The book identifier.
+    // A book identifier.
     BookId book_id = 1;
 
     // URL for the book cover.
@@ -100,7 +100,7 @@ message BookExtendedView {
     // The book title.
     BookTitle title = 3;
 
-    // The list of author’s names.
+    // The list of authors’ names.
     AuthorName author_names = 4;
 
     // Value that generated from ISBN.
@@ -155,10 +155,10 @@ message ReadersView {
 //
 message UserDetails {
 
-    // The identifier of the user.
+    // An identifier of the user.
     UserId user_id = 1;
 
-    // The name of user in the library.
+    // A name of user in the library.
     string username = 2;
 
     // The count of borrowed by user books now.
@@ -175,7 +175,7 @@ message UserDetails {
 //
 message ReservationView {
 
-    // The identifier of the inventory.
+    // An identifier of the inventory.
     InventoryId inventory_id = 1;
 
     // The details of the reservation.
@@ -194,7 +194,7 @@ message ReservationView {
 //
 message ExtendedUserHistoryView {
 
-    // The identifier of the user.
+    // An identifier of the user.
     UserId user_id = 1;
 
     // Collection of all user’s actions.
@@ -215,7 +215,7 @@ message CompactUserHistoryView {
 //
 message CoverView {
 
-    // The book identifier.
+    // A book identifier.
     BookId book_id = 1;
 
     // URL for the book cover.

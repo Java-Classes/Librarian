@@ -40,17 +40,20 @@ import "javaclasses/exlibris/values.proto";
 //
 message BookItem {
 
+    // An identifier of the book.
+    BookId book_id = 1;
+
     // Book cover.
-    spine.net.Url book_cover_url = 1;
+    spine.net.Url book_cover_url = 2;
 
     // Book title.
-    BookTitle title = 2;
+    BookTitle title = 3;
 
     // Categories of the book.
-    repeated Category categories = 3;
+    repeated Category categories = 4;
 
     // List of the author full names.
-    AuthorName author = 4;
+    AuthorName author = 5;
 
     // The book can has one of the following status:
     //
@@ -60,11 +63,11 @@ message BookItem {
     // 4. Expected soon — when book is not available now, but user can reserve it.
     // 5. Overdue — when book was borrowed by user but still not returned.
     oneof book_status {
-        bool borrowed = 5;
-        bool reserved = 6;
-        bool available = 7;
-        bool expected_soon = 8;
-        bool overdue = 9;
+        bool borrowed = 6;
+        bool reserved = 7;
+        bool available = 8;
+        bool expected_soon = 9;
+        bool overdue = 10;
     }
 }
 

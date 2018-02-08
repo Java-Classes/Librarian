@@ -33,7 +33,7 @@ option java_generate_equals_and_hash = true;
 import "spine/net/email_address.proto";
 import "javaclasses/exlibris/values.proto";
 
-// The ID of the book in library.
+// An identifier of a book in library.
 //
 message BookId {
 
@@ -41,9 +41,9 @@ message BookId {
     Isbn62 isbn62 = 1;
 }
 
-// The ID of the user.
+// An identifier of the user.
 //
-// The identifier is represented by User email address.
+// An identifier is represented by user email address.
 //
 message UserId {
 
@@ -51,35 +51,37 @@ message UserId {
     spine.net.EmailAddress email = 1;
 }
 
-// The ID of the inventory.
+// An identifier of the inventory.
 //
-// The identifier is represented by `BookId`.
+// An identifier is represented by `BookId`.
 //
 message InventoryId {
 
-    // The identifier of the book.
+    // An identifier of a book.
     BookId book_id = 1;
 }
 
-// The ID of the inventory item.
+// An identifier of the inventory item.
 //
-// The identifier is represented by `BookId` and item number.
+// An identifier is represented by `BookId` and item number.
 //
 message InventoryItemId {
 
-    // The identifier of the book.
+    // An identifier of the book.
     BookId book_id = 1;
 
     // The sequential number that entered by the librarian.
     int32 item_number = 2;
 }
 
-// The identifier of the loan.
+// An identifier of the loan.
 //
-// The identifier is based on the date of creation.
+// An identifier is based on the date of creation.
 //
 message LoanId {
 
-    // The automatically generated identifier based on the date of creation.
+    // An automatically generated identifier based on a date of creation.
+    //
+    // Maybe `currentTimeMillis`.
     int64 value = 1;
 }

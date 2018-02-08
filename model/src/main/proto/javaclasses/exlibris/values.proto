@@ -107,7 +107,7 @@ message BookSynopsis {
     string book_synopsis = 1;
 }
 
-// The name of category.
+// The name of the category.
 //
 message Category {
 
@@ -133,10 +133,11 @@ message Year {
     int32 year = 1;
 }
 
-// Reasons to write book off.
+// Reasons to write the book off.
 //
 message WriteOffReason {
 
+    // Reasons why a librarian can write the book off.
     oneof write_off_reason {
         bool lost = 1;
         bool outdated = 2;

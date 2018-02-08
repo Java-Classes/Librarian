@@ -5,11 +5,11 @@
 // modification, must retain the above copyright notice and the following
 // disclaimer.
 //
-// THIS SOFTWARE IS PROVidentifierED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 // "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 // LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
 // A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCidentifierENTAL,
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
 // SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
 // LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 // DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
@@ -38,7 +38,7 @@ import "javaclasses/exlibris/identifiers.proto";
 //
 message Book {
 
-    // The identifier of the book.
+    // An identifier of the book.
     BookId book_id = 1;
 
     // Book details.
@@ -49,10 +49,10 @@ message Book {
 //
 message Inventory {
 
-    // The identifier of the inventory.
+    // An identifier of the inventory.
     InventoryId inventory_id = 1;
 
-    // The identifier of the book.
+    // An identifier of the book.
     BookId book_id = 2;
 
     // The list of all inventory items.
@@ -71,7 +71,7 @@ message Inventory {
 //
 message InventoryItem {
 
-    // The identifier for the concrete item.
+    // An identifier for the concrete item.
     InventoryItemId inventory_item_id = 1;
 
     // Item could have one of the following statuses.
@@ -87,9 +87,9 @@ message InventoryItem {
         bool lost = 4;
     }
 
-    // The identifier of user who is related to the book.
+    // An identifier of the user who is related to the book.
     //
-    // The identifier exists when book `lost` or `in_library`
+    // An identifier exists when book `lost` or `in_library`
     UserId user_id = 5;
 }
 
@@ -97,13 +97,13 @@ message InventoryItem {
 //
 message Reservation {
 
-    // The identifier of the book.
+    // An identifier of the book.
     BookId book_id = 1;
 
-    // The identifier of the user who reserved the book.
+    // An identifier of the user who reserved the book.
     UserId who_reserved = 2;
 
-    // The time of creating the reservation.
+    // Time of creating the reservation.
     google.protobuf.Timestamp when_created = 3;
 }
 
@@ -111,18 +111,18 @@ message Reservation {
 //
 message Loan {
 
-    // The identifier of loan period.
+    // An identifier of the loan period.
     LoanId loan_id = 1;
 
-    // The identifier of concrete item.
+    // An identifier of the concrete item.
     InventoryItemId inventory_item_id = 2;
 
-    // The identifier of user who borrowed book.
+    // An identifier of the user who borrowed book.
     UserId who_borrowed = 3;
 
-    // The time of borrowing book.
+    // Time when the book was borrowed.
     google.protobuf.Timestamp when_taken = 4;
 
-    // The time when book has to be returned.
+    // Time when the book should be returned.
     google.protobuf.Timestamp when_due = 5;
 }
