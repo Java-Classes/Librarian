@@ -33,73 +33,69 @@ option java_generate_equals_and_hash = true;
 import "spine/net/url.proto";
 import "spine/people/person_name.proto";
 
-// Value that generated from decimal ISBN.
+// The identifier that contains the ISBN with the base62 algorithm.
+//
+// The ISBN is the unique code provided by the publisher.
+// This code has ten or thirteen symbols.
+//
+// To increase readability the code is converted from decimal format to code with base62.
+// Base62 is based on the use of numbers and letters in the upper and lowercase.
 //
 message Isbn62 {
 
-    // Book dentifier that contains ISBN code with the base62 algorithm.
-    //
-    // ISBN is the unique code that every book publisher has to determinate itself.
-    //
-    // This code usually has ten or thirteen symbols.
-    //
-    // To increase readability the code is converted from decimal format to code with base62.
-    //
-    // Base62 there is notation that represents number using the following characters:
-    // 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+    // Value that generated from decimal ISBN.
     //
     // Example:
     // Original ISBN in decimal notation:    9780134685991,
     // Generated ISBN62 in base62 notation:  2mBSCRqZ.
-    //
     string value = 1;
 }
 
-// All information about the book.
+// The information about a book.
 //
 message BookDetails {
 
-    // URL of the book cover.
+    // The URL of a book cover.
     spine.net.Url book_cover_url = 1;
 
-    // DTO of the book title.
+    // The DTO of a book title.
     BookTitle title = 2;
 
-    // The list of the authors' names.
+    // Authors' names.
     AuthorName author = 3;
 
-    // DTO of the book synopsis.
+    // The DTO of a book synopsis.
     BookSynopsis synopsis = 4;
 
-    // List of book categories.
+    // A list of book categories.
     repeated Category categories = 5;
 }
 
-// URL of the book cover.
+// The URL of a book cover.
 //
 message BookCoverURL {
 
-    // The link of the image storage place.
+    // The link to the image storage place.
     string value = 1;
 }
 
-// Book title.
+// The book title.
 //
 message BookTitle {
 
-    // Book title and book subtitle concatenation.
+    // The book title and the book subtitle concatenation.
     string title = 1;
 }
 
-// The list of the authors' names.
+// The list of authors' names.
 //
 message AuthorName {
 
-    // The list of the authors' names.
+    // The list of authors' names.
     repeated spine.people.PersonName author_name = 1;
 }
 
-// A synopsis is a brief summary of the major points.
+// The synopsis is a brief summary of a book.
 //
 message BookSynopsis {
 
@@ -107,18 +103,18 @@ message BookSynopsis {
     string book_synopsis = 1;
 }
 
-// The name of the category.
+// The tag that is used to classify a book.
+//
+// For example, the book could have one of the following categories:
+// android, cloud technologies, management, code quality, CQRS, etc.
 //
 message Category {
 
-    // The division within a system of classification which book has.
-    //
-    // For example, the book could has one of the following categories:
-    // android, cloud technologies, management, code quality, CQRS, etc.
+    // The name of a category.
     string value = 1;
 }
 
-// The radio-frequency identification mark for the book.
+// The radio-frequency identification mark of a book.
 //
 message Rfid {
 
@@ -126,10 +122,10 @@ message Rfid {
     string value = 1;
 }
 
-// Book publication year.
+// The book publication year.
 message Year {
 
-    // Book publication year.
+    // The book publication year.
     int32 year = 1;
 }
 
@@ -137,7 +133,7 @@ message Year {
 //
 message WriteOffReason {
 
-    // Reasons why a librarian can write the book off.
+    // Reasons why a librarian can write a book off.
     oneof write_off_reason {
         bool lost = 1;
         bool outdated = 2;

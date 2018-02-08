@@ -38,7 +38,7 @@ import "javaclasses/exlibris/identifiers.proto";
 //
 message Book {
 
-    // An identifier of the book.
+    // The identifier of a book.
     BookId book_id = 1;
 
     // Book details.
@@ -49,21 +49,21 @@ message Book {
 //
 message Inventory {
 
-    // An identifier of the inventory.
+    // The identifier of a inventory.
     InventoryId inventory_id = 1;
 
-    // An identifier of the book.
+    // The identifier of a book.
     BookId book_id = 2;
 
-    // The list of all inventory items.
+    // A list of inventory items.
     repeated InventoryItem inventory_items = 3;
 
-    // The list of all reservations for all items.
+    // A list of reservations for items.
     //
     // If reservations are absent the list is empty.
     repeated Reservation reservations = 4;
 
-    // The list of all loans for all items.
+    // A list of loans for items.
     repeated LoanId loans = 5;
 }
 
@@ -71,58 +71,58 @@ message Inventory {
 //
 message InventoryItem {
 
-    // An identifier for the concrete item.
+    // The identifier for the concrete item.
     InventoryItemId inventory_item_id = 1;
 
     // Item could have one of the following statuses.
     oneof item_status {
 
-        // When book stay in the library.
+        // When the book stays in a library.
         bool in_library = 2;
 
-        // When book was borrowed by smb.
+        // When the book is borrowed by smb.
         bool borrowed = 3;
 
-        // When book was lost.
+        // When the book is lost.
         bool lost = 4;
     }
 
-    // An identifier of the user who is related to the book.
+    // The user who is related to the book.
     //
-    // An identifier exists when book `lost` or `in_library`
+    // Defines a `lost` or `borrowed` book.
     UserId user_id = 5;
 }
 
-// State for `Reservation`.
+// State for `Reservation` of the book.
 //
 message Reservation {
 
-    // An identifier of the book.
+    // The identifier of a book.
     BookId book_id = 1;
 
-    // An identifier of the user who reserved the book.
+    // The user who reserved a book.
     UserId who_reserved = 2;
 
-    // Time of creating the reservation.
+    // The time when a book was reserved.
     google.protobuf.Timestamp when_created = 3;
 }
 
-// State for `Loan`.
+// State for `Loan` of the book.
 //
 message Loan {
 
-    // An identifier of the loan period.
+    // The identifier of a loan period.
     LoanId loan_id = 1;
 
-    // An identifier of the concrete item.
+    // The specific item.
     InventoryItemId inventory_item_id = 2;
 
-    // An identifier of the user who borrowed book.
+    // The user who borrowed a book.
     UserId who_borrowed = 3;
 
-    // Time when the book was borrowed.
+    // The time when a book was borrowed.
     google.protobuf.Timestamp when_taken = 4;
 
-    // Time when the book should be returned.
+    // The time when a book should be returned.
     google.protobuf.Timestamp when_due = 5;
 }
