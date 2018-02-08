@@ -44,8 +44,8 @@ message BookDetailsView {
     // Short book information.
     BookItem book_item = 1;
 
-    // The full book description.
-    BookDescription book_description = 2;
+    // The full book synopsis.
+    BookSynopsis book_synopsis = 2;
 }
 
 // The view with the list of categories.
@@ -62,7 +62,7 @@ message CategoriesView {
 //
 message BookCompactHistory {
 
-    // An identifier of the inventory.
+    // The identifier of the inventory.
     InventoryId inventory_id = 1;
 
     // List of user's loan details.
@@ -76,22 +76,22 @@ message BookCompactHistory {
 //
 message BookFullHistory {
 
-    // An identifier of the inventory.
+    // The identifier of the inventory.
     InventoryId inventory_id = 1;
 
     // The list of the inventory item record.
     repeated InventoryItemRecord inventory_item_record = 2;
 }
 
-// An extend information about the book.
+// The extended information about the book.
 //
-// The view consists of all information about the book:
+// The view contains book information:
 // URL cover, book title, authors, ISBN, year of publication,
-// categories, and description.
+// categories, and synopsis.
 //
 message BookExtendedView {
 
-    // A book identifier.
+    // The book identifier.
     BookId book_id = 1;
 
     // URL for the book cover.
@@ -101,7 +101,7 @@ message BookExtendedView {
     BookTitle title = 3;
 
     // The list of author’s names.
-    repeated AuthorName author_names = 4;
+    AuthorName author_names = 4;
 
     // Value that generated from ISBN.
     Isbn62 isbn = 5;
@@ -112,11 +112,11 @@ message BookExtendedView {
     // List of categories.
     repeated Category categories = 7;
 
-    // Full book description.
-    BookDescription book_desctiption = 8;
+    // Full book synopsis.
+    BookSynopsis book_synopsis = 8;
 }
 
-// Inventory state of the current book.
+// Inventory state of the particular book.
 //
 message InventoryByBookView {
 
@@ -143,7 +143,7 @@ message LostBookView {
     repeated LostBook lost_books = 1;
 }
 
-// All current users and their summary.
+// All particular users and their summary.
 //
 message ReadersView {
 
@@ -155,10 +155,10 @@ message ReadersView {
 //
 message UserDetails {
 
-    // An identifier of the user.
+    // The identifier of the user.
     UserId user_id = 1;
 
-    // A name of user in the library.
+    // The name of user in the library.
     string username = 2;
 
     // The count of borrowed by user books now.
@@ -171,11 +171,11 @@ message UserDetails {
     int32 count_of_overdue_books = 5;
 }
 
-// Contains the information about all reservations of the current book.
+// Contains the information about all reservations of the particular book.
 //
 message ReservationView {
 
-    // An identifier of the inventory.
+    // The identifier of the inventory.
     InventoryId inventory_id = 1;
 
     // The details of the reservation.
@@ -194,7 +194,7 @@ message ReservationView {
 //
 message ExtendedUserHistoryView {
 
-    // An identifier of the user.
+    // The identifier of the user.
     UserId user_id = 1;
 
     // Collection of all user’s actions.
@@ -207,15 +207,15 @@ message ExtendedUserHistoryView {
 //
 message CompactUserHistoryView {
 
-    // Details consist of taken on date, due on date, returned on date.
+    // Details contains taken on date, due on date, returned on date.
     repeated LoanDetailsHistory loan_details = 1;
 }
 
-// The view that consist of the book cover.
+// The view that contains the book cover.
 //
 message CoverView {
 
-    // A book identifier.
+    // The book identifier.
     BookId book_id = 1;
 
     // URL for the book cover.

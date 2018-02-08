@@ -34,42 +34,42 @@ import "google/protobuf/timestamp.proto";
 import "javaclasses/exlibris/identifiers.proto";
 import "javaclasses/exlibris/values.proto";
 
-// An attempt to create the new book.
+// The attempt to create the new book.
 //
-// In case of a successful command propagation, the book is added.
+// In case of the successful command propagation, the book is added.
 // not be applied to the existing book.
 //
 message AddBook {
 
-    // ID of a book to create.
+    // The ID of the book to create.
     BookId book_id = 1;
 
-    // A details for the new book.
+    // The details for the new book.
     BookDetails book_details = 2;
 }
 
-// An attempt to update the book.
+// The attempt to update the book.
 //
-// In case of a successful command propagation, the book is updated.
+// In case of the successful command propagation, the book is updated.
 // Cannot be applied to the missing book.
 //
 message UpdateBook {
 
-    // An ID of a book to update.
+    // The ID of the book to update.
     BookId book_id = 1;
 
-    // A new details for the existed book.
+    // The new details for the existed book.
     BookDetails book_details = 2;
 }
 
-// An attempt to remove the book.
+// The attempt to remove the book.
 //
-// In case of a successful command propagation, the book is removed.
+// In case of the successful command propagation, the book is removed.
 // Cannot be applied to the missing book.
 //
 message RemoveBook {
 
-    // ID of a book to remove.
+    // ID of the book to remove.
     BookId bok_id = 1;
 
     // The reason of removing book.
@@ -84,78 +84,78 @@ message RemoveBook {
         string custom_reason = 4;
     }
 
-    // A time when book was removed.
+    // The time when book was removed.
     google.protobuf.Timestamp when_removed = 5;
 }
 
 // Append the item to the book inventory.
-// In case of a successful command propagation,
+// In case of the successful command propagation,
 // appended book becomes available or ready to pickup for the user who borrowed it.
 //
 message AppendInventory {
 
-    // An identifier of a inventory.
+    // The identifier of the inventory.
     InventoryId intentory_id = 1;
 
-    // An identifier of a inventory item.
+    // The identifier of the inventory item.
     InventoryItemId inventory_item_id = 2;
 
     // Optional field: exists when book has RFID mark.
     Rfid rfid = 3;
 }
 
-// An attempt to borrow a book.
+// The attempt to borrow the book.
 //
-// In case of a successful command propagation, the book is borrowed by user.
+// In case of the successful command propagation, the book is borrowed by user.
 // If book was reserved, then reservation became loan.
 //
 // Cannot be applied to the book that is reserved by another user.
 //
 message BorrowBook {
 
-    // An identifier of an inventory item.
+    // The identifier of an inventory item.
     InventoryItemId intentory_item_id = 1;
 
-    // An identifier of the user, who borrows the book.
+    // The identifier of the user, who borrows the book.
     UserId user_id = 2;
 }
 
-// An attempt to reserve the book.
+// The attempt to reserve the book.
 //
-// In case of a successful command propagation, the book is reserved.
+// In case of the successful command propagation, the book is reserved.
 // Will be regected  if the book has already borrowed or reserved by current user.
 //
 message ReserveBook {
 
-    // An identifier of an inventory.
+    // The identifier of an inventory.
     InventoryId intentory_id = 1;
 
-    // An identifier of the user, who reserves the book.
+    // The identifier of the user, who reserves the book.
     UserId user_id = 2;
 }
 
-// An attempt to cancel the reservation.
+// The attempt to cancel the reservation.
 //
-// In case of a successful command propagation, the reservation is canceled.
+// In case of the successful command propagation, the reservation is canceled.
 // Cannot be applied to the missing reservation.
 //
 message CancelReservation {
 
-    // An identifier of an inventory.
+    // The identifier of an inventory.
     InventoryId intentory_id = 1;
 
-    // An identifier of the user, who cancels the book reservation.
+    // The identifier of the user, who cancels the book reservation.
     UserId user_id = 2;
 }
 
-// An attempt to extend the loan period.
+// The attempt to extend the loan period.
 //
-// In case of a successful command propagation, the loan period is extended.
+// In case of the successful command propagation, the loan period is extended.
 // Will be rejected if the book has been reserved by another user.
 //
 message ExtendLoanPeriod {
 
-    // An identifier of loan period.
+    // The identifier of loan period.
     LoanId loan_id = 1;
 
     // New due date of loan.
@@ -166,7 +166,7 @@ message ExtendLoanPeriod {
 //
 message MarkLoanOverdue {
 
-    // An identifier of loan period.
+    // The identifier of loan period.
     LoanId loan_id = 1;
 }
 
@@ -174,51 +174,51 @@ message MarkLoanOverdue {
 //
 message MarkReservationExpired {
 
-    // An identifier of an inventory.
+    // The identifier of an inventory.
     InventoryId intentory_id = 1;
 
-    // An identifier of the user, whose book reservation expires.
+    // The identifier of the user, whose book reservation expires.
     UserId user_id = 2;
 }
 
-// An attempt to return the book.
+// The attempt to return the book.
 //
-// In case of a successful command propagation, the book is returned.
-// Cannot be applied to the missing or non-borrowed book.
+// In case of the successful command propagation, the book is returned.
+// Cannot be applied to missing or non-borrowed books.
 //
 message ReturnBook {
 
-    // An identifier of an inventory.
+    // The identifier of an inventory.
     InventoryId intentory_id = 1;
 
-    // An identifier of an inventory item.
+    // The identifier of an inventory item.
     InventoryItemId inventory_item_id = 2;
 
-    // An identifier of the user, who returns the book.
+    // The identifier of the user, who returns the book.
     UserId user_id = 3;
 }
 
-// An attempt to report the lost book.
+// The attempt to report the lost book.
 //
-// In case of a successful command propagation, the book is reported as lost.
+// In case of the successful command propagation, the book is reported as lost.
 //
 message ReportLostBook {
 
-    // An identifier of an inventory item.
+    // The identifier of an inventory item.
     InventoryItemId inventory_item_id = 1;
 
-    // An identifier of the user, who has lost the book.
+    // The identifier of the user, who has lost the book.
     UserId who_lost = 2;
 }
 
-// An attempt to write off the book.
+// The attempt to write off the book.
 //
-// In case of a successful command propagation, the book is written off.
+// In case of the successful command propagation, the book is written off.
 // Cannot be applied to the missing book.
 //
 message WriteBookOff {
 
-    // An identifier of an inventory item.
+    // The identifier of an inventory item.
     InventoryItemId inventory_item_id = 1;
 
     // Reasons to write book off.

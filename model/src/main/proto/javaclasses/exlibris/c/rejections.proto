@@ -37,7 +37,7 @@ import "javaclasses/exlibris/identifiers.proto";
 //
 message BookAlreadyExists {
 
-    // An identifier of the book.
+    // The identifier of the book.
     BookId book_id = 1;
 
     // Librarian who tried to add book.
@@ -51,7 +51,7 @@ message BookAlreadyExists {
 //
 message CannotRemoveMissingBook {
 
-    // An identifier of the book.
+    // The identifier of the book.
     BookId book_id = 1;
 
     // Librarian who tried to remove book.
@@ -65,7 +65,7 @@ message CannotRemoveMissingBook {
 //
 message CannotUpdateMissingBook {
 
-    // An identifier of the book.
+    // The identifier of the book.
     BookId book_id = 1;
 
     // Librarian who tried to update book.
@@ -80,7 +80,7 @@ message CannotUpdateMissingBook {
 //
 message CannotBorrowBook {
 
-    // An identifier of the inventory.
+    // The identifier of the inventory.
     InventoryId inventory_id = 1;
 
     // Item that user tried to borrow.
@@ -103,7 +103,7 @@ message CannotBorrowBook {
 //
 message CannotReserveBook {
 
-    // An identifier of the inventory.
+    // The identifier of the inventory.
     InventoryId inventory_id = 1;
 
     // User who tried to reserve book.
@@ -123,7 +123,7 @@ message CannotReserveBook {
 //
 message CannotExtendLoanPeriod {
 
-    // An identifier of the inventory.
+    // The identifier of the inventory.
     InventoryId inventory_id = 1;
 
     // Loan identifier.
@@ -140,7 +140,7 @@ message CannotExtendLoanPeriod {
 //
 message CannotReturnNonBorrowedBook {
 
-    // An identifier of the inventory.
+    // The identifier of the inventory.
     InventoryId inventory_id = 1;
 
     // Item that user tried to return.
@@ -157,7 +157,7 @@ message CannotReturnNonBorrowedBook {
 //
 message CannotReturnMissingBook {
 
-    // An identifier of the inventory.
+    // The identifier of the inventory.
     InventoryId inventory_id = 1;
 
     // Item that user tried to return.
@@ -174,7 +174,7 @@ message CannotReturnMissingBook {
 //
 message CannotCancelMissingReservation {
 
-    // An identifier of the inventory.
+    // The identifier of the inventory.
     InventoryId inventory_id = 1;
 
     // User who tried to cancel reservation.
@@ -188,7 +188,7 @@ message CannotCancelMissingReservation {
 //
 message CannotWriteMissingBookOff {
 
-    // An identifier of the inventory.
+    // The identifier of the inventory.
     InventoryId inventory_id = 1;
 
     // Librarian who tried to write missing book off.

@@ -5,11 +5,11 @@
 // modification, must retain the above copyright notice and the following
 // disclaimer.
 //
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// THIS SOFTWARE IS PROVidentifierED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 // "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 // LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
 // A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCidentifierENTAL,
 // SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
 // LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 // DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
@@ -34,25 +34,25 @@ option java_generate_equals_and_hash = true;
 import "google/protobuf/timestamp.proto";
 import "javaclasses/exlibris/identifiers.proto";
 
-// Defines a state for `Book` aggregate.
+// `Book` aggregate.
 //
 message Book {
 
-    // An ID of the book.
+    // The identifier of the book.
     BookId book_id = 1;
 
-    // A book details.
+    // Book details.
     BookDetails book_details = 2;
 }
 
-// Defines a state for `Inventory` aggregate.
+// `Inventory` aggregate.
 //
 message Inventory {
 
-    // An ID of the inventory.
+    // The identifier of the inventory.
     InventoryId inventory_id = 1;
 
-    // An ID of the book.
+    // The identifier of the book.
     BookId book_id = 2;
 
     // The list of all inventory items.
@@ -67,14 +67,14 @@ message Inventory {
     repeated LoanId loans = 5;
 }
 
-// Defines a state for `InventoryItem`.
+// State for `InventoryItem`.
 //
 message InventoryItem {
 
-    // An identifier for concrete item.
+    // The identifier for the concrete item.
     InventoryItemId inventory_item_id = 1;
 
-    // Item could have one of next status.
+    // Item could have one of the following statuses.
     oneof item_status {
 
         // When book stay in the library.
@@ -87,42 +87,42 @@ message InventoryItem {
         bool lost = 4;
     }
 
-    // An identifier of user who is related to the book.
+    // The identifier of user who is related to the book.
     //
-    // An ID exists when book `lost` or `in_library`
+    // The identifier exists when book `lost` or `in_library`
     UserId user_id = 5;
 }
 
-// Defines a state for `Reservation`.
+// State for `Reservation`.
 //
 message Reservation {
 
-    // An ID of the book.
+    // The identifier of the book.
     BookId book_id = 1;
 
-    // An ID of the user who reserved the book.
+    // The identifier of the user who reserved the book.
     UserId who_reserved = 2;
 
-    // A time of creating a reservation.
+    // The time of creating the reservation.
     google.protobuf.Timestamp when_created = 3;
 }
 
-// Defines a state for `Loan`.
+// State for `Loan`.
 //
 message Loan {
 
-    // An ID of loan period.
+    // The identifier of loan period.
     LoanId loan_id = 1;
 
-    // An ID of concrete item.
+    // The identifier of concrete item.
     InventoryItemId inventory_item_id = 2;
 
-    // An ID of user who borrowed book.
+    // The identifier of user who borrowed book.
     UserId who_borrowed = 3;
 
-    // A time of borrowing book.
+    // The time of borrowing book.
     google.protobuf.Timestamp when_taken = 4;
 
-    // A time when book has to be returned.
+    // The time when book has to be returned.
     google.protobuf.Timestamp when_due = 5;
 }

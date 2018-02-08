@@ -109,7 +109,7 @@ message BookReadyToPickup {
 
 // An event when user reserves the book.
 //
-// If a queue on book exists then user will be added to the queue.
+// If the queue on book exists then user will be added to the queue.
 // Else if book is available then user has 2 days to borrow book.
 //
 message ReservationAdded {
@@ -224,7 +224,7 @@ message BookLost {
     google.protobuf.Timestamp when_reported = 4;
 }
 
-// An event fired when user or system cancel the reservation.
+// The event fired when user or system cancel the reservation.
 //
 // Can be canceled for these reasons:
 // 1. User canceled reservation. In this case `whoCanceled` is ID of user.
@@ -232,7 +232,7 @@ message BookLost {
 //
 message ReservationCanceled {
 
-    // An identifier of the inventory.
+    // The identifier of the inventory.
     InventoryId inventory_id = 1;
 
     // User who canceled the reservation.
@@ -242,16 +242,16 @@ message ReservationCanceled {
     google.protobuf.Timestamp when_canceled = 3;
 }
 
-// An event when librarian decreases current inventory.
+// The event when librarian decreases current inventory.
 //
 // Will cancel all reservations if it is the last one in current inventory.
 //
 message InventoryDecreased {
 
-    // An identifier of the inventory.
+    // The identifier of the inventory.
     InventoryId inventory_id = 1;
 
-    // An identifier of the item.
+    // The identifier of the item.
     InventoryItemId inventory_item_id = 2;
 
     // Librarian who decreased the inventory.
@@ -264,11 +264,11 @@ message InventoryDecreased {
     WriteOffReason write_off_reason = 5;
 }
 
-// An event when user had 2 days to take the book but he didn't.
+// The event when user had 2 days to take the book but he didn't.
 //
 message ReservationPickUpPeriodExpired {
 
-    // An identifier of the inventory.
+    // The identifier of the inventory.
     InventoryId inventory_id = 1;
 
     // User whose pickup period expired.
@@ -278,24 +278,24 @@ message ReservationPickUpPeriodExpired {
     google.protobuf.Timestamp when_expired = 3;
 }
 
-// An event fired when librarian removes `Book` from the library.
+// The event fired when librarian removes `Book` from the library.
 //
 message InventoryRemoved {
 
-    // An identifier of the inventory.
+    // The identifier of the inventory.
     InventoryId inventory_id = 1;
 
     // Time when inventory was removed.
     google.protobuf.Timestamp when_removed = 2;
 }
 
-// An event fired when librarian adds new `Book` to the library.
+// The event fired when librarian adds new `Book` to the library.
 //
-// Should trigger a react in `Inventory`.
+// Should trigger the react in `Inventory`.
 //
 message BookAdded {
 
-    // An identifier of the book.
+    // The identifier of the book.
     BookId book_id = 1;
 
     // Book details.
@@ -308,11 +308,11 @@ message BookAdded {
     google.protobuf.Timestamp when_added = 4;
 }
 
-// An event when librarian changes incorrect info about the `Book`.
+// The event when librarian changes incorrect info about the `Book`.
 //
 message BookUpdated {
 
-    // An identifier of the book.
+    // The identifier of the book.
     BookId book_id = 1;
 
     // Details of the current book.
@@ -328,7 +328,7 @@ message BookUpdated {
     google.protobuf.Timestamp when_updated = 5;
 }
 
-// An event when librarian removes book from library.
+// The event when librarian removes book from library.
 //
 // Impossible when at least one user borrowed it.
 //
@@ -336,7 +336,7 @@ message BookUpdated {
 //
 message BookRemoved {
 
-    // An identifier of the book.
+    // The identifier of the book.
     BookId book_id = 1;
 
     // Librarian who removes the book.
