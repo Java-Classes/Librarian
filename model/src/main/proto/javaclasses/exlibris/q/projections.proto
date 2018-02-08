@@ -49,10 +49,10 @@ import "javaclasses/exlibris/q/values.proto";
 // 7. `BookReturned`
 // 8. `ReservationAdded`
 // 9. `LoanBecameOverdue`
-// 10.` BookLost`
-// 11.` LoanPeriodExtended`
-// 12.` ReservationCanceled`
-// 13.` ReservationPickupPeriodExpired`
+// 10. `BookLost`
+// 11. `LoanPeriodExtended`
+// 12. `ReservationCanceled`
+// 13. `ReservationPickupPeriodExpired`
 //
 message BookDetailsView {
 
@@ -168,9 +168,9 @@ message BookExtendedView {
 // 7. `BookLost`
 // 8. `LoanPeriodExtended`
 // 9. `ReservationCanceled`
-// 10.`ReservationPickupPeriodExpired`
-// 11.`BookBecameAvailable`
-// 12.`BookReadyToPickup`
+// 10. `ReservationPickupPeriodExpired`
+// 11. `BookBecameAvailable`
+// 12. `BookReadyToPickup`
 //
 message InventoryByBookView {
 
@@ -193,9 +193,9 @@ message InventoryByBookView {
 // 7. `BookLost`
 // 8. `LoanPeriodExtended`
 // 9. `ReservationCanceled`
-// 10.`ReservationPickupPeriodExpired`
-// 11.`BookBecameAvailable`
-// 12.`BookReadyToPickup`
+// 10. `ReservationPickupPeriodExpired`
+// 11. `BookBecameAvailable`
+// 12. `BookReadyToPickup`
 //
 message InventoryView {
 
