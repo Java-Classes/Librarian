@@ -39,6 +39,21 @@ import "javaclasses/exlibris/q/values.proto";
 
 // Appears after click on the book cover like pop-up dialog.
 //
+// Subscribed on following events:
+// 1. `BookAdded`
+// 2. `BookRemoved`
+// 3. `BookUpdated`
+// 4. `InventoryAppended`
+// 5. `InventoryDecreased`
+// 6. `BookBorrowed`
+// 7. `BookReturned`
+// 8. `ReservationAdded`
+// 9. `LoanBecameOverdue`
+// 10.` BookLost`
+// 11.` LoanPeriodExtended`
+// 12.` ReservationCanceled`
+// 13.` ReservationPickupPeriodExpired`
+//
 message BookDetailsView {
 
     // Short book information.
@@ -50,6 +65,11 @@ message BookDetailsView {
 
 // The view with the list of categories.
 //
+// Subscribed on following events:
+// 1. `BookAdded`
+// 2. `BookRemoved`
+// 3. `BookUpdated`
+//
 message CategoriesView {
 
     // The list of categories.
@@ -60,7 +80,13 @@ message CategoriesView {
 //
 // Librarian sees all user’s loan periods.
 //
-message BookCompactHistory {
+// Subscribed on following events:
+// 1. `BookBorrowed`
+// 2. `BookReturned`
+// 3. `LoanPeriodExtended`
+// 4. `LoanBecameOverdue`
+//
+message CompactBookHistory {
 
     // An identifier of the inventory.
     InventoryId inventory_id = 1;
@@ -74,7 +100,16 @@ message BookCompactHistory {
 // Librarian sees all users that borrow the book,
 // reserve, lost, return, or extend loan period with date of every record.
 //
-message BookFullHistory {
+// Subscribed on following events:
+// 1. `BookBorrowed`
+// 2. `BookReturned`
+// 3. `LoanPeriodExtended`
+// 4. `LoanBecameOverdue`
+// 5. `BookLost`
+// 6. `BookReserved`
+// 7. `ReservationCanceled`
+//
+message FullBookHistory {
 
     // An identifier of the inventory.
     InventoryId inventory_id = 1;
@@ -88,6 +123,11 @@ message BookFullHistory {
 // The view contains book information:
 // URL cover, book title, authors, ISBN, year of publication,
 // categories, and synopsis.
+//
+// Subscribed on following events:
+// 1. `BookAdded`
+// 2. `BookRemoved`
+// 3. `BookUpdated`
 //
 message BookExtendedView {
 
@@ -118,6 +158,20 @@ message BookExtendedView {
 
 // Inventory state of the particular book.
 //
+// Subscribed on following events:
+// 1. `InventoryAppended`
+// 2. `InventoryDecreased`
+// 3. `BookBorrowed`
+// 4. `BookReturned`
+// 5. `ReservationAdded`
+// 6. `LoanBecameOverdue`
+// 7. `BookLost`
+// 8. `LoanPeriodExtended`
+// 9. `ReservationCanceled`
+// 10.`ReservationPickupPeriodExpired`
+// 11.`BookBecameAvailable`
+// 12.`BookReadyToPickup`
+//
 message InventoryByBookView {
 
     // Information about book loan.
@@ -129,6 +183,20 @@ message InventoryByBookView {
 // View consists of fields with the book title, authors,
 // available books, and amount of the overdue books.
 //
+// Subscribed on following events:
+// 1. `InventoryAppended`
+// 2. `InventoryDecreased`
+// 3. `BookBorrowed`
+// 4. `BookReturned`
+// 5. `ReservationAdded`
+// 6. `LoanBecameOverdue`
+// 7. `BookLost`
+// 8. `LoanPeriodExtended`
+// 9. `ReservationCanceled`
+// 10.`ReservationPickupPeriodExpired`
+// 11.`BookBecameAvailable`
+// 12.`BookReadyToPickup`
+//
 message InventoryView {
 
     // The list of inventory details.
@@ -136,6 +204,9 @@ message InventoryView {
 }
 
 // The wiew with information about lost books.
+//
+// Subscribed on following events:
+// 1. `BookLost`
 //
 message LostBookView {
 
@@ -145,33 +216,26 @@ message LostBookView {
 
 // All particular users and their summary.
 //
+// Subscribed on following events:
+// 1. `BookBorrowed`
+// 2. `BookReturned`
+// 3. `ReservationAdded`
+// 4. `LoanBecameOverdue`
+// 5. `BookLost`
+// 6. `LoanPeriodExtended`
+// 7. `ReservationCanceled`
+//
 message ReadersView {
 
     // The list of the concrete user’s summary.
     repeated UserDetails user_details = 1;
 }
 
-// Information about the user.
-//
-message UserDetails {
-
-    // An identifier of the user.
-    UserId user_id = 1;
-
-    // A name of user in the library.
-    string username = 2;
-
-    // The count of borrowed by user books now.
-    int32 count_of_borrowed_books = 3;
-
-    // The count of reserved by user books now.
-    int32 count_of_reserved_books = 4;
-
-    // The count of books that user return with lateness or hasn’t return at all.
-    int32 count_of_overdue_books = 5;
-}
-
 // Contains the information about all reservations of the particular book.
+//
+// Subscribed on following events:
+// 1. `ReservationAdded`
+// 2. `ReservationCanceled`
 //
 message ReservationView {
 
@@ -184,15 +248,16 @@ message ReservationView {
 
 // Full user’s history includes all user’s events.
 //
-// Events:
+// Subscribed on following events:
+// 1. `BookBorrowed`
+// 2. `BookReturned`
+// 3. `LoanPeriodExtended`
+// 4. `LoanBecameOverdue`
+// 5. `BookLost`
+// 6. `BookReserved`
+// 7. `ReservationCanceled`
 //
-// 1. Borrowed.
-// 2. Reserved.
-// 3. Loan period extended.
-// 4. Returned.
-// 5. Lost.
-//
-message ExtendedUserHistoryView {
+message FullUserHistoryView {
 
     // An identifier of the user.
     UserId user_id = 1;
@@ -205,6 +270,12 @@ message ExtendedUserHistoryView {
 //
 // Contains all user's loans.
 //
+// Subscribed on following events:
+// 1. `BookBorrowed`
+// 2. `BookReturned`
+// 3. `ExtendLoanPeriod`
+// 4. `LoanBecameOverdue`
+//
 message CompactUserHistoryView {
 
     // Details contains taken on date, due on date, returned on date.
@@ -212,6 +283,11 @@ message CompactUserHistoryView {
 }
 
 // The view that contains the book cover.
+//
+// Subscribed on following events:
+// 1. `BookAdded`
+// 2. `BookRemoved`
+// 3. `BookUpdated`
 //
 message CoverView {
 
