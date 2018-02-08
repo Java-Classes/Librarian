@@ -33,170 +33,170 @@ option java_generate_equals_and_hash = true;
 import "google/protobuf/timestamp.proto";
 import "javaclasses/exlibris/identifiers.proto";
 
-// Rejection when librarian tries to add an existing book.
+// Rejection when a librarian tries to add an existing book.
 //
 message BookAlreadyExists {
 
-    // The identifier of the book.
+    // The identifier of a book.
     BookId book_id = 1;
 
-    // Librarian who tried to add book.
+    // Who tried to add a book.
     UserId librarian_id = 2;
 
-    // Time when librarian tried to add an existing book.
+    // The time when a librarian tried to add an existing book.
     google.protobuf.Timestamp when_rejected = 3;
 }
 
-// Rejection when librarian tries to remove missing book.
+// Rejection when a librarian tries to remove a missing book.
 //
 message CannotRemoveMissingBook {
 
-    // The identifier of the book.
+    // The identifier of a book.
     BookId book_id = 1;
 
-    // Librarian who tried to remove book.
+    // Who tried to remove book.
     UserId user_id = 2;
 
-    // Time when librarian tried to remove missing book.
+    // The time when a librarian tried to remove a missing book.
     google.protobuf.Timestamp when_rejected = 3;
 }
 
-// Rejection when librarian tries to update missing book.
+// Rejection when a librarian tries to update a missing book.
 //
 message CannotUpdateMissingBook {
 
-    // The identifier of the book.
+    // The identifier of a book.
     BookId book_id = 1;
 
-    // Librarian who tried to update book.
+    // Who tried to update a book.
     UserId librarian_id = 2;
 
-    // Time when librarian tried to update missing book.
+    // The time when a librarian tried to update a missing book.
     google.protobuf.Timestamp when_rejected = 3;
 }
 
-// Rejection when user tries to borrow either the book that he borrowed by himself
+// Rejection whena a user tries to borrow either a book that he borrowed by himself
 // or there are no available items.
 //
 message CannotBorrowBook {
 
-    // The identifier of the inventory.
+    // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
-    // Item that user tried to borrow.
+    // The item that a user tried to borrow.
     InventoryItemId inventory_item_id = 2;
 
-    // User who tried to borrow book.
+    // Who tried to borrow a book.
     UserId user_id = 3;
 
-    // Time when user tried to borrow book.
+    // The time when a user tried to borrow a book.
     google.protobuf.Timestamp when_rejected = 4;
 
-    // Reason why book cannot be borrowed.
+    // The reason why a book cannot be borrowed.
     oneof cannot_borrow_reason {
         bool already_borrowed = 5;
         bool no_available_items = 6;
     }
 }
 
-// Rejection when user tries to reserve book that he borrowed by himself or book that he already reserved.
+// Rejection when a user tries to reserve a book that he borrowed by himself or a book that he already reserved.
 //
 message CannotReserveBook {
 
-    // The identifier of the inventory.
+    // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
-    // User who tried to reserve book.
+    // Who tried to reserve book.
     UserId user_id = 2;
 
-    // Time when user tried to reserve book.
+    // The time when a user tried to reserve a book.
     google.protobuf.Timestamp when_rejected = 3;
 
-    // Reason why book cannot be reserved.
+    // The reason why a book cannot be reserved.
     oneof cannot_reserve_reason {
         bool borrowed = 4;
         bool already_reserved = 5;
     }
 }
 
-// Rejection when user tries to extend loan period and the book is already reserved by another user.
+// Rejection when a user tries to extend a loan period and a book is already reserved by another user.
 //
 message CannotExtendLoanPeriod {
 
-    // The identifier of the inventory.
+    // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
-    // Loan identifier.
+    // The loan identifier.
     LoanId loan_id = 2;
 
-    // User who tried to extend loan period.
+    // Who tried to extend loan period.
     UserId user_id = 3;
 
-    // Time when user tried to extend loan period.
+    // The time when user tried to extend loan period.
     google.protobuf.Timestamp when_rejected = 4;
 }
 
-// Rejection when user tries to return non-borrowed book.
+// Rejection when a user tries to return a non-borrowed book.
 //
 message CannotReturnNonBorrowedBook {
 
-    // The identifier of the inventory.
+    // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
-    // Item that user tried to return.
+    // The item that a user tried to return.
     InventoryItemId inventory_item_id = 2;
 
-    // User who tried to return the book.
+    // Who tried to return the book.
     UserId user_id = 3;
 
-    // Time when user tried to return the book.
+    // The time when user tried to return the book.
     google.protobuf.Timestamp when_rejected = 4;
 }
 
-// Rejection when user tries to return the missing `InventoryItem`.
+// Rejection when a user tries to return the missing `InventoryItem`.
 //
 message CannotReturnMissingBook {
 
-    // The identifier of the inventory.
+    // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
-    // Item that user tried to return.
+    // The item that a user tried to return.
     InventoryItemId inventory_item_id = 2;
 
-    // User who tried to return the book.
+    // Who tried to return the book.
     UserId user_id = 3;
 
-    // Time when user tried to return the book.
+    // The time when user tried to return the book.
     google.protobuf.Timestamp when_rejected = 4;
 }
 
-// Rejection when user tries to cancel missing reservation.
+// Rejection when a user tries to cancel a missing reservation.
 //
 message CannotCancelMissingReservation {
 
-    // The identifier of the inventory.
+    // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
-    // User who tried to cancel the reservation.
+    // Who tried to cancel the reservation.
     UserId user_id = 2;
 
-    // Time when user tried to cancel the reservation.
+    // The time when user tried to cancel the reservation.
     google.protobuf.Timestamp when_rejected = 3;
 }
 
-// Rejection when librarian tries to write missing book off.
+// Rejection when a librarian tries to write a missing book off.
 //
 message CannotWriteMissingBookOff {
 
-    // The identifier of the inventory.
+    // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
-    // Librarian who tried to write missing book off.
+    // Who tried to write missing book off.
     UserId librarian_id = 2;
 
-    // Inventory item identifier.
+    // The inventory item identifier.
     InventoryItemId inventory_item_id = 3;
 
-    // Time when user tried to write missing book off.
+    // The time when user tried to write missing book off.
     google.protobuf.Timestamp when_rejected = 4;
 }
