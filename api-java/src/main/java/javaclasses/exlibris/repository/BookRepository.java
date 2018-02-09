@@ -26,10 +26,10 @@ import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.c.aggregate.BookAggregate;
 
 /**
- * Repository for the {@link }.
+ * BookRepository for the {@link }.
  *
  * @author Illia Shepilov
  */
-public class Repository extends AggregateRepository<BookId, BookAggregate> {
+public class BookRepository extends AggregateRepository<BookId, BookAggregate> {
 
 }

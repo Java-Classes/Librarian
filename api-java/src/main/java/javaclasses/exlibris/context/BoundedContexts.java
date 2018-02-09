@@ -21,7 +21,7 @@
 package javaclasses.exlibris.context;
 
 import com.google.common.annotations.VisibleForTesting;
-import javaclasses.exlibris.repository.Repository;
+import javaclasses.exlibris.repository.BookRepository;
 import io.spine.server.BoundedContext;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
@@ -64,7 +64,7 @@ public final class BoundedContexts {
      */
     public static BoundedContext create(StorageFactory storageFactory) {
         checkNotNull(storageFactory);
-        final Repository taskRepo = new Repository();
+        final BookRepository taskRepo = new BookRepository();
         final BoundedContext boundedContext = createBoundedContext(storageFactory);
         boundedContext.register(taskRepo);
         return boundedContext;
