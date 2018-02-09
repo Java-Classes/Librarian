@@ -18,7 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.javaclasses.exlibris.server;
+package javaclasses.exlibris.server;
+
+import io.spine.javaclasses.exlibris.server.Server;
 
 import java.io.IOException;
 

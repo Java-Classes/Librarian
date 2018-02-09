@@ -27,17 +27,15 @@ import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * Utilities for creation the {@link BoundedContext} instances.
  *
- * @author Illia Shepilov
- * @author Dmytro Grankin
+ * @author Alexander Karpets
  */
 public final class BoundedContexts {
 
     /** The default name of the {@code BoundedContext}. */
-    private static final String NAME = "TodoListBoundedContext";
+    private static final String NAME = "ExlibrisBoundedContext";
 
     private static final StorageFactory IN_MEMORY_FACTORY =
             InMemoryStorageFactory.newInstance(BoundedContext.newName(NAME), false);

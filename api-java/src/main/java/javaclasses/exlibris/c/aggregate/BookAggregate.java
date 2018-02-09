@@ -38,6 +38,11 @@ import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
 import javaclasses.exlibris.c.BookAdded;
 
+/**
+ * The aggregate managing the state of a {@link Book}.
+ *
+ * @author Alexander Karpets
+ */
 public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     /**
      * Creates a new instance.
