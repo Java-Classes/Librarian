@@ -231,26 +231,6 @@ message ReadersView {
     repeated UserDetails user_details = 1;
 }
 
-// The information about a user.
-//
-message UserDetails {
-
-    // The identifier of a user.
-    UserId user_id = 1;
-
-    // The name of a in the library.
-    string username = 2;
-
-    // The count of borrowed by a user books now.
-    int32 count_of_borrowed_books = 3;
-
-    // The count of reserved by a user books now.
-    int32 count_of_reserved_books = 4;
-
-    // The count of books that a user return with lateness or hasn’t return at all.
-    int32 count_of_overdue_books = 5;
-}
-
 // Contains the information about all reservations of a particular book.
 //
 // Subscribed on following events:
