@@ -23,6 +23,7 @@ package javaclasses.exlibris.c.aggregate;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.spine.server.aggregate.Aggregate;
+import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
 import javaclasses.exlibris.Book;
 import javaclasses.exlibris.BookDetails;
@@ -39,14 +40,15 @@ import javaclasses.exlibris.c.UpdateBook;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
-
-/**
+/*
+ *
  * The aggregate managing the state of a {@link Book}.
  *
  * @author Alexander Karpets
  */
+
 public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
-    /**
+    /*
      * Creates a new instance.
      *
      * <p>Constructors of derived classes should have package access level
@@ -64,6 +66,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
      *
      * @param id the ID for the new aggregate
      */
+
     protected BookAggregate(BookId id) {
         super(id);
     }
@@ -122,8 +125,6 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
         final BookId bookId = cmd.getBookId();
         final UserId userId = cmd.getUserId();
 
-        final RemoveBook.BookRemovalReasonCase bookRemovalReasonCase = cmd.getBookRemovalReasonCase();
-
         final long currentTimeMillis = System.currentTimeMillis();
 
         final Timestamp whenRemoved = Timestamp.newBuilder()
@@ -136,8 +137,16 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
                                                    .setBookId(bookId)
                                                    .setLibrarianId(userId)
                                                    .setWhenRemoved(whenRemoved)
+                                                   .setOutdated(cmd.getOutdated())
+                                                   .setCustomReason(cmd.getCustomReason())
                                                    .build();
         return singletonList(bookRemoved);
+    }
+
+    @Apply
+    private void bookAdded(BookAdded event) {
+        final BookDetails bookDetails = event.getDetails();
+        getBuilder().setBookDetails(event.getDetails());
     }
 
 }
