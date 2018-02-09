@@ -20,7 +20,7 @@
 
 package io.spine.javaclasses.exlibris.server;
 
-import io.spine.javaclasses.exlibris.server.LocalInMemoryServer;
+import javaclasses.exlibris.server.LocalInMemoryServer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

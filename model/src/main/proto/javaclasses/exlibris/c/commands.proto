@@ -44,8 +44,11 @@ message AddBook {
     // The identifier of a book to create.
     BookId book_id = 1;
 
-    // Details of a new book.
-    BookDetails book_details = 2;
+    // Who adds.
+    UserId user_id = 2;
+
+    // Details of the new book.
+    BookDetails book_details = 3;
 }
 
 // An attempt to update a book.
@@ -58,8 +61,11 @@ message UpdateBook {
     // The identifier of a book to update.
     BookId book_id = 1;
 
-    // New details for an existed book.
-    BookDetails book_details = 2;
+    // Who updates.
+    UserId user_id = 2;
+
+    // New details for the existed book.
+    BookDetails book_details = 3;
 }
 
 // An attempt to remove a book.
@@ -70,16 +76,17 @@ message UpdateBook {
 message RemoveBook {
 
     // The identifier of a book to remove.
-    BookId bok_id = 1;
+    BookId book_id = 1;
+
+    // Who removes.
+    UserId user_id = 2;
 
     // The reason of removing book.
     //
     // A book could be removed with one of following reasons:
-    // 1. The book is lost.
-    // 2. The book is outdated.
-    // 3. Custom reason that is described by a librarian.
+    // 1. Book was outdated.
+    // 2. Custom reason that is described by librarian.
     oneof book_removal_reason {
-        bool lost = 2;
         bool outdated = 3;
         string custom_reason = 4;
     }
