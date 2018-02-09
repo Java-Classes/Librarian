@@ -90,8 +90,7 @@ message RemoveBook {
 
 // Append a book inventory.
 //
-// In case of a successful command propagation,
-// an appended book becomes available or ready to pickup for the user who borrowed it.
+// An appended book becomes available or ready to pickup for the user who borrowed it.
 // `@see events.proto.InventoryAppended`
 //
 message AppendInventory {

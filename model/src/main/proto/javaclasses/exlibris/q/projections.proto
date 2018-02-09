@@ -181,7 +181,7 @@ message InventoryByBookView {
 // The view with information about an inventory.
 //
 // View contains a book title, authors,
-// available books, and amount of the overdue books.
+// available books, and number of the overdue books.
 //
 // Subscribed on following events:
 // 1. `InventoryAppended`

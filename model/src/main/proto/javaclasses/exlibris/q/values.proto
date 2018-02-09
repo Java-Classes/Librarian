@@ -107,7 +107,7 @@ message InventoryDetails {
     repeated InventoryItemLocation items = 3;
 }
 
-// Information about a book’s location.
+// Information about a book location.
 //
 message InventoryItemLocation {
 
