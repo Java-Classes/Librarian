@@ -25,9 +25,10 @@ import io.spine.client.TestActorRequestFactory;
 import io.spine.core.CommandEnvelope;
 import io.spine.server.aggregate.AggregateCommandTest;
 import javaclasses.exlibris.BookId;
+import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.c.aggregate.BookAggregate;
 
-
+import static io.spine.Identifier.newUuid;
 
 abstract class BookCommandTest<C extends Message> extends AggregateCommandTest<C, BookAggregate> {
 
@@ -44,6 +45,7 @@ abstract class BookCommandTest<C extends Message> extends AggregateCommandTest<C
 
     @Override
     protected BookAggregate createAggregate() {
+        bookId = createTaskId();
         return new BookAggregate(bookId);
     }
 
@@ -52,5 +54,8 @@ abstract class BookCommandTest<C extends Message> extends AggregateCommandTest<C
                                                 .create(commandMessage));
     }
 
-
+    private static BookId createTaskId() {
+        return BookId.newBuilder().setIsbn62(Isbn62.newBuilder().setValue("123456")).build();
+    }
 }
+

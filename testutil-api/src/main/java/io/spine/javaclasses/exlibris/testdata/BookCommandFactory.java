@@ -21,16 +21,17 @@
 package io.spine.javaclasses.exlibris.testdata;
 
 import com.google.protobuf.Timestamp;
+import io.spine.net.EmailAddress;
 import javaclasses.exlibris.Book;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookId;
+import javaclasses.exlibris.BookTitle;
+import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookAdded;
 
 public class BookCommandFactory {
-
-
 
 
     private BookCommandFactory() {
