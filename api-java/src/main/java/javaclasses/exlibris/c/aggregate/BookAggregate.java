@@ -32,7 +32,9 @@ import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.BookRemoved;
+import javaclasses.exlibris.c.BookUpdated;
 import javaclasses.exlibris.c.RemoveBook;
+import javaclasses.exlibris.c.UpdateBook;
 
 import java.util.List;
 
@@ -68,6 +70,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
 
     @Assign
     List<? extends Message> handle(AddBook cmd) {
+
         final BookId bookId = cmd.getBookId();
         final UserId userId = cmd.getUserId();
         final BookDetails bookDetails = cmd.getBookDetails();
@@ -90,13 +93,38 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
 
     @Assign
-    List<? extends Message> handle(RemoveBook cmd) {
+    List<? extends Message> handle(UpdateBook cmd) {
+
         final BookId bookId = cmd.getBookId();
         final UserId userId = cmd.getUserId();
+
+        final BookDetails bookDetails = cmd.getBookDetails();
+
+        final long currentTimeMillis = System.currentTimeMillis();
+        final Timestamp whenAdded = Timestamp.newBuilder()
+                                             .setSeconds(currentTimeMillis / 1000)
+                                             .setNanos((int) ((currentTimeMillis % 1000) * 1000000))
+                                             .build();
+
+        final BookUpdated result = BookUpdated.newBuilder()
+                                              .setBookId(bookId)
+                                              .setLibrarianId(userId)
+                                              .setNewBookDetails(bookDetails)
+                                              .setWhenUpdated(whenAdded)
+                                              .build();
+
+        return singletonList(result);
+    }
+
+    @Assign
+    List<? extends Message> handle(RemoveBook cmd) {
+
+        final BookId bookId = cmd.getBookId();
+        final UserId userId = cmd.getUserId();
+
         final RemoveBook.BookRemovalReasonCase bookRemovalReasonCase = cmd.getBookRemovalReasonCase();
 
         final long currentTimeMillis = System.currentTimeMillis();
-
 
         final Timestamp whenRemoved = Timestamp.newBuilder()
                                                .setSeconds(currentTimeMillis / 1000)
