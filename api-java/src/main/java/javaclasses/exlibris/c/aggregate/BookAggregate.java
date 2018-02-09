@@ -22,21 +22,21 @@ package javaclasses.exlibris.c.aggregate;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
-import io.spine.net.EmailAddress;
+import io.spine.server.aggregate.Aggregate;
+import io.spine.server.command.Assign;
 import javaclasses.exlibris.Book;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.BookVBuilder;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.AddBook;
+import javaclasses.exlibris.c.BookAdded;
+import javaclasses.exlibris.c.BookRemoved;
+import javaclasses.exlibris.c.RemoveBook;
 
 import java.util.List;
-import static java.util.Collections.singletonList;
 
-import io.spine.server.aggregate.Aggregate;
-import io.spine.server.aggregate.Apply;
-import io.spine.server.command.Assign;
-import javaclasses.exlibris.c.BookAdded;
+import static java.util.Collections.singletonList;
 
 /**
  * The aggregate managing the state of a {@link Book}.
@@ -65,24 +65,51 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     protected BookAggregate(BookId id) {
         super(id);
     }
+
     @Assign
     List<? extends Message> handle(AddBook cmd) {
         final BookId bookId = cmd.getBookId();
-        final UserId userId =  cmd.getUserId();
+        final UserId userId = cmd.getUserId();
         final BookDetails bookDetails = cmd.getBookDetails();
 
         final long currentTimeMillis = System.currentTimeMillis();
         final Timestamp whenAdded = Timestamp.newBuilder()
                                              .setSeconds(currentTimeMillis / 1000)
-                                             .setNanos((int) ((currentTimeMillis % 1000) * 1000000)).build();
+                                             .setNanos(
+                                                     (int) ((currentTimeMillis % 1000) * 1000000))
+                                             .build();
 
         final BookAdded result = BookAdded.newBuilder()
-                                            .setBookId(bookId)
-                                            .setLibrarianId(userId)
-                                            .setDetails(bookDetails)
-                                            .setWhenAdded(whenAdded)
-                                            .build();
+                                          .setBookId(bookId)
+                                          .setLibrarianId(userId)
+                                          .setDetails(bookDetails)
+                                          .setWhenAdded(whenAdded)
+                                          .build();
 
         return singletonList(result);
     }
+
+    @Assign
+    List<? extends Message> handle(RemoveBook cmd) {
+        final BookId bookId = cmd.getBookId();
+        final UserId userId = cmd.getUserId();
+        final RemoveBook.BookRemovalReasonCase bookRemovalReasonCase = cmd.getBookRemovalReasonCase();
+
+        final long currentTimeMillis = System.currentTimeMillis();
+
+
+        final Timestamp whenRemoved = Timestamp.newBuilder()
+                                               .setSeconds(currentTimeMillis / 1000)
+                                               .setNanos(
+                                                       (int) ((currentTimeMillis % 1000) * 1000000))
+                                               .build();
+
+        final BookRemoved bookRemoved = BookRemoved.newBuilder()
+                                                   .setBookId(bookId)
+                                                   .setLibrarianId(userId)
+                                                   .setWhenRemoved(whenRemoved)
+                                                   .build();
+        return singletonList(bookRemoved);
+    }
+
 }

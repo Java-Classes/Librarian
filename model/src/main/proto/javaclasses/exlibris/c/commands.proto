@@ -76,7 +76,7 @@ message UpdateBook {
 message RemoveBook {
 
     // The identifier of a book to remove.
-    BookId bok_id = 1;
+    BookId book_id = 1;
 
     // Who removes.
     UserId user_id = 2;
@@ -84,13 +84,11 @@ message RemoveBook {
     // The reason of removing book.
     //
     // A book could be removed with one of following reasons:
-    // 1. The book is lost.
-    // 2. The book is outdated.
-    // 3. Custom reason that is described by a librarian.
+    // 1. Book was outdated.
+    // 2. Custom reason that is described by librarian.
     oneof book_removal_reason {
-        bool lost = 3;
-        bool outdated = 4;
-        string custom_reason = 5;
+        bool outdated = 3;
+        string custom_reason = 4;
     }
 
     // Time when book was removed.
