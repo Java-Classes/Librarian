@@ -124,6 +124,8 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
         final BookId bookId = cmd.getBookId();
         final UserId userId = cmd.getUserId();
 
+        final RemoveBook.BookRemovalReasonCase bookRemovalReasonCase = cmd.getBookRemovalReasonCase();
+
         final long currentTimeMillis = System.currentTimeMillis();
 
         final Timestamp whenRemoved = Timestamp.newBuilder()
@@ -144,7 +146,8 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
 
     @Apply
     private void bookAdded(BookAdded event) {
-        final BookDetails bookDetails = event.getDetails();
+
+        getBuilder().setBookId(event.getBookId());
         getBuilder().setBookDetails(event.getDetails());
     }
 

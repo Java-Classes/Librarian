@@ -37,11 +37,6 @@ public class BookCommandFactory {
     private BookCommandFactory() {
     }
 
-    public static AddBook createBookInstance() {
-
-        return null;
-    }
-
 
     public static AddBook createBookInstance(BookId bookId, UserId userId, BookDetails bookDetails) {
 
