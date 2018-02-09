@@ -49,7 +49,7 @@ message Book {
 //
 message Inventory {
 
-    // The identifier of a inventory.
+    // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
     // The identifier of a book.
@@ -58,12 +58,12 @@ message Inventory {
     // A list of inventory items.
     repeated InventoryItem inventory_items = 3;
 
-    // A list of reservations for items.
+    // A list of reservations.
     //
     // If reservations are absent the list is empty.
     repeated Reservation reservations = 4;
 
-    // A list of loans for items.
+    // A list of loans.
     repeated LoanId loans = 5;
 }
 
@@ -71,7 +71,7 @@ message Inventory {
 //
 message InventoryItem {
 
-    // The identifier for the concrete item.
+    // The identifier of an item.
     InventoryItemId inventory_item_id = 1;
 
     // Item could have one of the following statuses.
@@ -89,11 +89,11 @@ message InventoryItem {
 
     // The user who is related to the book.
     //
-    // Defines a `lost` or `borrowed` book.
+    // Is defined when a book is 'borrowed' or 'lost'
     UserId user_id = 5;
 }
 
-// State for `Reservation` of the book.
+// The model of a reservation.
 //
 message Reservation {
 
@@ -107,14 +107,14 @@ message Reservation {
     google.protobuf.Timestamp when_created = 3;
 }
 
-// State for `Loan` of the book.
+// The model of a loan.
 //
 message Loan {
 
     // The identifier of a loan period.
     LoanId loan_id = 1;
 
-    // The specific item.
+    // The identifier of an item.
     InventoryItemId inventory_item_id = 2;
 
     // The user who borrowed a book.

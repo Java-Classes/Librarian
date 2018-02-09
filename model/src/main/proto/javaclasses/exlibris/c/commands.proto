@@ -37,7 +37,7 @@ import "javaclasses/exlibris/values.proto";
 // An attempt to create a new book.
 //
 // In case of a successful command propagation, the book is added.
-// not be applied to the existing book.
+// Cannot be applied to the existing book.
 //
 message AddBook {
 
@@ -74,9 +74,9 @@ message RemoveBook {
 
     // The reason of removing book.
     //
-    // The book could be removed with one of following reasons:
-    // 1. The book was lost.
-    // 2. The book was outdated.
+    // A book could be removed with one of following reasons:
+    // 1. The book is lost.
+    // 2. The book is outdated.
     // 3. Custom reason that is described by a librarian.
     oneof book_removal_reason {
         bool lost = 2;
@@ -108,10 +108,10 @@ message AppendInventory {
 
 // An attempt to borrow a book.
 //
-// In case of a successful command propagation, the book is borrowed by the user.
-// If the book was reserved, then reservation became a loan.
+// In case of a successful command propagation, a book is borrowed by a user.
+// If the book was reserved, then the reservation became a loan.
 //
-// Cannot be applied to the book that is reserved by an another user.
+// Cannot be applied to the book that is reserved by another user.
 //
 message BorrowBook {
 
@@ -153,7 +153,7 @@ message CancelReservation {
 // An attempt to extend a loan period.
 //
 // In case of a successful command propagation, the loan period is extended.
-// Will be rejected if the book has been reserved by the another user.
+// Will be rejected if the book has been reserved by another user.
 //
 message ExtendLoanPeriod {
 
@@ -168,7 +168,7 @@ message ExtendLoanPeriod {
 //
 message MarkLoanOverdue {
 
-    // The loan period that overdue.
+    // The loan that is overdue.
     LoanId loan_id = 1;
 }
 
@@ -215,7 +215,7 @@ message ReportLostBook {
     UserId who_lost = 2;
 }
 
-// An attempt to write off a book.
+// An attempt to write a book off.
 //
 // In case of a successful command propagation, the book will be written off.
 // Cannot be applied to the missing book.

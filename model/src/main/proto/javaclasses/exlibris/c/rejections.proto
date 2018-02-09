@@ -54,7 +54,7 @@ message CannotRemoveMissingBook {
     // The identifier of a book.
     BookId book_id = 1;
 
-    // Who tried to remove book.
+    // Who tried to remove a book.
     UserId user_id = 2;
 
     // The time when a librarian tried to remove a missing book.
@@ -75,7 +75,7 @@ message CannotUpdateMissingBook {
     google.protobuf.Timestamp when_rejected = 3;
 }
 
-// Rejection whena a user tries to borrow either a book that he borrowed by himself
+// Rejection when a user tries to borrow either a book that he borrowed by himself
 // or there are no available items.
 //
 message CannotBorrowBook {
@@ -112,7 +112,7 @@ message CannotReserveBook {
     // The time when a user tried to reserve a book.
     google.protobuf.Timestamp when_rejected = 3;
 
-    // The reason why a book cannot be reserved.
+    // A reason why a book cannot be reserved.
     oneof cannot_reserve_reason {
         bool borrowed = 4;
         bool already_reserved = 5;
@@ -146,7 +146,7 @@ message CannotReturnNonBorrowedBook {
     // The item that a user tried to return.
     InventoryItemId inventory_item_id = 2;
 
-    // Who tried to return the book.
+    // Who tried to return a book.
     UserId user_id = 3;
 
     // The time when user tried to return the book.

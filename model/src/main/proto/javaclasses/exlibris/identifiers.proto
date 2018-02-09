@@ -59,7 +59,7 @@ message InventoryId {
     BookId book_id = 1;
 }
 
-// The identifier of a inventory item.
+// The identifier of an inventory item.
 //
 // Represented by `BookId` and an item number.
 //
@@ -78,8 +78,8 @@ message InventoryItemId {
 //
 message LoanId {
 
-    // The automatically generated identifier based on a date of creation.
+    // The automatically generated identifier based on a date of the creation.
     //
-    // May be `currentTimeMillis`.
+    // Maybe `currentTimeMillis`.
     int64 value = 1;
 }

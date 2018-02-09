@@ -37,7 +37,7 @@ import "javaclasses/exlibris/model.proto";
 import "javaclasses/exlibris/identifiers.proto";
 import "javaclasses/exlibris/q/values.proto";
 
-// Appears after click on a book cover like a pop-up dialog.
+// The view with the main book information and a synopsis.
 //
 // Subscribed on following events:
 // 1. `BookAdded`
@@ -78,7 +78,7 @@ message CategoriesView {
 
 // The view with a compact information about book loans.
 //
-// The ibrarian sees all user’s loan periods.
+// The librarian sees all user’s loan periods.
 //
 // Subscribed on following events:
 // 1. `BookBorrowed`
@@ -95,7 +95,7 @@ message CompactBookHistory {
     repeated LoanDetails loans = 2;
 }
 
-// The view with a full information about book records.
+// The view with full information about book records.
 //
 // The librarian sees all users that borrow a book,
 // reserve, lost, return, or extend a loan period with a date of an every record.
@@ -120,7 +120,7 @@ message FullBookHistory {
 
 // The extended information about a book.
 //
-// The view contains a book information:
+// The view contains book information:
 // URL cover, book title, authors, ISBN, year of publication,
 // categories, and synopsis.
 //
@@ -134,7 +134,7 @@ message BookExtendedView {
     // The book identifier.
     BookId book_id = 1;
 
-    // The URL for a book cover.
+    // The URL of a book cover.
     spine.net.Url book_cover_url = 2;
 
     // The book title.
@@ -174,13 +174,13 @@ message BookExtendedView {
 //
 message InventoryByBookView {
 
-    // The information about a book loan.
+    // Information about a book loan.
     InventoryDetails inventory_details = 1;
 }
 
 // The view with information about an inventory.
 //
-// View contains fields with a book title, authors,
+// View contains a book title, authors,
 // available books, and amount of the overdue books.
 //
 // Subscribed on following events:
@@ -214,7 +214,7 @@ message LostBookView {
     repeated LostBook lost_books = 1;
 }
 
-// All particular users and their summary.
+// All users and their summary.
 //
 // Subscribed on following events:
 // 1. `BookBorrowed`
@@ -231,7 +231,7 @@ message ReadersView {
     repeated UserDetails user_details = 1;
 }
 
-// Contains the information about all reservations of a particular book.
+// Contains information about all reservations of a particular book.
 //
 // Subscribed on following events:
 // 1. `ReservationAdded`
@@ -257,18 +257,12 @@ message ReservationView {
 // 6. `BookReserved`
 // 7. `ReservationCanceled`
 //
-// 1. Borrowed.
-// 2. Reserved.
-// 3. Loan period extended.
-// 4. Returned.
-// 5. Lost.
-//
 message ExtendedUserHistoryView {
 
     // The  identifier of a user.
     UserId user_id = 1;
 
-    // The collection of all user’s actions.
+    // A list of all user’s actions.
     repeated InventoryItemRecord inventory_item_record = 2;
 }
 

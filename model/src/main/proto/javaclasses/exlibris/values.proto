@@ -39,7 +39,7 @@ import "spine/people/person_name.proto";
 // This code has ten or thirteen symbols.
 //
 // To increase readability the code is converted from decimal format to code with base62.
-// Base62 is based on the use of numbers and letters in the upper and lowercase.
+// Base62 is based on the use of numbers and letters in the upper and lower cases.
 //
 message Isbn62 {
 
@@ -133,7 +133,7 @@ message Year {
 //
 message WriteOffReason {
 
-    // Reasons why a librarian can write a book off.
+    // Reasons for the librarian to write a book off.
     oneof write_off_reason {
         bool lost = 1;
         bool outdated = 2;

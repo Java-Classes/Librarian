@@ -35,7 +35,7 @@ import "spine/net/url.proto";
 import "javaclasses/exlibris/identifiers.proto";
 import "javaclasses/exlibris/values.proto";
 
-// The information about a book.
+// Information about a book.
 // Contains authors, categories, and a status.
 //
 message BookItem {
@@ -71,7 +71,7 @@ message BookItem {
     }
 }
 
-// The information about a loan of a book.
+// Information about a loan of a book.
 //
 // Contains an inventory item,
 // users who borrowed a book and their taken on and due on dates.
@@ -103,15 +103,15 @@ message InventoryDetails {
     // Authors’ full names.
     AuthorName author_names = 2;
 
-    // The of an information about a location of books.
+    // A list of information about a location of books.
     repeated InventoryItemLocation items = 3;
 }
 
-// The information about a location of books.
+// Information about a book’s location.
 //
 message InventoryItemLocation {
 
-    // One of the location where a book is located.
+    // The location of a book.
     oneof book_location {
         LoanDetails loan = 1;
         bool in_library_inventory = 2;
@@ -119,7 +119,7 @@ message InventoryItemLocation {
     }
 }
 
-// The information about reservations.
+// Information about reservations.
 //
 message ReservationDetails {
 
@@ -130,9 +130,7 @@ message ReservationDetails {
     google.protobuf.Timestamp made_on = 2;
 }
 
-// The information about an inventory item record.
-//
-// Contains an inventory item, actions and an action date.
+// Information about an inventory item record.
 //
 message InventoryItemRecord {
 
@@ -154,7 +152,7 @@ message InventoryItemRecord {
     google.protobuf.Timestamp action_date = 8;
 }
 
-// The information about a history of a loan of a book.
+// Information about a history of a loan of a book.
 //
 // Contains an inventory item,
 // users who borrowed the book and their taken on, due on, and returned on dates.
@@ -177,7 +175,7 @@ message LoanDetailsHistory {
     google.protobuf.Timestamp returned_on = 5;
 }
 
-// The informaton about a book that was lost.
+// Informaton about a book that was lost.
 //
 message LostBook {
 
