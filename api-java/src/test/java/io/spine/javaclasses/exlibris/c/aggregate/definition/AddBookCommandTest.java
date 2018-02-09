@@ -2,13 +2,20 @@ package io.spine.javaclasses.exlibris.c.aggregate.definition;
 
 import com.google.protobuf.Message;
 import io.spine.net.EmailAddress;
+import io.spine.net.Url;
+import io.spine.people.PersonName;
+import javaclasses.exlibris.AuthorName;
 import javaclasses.exlibris.Book;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookId;
+import javaclasses.exlibris.BookSynopsis;
 import javaclasses.exlibris.BookTitle;
+import javaclasses.exlibris.Category;
 import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.AddBook;
+import javafx.concurrent.Task;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -19,6 +26,13 @@ import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchComma
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AddBookCommandTest extends BookCommandTest<AddBook> {
+
+
+    @Override
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+    }
 
     @Test
     @DisplayName("create the book")
@@ -35,14 +49,18 @@ public class AddBookCommandTest extends BookCommandTest<AddBook> {
         BookDetails bookDetails = BookDetails.newBuilder()
                                              .setTitle(BookTitle.newBuilder()
                                                                 .setTitle("Steve Jobs"))
-                                             
+                                                                .setAuthor(AuthorName.newBuilder().addAuthorName(PersonName.newBuilder().setFamilyName("Paul")))
+                                                                .setBookCoverUrl(Url.newBuilder().setRaw("url"))
+                                                                .setSynopsis(BookSynopsis.newBuilder().setBookSynopsis("bio"))
+                                                                .addCategories(Category.newBuilder().setValue("it"))
                                              .build();
 
         final AddBook addBook = createBookInstance(bookId, userId, bookDetails);
 
-        System.out.println(addBook);
+        dispatchCommand(aggregate, envelopeOf(addBook));
 
-        List<? extends Message> messages = dispatchCommand(aggregate, envelopeOf(addBook));
+        final Book state = aggregate.getState();
+        assertEquals(state.getBookId(), addBook.getBookId());
 
     }
 }

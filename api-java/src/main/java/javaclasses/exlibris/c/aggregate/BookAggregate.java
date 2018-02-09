@@ -23,6 +23,7 @@ package javaclasses.exlibris.c.aggregate;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.spine.server.aggregate.Aggregate;
+import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
 import javaclasses.exlibris.Book;
 import javaclasses.exlibris.BookDetails;
@@ -138,6 +139,13 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
                                                    .setWhenRemoved(whenRemoved)
                                                    .build();
         return singletonList(bookRemoved);
+    }
+
+    @Apply
+    private void bookAdded(BookAdded event) {
+
+        getBuilder().setBookId(event.getBookId());
+        getBuilder().setBookDetails(event.getDetails());
     }
 
 }
