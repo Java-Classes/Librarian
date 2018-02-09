@@ -64,7 +64,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
      *
      * @param id the ID for the new aggregate
      */
-    protected BookAggregate(BookId id) {
+    public BookAggregate(BookId id) {
         super(id);
     }
 
