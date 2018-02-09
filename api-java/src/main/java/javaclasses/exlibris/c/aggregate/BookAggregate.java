@@ -60,7 +60,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
      *
      * <p>Because of the last reason consider annotating constructors with
      * {@code @VisibleForTesting}. The package access is needed only for tests.
-     * Otherwise aggregate constructors (that are invoked by {@link }
+     * Otherwise aggregate constructors (that are invoked by {@link javaclasses.exlibris.repository.BookRepository}
      * via Reflection) may be left {@code private}.
      *
      * @param id the ID for the new aggregate

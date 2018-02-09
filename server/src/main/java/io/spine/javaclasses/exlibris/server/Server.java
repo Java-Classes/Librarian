@@ -33,7 +33,7 @@ import static io.spine.server.event.EventStore.log;
 /**
  * Sample gRPC server implementation.
  *
- * @author Illia Shepilov
+ * @author Alexander Karpets
  */
 public class Server {
 
