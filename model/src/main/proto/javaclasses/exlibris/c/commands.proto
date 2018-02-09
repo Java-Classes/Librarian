@@ -46,6 +46,8 @@ message AddBook {
 
     // Details of the new book.
     BookDetails book_details = 2;
+
+
 }
 
 // An attempt to update the book.

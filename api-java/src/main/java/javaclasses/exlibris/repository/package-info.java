@@ -18,15 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.javaclasses.exlibris.repository;
-
-
-import io.spine.server.aggregate.AggregateRepository;
-
 /**
- * Repository for the {@link }.
- *
- * @author Illia Shepilov
+ * This package provides classes for working with aggregate and projection repositories.
  */
-public class Repository extends AggregateRepository {
-}
+@ParametersAreNonnullByDefault
+package javaclasses.exlibris.repository;
+
+import javax.annotation.ParametersAreNonnullByDefault;

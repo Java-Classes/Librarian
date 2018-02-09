@@ -23,7 +23,7 @@ package io.spine.javaclasses.exlibris.server;
 import java.io.IOException;
 
 import static io.spine.client.ConnectionConstants.DEFAULT_CLIENT_SERVICE_PORT;
-import static io.spine.javaclasses.exlibris.context.BoundedContexts.create;
+import static javaclasses.exlibris.context.BoundedContexts.create;
 import static io.spine.javaclasses.exlibris.server.Server.newServer;
 
 /**

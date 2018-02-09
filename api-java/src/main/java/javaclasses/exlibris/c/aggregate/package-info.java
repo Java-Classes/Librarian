@@ -19,9 +19,9 @@
  */
 
 /**
- * This package provides implementation for the application context.
+ * This package provides implementation for aggregate classes.
  */
 @ParametersAreNonnullByDefault
-package io.spine.javaclasses.exlibris.context;
+package javaclasses.exlibris.c.aggregate;
 
 import javax.annotation.ParametersAreNonnullByDefault;

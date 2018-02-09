@@ -19,10 +19,9 @@
  */
 
 /**
- * This package contains implementation for classes which provides
- * methods to process aggregates and projection.
+ * This package provides implementation for the application context.
  */
 @ParametersAreNonnullByDefault
-package io.spine.javaclasses.exlibris;
+package javaclasses.exlibris.context;
 
 import javax.annotation.ParametersAreNonnullByDefault;

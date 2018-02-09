@@ -18,10 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.javaclasses.exlibris.context;
+package javaclasses.exlibris.context;
 
 import com.google.common.annotations.VisibleForTesting;
-import io.spine.javaclasses.exlibris.repository.Repository;
+import javaclasses.exlibris.repository.Repository;
 import io.spine.server.BoundedContext;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;

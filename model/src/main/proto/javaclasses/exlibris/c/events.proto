@@ -303,7 +303,7 @@ message BookAdded {
     BookId book_id = 1;
 
     // Book details.
-    BookDetails book = 2;
+    BookDetails details = 2;
 
     // Librarian who added the book.
     UserId librarian_id = 3;

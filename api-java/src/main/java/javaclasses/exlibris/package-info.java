@@ -19,9 +19,10 @@
  */
 
 /**
- * This package provides implementation for aggregate classes.
+ * This package contains implementation for classes which provides
+ * methods to process aggregates and projection.
  */
 @ParametersAreNonnullByDefault
-package io.spine.javaclasses.exlibris.c.aggregate;
+package javaclasses.exlibris;
 
 import javax.annotation.ParametersAreNonnullByDefault;
