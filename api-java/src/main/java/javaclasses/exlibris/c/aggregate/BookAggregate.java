@@ -21,6 +21,7 @@
 package javaclasses.exlibris.c.aggregate;
 
 import com.google.protobuf.Message;
+import com.google.protobuf.Timestamp;
 import io.spine.net.EmailAddress;
 import javaclasses.exlibris.Book;
 import javaclasses.exlibris.BookDetails;
@@ -30,10 +31,12 @@ import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.AddBook;
 
 import java.util.List;
+import static java.util.Collections.singletonList;
 
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
+import javaclasses.exlibris.c.BookAdded;
 
 public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     /**
@@ -49,7 +52,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
      *
      * <p>Because of the last reason consider annotating constructors with
      * {@code @VisibleForTesting}. The package access is needed only for tests.
-     * Otherwise aggregate constructors (that are invoked by {@link AggregateRepository}
+     * Otherwise aggregate constructors (that are invoked by {@link }
      * via Reflection) may be left {@code private}.
      *
      * @param id the ID for the new aggregate
@@ -59,16 +62,22 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
     @Assign
     List<? extends Message> handle(AddBook cmd) {
-        final BookId taskId = cmd.getBookId();
-        final UserId.Builder userId =  UserId.newBuilder()
-                                             .setEmail(EmailAddress.newBuilder()
-                                             .setValue("yuraZoikovich@gmail.com"));
-        final BookDetails.Builder taskDetails = BookDetails.newBuilder()
-                                                           .
-        final TaskCreated result = TaskCreated.newBuilder()
-                                              .setId(taskId)
-                                              .setDetails(taskDetails)
-                                              .build();
+        final BookId bookId = cmd.getBookId();
+        final UserId userId =  cmd.getUserId();
+        final BookDetails bookDetails = cmd.getBookDetails();
+
+        final long currentTimeMillis = System.currentTimeMillis();
+        final Timestamp whenAdded = Timestamp.newBuilder()
+                                             .setSeconds(currentTimeMillis / 1000)
+                                             .setNanos((int) ((currentTimeMillis % 1000) * 1000000)).build();
+
+        final BookAdded result = BookAdded.newBuilder()
+                                            .setBookId(bookId)
+                                            .setLibrarianId(userId)
+                                            .setDetails(bookDetails)
+                                            .setWhenAdded(whenAdded)
+                                            .build();
+
         return singletonList(result);
     }
 }
