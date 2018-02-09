@@ -196,3 +196,23 @@ message LostBook {
     // The time when was reported about book losing.
     google.protobuf.Timestamp reported_on = 5;
 }
+
+// Information about the user.
+//
+message UserDetails {
+
+    // An identifier of the user.
+    UserId user_id = 1;
+
+    // A name of user in the library.
+    string username = 2;
+
+    // The count of borrowed by user books now.
+    int32 count_of_borrowed_books = 3;
+
+    // The count of reserved by user books now.
+    int32 count_of_reserved_books = 4;
+
+    // The count of books that user return with lateness or hasn’t return at all.
+    int32 count_of_overdue_books = 5;
+}
