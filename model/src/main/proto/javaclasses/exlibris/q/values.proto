@@ -35,33 +35,33 @@ import "spine/net/url.proto";
 import "javaclasses/exlibris/identifiers.proto";
 import "javaclasses/exlibris/values.proto";
 
-// Information about the book.
-// Contains authors, categories, and status.
+// Information about a book.
+// Contains authors, categories, and a status.
 //
 message BookItem {
 
-    // An identifier of the book.
+    // The identifier of a book.
     BookId book_id = 1;
 
-    // Book cover.
+    // The book cover.
     spine.net.Url book_cover_url = 2;
 
-    // Book title.
+    // The book title.
     BookTitle title = 3;
 
-    // Categories of the book.
+    // Categories of a book.
     repeated Category categories = 4;
 
-    // List of the author full names.
+    // Authors’ full names.
     AuthorName author = 5;
 
     // The book can has one of the following status:
     //
-    // 1. Borrowed — when book is borrowed by user.
-    // 2. Reserved — when book is reserved by user.
-    // 3. Available — when book is available to borrow or reserve.
-    // 4. Expected soon — when book is not available now, but user can reserve it.
-    // 5. Overdue — when book was borrowed by user but still not returned.
+    // 1. Borrowed — when a book is borrowed by a user.
+    // 2. Reserved — when a book is reserved by a user.
+    // 3. Available — when a book is available to borrow or reserve.
+    // 4. Expected soon — when a book is not available now, but a user can reserve it.
+    // 5. Overdue — when a book was borrowed by a user but still not returned.
     oneof book_status {
         bool borrowed = 6;
         bool reserved = 7;
@@ -71,17 +71,17 @@ message BookItem {
     }
 }
 
-// Information about the loan of the book.
+// Information about a loan of a book.
 //
-// Contains inventory item,
-// users who borrowed the book and their taken on and due on dates.
+// Contains an inventory item,
+// users who borrowed a book and their taken on and due on dates.
 //
 message LoanDetails {
 
-    // The identifier of the book.
+    // The identifier of a book.
     InventoryItemId inventory_item_id = 1;
 
-    // The identifier is represented by user's email address.
+    // Represented by a user's email address.
     UserId user_id = 2;
 
     // The time when the book was borrowed.
@@ -91,27 +91,27 @@ message LoanDetails {
     google.protobuf.Timestamp when_due = 4;
 }
 
-// Detailed information about the inventory.
+// The detailed information about an inventory.
 //
-// Contains book title, authors, book location.
+// Contains a book title, authors, and a book location.
 //
 message InventoryDetails {
 
-    // Book title.
+    // The book title.
     BookTitle book_title = 1;
 
-    // List of the author full names.
+    // Authors’ full names.
     AuthorName author_names = 2;
 
-    // List of information about the location of books.
+    // A list of information about a location of books.
     repeated InventoryItemLocation items = 3;
 }
 
-// Information about the location of books.
+// Information about a book location.
 //
 message InventoryItemLocation {
 
-    // One of the location where the book is located.
+    // The location of a book.
     oneof book_location {
         LoanDetails loan = 1;
         bool in_library_inventory = 2;
@@ -123,26 +123,24 @@ message InventoryItemLocation {
 //
 message ReservationDetails {
 
-    // The identifier of the user who reserved the book.
+    // Who reserved a book.
     UserId user_id = 1;
 
-    // Time when user reserved the book.
+    // The time when a user reserved a book.
     google.protobuf.Timestamp made_on = 2;
 }
 
-// Information about inventory item record.
-//
-// Contains inventory item, actions and action date.
+// Information about an inventory item record.
 //
 message InventoryItemRecord {
 
-    // The identifier is represented by book ID and item number.
+    // Represented by a book ID and an item number.
     InventoryItemId inventory_item_id = 1;
 
-    // The identifier is represented by user's email address.
+    // Represented by a user's email address.
     UserId user_id = 2;
 
-    // One of the actions is assigned to the inventory item.
+    // One of the actions is assigned to an inventory item.
     oneof book_record {
         bool borrowed = 3;
         bool reserved = 4;
@@ -150,47 +148,47 @@ message InventoryItemRecord {
         bool returned = 6;
         bool lost = 7;
     }
-    // The time when the action was did.
+    // The time when an action was did.
     google.protobuf.Timestamp action_date = 8;
 }
 
-// Information about the history of the loan of the book.
+// Information about a history of a loan of a book.
 //
-// Contains inventory item,
+// Contains an inventory item,
 // users who borrowed the book and their taken on, due on, and returned on dates.
 //
 message LoanDetailsHistory {
 
-    // The identifier of the book.
+    // The identifier of a book.
     InventoryItemId inventory_item_id = 1;
 
-    // The identifier is represented by user's email address.
+    // Represented by a user's email address.
     UserId user_id = 2;
 
-    // The time when book was borrowed.
+    // The time when a book was borrowed.
     google.protobuf.Timestamp when_taken = 3;
 
-    // The time when book should be returned.
+    // The time when a book should be returned.
     google.protobuf.Timestamp when_due = 4;
 
-    // The time when the book was returned.
+    // The time when a book was returned.
     google.protobuf.Timestamp returned_on = 5;
 }
 
-// Informaton about the book that was lost.
+// Informaton about a book that was lost.
 //
 message LostBook {
 
-    // The identifier of the book that was lost.
+    // The identifier of a book that was lost.
     InventoryItemId inventory_item_id = 1;
 
-    // The title of the book that was lost.
+    // The title of a book that was lost.
     BookTitle book_title = 2;
 
-    // List of the author full names.
+    // Authors’ full names.
     AuthorName author_names = 3;
 
-    // The identifier of the user who lost the book.
+    // Who lost a book.
     UserId user_id = 4;
 
     // The time when was reported about book losing.
