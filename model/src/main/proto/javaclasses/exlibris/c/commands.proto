@@ -44,8 +44,11 @@ message AddBook {
     // An identifier of the book to create.
     BookId book_id = 1;
 
+    // Who adds.
+    UserId user_id = 2;
+
     // Details of the new book.
-    BookDetails book_details = 2;
+    BookDetails book_details = 3;
 
 
 }
@@ -60,8 +63,11 @@ message UpdateBook {
     // An identifier of the book to update.
     BookId book_id = 1;
 
+    // Who updates.
+    UserId user_id = 2;
+
     // New details for the existed book.
-    BookDetails book_details = 2;
+    BookDetails book_details = 3;
 }
 
 // An attempt to remove the book.
@@ -74,6 +80,9 @@ message RemoveBook {
     // An identifier of a book to remove.
     BookId bok_id = 1;
 
+    // Who removes.
+    UserId user_id = 2;
+
     // The reason of removing book.
     //
     // Book could be remove with one of the next reason:
@@ -81,13 +90,13 @@ message RemoveBook {
     // 2. Book was outdated.
     // 3. Custom reason that is described by librarian.
     oneof book_removal_reason {
-        bool lost = 2;
-        bool outdated = 3;
-        string custom_reason = 4;
+        bool lost = 3;
+        bool outdated = 4;
+        string custom_reason = 5;
     }
 
     // Time when book was removed.
-    google.protobuf.Timestamp when_removed = 5;
+    google.protobuf.Timestamp when_removed = 6;
 }
 
 // Append the book inventory.
