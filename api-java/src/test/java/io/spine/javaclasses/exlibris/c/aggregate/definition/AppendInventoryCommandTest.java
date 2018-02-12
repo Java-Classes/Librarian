@@ -47,7 +47,6 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
     }
 
     @Test
-    @DisplayName("produce BookAdded event")
     void produceEvent() {
         final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
 
