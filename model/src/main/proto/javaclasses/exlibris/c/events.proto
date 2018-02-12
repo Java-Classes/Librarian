@@ -349,16 +349,16 @@ message BookRemoved {
     // Who removes a book.
     UserId librarian_id = 2;
 
-    // The time when book was removed.
-    google.protobuf.Timestamp when_removed = 3;
-
     // The reason of removing book.
     //
     // Book could be removed with one of the following reasons:
     // 1. Book is outdated.
     // 2. Custom reason which is described by librarian.
     oneof book_removal_reason {
-        bool outdated = 4;
-        string custom_reason = 5;
+        bool outdated = 3;
+        string custom_reason = 4;
     }
+
+    // The time when book was removed.
+    google.protobuf.Timestamp when_removed = 5;
 }
