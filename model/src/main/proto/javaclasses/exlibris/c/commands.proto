@@ -169,8 +169,11 @@ message ExtendLoanPeriod {
     // The loan that is planned to extend.
     LoanId loan_id = 1;
 
+    // Who extends the loan.
+    UserId user_id = 2;
+
     // New due date of the loan.
-    google.protobuf.Timestamp new_due_date = 2;
+    google.protobuf.Timestamp new_due_date = 3;
 }
 
 //  Marks the loan period as overdue if the user hasn't return a book in time.

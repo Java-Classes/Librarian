@@ -183,11 +183,14 @@ message LoanPeriodExtended {
     // The identifier of a loan.
     LoanId loan_id = 2;
 
+    // Who extended.
+    UserId user_id = 3;
+
     // The timestamp of a previous due date.
-    google.protobuf.Timestamp previous_due_date = 3;
+    google.protobuf.Timestamp previous_due_date = 4;
 
     // The timestamp of a new due date.
-    google.protobuf.Timestamp new_due_date = 4;
+    google.protobuf.Timestamp new_due_date = 5;
 }
 
 // An event fired when a user returns a book.
