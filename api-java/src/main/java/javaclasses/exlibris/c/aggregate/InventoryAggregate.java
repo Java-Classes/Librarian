@@ -23,12 +23,16 @@ package javaclasses.exlibris.c.aggregate;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.spine.server.aggregate.Aggregate;
+import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
+import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.InventoryId;
+import javaclasses.exlibris.InventoryItem;
 import javaclasses.exlibris.InventoryItemId;
 import javaclasses.exlibris.InventoryVBuilder;
 import javaclasses.exlibris.LoanId;
+import javaclasses.exlibris.Reservation;
 import javaclasses.exlibris.Rfid;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
@@ -49,6 +53,15 @@ import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
+
+@SuppressWarnings({"ClassWithTooManyMethods", /* Task definition cannot be separated and should
+                                                 process all commands and events related to it
+                                                 according to the domain model.
+                                                 The {@code Aggregate} does it with methods
+                                                 annotated as {@code Assign} and {@code Apply}.
+                                                 In that case class has too many methods.*/
+        "OverlyCoupledClass"}) /* As each method needs dependencies  necessary to perform execution
+                                                 that class also overly coupled.*/
 
 public class InventoryAggregate extends Aggregate<InventoryId, Inventory, InventoryVBuilder> {
     /**
@@ -170,5 +183,44 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                             .build();
 
         return singletonList(result);
+    }
+
+    @Apply
+    private void inventoryAppended(InventoryAppended event) {
+
+        final InventoryItem newInventoryItem = InventoryItem.newBuilder()
+                                                            .setBorrowed(false)
+                                                            .setInLibrary(true)
+                                                            .setLost(false)
+                                                            .setInventoryItemId(
+                                                                    event.getInventoryItemId())
+                                                            .build();
+        getBuilder().addInventoryItems(newInventoryItem);
+    }
+
+    @Apply
+    private void inventoryDecreased(InventoryDecreased event) {
+        final List<InventoryItem> inventoryItems = getBuilder().getInventoryItems();
+        int decreaseItemPosition = -1;
+        for (int i = 0; i < inventoryItems.size(); i++) {
+            InventoryItem item = inventoryItems.get(i);
+            if (item.getInventoryItemId() == event.getInventoryItemId()) {
+                decreaseItemPosition = i;
+            }
+        }
+        getBuilder().removeInventoryItems(decreaseItemPosition);
+    }
+
+    @Apply
+    private void reservationAdded(ReservationAdded event) {
+        final Reservation newReservation = Reservation.newBuilder()
+                                             .setBookId(BookId.newBuilder()
+                                                              .setIsbn62(event.getInventoryId()
+                                                                              .getBookId()
+                                                                              .getIsbn62()))
+                                             .setWhenCreated(event.getWhenCreated())
+                                             .setWhoReserved(event.getForWhomReserved())
+                                             .build();
+        getBuilder().addReservations(newReservation);
     }
 }
