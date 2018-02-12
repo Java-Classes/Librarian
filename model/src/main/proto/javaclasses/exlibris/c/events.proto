@@ -38,7 +38,7 @@ import "google/protobuf/timestamp.proto";
 //
 message InventoryCreated {
 
-    // The identifier of a inventory.
+    // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
     // When inventory was created.
@@ -93,7 +93,7 @@ message BookBecameAvailable {
 //
 message BookReadyToPickup {
 
-    // The identifier of a inventory.
+    // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
     // The identifier of an inventory item which became ready to pickup.
@@ -183,11 +183,14 @@ message LoanPeriodExtended {
     // The identifier of a loan.
     LoanId loan_id = 2;
 
+    // Who extended.
+    UserId user_id = 3;
+
     // The timestamp of a previous due date.
-    google.protobuf.Timestamp previous_due_date = 3;
+    google.protobuf.Timestamp previous_due_date = 4;
 
     // The timestamp of a new due date.
-    google.protobuf.Timestamp new_due_date = 4;
+    google.protobuf.Timestamp new_due_date = 5;
 }
 
 // An event fired when a user returns a book.
@@ -346,16 +349,16 @@ message BookRemoved {
     // Who removes a book.
     UserId librarian_id = 2;
 
-    // The time when book was removed.
-    google.protobuf.Timestamp when_removed = 3;
-
     // The reason of removing book.
     //
     // Book could be removed with one of the following reasons:
     // 1. Book is outdated.
     // 2. Custom reason which is described by librarian.
     oneof book_removal_reason {
-        bool outdated = 4;
-        string custom_reason = 5;
+        bool outdated = 3;
+        string custom_reason = 4;
     }
+
+    // The time when book was removed.
+    google.protobuf.Timestamp when_removed = 5;
 }
