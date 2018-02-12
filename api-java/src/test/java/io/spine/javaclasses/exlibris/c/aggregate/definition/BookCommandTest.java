@@ -30,12 +30,15 @@ import javaclasses.exlibris.c.aggregate.BookAggregate;
 
 import static io.spine.Identifier.newUuid;
 
+/**
+ * @author Paul Ageyev
+ */
 abstract class BookCommandTest<C extends Message> extends AggregateCommandTest<C, BookAggregate> {
 
     private final TestActorRequestFactory requestFactory =
             TestActorRequestFactory.newInstance(getClass());
 
-    BookAggregate aggregate ;
+    BookAggregate aggregate;
     BookId bookId;
 
     @Override
@@ -46,7 +49,7 @@ abstract class BookCommandTest<C extends Message> extends AggregateCommandTest<C
 
     @Override
     protected BookAggregate createAggregate() {
-        bookId = createTaskId();
+        bookId = createBookId();
         return new BookAggregate(bookId);
     }
 
@@ -55,9 +58,12 @@ abstract class BookCommandTest<C extends Message> extends AggregateCommandTest<C
                                                 .create(commandMessage));
     }
 
-    private static BookId createTaskId() {
+    private static BookId createBookId() {
 
-        return BookId.newBuilder().setIsbn62(Isbn62.newBuilder().setValue("123456")).build();
+        return BookId.newBuilder()
+                     .setIsbn62(Isbn62.newBuilder()
+                                      .setValue(newUuid()))
+                     .build();
     }
 }
 
