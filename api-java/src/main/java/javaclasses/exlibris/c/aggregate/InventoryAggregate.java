@@ -54,6 +54,11 @@ import java.util.List;
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
 
+/**
+ * @author Alexander Karpets
+ * @author Paul Ageyev
+ */
+
 @SuppressWarnings({"ClassWithTooManyMethods", /* Task definition cannot be separated and should
                                                  process all commands and events related to it
                                                  according to the domain model.
@@ -214,13 +219,14 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Apply
     private void reservationAdded(ReservationAdded event) {
         final Reservation newReservation = Reservation.newBuilder()
-                                             .setBookId(BookId.newBuilder()
-                                                              .setIsbn62(event.getInventoryId()
-                                                                              .getBookId()
-                                                                              .getIsbn62()))
-                                             .setWhenCreated(event.getWhenCreated())
-                                             .setWhoReserved(event.getForWhomReserved())
-                                             .build();
+                                                      .setBookId(BookId.newBuilder()
+                                                                       .setIsbn62(
+                                                                               event.getInventoryId()
+                                                                                    .getBookId()
+                                                                                    .getIsbn62()))
+                                                      .setWhenCreated(event.getWhenCreated())
+                                                      .setWhoReserved(event.getForWhomReserved())
+                                                      .build();
         getBuilder().addReservations(newReservation);
     }
 }

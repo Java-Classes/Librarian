@@ -41,15 +41,23 @@ import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
-/*
- *
+
+/**
  * The aggregate managing the state of a {@link Book}.
  *
  * @author Alexander Karpets
+ * @author Paul Ageyev
  */
 
-public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
-    /*
+@SuppressWarnings({"ClassWithTooManyMethods", /* Task definition cannot be separated and should
+                                                 process all commands and events related to it
+                                                 according to the domain model.
+                                                 The {@code Aggregate} does it with methods
+                                                 annotated as {@code Assign} and {@code Apply}.
+                                                 In that case class has too many methods.*/
+        "OverlyCoupledClass"}) /* As each method needs dependencies  necessary to perform execution
+                                                 that class also overly coupled.*/
+
 public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     /**
      * Creates a new instance.
