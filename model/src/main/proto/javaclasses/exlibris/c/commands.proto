@@ -45,7 +45,7 @@ message AddBook {
     BookId book_id = 1;
 
     // Who adds.
-    UserId user_id = 2;
+    UserId librarian_id = 2;
 
     // Details of the new book.
     BookDetails book_details = 3;
@@ -62,7 +62,7 @@ message UpdateBook {
     BookId book_id = 1;
 
     // Who updates.
-    UserId user_id = 2;
+    UserId librarian_id = 2;
 
     // New details for the existed book.
     BookDetails book_details = 3;
@@ -79,7 +79,7 @@ message RemoveBook {
     BookId book_id = 1;
 
     // Who removes.
-    UserId user_id = 2;
+    UserId librarian_id = 2;
 
     // The reason of removing book.
     //
@@ -220,11 +220,14 @@ message ReturnBook {
 //
 message ReportLostBook {
 
+    // The identifier of an inventory.
+    InventoryId intentory_id = 1;
+
     // The identifier of a lost book.
-    InventoryItemId inventory_item_id = 1;
+    InventoryItemId inventory_item_id = 2;
 
     // Who has lost the book.
-    UserId who_lost = 2;
+    UserId who_lost = 3;
 }
 
 // An attempt to write a book off.
