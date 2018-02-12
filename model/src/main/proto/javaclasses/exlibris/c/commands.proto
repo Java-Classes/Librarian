@@ -91,8 +91,8 @@ message RemoveBook {
         string custom_reason = 4;
     }
 
-    // Time when book was removed.
-    google.protobuf.Timestamp when_removed = 6;
+    // The time when a book was removed.
+    google.protobuf.Timestamp when_removed = 5;
 }
 
 // Append a book inventory.
