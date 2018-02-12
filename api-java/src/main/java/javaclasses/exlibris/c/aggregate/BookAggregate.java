@@ -142,12 +142,16 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
                            .build();
                 break;
             }
-            default: {
+            case CUSTOM_REASON: {
                 bookRemoved.toBuilder()
                            .setCustomReason(customReason)
                            .build();
                 break;
-            }
+            } // TODO 12-Feb-2018[Dmytry Dyachenko]: write the rejection below
+/*            case BOOKREMOVALREASON_NOT_SET: {
+
+                break;
+            }*/
 
         }
         return singletonList(bookRemoved);
@@ -156,7 +160,26 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     @Apply
     private void bookAdded(BookAdded event) {
 
-        getBuilder().setBookId(event.getBookId());
-        getBuilder().setBookDetails(event.getDetails());
+        final BookId bookId = event.getBookId();
+        final BookDetails bookDetails = event.getDetails();
+
+        getBuilder().setBookId(bookId)
+                    .setBookDetails(bookDetails);
+    }
+
+    @Apply
+    private void bookUpdated(BookUpdated event) {
+
+        final BookDetails newBookDetails = event.getNewBookDetails();
+
+        getBuilder().setBookDetails(newBookDetails);
+    }
+
+    @Apply
+    private void bookRemoved(BookRemoved event) {
+
+        getBuilder().clearBookId()
+                    .clearBookDetails();
+
     }
 }
