@@ -38,7 +38,7 @@ import "google/protobuf/timestamp.proto";
 //
 message InventoryCreated {
 
-    // The identifier of a inventory.
+    // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
     // When inventory was created.
@@ -93,7 +93,7 @@ message BookBecameAvailable {
 //
 message BookReadyToPickup {
 
-    // The identifier of a inventory.
+    // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
     // The identifier of an inventory item which became ready to pickup.

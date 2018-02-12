@@ -102,7 +102,7 @@ message RemoveBook {
 //
 message AppendInventory {
 
-    // The identifier of a inventory.
+    // The identifier of an inventory.
     InventoryId intentory_id = 1;
 
     // The identifier of an added item.
@@ -124,11 +124,14 @@ message AppendInventory {
 //
 message BorrowBook {
 
+    // The identifier of an inventory.
+    InventoryId intentory_id = 1;
+
     // The item that is planned to borrow.
-    InventoryItemId intentory_item_id = 1;
+    InventoryItemId intentory_item_id = 2;
 
     // Who borrows the book.
-    UserId user_id = 2;
+    UserId user_id = 3;
 }
 
 // An attempt to reserve a book.
@@ -166,22 +169,27 @@ message CancelReservation {
 //
 message ExtendLoanPeriod {
 
+    // The identifier of an inventory.
+    InventoryId intentory_id = 1;
     // The loan that is planned to extend.
-    LoanId loan_id = 1;
+    LoanId loan_id = 2;
 
     // Who extends the loan.
-    UserId user_id = 2;
+    UserId user_id = 3;
 
     // New due date of the loan.
-    google.protobuf.Timestamp new_due_date = 3;
+    google.protobuf.Timestamp new_due_date = 4;
 }
 
 //  Marks the loan period as overdue if the user hasn't return a book in time.
 //
 message MarkLoanOverdue {
 
+    // The identifier of an inventory.
+    InventoryId intentory_id = 1;
+
     // The loan that is overdue.
-    LoanId loan_id = 1;
+    LoanId loan_id = 2;
 }
 
 // Mark the reservation as expired.

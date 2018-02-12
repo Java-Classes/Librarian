@@ -42,7 +42,7 @@ public class BookCommandFactory {
 
         final AddBook result = AddBook.newBuilder()
                                           .setBookId(bookId)
-                                          .setUserId(userId)
+                                          .setLibrarianId(userId)
                                           .setBookDetails(bookDetails).build();
 
         return result;

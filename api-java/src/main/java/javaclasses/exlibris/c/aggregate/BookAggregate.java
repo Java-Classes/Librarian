@@ -77,7 +77,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     List<? extends Message> handle(AddBook cmd) {
 
         final BookId bookId = cmd.getBookId();
-        final UserId userId = cmd.getUserId();
+        final UserId userId = cmd.getLibrarianId();
         final BookDetails bookDetails = cmd.getBookDetails();
 
         final long currentTimeMillis = System.currentTimeMillis();
@@ -101,7 +101,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     List<? extends Message> handle(UpdateBook cmd) {
 
         final BookId bookId = cmd.getBookId();
-        final UserId userId = cmd.getUserId();
+        final UserId userId = cmd.getLibrarianId();
 
         final BookDetails bookDetails = cmd.getBookDetails();
 
@@ -125,7 +125,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     List<? extends Message> handle(RemoveBook cmd) {
 
         final BookId bookId = cmd.getBookId();
-        final UserId userId = cmd.getUserId();
+        final UserId userId = cmd.getLibrarianId();
 
         final RemoveBook.BookRemovalReasonCase reasonCase = cmd.getBookRemovalReasonCase();
 
