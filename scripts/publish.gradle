@@ -26,7 +26,7 @@ task sourceJar(type: Jar) {
 }
 
 task javadocJar(type: Jar, dependsOn: 'javadoc') {
-    from ("$projectDir/build/docs/javadoc")
+    from("$projectDir/build/docs/javadoc")
     classifier "javadoc"
 }
 

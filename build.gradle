@@ -20,7 +20,7 @@
 
 buildscript {
     apply from: 'ext.gradle'
-    
+
     ext {
         spineRepository = 'http://maven.teamdev.com/repository/spine'
         spineSnapshotsRepository = 'http://maven.teamdev.com/repository/spine-snapshots'
@@ -94,7 +94,8 @@ allprojects {
     repositories {
         jcenter()
         maven {
-            url 'https://maven-central.storage.googleapis.com'             // Google's mirror of Maven Central
+            url 'https://maven-central.storage.googleapis.com'
+            // Google's mirror of Maven Central
             //   url 'https://oss.sonatype.org/content/repositories/snapshots' // SNAPSHOT Repository (if needed)
         }
 
@@ -196,7 +197,7 @@ subprojects {
     configurations.all {
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     }
-    
+
     sourceSets {
         main {
             proto.srcDirs = ["${sourcesRootDir}/main/proto"]

@@ -21,7 +21,6 @@
 package javaclasses.exlibris.c.aggregate;
 
 import com.google.protobuf.Message;
-import com.google.protobuf.Timestamp;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
@@ -85,21 +84,14 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     List<? extends Message> handle(AddBook cmd) {
 
         final BookId bookId = cmd.getBookId();
-        final UserId userId = cmd.getLibrarianId();
+        final UserId userId = cmd.getUserId();
         final BookDetails bookDetails = cmd.getBookDetails();
-
-        final long currentTimeMillis = System.currentTimeMillis();
-        final Timestamp whenAdded = Timestamp.newBuilder()
-                                             .setSeconds(currentTimeMillis / 1000)
-                                             .setNanos(
-                                                     (int) ((currentTimeMillis % 1000) * 1000000))
-                                             .build();
 
         final BookAdded result = BookAdded.newBuilder()
                                           .setBookId(bookId)
                                           .setLibrarianId(userId)
                                           .setDetails(bookDetails)
-                                          .setWhenAdded(whenAdded)
+                                          .setWhenAdded(getCurrentTime())
                                           .build();
 
         return singletonList(result);
@@ -109,21 +101,15 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     List<? extends Message> handle(UpdateBook cmd) {
 
         final BookId bookId = cmd.getBookId();
-        final UserId userId = cmd.getLibrarianId();
+        final UserId userId = cmd.getUserId();
 
         final BookDetails bookDetails = cmd.getBookDetails();
-
-        final long currentTimeMillis = System.currentTimeMillis();
-        final Timestamp whenAdded = Timestamp.newBuilder()
-                                             .setSeconds(currentTimeMillis / 1000)
-                                             .setNanos((int) ((currentTimeMillis % 1000) * 1000000))
-                                             .build();
 
         final BookUpdated result = BookUpdated.newBuilder()
                                               .setBookId(bookId)
                                               .setLibrarianId(userId)
                                               .setNewBookDetails(bookDetails)
-                                              .setWhenUpdated(whenAdded)
+                                              .setWhenUpdated(getCurrentTime())
                                               .build();
 
         return singletonList(result);
@@ -133,9 +119,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     List<? extends Message> handle(RemoveBook cmd) {
 
         final BookId bookId = cmd.getBookId();
-        final UserId userId = cmd.getLibrarianId();
-
-        final RemoveBook.BookRemovalReasonCase reasonCase = cmd.getBookRemovalReasonCase();
+        final UserId userId = cmd.getUserId();
 
         final String customReason = cmd.getCustomReason();
 
@@ -157,11 +141,14 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
                            .setCustomReason(customReason)
                            .build();
                 break;
-            }
+            } // TODO 12-Feb-2018[Dmytry Dyachenko]: write the rejection below
 /*            case BOOKREMOVALREASON_NOT_SET: {
 
                 break;
             }*/
+            default: {
+                break;
+            }
 
         }
         return singletonList(bookRemoved);
@@ -170,7 +157,26 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     @Apply
     private void bookAdded(BookAdded event) {
 
-        getBuilder().setBookId(event.getBookId())
-                    .setBookDetails(event.getDetails());
+        final BookId bookId = event.getBookId();
+        final BookDetails bookDetails = event.getDetails();
+
+        getBuilder().setBookId(bookId)
+                    .setBookDetails(bookDetails);
     }
+
+  /*  @Apply
+    private void bookUpdated(BookUpdated event) {
+
+        final BookDetails newBookDetails = event.getNewBookDetails();
+
+        getBuilder().setBookDetails(newBookDetails);
+    }
+
+    @Apply
+    private void bookRemoved(BookRemoved event) {
+
+        getBuilder().clearBookId()
+                    .clearBookDetails();
+
+    }*/
 }
