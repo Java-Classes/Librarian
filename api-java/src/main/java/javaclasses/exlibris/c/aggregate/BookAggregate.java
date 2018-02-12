@@ -111,8 +111,6 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
         final BookId bookId = cmd.getBookId();
         final UserId userId = cmd.getUserId();
 
-        final RemoveBook.BookRemovalReasonCase reasonCase = cmd.getBookRemovalReasonCase();
-
         final String customReason = cmd.getCustomReason();
 
         final BookRemoved bookRemoved = BookRemoved.newBuilder()
@@ -138,6 +136,9 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
 
                 break;
             }*/
+            default: {
+                break;
+            }
 
         }
         return singletonList(bookRemoved);
@@ -153,7 +154,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
                     .setBookDetails(bookDetails);
     }
 
-    @Apply
+  /*  @Apply
     private void bookUpdated(BookUpdated event) {
 
         final BookDetails newBookDetails = event.getNewBookDetails();
@@ -167,5 +168,5 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
         getBuilder().clearBookId()
                     .clearBookDetails();
 
-    }
+    }*/
 }
