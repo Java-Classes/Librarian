@@ -20,33 +20,69 @@
 
 package io.spine.javaclasses.exlibris.testdata;
 
-import com.google.protobuf.Timestamp;
 import io.spine.net.EmailAddress;
-import javaclasses.exlibris.Book;
+import io.spine.net.Url;
+import io.spine.people.PersonName;
+import javaclasses.exlibris.AuthorName;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookId;
+import javaclasses.exlibris.BookSynopsis;
 import javaclasses.exlibris.BookTitle;
+import javaclasses.exlibris.Category;
 import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.AddBook;
-import javaclasses.exlibris.c.BookAdded;
 
+/**
+ * @author Paul Ageyev
+ */
 public class BookCommandFactory {
 
+    public static final BookId bookId = BookId.newBuilder()
+                                              .setIsbn62(Isbn62.newBuilder()
+                                                               .setValue("0201485672"))
+                                              .build();
+    public static final UserId userId = UserId.newBuilder()
+                                              .setEmail(EmailAddress.newBuilder()
+                                                                    .setValue(
+                                                                            "paulageyev@gmail.com"))
+                                              .build();
+    public static final BookDetails bookDetails = BookDetails.newBuilder()
+                                                             .setTitle(BookTitle.newBuilder()
+                                                                                .setTitle(
+                                                                                        "Refactoring"))
+                                                             .setAuthor(AuthorName.newBuilder()
+                                                                                  .addAuthorName(
+                                                                                          PersonName.newBuilder()
+                                                                                                    .setFamilyName(
+                                                                                                            "Martin Fowler")))
+                                                             .setBookCoverUrl(Url.newBuilder()
+                                                                                 .setRaw("http://library.teamdev.com/book/1"))
+                                                             .setSynopsis(BookSynopsis.newBuilder()
+                                                                                      .setBookSynopsis(
+                                                                                              "As the application of object " +
+                                                                                                      "technology--particularly the Java programming language"))
+                                                             .addCategories(Category.newBuilder()
+                                                                                    .setValue(
+                                                                                            "Programming"))
+                                                             .build();
 
     private BookCommandFactory() {
     }
 
-
-    public static AddBook createBookInstance(BookId bookId, UserId userId, BookDetails bookDetails) {
-
-        final AddBook result = AddBook.newBuilder()
-                                          .setBookId(bookId)
-                                          .setUserId(userId)
-                                          .setBookDetails(bookDetails).build();
-
-        return result;
+    public static AddBook createBookInstance() {
+        return createBookInstance(bookId, userId, bookDetails);
     }
 
+    public static AddBook createBookInstance(BookId bookId, UserId userId,
+                                             BookDetails bookDetails) {
+
+        final AddBook result = AddBook.newBuilder()
+                                      .setBookId(bookId)
+                                      .setUserId(userId)
+                                      .setBookDetails(bookDetails)
+                                      .build();
+        return result;
+    }
 
 }
