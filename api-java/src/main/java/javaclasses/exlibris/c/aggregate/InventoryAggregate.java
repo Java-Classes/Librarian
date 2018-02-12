@@ -87,7 +87,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      *
      * @param id the ID for the new aggregate
      */
-    protected InventoryAggregate(InventoryId id) {
+    public InventoryAggregate(InventoryId id) {
         super(id);
     }
 

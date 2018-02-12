@@ -20,20 +20,43 @@
 
 package io.spine.javaclasses.exlibris.testdata;
 
+import io.spine.net.EmailAddress;
+import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.InventoryItemId;
+import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.Rfid;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.AppendInventory;
 
 public class InventoryCommandFactory {
+
     private InventoryCommandFactory() {
     }
 
-//    public static AppendInventory appendInventoryInstance() {
-//        final AppendInventory result = ( ??, ??);
-//        return result;
-//    }
+    public static AppendInventory appendInventoryInstance() {
+        final BookId bookId = BookId.newBuilder()
+                                    .setIsbn62(Isbn62.newBuilder()
+                                                     .setValue("123456789"))
+                                    .build();
+        final InventoryId inventoryId = InventoryId.newBuilder()
+                                                   .setBookId(bookId)
+                                                   .build();
+        final InventoryItemId inventoryItemId = InventoryItemId.newBuilder()
+                                                               .setBookId(bookId)
+                                                               .setItemNumber(1)
+                                                               .build();
+        final UserId userId = UserId.newBuilder()
+                                    .setEmail(EmailAddress.newBuilder()
+                                                          .setValue("petr@gmail.com"))
+                                    .build();
+        final Rfid rfid = Rfid.newBuilder()
+                              .setValue("4321")
+                              .build();
+        final AppendInventory result = appendInventoryInstance(inventoryId, inventoryItemId, userId,
+                                                               rfid);
+        return result;
+    }
 
     public static AppendInventory appendInventoryInstance(InventoryId inventoryId,
                                                           InventoryItemId inventoryItemId,
