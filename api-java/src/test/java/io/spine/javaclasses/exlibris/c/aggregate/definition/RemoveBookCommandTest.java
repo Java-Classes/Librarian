@@ -86,7 +86,7 @@ public class RemoveBookCommandTest extends BookCommandTest<AddBook> {
 
     @Test
     @DisplayName("has the same removal reason")
-    void equalsRemovalReason() {
+    void sameRemovalReason() {
         dispatchAddBookCmd();
 
         final RemoveBook removeBook = removeBookInstance(bookId, librarianId, removalReason);
