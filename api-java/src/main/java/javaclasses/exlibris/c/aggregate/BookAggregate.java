@@ -162,7 +162,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     @Apply
     private void bookAdded(BookAdded event) {
 
-        getBuilder().setBookId(event.getBookId());
-        getBuilder().setBookDetails(event.getDetails());
+        getBuilder().setBookId(event.getBookId())
+                    .setBookDetails(event.getDetails());
     }
 }

@@ -21,21 +21,25 @@
 package javaclasses.exlibris.c.aggregate;
 
 import com.google.protobuf.Message;
+import com.google.protobuf.Timestamp;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.command.Assign;
 import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.InventoryItemId;
 import javaclasses.exlibris.InventoryVBuilder;
+import javaclasses.exlibris.LoanId;
 import javaclasses.exlibris.Rfid;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BorrowBook;
+import javaclasses.exlibris.c.ExtendLoanPeriod;
 import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.c.InventoryDecreased;
 import javaclasses.exlibris.c.LoanBecameOverdue;
+import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.c.MarkLoanOverdue;
 import javaclasses.exlibris.c.ReservationAdded;
 import javaclasses.exlibris.c.ReserveBook;
@@ -85,27 +89,29 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                           .build();
         return singletonList(result);
     }
+
     @Assign
     List<? extends Message> handle(WriteBookOff cmd) {
 
         final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final UserId userId = cmd.getLibrarianId();
-        final WriteOffReason writeOffReason=cmd.getWriteBookOffReason();
+        final WriteOffReason writeOffReason = cmd.getWriteBookOffReason();
         final InventoryDecreased result = InventoryDecreased.newBuilder()
-                                                      .setInventoryId(inventoryId)
-                                                      .setInventoryItemId(inventoryItemId)
-                                                      .setWhenDecreased(getCurrentTime())
-                                                      .setLibrarianId(userId)
-                                                      .setWriteOffReason(writeOffReason)
-                                                      .build();
+                                                            .setInventoryId(inventoryId)
+                                                            .setInventoryItemId(inventoryItemId)
+                                                            .setWhenDecreased(getCurrentTime())
+                                                            .setLibrarianId(userId)
+                                                            .setWriteOffReason(writeOffReason)
+                                                            .build();
         return singletonList(result);
     }
+
     @Assign
     List<? extends Message> handle(ReserveBook cmd) {
 
         final InventoryId inventoryId = cmd.getIntentoryId();
-        final UserId userId =cmd.getUserId();
+        final UserId userId = cmd.getUserId();
         final ReservationAdded result = ReservationAdded.newBuilder()
                                                         .setInventoryId(inventoryId)
                                                         .setForWhomReserved(userId)
@@ -113,30 +119,56 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                         .build();
         return singletonList(result);
     }
+
     @Assign
     List<? extends Message> handle(BorrowBook cmd) {
 
         final InventoryId inventoryId = cmd.getIntentoryId();
-        final InventoryItemId inventoryItemId =cmd.getIntentoryItemId();
-        final UserId userId =cmd.getUserId();
-        final BookBorrowed result= BookBorrowed.newBuilder()
-                                         .setInventoryId(inventoryId)
-                                         .setInventoryItemId(inventoryItemId)
-                                         .setWhoBorrowed(userId)
-                                         .setWhenBorrowed(getCurrentTime()).build();
+        final InventoryItemId inventoryItemId = cmd.getIntentoryItemId();
+        final UserId userId = cmd.getUserId();
+        final BookBorrowed result = BookBorrowed.newBuilder()
+                                                .setInventoryId(inventoryId)
+                                                .setInventoryItemId(inventoryItemId)
+                                                .setWhoBorrowed(userId)
+                                                .setWhenBorrowed(getCurrentTime())
+                                                .build();
         return singletonList(result);
     }
+
     @Assign
     List<? extends Message> handle(MarkLoanOverdue cmd) {
 
-        final InventoryId inventoryId = cmd.();
-        final InventoryItemId inventoryItemId =cmd.getIntentoryItemId();
-        final UserId userId =cmd.getUserId();
-        final LoanBecameOverdue result= LoanBecameOverdue.newBuilder()
-                                                         .setInventoryId(inventoryId)
-                                                         .setInventoryItemId(inventoryItemId)
-                                                         .setWhoBorrowed(userId)
-                                                         .setWhenBorrowed(getCurrentTime()).build();
+        final InventoryId inventoryId = cmd.getIntentoryId();
+        final LoanId loanId = cmd.getLoanId();
+        final LoanBecameOverdue result = LoanBecameOverdue.newBuilder()
+                                                          .setInventoryId(inventoryId)
+                                                          .setLoanId(loanId)
+                                                          .setWhenExpected(getCurrentTime())
+                                                          .build();
+        return singletonList(result);
+    }
+
+    @Assign
+    List<? extends Message> handle(ExtendLoanPeriod cmd) {
+
+        final InventoryId inventoryId = cmd.getIntentoryId();
+        final LoanId loanId = cmd.getLoanId();
+        final UserId userId = cmd.getUserId();
+        final Timestamp newDueDate = cmd.getNewDueDate();
+
+        // Two weeks before new due on date.
+        final Timestamp previousDueDate = Timestamp.newBuilder()
+                                                   .setSeconds(newDueDate.getSeconds() -
+                                                                       60 * 60 * 24 * 14)
+                                                   .build();
+        final LoanPeriodExtended result = LoanPeriodExtended.newBuilder()
+                                                            .setInventoryId(inventoryId)
+                                                            .setLoanId(loanId)
+                                                            .setUserId(userId)
+                                                            .setPreviousDueDate(previousDueDate)
+                                                            .setNewDueDate(newDueDate)
+                                                            .build();
+
         return singletonList(result);
     }
 }
