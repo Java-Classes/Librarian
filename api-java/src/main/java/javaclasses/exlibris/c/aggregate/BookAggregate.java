@@ -21,7 +21,6 @@
 package javaclasses.exlibris.c.aggregate;
 
 import com.google.protobuf.Message;
-import com.google.protobuf.Timestamp;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
@@ -78,18 +77,11 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
         final UserId userId = cmd.getUserId();
         final BookDetails bookDetails = cmd.getBookDetails();
 
-        final long currentTimeMillis = System.currentTimeMillis();
-        final Timestamp whenAdded = Timestamp.newBuilder()
-                                             .setSeconds(currentTimeMillis / 1000)
-                                             .setNanos(
-                                                     (int) ((currentTimeMillis % 1000) * 1000000))
-                                             .build();
-
         final BookAdded result = BookAdded.newBuilder()
                                           .setBookId(bookId)
                                           .setLibrarianId(userId)
                                           .setDetails(bookDetails)
-                                          .setWhenAdded(whenAdded)
+                                          .setWhenAdded(getCurrentTime())
                                           .build();
 
         return singletonList(result);
@@ -103,17 +95,11 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
 
         final BookDetails bookDetails = cmd.getBookDetails();
 
-        final long currentTimeMillis = System.currentTimeMillis();
-        final Timestamp whenAdded = Timestamp.newBuilder()
-                                             .setSeconds(currentTimeMillis / 1000)
-                                             .setNanos((int) ((currentTimeMillis % 1000) * 1000000))
-                                             .build();
-
         final BookUpdated result = BookUpdated.newBuilder()
                                               .setBookId(bookId)
                                               .setLibrarianId(userId)
                                               .setNewBookDetails(bookDetails)
-                                              .setWhenUpdated(whenAdded)
+                                              .setWhenUpdated(getCurrentTime())
                                               .build();
 
         return singletonList(result);
