@@ -66,4 +66,3 @@ abstract class BookCommandTest<C extends Message> extends AggregateCommandTest<C
                      .build();
     }
 }
-
