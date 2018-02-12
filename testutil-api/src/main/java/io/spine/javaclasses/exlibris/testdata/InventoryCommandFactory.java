@@ -21,17 +21,30 @@
 package io.spine.javaclasses.exlibris.testdata;
 
 import javaclasses.exlibris.InventoryId;
+import javaclasses.exlibris.InventoryItemId;
+import javaclasses.exlibris.Rfid;
+import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.AppendInventory;
 
 public class InventoryCommandFactory {
     private InventoryCommandFactory() {
     }
+
 //    public static AppendInventory appendInventoryInstance() {
-//        final AppendInventory result = (??, ??);
+//        final AppendInventory result = ( ??, ??);
 //        return result;
 //    }
-//    public static AppendInventory appendInventoryInstance(InventoryId inventoryId, ) {
-//
-//        return result;
-//    }
+
+    public static AppendInventory appendInventoryInstance(InventoryId inventoryId,
+                                                          InventoryItemId inventoryItemId,
+                                                          UserId userId, Rfid rfid) {
+
+        AppendInventory result = AppendInventory.newBuilder()
+                                                .setIntentoryId(inventoryId)
+                                                .setInventoryItemId(inventoryItemId)
+                                                .setLibrarianId(userId)
+                                                .setRfid(rfid)
+                                                .build();
+        return result;
+    }
 }
