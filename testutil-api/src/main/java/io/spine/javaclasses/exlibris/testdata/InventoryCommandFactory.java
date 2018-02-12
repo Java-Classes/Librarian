@@ -30,29 +30,29 @@ import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.AppendInventory;
 
 public class InventoryCommandFactory {
-
+    public static final BookId bookId = BookId.newBuilder()
+                                .setIsbn62(Isbn62.newBuilder()
+                                                 .setValue("123456789"))
+                                .build();
+    public static final InventoryId inventoryId = InventoryId.newBuilder()
+                                               .setBookId(bookId)
+                                               .build();
+    public static final InventoryItemId inventoryItemId = InventoryItemId.newBuilder()
+                                                           .setBookId(bookId)
+                                                           .setItemNumber(1)
+                                                           .build();
+    public static final UserId userId = UserId.newBuilder()
+                                .setEmail(EmailAddress.newBuilder()
+                                                      .setValue("petr@gmail.com"))
+                                .build();
+    public static final Rfid rfid = Rfid.newBuilder()
+                          .setValue("4321")
+                          .build();
     private InventoryCommandFactory() {
     }
 
     public static AppendInventory appendInventoryInstance() {
-        final BookId bookId = BookId.newBuilder()
-                                    .setIsbn62(Isbn62.newBuilder()
-                                                     .setValue("123456789"))
-                                    .build();
-        final InventoryId inventoryId = InventoryId.newBuilder()
-                                                   .setBookId(bookId)
-                                                   .build();
-        final InventoryItemId inventoryItemId = InventoryItemId.newBuilder()
-                                                               .setBookId(bookId)
-                                                               .setItemNumber(1)
-                                                               .build();
-        final UserId userId = UserId.newBuilder()
-                                    .setEmail(EmailAddress.newBuilder()
-                                                          .setValue("petr@gmail.com"))
-                                    .build();
-        final Rfid rfid = Rfid.newBuilder()
-                              .setValue("4321")
-                              .build();
+
         final AppendInventory result = appendInventoryInstance(inventoryId, inventoryItemId, userId,
                                                                rfid);
         return result;

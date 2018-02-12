@@ -22,11 +22,9 @@ package io.spine.javaclasses.exlibris.c.aggregate.definition;
 
 import com.google.protobuf.Message;
 import io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory;
-import javaclasses.exlibris.BookId;
-import javaclasses.exlibris.InventoryId;
-import javaclasses.exlibris.InventoryItemId;
-import javaclasses.exlibris.Isbn62;
+import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.c.AppendInventory;
+import javaclasses.exlibris.c.InventoryAppended;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,6 +32,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Alexander Karpets
@@ -53,5 +53,33 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
 
         final List<? extends Message> messageList = dispatchCommand(aggregate, envelopeOf(appendInventory));
 
+        assertNotNull(aggregate.getId());
+        assertEquals(1, messageList.size());
+        assertEquals(InventoryAppended.class, messageList.get(0)
+                                                         .getClass());
+
+        final InventoryAppended inventoryAppended = (InventoryAppended) messageList.get(0);
+
+        assertEquals(InventoryCommandFactory.inventoryId, inventoryAppended.getInventoryId());
+
+        assertEquals(InventoryCommandFactory.userId.getEmail()
+                           .getValue(), inventoryAppended.getLibrarianId()
+                                                 .getEmail()
+                                                 .getValue());
+    }
+    @Test
+    void appendInventory() {
+        final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
+        dispatchCommand(aggregate, envelopeOf(appendInventory));
+
+        final Inventory inventory = aggregate.getState();
+        System.out.println(inventory);
+        assertEquals(1,inventory.getInventoryItemsList().size());
+        assertEquals(true, inventory.getInventoryItemsList().get(0).getInLibrary());
+        assertEquals(false, inventory.getInventoryItemsList().get(0).getLost());
+        assertEquals(false, inventory.getInventoryItemsList().get(0).getBorrowed());
+        assertEquals(1, inventory.getInventoryItemsList().get(0).getInventoryItemId().getItemNumber());
+        assertEquals("123456789", inventory.getInventoryItemsList().get(0).getInventoryItemId().getBookId().getIsbn62().getValue());
+        assertEquals("", inventory.getInventoryItemsList().get(0).getUserId().getEmail().getValue());
     }
 }

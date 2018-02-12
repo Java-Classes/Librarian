@@ -194,9 +194,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     private void inventoryAppended(InventoryAppended event) {
 
         final InventoryItem newInventoryItem = InventoryItem.newBuilder()
-                                                            .setBorrowed(false)
                                                             .setInLibrary(true)
-                                                            .setLost(false)
                                                             .setInventoryItemId(
                                                                     event.getInventoryItemId())
                                                             .build();
