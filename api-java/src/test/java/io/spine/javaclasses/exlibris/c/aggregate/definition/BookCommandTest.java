@@ -28,14 +28,12 @@ import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.c.aggregate.BookAggregate;
 
-import static io.spine.Identifier.newUuid;
-
 abstract class BookCommandTest<C extends Message> extends AggregateCommandTest<C, BookAggregate> {
 
     private final TestActorRequestFactory requestFactory =
             TestActorRequestFactory.newInstance(getClass());
 
-    BookAggregate aggregate ;
+    BookAggregate aggregate;
     BookId bookId;
 
     @Override
@@ -57,7 +55,10 @@ abstract class BookCommandTest<C extends Message> extends AggregateCommandTest<C
 
     private static BookId createTaskId() {
 
-        return BookId.newBuilder().setIsbn62(Isbn62.newBuilder().setValue("123456")).build();
+        return BookId.newBuilder()
+                     .setIsbn62(Isbn62.newBuilder()
+                                      .setValue("123456"))
+                     .build();
     }
 }
 

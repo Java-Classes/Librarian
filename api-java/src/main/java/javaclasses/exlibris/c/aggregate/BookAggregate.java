@@ -39,6 +39,7 @@ import javaclasses.exlibris.c.UpdateBook;
 
 import java.util.List;
 
+import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
 /*
  *
@@ -124,23 +125,31 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
         final BookId bookId = cmd.getBookId();
         final UserId userId = cmd.getUserId();
 
-        final RemoveBook.BookRemovalReasonCase bookRemovalReasonCase = cmd.getBookRemovalReasonCase();
+        final RemoveBook.BookRemovalReasonCase reasonCase = cmd.getBookRemovalReasonCase();
 
-        final long currentTimeMillis = System.currentTimeMillis();
-
-        final Timestamp whenRemoved = Timestamp.newBuilder()
-                                               .setSeconds(currentTimeMillis / 1000)
-                                               .setNanos(
-                                                       (int) ((currentTimeMillis % 1000) * 1000000))
-                                               .build();
+        final String customReason = cmd.getCustomReason();
 
         final BookRemoved bookRemoved = BookRemoved.newBuilder()
                                                    .setBookId(bookId)
                                                    .setLibrarianId(userId)
-                                                   .setWhenRemoved(whenRemoved)
-                                                   .setOutdated(cmd.getOutdated())
-                                                   .setCustomReason(cmd.getCustomReason())
+                                                   .setWhenRemoved(getCurrentTime())
                                                    .build();
+
+        switch (cmd.getBookRemovalReasonCase()) {
+            case OUTDATED: {
+                bookRemoved.toBuilder()
+                           .setOutdated(true)
+                           .build();
+                break;
+            }
+            default: {
+                bookRemoved.toBuilder()
+                           .setCustomReason(customReason)
+                           .build();
+                break;
+            }
+
+        }
         return singletonList(bookRemoved);
     }
 
@@ -150,5 +159,4 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
         getBuilder().setBookId(event.getBookId());
         getBuilder().setBookDetails(event.getDetails());
     }
-
 }

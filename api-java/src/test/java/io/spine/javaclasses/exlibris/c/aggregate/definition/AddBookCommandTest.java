@@ -1,6 +1,5 @@
 package io.spine.javaclasses.exlibris.c.aggregate.definition;
 
-import com.google.protobuf.Message;
 import io.spine.net.EmailAddress;
 import io.spine.net.Url;
 import io.spine.people.PersonName;
@@ -14,19 +13,16 @@ import javaclasses.exlibris.Category;
 import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.AddBook;
-import javafx.concurrent.Task;
+import javaclasses.exlibris.c.RemoveBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.createBookInstance;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AddBookCommandTest extends BookCommandTest<AddBook> {
-
 
     @Override
     @BeforeEach
@@ -36,7 +32,7 @@ public class AddBookCommandTest extends BookCommandTest<AddBook> {
 
     @Test
     @DisplayName("create the book")
-    void createTask() {
+    void addBook() {
 
         BookId bookId = BookId.newBuilder()
                               .setIsbn62(Isbn62.newBuilder()
@@ -49,10 +45,17 @@ public class AddBookCommandTest extends BookCommandTest<AddBook> {
         BookDetails bookDetails = BookDetails.newBuilder()
                                              .setTitle(BookTitle.newBuilder()
                                                                 .setTitle("Steve Jobs"))
-                                                                .setAuthor(AuthorName.newBuilder().addAuthorName(PersonName.newBuilder().setFamilyName("Paul")))
-                                                                .setBookCoverUrl(Url.newBuilder().setRaw("url"))
-                                                                .setSynopsis(BookSynopsis.newBuilder().setBookSynopsis("bio"))
-                                                                .addCategories(Category.newBuilder().setValue("it"))
+                                             .setAuthor(AuthorName.newBuilder()
+                                                                  .addAuthorName(
+                                                                          PersonName.newBuilder()
+                                                                                    .setFamilyName(
+                                                                                            "Paul")))
+                                             .setBookCoverUrl(Url.newBuilder()
+                                                                 .setRaw("url"))
+                                             .setSynopsis(BookSynopsis.newBuilder()
+                                                                      .setBookSynopsis("bio"))
+                                             .addCategories(Category.newBuilder()
+                                                                    .setValue("it"))
                                              .build();
 
         final AddBook addBook = createBookInstance(bookId, userId, bookDetails);
