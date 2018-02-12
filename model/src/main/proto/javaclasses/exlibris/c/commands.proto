@@ -110,6 +110,9 @@ message AppendInventory {
 
     // Optional field: exists when book has a RFID mark.
     Rfid rfid = 3;
+
+    // Who tries to append.
+    UserId librarian_id = 4;
 }
 
 // An attempt to borrow a book.
@@ -228,9 +231,15 @@ message ReportLostBook {
 //
 message WriteBookOff {
 
+    // The identifier of an inventory..
+    InventoryId inventory_id = 1;
+
     // The book that is planned to write off.
-    InventoryItemId inventory_item_id = 1;
+    InventoryItemId inventory_item_id = 2;
 
     // The reason to write a book off.
-    WriteOffReason write_book_off_reason = 2;
+    WriteOffReason write_book_off_reason = 3;
+
+    // Who tries to write a book off.
+    UserId librarian_id = 4;
 }

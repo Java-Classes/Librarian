@@ -28,8 +28,12 @@ import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.InventoryItemId;
 import javaclasses.exlibris.InventoryVBuilder;
 import javaclasses.exlibris.Rfid;
+import javaclasses.exlibris.UserId;
+import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.InventoryAppended;
+import javaclasses.exlibris.c.InventoryDecreased;
+import javaclasses.exlibris.c.WriteBookOff;
 
 import java.util.List;
 
@@ -62,15 +66,33 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     List<? extends Message> handle(AppendInventory cmd) {
 
-        final InventoryId inventoryIdId = cmd.getIntentoryId();
+        final InventoryId inventoryId = cmd.getIntentoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
-        final Rfid rfid =cmd.getRfid();
-        final InventoryAppended result= InventoryAppended.newBuilder()
-                                                   .setInventoryId(inventoryIdId)
-                                                   .setInventoryItemId(inventoryItemId)
-                                                   .setRfid(rfid)
-                                                   .setWhenAppended(getCurrentTime()).build();
+        final Rfid rfid = cmd.getRfid();
+        final UserId userId = cmd.getLibrarianId();
+        final InventoryAppended result = InventoryAppended.newBuilder()
+                                                          .setInventoryId(inventoryId)
+                                                          .setInventoryItemId(inventoryItemId)
+                                                          .setRfid(rfid)
+                                                          .setWhenAppended(getCurrentTime())
+                                                          .setLibrarianId(userId)
+                                                          .build();
         return singletonList(result);
     }
+    @Assign
+    List<? extends Message> handle(WriteBookOff cmd) {
 
+        final InventoryId inventoryIdId = cmd.getIntentoryId();
+        final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
+        final UserId userId = cmd.getLibrarianId();
+        final WriteOffReason writeOffReason=cmd.getWriteBookOffReason();
+        final InventoryDecreased result = InventoryDecreased.newBuilder()
+                                                      .setInventoryId(inventoryIdId)
+                                                      .setInventoryItemId(inventoryItemId)
+                                                      .set(getCurrentTime())
+                                                      .setLibrarianId(userId)
+                                                          .set
+                                                          .build();
+        return singletonList(result);
+    }
 }
