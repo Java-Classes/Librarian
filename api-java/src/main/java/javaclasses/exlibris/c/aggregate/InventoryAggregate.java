@@ -368,12 +368,23 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
     @Apply
     private void reservationCanceled(ReservationCanceled event) {
-
     }
 
     @Apply
     private void reservationPickUpPeriodExpired(ReservationPickUpPeriodExpired event) {
-
+        final List<Reservation> reservations = getBuilder().getReservations();
+        int reservationPosition = -1;
+        for (int i = 0; i < reservations.size(); i++) {
+            Reservation reservation = reservations.get(i);
+            if (reservation.getWhoReserved()
+                           .getEmail()
+                           .getValue() == event.getUserId()
+                                               .getEmail()
+                                               .getValue()) {
+                reservationPosition = i;
+            }
+        }
+        getBuilder().removeReservations(reservationPosition);
     }
 
     @Apply
@@ -384,5 +395,17 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Apply
     private void bookLost(BookLost event) {
 
+        final List<InventoryItem> inventoryItems = getBuilder().getInventoryItems();
+        int borrowItemPosition = -1;
+        for (int i = 0; i < inventoryItems.size(); i++) {
+            InventoryItem item = inventoryItems.get(i);
+            if (item.getInventoryItemId()
+                    .getItemNumber() == event.getInventoryItemId()
+                                             .getItemNumber()) {
+                borrowItemPosition = i;
+            }
+        }
+
+        getBuilder().removeInventoryItems(borrowItemPosition);
     }
 }
