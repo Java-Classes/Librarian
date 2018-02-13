@@ -20,16 +20,10 @@
 
 package javaclasses.exlibris.repository;
 
-
 import io.spine.server.aggregate.AggregateRepository;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.c.aggregate.BookAggregate;
 
-/**
- * BookRepository for the {@link }.
- *
- * @author Illia Shepilov
- */
 public class BookRepository extends AggregateRepository<BookId, BookAggregate> {
 
 }

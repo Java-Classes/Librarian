@@ -294,4 +294,54 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                       .build();
         getBuilder().addReservations(newReservation);
     }
+    @Apply
+    private void bookBorrowed(BookBorrowed event) {
+        final List<InventoryItem> inventoryItems = getBuilder().getInventoryItems();
+        int borrowItemPosition = -1;
+        for (int i = 0; i < inventoryItems.size(); i++) {
+            InventoryItem item = inventoryItems.get(i);
+            if (item.getInventoryItemId() == event.getInventoryItemId()) {
+                borrowItemPosition = i;
+            }
+        }
+
+        final InventoryItem item = inventoryItems.get(borrowItemPosition);
+        final InventoryItem borrowedItem = InventoryItem.newBuilder()
+                                                 .setBorrowed(true)
+                                                 .setUserId(event.getWhoBorrowed())
+                                                 .setInventoryItemId(event.getInventoryItemId())
+                                                 .build();
+        getBuilder().setInventoryItems(borrowItemPosition, borrowedItem);
+    }
+
+    @Apply
+    private void loanBecameOverdue(LoanBecameOverdue event) {
+
+    }
+    @Apply
+    private void loanPeriodExtended(LoanPeriodExtended event) {
+        final int loanPosition = getBuilder().getLoans()
+                                  .indexOf(event.getLoanId());
+
+    }
+    @Apply
+    private void reservationCanceled(ReservationCanceled event) {
+
+
+    }
+    @Apply
+    private void reservationPickUpPeriodExpired(ReservationPickUpPeriodExpired event) {
+
+
+    }
+    @Apply
+    private void bookReturned(BookReturned event) {
+
+
+    }
+    @Apply
+    private void bookLost(BookLost event) {
+
+
+    }
 }
