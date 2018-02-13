@@ -33,7 +33,6 @@ import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.MarkReservationExpired;
 import javaclasses.exlibris.c.ReportLostBook;
-import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
@@ -175,28 +174,34 @@ public class InventoryCommandFactory {
         return reportLostBook(inventoryId, inventoryItemId, userId);
     }
 
-    public static ReportLostBook reportLostBook(InventoryId inventoryId, InventoryItemId inventoryItemId, UserId userId) {
+    public static ReportLostBook reportLostBook(InventoryId inventoryId,
+                                                InventoryItemId inventoryItemId, UserId userId) {
 
-        ReportLostBook result = ReportLostBook.newBuilder().setInventoryId(inventoryId).setInventoryItemId(inventoryItemId).setWhoLost(userId).build();
+        ReportLostBook result = ReportLostBook.newBuilder()
+                                              .setInventoryId(inventoryId)
+                                              .setInventoryItemId(inventoryItemId)
+                                              .setWhoLost(userId)
+                                              .build();
 
         return result;
     }
 
     public static MarkReservationExpired reservationPickUpPeriodInstanceExpired() {
 
-        final MarkReservationExpired result = reservationPickUpPeriodInstanceExpired(inventoryId, userId);
+        final MarkReservationExpired result = reservationPickUpPeriodInstanceExpired(inventoryId,
+                                                                                     userId);
         return result;
     }
 
-    public static MarkReservationExpired reservationPickUpPeriodInstanceExpired(InventoryId inventoryId,
-                                                              UserId userId) {
+    public static MarkReservationExpired reservationPickUpPeriodInstanceExpired(
+            InventoryId inventoryId,
+            UserId userId) {
         MarkReservationExpired result = MarkReservationExpired.newBuilder()
-                                                    .setInventoryId(inventoryId)
-                                                    .setUserId(userId)
-                                                    .build();
+                                                              .setInventoryId(inventoryId)
+                                                              .setUserId(userId)
+                                                              .build();
         return result;
     }
-
 
 //    public static ReturnBook returnBookInstance() {
 //
