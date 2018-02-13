@@ -121,13 +121,13 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
         final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
-        final UserId userId = cmd.getLibrarianId();
+        final UserId librarianId = cmd.getLibrarianId();
         final WriteOffReason writeOffReason = cmd.getWriteBookOffReason();
         final InventoryDecreased result = InventoryDecreased.newBuilder()
                                                             .setInventoryId(inventoryId)
                                                             .setInventoryItemId(inventoryItemId)
                                                             .setWhenDecreased(getCurrentTime())
-                                                            .setLibrarianId(userId)
+                                                            .setLibrarianId(librarianId)
                                                             .setWriteOffReason(writeOffReason)
                                                             .build();
         return singletonList(result);
@@ -152,6 +152,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final InventoryId inventoryId = cmd.getIntentoryId();
         final InventoryItemId inventoryItemId = cmd.getIntentoryItemId();
         final UserId userId = cmd.getUserId();
+
         final BookBorrowed result = BookBorrowed.newBuilder()
                                                 .setInventoryId(inventoryId)
                                                 .setInventoryItemId(inventoryItemId)
@@ -294,23 +295,27 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                       .build();
         getBuilder().addReservations(newReservation);
     }
+
     @Apply
     private void bookBorrowed(BookBorrowed event) {
         final List<InventoryItem> inventoryItems = getBuilder().getInventoryItems();
         int borrowItemPosition = -1;
         for (int i = 0; i < inventoryItems.size(); i++) {
             InventoryItem item = inventoryItems.get(i);
-            if (item.getInventoryItemId() == event.getInventoryItemId()) {
+            if (item.getInventoryItemId()
+                    .getItemNumber() == event.getInventoryItemId()
+                                             .getItemNumber()) {
                 borrowItemPosition = i;
             }
         }
 
         final InventoryItem item = inventoryItems.get(borrowItemPosition);
         final InventoryItem borrowedItem = InventoryItem.newBuilder()
-                                                 .setBorrowed(true)
-                                                 .setUserId(event.getWhoBorrowed())
-                                                 .setInventoryItemId(event.getInventoryItemId())
-                                                 .build();
+                                                        .setBorrowed(true)
+                                                        .setUserId(event.getWhoBorrowed())
+                                                        .setInventoryItemId(
+                                                                event.getInventoryItemId())
+                                                        .build();
         getBuilder().setInventoryItems(borrowItemPosition, borrowedItem);
     }
 
@@ -318,30 +323,31 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     private void loanBecameOverdue(LoanBecameOverdue event) {
 
     }
+
     @Apply
     private void loanPeriodExtended(LoanPeriodExtended event) {
         final int loanPosition = getBuilder().getLoans()
-                                  .indexOf(event.getLoanId());
+                                             .indexOf(event.getLoanId());
 
     }
+
     @Apply
     private void reservationCanceled(ReservationCanceled event) {
 
-
     }
+
     @Apply
     private void reservationPickUpPeriodExpired(ReservationPickUpPeriodExpired event) {
 
-
     }
+
     @Apply
     private void bookReturned(BookReturned event) {
 
-
     }
+
     @Apply
     private void bookLost(BookLost event) {
-
 
     }
 }

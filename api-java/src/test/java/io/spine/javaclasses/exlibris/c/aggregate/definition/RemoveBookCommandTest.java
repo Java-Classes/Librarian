@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Dmytry Dyachenko
  */
 @DisplayName("RemoveBook command should be interpreted by BookAggregate and")
-public class RemoveBookCommandTest extends BookCommandTest<AddBook> {
+public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
 
     @Override
     @BeforeEach

@@ -136,14 +136,14 @@ public class BookCommandFactory {
     }
 
     public static RemoveBook removeBookInstance(BookId bookId, UserId librarianId,
-                                                RemoveBook.BookRemovalReasonCase bookRemovalReasonCase) {
+                                                RemoveBook.BookRemovalReasonCase removalReasonCase) {
 
         final RemoveBook.Builder result = RemoveBook.newBuilder()
                                                     .setBookId(bookId)
                                                     .setLibrarianId(librarianId)
                                                     .setWhenRemoved(getCurrentTime());
 
-        switch (bookRemovalReasonCase) {
+        switch (removalReasonCase) {
             case OUTDATED: {
                 return result
                         .setOutdated(true)
@@ -163,7 +163,5 @@ public class BookCommandFactory {
                 return result.build();
             }
         }
-
     }
-
 }
