@@ -31,7 +31,9 @@ import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
+import javaclasses.exlibris.c.MarkReservationExpired;
 import javaclasses.exlibris.c.ReportLostBook;
+import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.WriteBookOff;
 
@@ -150,6 +152,22 @@ public class InventoryCommandFactory {
 
         return result;
     }
+
+    public static MarkReservationExpired reservationPickUpPeriodInstanceExpired() {
+
+        final MarkReservationExpired result = reservationPickUpPeriodInstanceExpired(inventoryId, userId);
+        return result;
+    }
+
+    public static MarkReservationExpired reservationPickUpPeriodInstanceExpired(InventoryId inventoryId,
+                                                              UserId userId) {
+        MarkReservationExpired result = MarkReservationExpired.newBuilder()
+                                                    .setInventoryId(inventoryId)
+                                                    .setUserId(userId)
+                                                    .build();
+        return result;
+    }
+
 
 //    public static ReturnBook returnBookInstance() {
 //

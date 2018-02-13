@@ -62,6 +62,7 @@ import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
+import static java.util.Collections.sort;
 
 /**
  * @author Alexander Karpets
@@ -392,13 +393,17 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             Reservation reservation = reservations.get(i);
             if (reservation.getWhoReserved()
                            .getEmail()
-                           .getValue() == event.getUserId()
-                                               .getEmail()
-                                               .getValue()) {
+                           .getValue()
+                           .equals(event.getUserId()
+                                        .getEmail()
+                                        .getValue())) {
                 reservationPosition = i;
+
             }
         }
+
         getBuilder().removeReservations(reservationPosition);
+
     }
 
     @Apply

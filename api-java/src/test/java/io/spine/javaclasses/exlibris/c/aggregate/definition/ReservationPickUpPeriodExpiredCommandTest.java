@@ -23,9 +23,9 @@ package io.spine.javaclasses.exlibris.c.aggregate.definition;
 import com.google.protobuf.Message;
 import io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory;
 import javaclasses.exlibris.Inventory;
-import javaclasses.exlibris.c.AppendInventory;
-import javaclasses.exlibris.c.BookLost;
-import javaclasses.exlibris.c.ReportLostBook;
+import javaclasses.exlibris.c.InventoryDecreased;
+import javaclasses.exlibris.c.MarkReservationExpired;
+import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 import javaclasses.exlibris.c.ReserveBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,8 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
-import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.reportLostBookInstance;
+import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.reservationPickUpPeriodInstanceExpired;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -42,8 +41,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * @author Paul Ageyev
  */
-@DisplayName("ReportLostBookCommandTest command should be interpreted by InventoryAggregate and")
-public class ReportLostBookCommandTest extends InventoryCommandTest<ReserveBook> {
+@DisplayName("ReservationPickUpPeriodExpiredCommandTest command should be interpreted by InventoryAggregate and")
+public class ReservationPickUpPeriodExpiredCommandTest extends InventoryCommandTest<ReservationPickUpPeriodExpired> {
 
     @Override
     @BeforeEach
@@ -53,46 +52,35 @@ public class ReportLostBookCommandTest extends InventoryCommandTest<ReserveBook>
 
     @Test
     void produceEvent() {
-        dispatchAppendInventory();
 
-        final ReportLostBook reportLostBook = reportLostBookInstance();
+        dispatchReserveBook();
 
+        final MarkReservationExpired reservationExpired = reservationPickUpPeriodInstanceExpired();
         final List<? extends Message> messageList = dispatchCommand(aggregate,
-                                                                    envelopeOf(reportLostBook));
-
+                                                                    envelopeOf(
+                                                                            reservationExpired));
         assertNotNull(aggregate.getId());
         assertEquals(1, messageList.size());
-        assertEquals(BookLost.class, messageList.get(0)
-                                                .getClass());
-
-        final BookLost bookLost = (BookLost) messageList.get(0);
-
-        assertEquals(InventoryCommandFactory.inventoryId, bookLost.getInventoryId());
-        assertEquals("petr@gmail.com", bookLost.getWhoLost()
-                                               .getEmail()
-                                               .getValue());
+        assertEquals(ReservationPickUpPeriodExpired.class, messageList.get(0)
+                                                                      .getClass());
     }
 
     @Test
-    void reportLostBook() {
+    void reservationPickUpPeriodExpired() {
 
-        dispatchAppendInventory();
+        dispatchReserveBook();
 
-        final Inventory previousInventory = aggregate.getState();
+        final MarkReservationExpired reservationExpired = reservationPickUpPeriodInstanceExpired();
 
-        final ReportLostBook reportLostBook = reportLostBookInstance();
-        dispatchCommand(aggregate, envelopeOf(reportLostBook));
-
-        final Inventory currentInventory = aggregate.getState();
-
-        assertEquals(true, currentInventory.getInventoryItemsList()
-                                           .get(0)
-                                           .getLost());
-
+        dispatchCommand(aggregate, envelopeOf(reservationExpired));
+        assertEquals(0, aggregate.getDefaultState()
+                                 .getReservationsList()
+                                 .size());
     }
 
-    private void dispatchAppendInventory() {
-        final AppendInventory appendInventory = appendInventoryInstance();
-        dispatchCommand(aggregate, envelopeOf(appendInventory));
+    void dispatchReserveBook() {
+        final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
+        dispatchCommand(aggregate, envelopeOf(reserveBook));
     }
+
 }
