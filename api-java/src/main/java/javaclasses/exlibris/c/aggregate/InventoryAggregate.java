@@ -38,15 +38,23 @@ import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BookBorrowed;
+import javaclasses.exlibris.c.BookLost;
+import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.BorrowBook;
+import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.ExtendLoanPeriod;
 import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.c.InventoryDecreased;
 import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.c.MarkLoanOverdue;
+import javaclasses.exlibris.c.MarkReservationExpired;
+import javaclasses.exlibris.c.ReportLostBook;
 import javaclasses.exlibris.c.ReservationAdded;
+import javaclasses.exlibris.c.ReservationCanceled;
+import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 import javaclasses.exlibris.c.ReserveBook;
+import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
 
 import java.util.List;
@@ -87,7 +95,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      *
      * @param id the ID for the new aggregate
      */
-    protected InventoryAggregate(InventoryId id) {
+    public InventoryAggregate(InventoryId id) {
         super(id);
     }
 
@@ -190,13 +198,70 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return singletonList(result);
     }
 
+    @Assign
+    List<? extends Message> handle(CancelReservation cmd) {
+
+        final InventoryId inventoryId = cmd.getIntentoryId();
+        final UserId userId = cmd.getUserId();
+        final ReservationCanceled result = ReservationCanceled.newBuilder()
+                                                              .setInventoryId(inventoryId)
+                                                              .setWhoCanceled(userId)
+                                                              .setWhenCanceled(getCurrentTime())
+                                                              .build();
+        return singletonList(result);
+    }
+
+    @Assign
+    List<? extends Message> handle(MarkReservationExpired cmd) {
+
+        final InventoryId inventoryId = cmd.getIntentoryId();
+        final UserId userId = cmd.getUserId();
+        final ReservationPickUpPeriodExpired result = ReservationPickUpPeriodExpired.newBuilder()
+                                                                                    .setInventoryId(
+                                                                                            inventoryId)
+                                                                                    .setUserId(
+                                                                                            userId)
+                                                                                    .setWhenExpired(
+                                                                                            getCurrentTime())
+                                                                                    .build();
+        return singletonList(result);
+    }
+
+    @Assign
+    List<? extends Message> handle(ReturnBook cmd) {
+
+        final InventoryId inventoryId = cmd.getIntentoryId();
+        final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
+        final UserId userId = cmd.getUserId();
+        final BookReturned result = BookReturned.newBuilder()
+                                                .setInventoryId(inventoryId)
+                                                .setInventoryItemId(inventoryItemId)
+                                                .setWhoReturned(userId)
+                                                .setWhenReturned(getCurrentTime())
+                                                .build();
+        return singletonList(result);
+    }
+
+    @Assign
+    List<? extends Message> handle(ReportLostBook cmd) {
+
+        final InventoryId inventoryId = cmd.getIntentoryId();
+        final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
+        final UserId userId = cmd.getWhoLost();
+        final BookLost result = BookLost.newBuilder()
+                                        .setInventoryId(inventoryId)
+                                        .setInventoryItemId(inventoryItemId)
+                                        .setWhoLost(userId)
+                                        .setWhenReported(getCurrentTime())
+                                        .build();
+        return singletonList(result);
+    }
+
     @Apply
     private void inventoryAppended(InventoryAppended event) {
 
         final InventoryItem newInventoryItem = InventoryItem.newBuilder()
-                                                            .setBorrowed(false)
                                                             .setInLibrary(true)
-                                                            .setLost(false)
                                                             .setInventoryItemId(
                                                                     event.getInventoryItemId())
                                                             .build();
