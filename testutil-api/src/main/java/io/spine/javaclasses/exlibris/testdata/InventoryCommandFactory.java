@@ -22,6 +22,7 @@ package io.spine.javaclasses.exlibris.testdata;
 
 import io.spine.net.EmailAddress;
 import javaclasses.exlibris.BookId;
+import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.InventoryItemId;
 import javaclasses.exlibris.Isbn62;
@@ -29,7 +30,9 @@ import javaclasses.exlibris.Rfid;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.AppendInventory;
+import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.ReserveBook;
+import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
 
 public class InventoryCommandFactory {
@@ -110,4 +113,30 @@ public class InventoryCommandFactory {
                                         .build();
         return result;
     }
+    public static CancelReservation cancelReservationInstance() {
+
+        final CancelReservation result = cancelReservationInstance(inventoryId, userId);
+        return result;
+    }
+
+    public static CancelReservation cancelReservationInstance(InventoryId inventoryId, UserId userId) {
+        CancelReservation result = CancelReservation.newBuilder()
+                                        .setInventoryId(inventoryId)
+                                        .setUserId(userId)
+                                        .build();
+        return result;
+    }
+//    public static ReturnBook returnBookInstance() {
+//
+//        final ReturnBook result = returnBookInstance(userId, inventoryId);
+//        return result;
+//    }
+//
+//    public static ReturnBook returnBookInstance(InventoryId inventoryId, InventoryItemId inventoryItemId, UserId userId) {
+//        ReturnBook result = ReturnBook.newBuilder()
+//                                        .setInventoryId(inventoryId)
+//                                        .setUserId(userId)
+//                                        .build();
+//        return result;
+//    }
 }

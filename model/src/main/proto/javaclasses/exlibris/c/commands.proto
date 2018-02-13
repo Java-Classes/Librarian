@@ -156,7 +156,7 @@ message ReserveBook {
 message CancelReservation {
 
     // The identifier of an inventory.
-    InventoryId intentory_id = 1;
+    InventoryId inventory_id = 1;
 
     // Who cancels the book reservation.
     UserId user_id = 2;
@@ -213,7 +213,7 @@ message MarkReservationExpired {
 message ReturnBook {
 
     // The book that is planned to returne.
-    InventoryId intentory_id = 1;
+    InventoryId inventory_id = 1;
 
     // The item of the book that is planned to return.
     InventoryItemId inventory_item_id = 2;

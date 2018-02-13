@@ -202,7 +202,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     List<? extends Message> handle(CancelReservation cmd) {
 
-        final InventoryId inventoryId = cmd.getIntentoryId();
+        final InventoryId inventoryId = cmd.getInventoryId();
         final UserId userId = cmd.getUserId();
         final ReservationCanceled result = ReservationCanceled.newBuilder()
                                                               .setInventoryId(inventoryId)
@@ -231,7 +231,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     List<? extends Message> handle(ReturnBook cmd) {
 
-        final InventoryId inventoryId = cmd.getIntentoryId();
+        final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final UserId userId = cmd.getUserId();
         final BookReturned result = BookReturned.newBuilder()
@@ -351,6 +351,20 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
     @Apply
     private void reservationCanceled(ReservationCanceled event) {
+        int reservationCancelIndex = -1;
+        final List<Reservation> reservations = getBuilder().getReservations();
+        for (int i = 0; i < reservations.size(); i++) {
+            Reservation reservation = reservations.get(i);
+            if (reservation.getWhoReserved()
+                           .getEmail()
+                           .getValue()
+                           .equals(event.getWhoCanceled()
+                                        .getEmail()
+                                        .getValue())) {
+                reservationCancelIndex = i;
+            }
+        }
+        getBuilder().removeReservations(reservationCancelIndex);
     }
 
     @Apply
@@ -372,7 +386,26 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
     @Apply
     private void bookReturned(BookReturned event) {
+        final List<InventoryItem> inventoryItems = getBuilder().getInventoryItems();
+        int returnedItemPosition = -1;
 
+        for (int i = 0; i < inventoryItems.size(); i++) {
+            InventoryItem item = inventoryItems.get(i);
+            if (item.getUserId()
+                    .getEmail()
+                    .getValue()
+                    .equals(event.getWhoReturned()
+                                 .getEmail()
+                                 .getValue()) && item.getBorrowed()) {
+                returnedItemPosition = i;
+            }
+        }
+        final InventoryItem newInventoryItem = InventoryItem.newBuilder()
+                                                            .setInventoryItemId(
+                                                                    event.getInventoryItemId())
+                                                            .setInLibrary(true)
+                                                            .build();
+        getBuilder().setInventoryItems(returnedItemPosition, newInventoryItem);
     }
 
     @Apply
