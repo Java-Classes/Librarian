@@ -25,7 +25,6 @@ import io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory;
 import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.InventoryDecreased;
-import javaclasses.exlibris.c.ReservationAdded;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.WriteBookOff;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,37 +43,54 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
     public void setUp() {
         super.setUp();
     }
+
     public void appendInventory() {
         final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
         dispatchCommand(aggregate, envelopeOf(appendInventory));
     }
-
 
     @Test
     void produceEvent() {
         appendInventory();
         final WriteBookOff writeBookOff = InventoryCommandFactory.writeBookOffInstance();
         System.out.println(aggregate);
-        final List<? extends Message> messageList = dispatchCommand(aggregate, envelopeOf(writeBookOff));
+        final List<? extends Message> messageList = dispatchCommand(aggregate,
+                                                                    envelopeOf(writeBookOff));
 
         assertNotNull(aggregate.getId());
         assertEquals(1, messageList.size());
-        assertEquals(ReservationAdded.class, messageList.get(0)
-                                                        .getClass());
+        assertEquals(InventoryDecreased.class, messageList.get(0)
+                                                          .getClass());
 
         final InventoryDecreased inventoryDecreased = (InventoryDecreased) messageList.get(0);
 
         assertEquals(InventoryCommandFactory.inventoryId, inventoryDecreased.getInventoryId());
 
-        assertEquals("petr@gmail.com", inventoryDecreased.getInventoryId().getBookId().getIsbn62().getValue());
-    }
-    @Test
-    void reserveBook() {
-        final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
-        dispatchCommand(aggregate, envelopeOf(reserveBook));
+        assertEquals("123456789", inventoryDecreased.getInventoryId()
+                                                    .getBookId()
+                                                    .getIsbn62()
+                                                    .getValue());
+        assertEquals(true, inventoryDecreased.getWriteOffReason()
+                                             .getOutdated());
+        assertEquals(false, inventoryDecreased.getWriteOffReason()
+                                              .getLost());
+        assertEquals("petr@gmail.com", inventoryDecreased.getLibrarianId()
+                                                         .getEmail()
+                                                         .getValue());
 
-        final Inventory inventory = aggregate.getState();
-        assertEquals("123456789", inventory.getReservations(0).getBookId().getIsbn62().getValue());
-        assertEquals("petr@gmail.com", inventory.getReservations(0).getWhoReserved().getEmail().getValue());
+    }
+
+    @Test
+    void writeOffBook() {
+        appendInventory();
+        final Inventory inventoryBefore = aggregate.getState();
+        assertEquals(1, inventoryBefore.getInventoryItemsList()
+                                       .size());
+        final WriteBookOff writeBookOff = InventoryCommandFactory.writeBookOffInstance();
+        dispatchCommand(aggregate, envelopeOf(writeBookOff));
+
+        final Inventory inventoryAfter = aggregate.getState();
+        assertEquals(0, inventoryAfter.getInventoryItemsList()
+                                      .size());
     }
 }
