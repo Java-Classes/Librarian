@@ -32,8 +32,13 @@ import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.ReserveBook;
+import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
-
+/**
+ * A factory of the task commands for the test needs.
+ *
+ * @author Alexander Karpets
+ */
 public class InventoryCommandFactory {
     public static final BookId bookId = BookId.newBuilder()
                                               .setIsbn62(Isbn62.newBuilder()
@@ -138,17 +143,17 @@ public class InventoryCommandFactory {
                                                     .build();
         return result;
     }
-//    public static ReturnBook returnBookInstance() {
-//
-//        final ReturnBook result = returnBookInstance(userId, inventoryId);
-//        return result;
-//    }
-//
-//    public static ReturnBook returnBookInstance(InventoryId inventoryId, InventoryItemId inventoryItemId, UserId userId) {
-//        ReturnBook result = ReturnBook.newBuilder()
-//                                        .setInventoryId(inventoryId)
-//                                        .setUserId(userId)
-//                                        .build();
-//        return result;
-//    }
+    public static ReturnBook returnBookInstance() {
+
+        final ReturnBook result = returnBookInstance(inventoryId, inventoryItemId,userId);
+        return result;
+    }
+
+    public static ReturnBook returnBookInstance(InventoryId inventoryId, InventoryItemId inventoryItemId, UserId userId) {
+        ReturnBook result = ReturnBook.newBuilder()
+                                        .setInventoryId(inventoryId)
+                                        .setUserId(userId)
+                                        .build();
+        return result;
+    }
 }

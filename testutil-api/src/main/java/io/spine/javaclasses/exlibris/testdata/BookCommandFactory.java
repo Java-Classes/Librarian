@@ -40,6 +40,8 @@ import static io.spine.time.Time.getCurrentTime;
 import static javaclasses.exlibris.c.RemoveBook.BookRemovalReasonCase.OUTDATED;
 
 /**
+ * A factory of the task commands for the test needs.
+ *
  * @author Paul Ageyev
  */
 public class BookCommandFactory {
