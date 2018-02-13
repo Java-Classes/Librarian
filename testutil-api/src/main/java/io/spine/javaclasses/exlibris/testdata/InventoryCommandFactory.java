@@ -72,7 +72,7 @@ public class InventoryCommandFactory {
                                                           UserId userId, Rfid rfid) {
 
         AppendInventory result = AppendInventory.newBuilder()
-                                                .setIntentoryId(inventoryId)
+                                                .setInventoryId(inventoryId)
                                                 .setInventoryItemId(inventoryItemId)
                                                 .setLibrarianId(userId)
                                                 .setRfid(rfid)
@@ -84,8 +84,8 @@ public class InventoryCommandFactory {
                                                 InventoryItemId inventoryItemId,
                                                 UserId userId) {
         final BorrowBook result = BorrowBook.newBuilder()
-                                            .setIntentoryId(inventoryId)
-                                            .setIntentoryItemId(inventoryItemId)
+                                            .setInventoryId(inventoryId)
+                                            .setInventoryItemId(inventoryItemId)
                                             .setUserId(userId)
                                             .build();
         return result;

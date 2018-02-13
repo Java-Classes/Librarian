@@ -103,7 +103,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     List<? extends Message> handle(AppendInventory cmd) {
 
-        final InventoryId inventoryId = cmd.getIntentoryId();
+        final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final Rfid rfid = cmd.getRfid();
         final UserId userId = cmd.getLibrarianId();
@@ -150,8 +150,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     List<? extends Message> handle(BorrowBook cmd) {
 
-        final InventoryId inventoryId = cmd.getIntentoryId();
-        final InventoryItemId inventoryItemId = cmd.getIntentoryItemId();
+        final InventoryId inventoryId = cmd.getInventoryId();
+        final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final UserId userId = cmd.getUserId();
 
         final BookBorrowed result = BookBorrowed.newBuilder()
@@ -166,7 +166,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     List<? extends Message> handle(MarkLoanOverdue cmd) {
 
-        final InventoryId inventoryId = cmd.getIntentoryId();
+        final InventoryId inventoryId = cmd.getInventoryId();
         final LoanId loanId = cmd.getLoanId();
         final LoanBecameOverdue result = LoanBecameOverdue.newBuilder()
                                                           .setInventoryId(inventoryId)
@@ -179,7 +179,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     List<? extends Message> handle(ExtendLoanPeriod cmd) {
 
-        final InventoryId inventoryId = cmd.getIntentoryId();
+        final InventoryId inventoryId = cmd.getInventoryId();
         final LoanId loanId = cmd.getLoanId();
         final UserId userId = cmd.getUserId();
         final Timestamp newDueDate = cmd.getNewDueDate();
@@ -216,7 +216,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     List<? extends Message> handle(MarkReservationExpired cmd) {
 
-        final InventoryId inventoryId = cmd.getIntentoryId();
+        final InventoryId inventoryId = cmd.getInventoryId();
         final UserId userId = cmd.getUserId();
         final ReservationPickUpPeriodExpired result = ReservationPickUpPeriodExpired.newBuilder()
                                                                                     .setInventoryId(
@@ -247,7 +247,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     List<? extends Message> handle(ReportLostBook cmd) {
 
-        final InventoryId inventoryId = cmd.getIntentoryId();
+        final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final UserId userId = cmd.getWhoLost();
         final BookLost result = BookLost.newBuilder()
