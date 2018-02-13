@@ -31,6 +31,7 @@ import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
+import javaclasses.exlibris.c.ReportLostBook;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.WriteBookOff;
 
@@ -138,6 +139,18 @@ public class InventoryCommandFactory {
                                                     .build();
         return result;
     }
+
+    public static ReportLostBook reportLostBookInstance() {
+        return reportLostBook(inventoryId, inventoryItemId, userId);
+    }
+
+    public static ReportLostBook reportLostBook(InventoryId inventoryId, InventoryItemId inventoryItemId, UserId userId) {
+
+        ReportLostBook result = ReportLostBook.newBuilder().setInventoryId(inventoryId).setInventoryItemId(inventoryItemId).setWhoLost(userId).build();
+
+        return result;
+    }
+
 //    public static ReturnBook returnBookInstance() {
 //
 //        final ReturnBook result = returnBookInstance(userId, inventoryId);

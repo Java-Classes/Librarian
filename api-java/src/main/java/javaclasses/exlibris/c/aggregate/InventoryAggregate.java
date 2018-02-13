@@ -429,16 +429,21 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     private void bookLost(BookLost event) {
 
         final List<InventoryItem> inventoryItems = getBuilder().getInventoryItems();
-        int borrowItemPosition = -1;
+        int bookLostItemPosition = -1;
         for (int i = 0; i < inventoryItems.size(); i++) {
             InventoryItem item = inventoryItems.get(i);
             if (item.getInventoryItemId()
                     .getItemNumber() == event.getInventoryItemId()
                                              .getItemNumber()) {
-                borrowItemPosition = i;
+                bookLostItemPosition = i;
             }
         }
 
-        getBuilder().removeInventoryItems(borrowItemPosition);
+        InventoryItem inventoryItem = InventoryItem.newBuilder(
+                inventoryItems.get(bookLostItemPosition))
+                                                   .setLost(true)
+                                                   .build();
+
+        getBuilder().setInventoryItems(bookLostItemPosition, inventoryItem);
     }
 }
