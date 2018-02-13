@@ -34,6 +34,7 @@ import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
+
 /**
  * A factory of the task commands for the test needs.
  *
@@ -43,6 +44,7 @@ public class InventoryCommandFactory {
     public static final BookId bookId = BookId.newBuilder()
                                               .setIsbn62(Isbn62.newBuilder()
                                                                .setValue("123456789"))
+
                                               .build();
     public static final InventoryId inventoryId = InventoryId.newBuilder()
                                                              .setBookId(bookId)
@@ -81,6 +83,7 @@ public class InventoryCommandFactory {
                                                 .setInventoryItemId(inventoryItemId)
                                                 .setLibrarianId(userId)
                                                 .setRfid(rfid)
+
                                                 .build();
         return result;
     }
@@ -148,17 +151,20 @@ public class InventoryCommandFactory {
                                                     .build();
         return result;
     }
+
     public static ReturnBook returnBookInstance() {
 
-        final ReturnBook result = returnBookInstance(inventoryId, inventoryItemId,userId);
+        final ReturnBook result = returnBookInstance(inventoryId, inventoryItemId, userId);
         return result;
     }
 
-    public static ReturnBook returnBookInstance(InventoryId inventoryId, InventoryItemId inventoryItemId, UserId userId) {
+    public static ReturnBook returnBookInstance(InventoryId inventoryId,
+                                                InventoryItemId inventoryItemId, UserId userId) {
         ReturnBook result = ReturnBook.newBuilder()
-                                        .setInventoryId(inventoryId)
-                                        .setUserId(userId)
-                                        .build();
+                                      .setInventoryId(inventoryId)
+                                      .setInventoryItemId(inventoryItemId)
+                                      .setUserId(userId)
+                                      .build();
         return result;
     }
 }

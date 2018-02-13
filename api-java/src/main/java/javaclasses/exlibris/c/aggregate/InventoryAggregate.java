@@ -441,6 +441,20 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                             .setInLibrary(true)
                                                             .build();
         getBuilder().setInventoryItems(returnedItemPosition, newInventoryItem);
+        int loanIndex = -1;
+        List<Loan> loans = getBuilder().getLoans();
+        for (int i = 0; i < loans.size(); i++) {
+            Loan loan = loans.get(i);
+            if (loan.getWhoBorrowed()
+                    .getEmail()
+                    .getValue()
+                    .equals(event.getWhoReturned()
+                                 .getEmail()
+                                 .getValue())) {
+                loanIndex = i;
+            }
+        }
+        getBuilder().removeLoans(loanIndex);
     }
 
     @Apply
