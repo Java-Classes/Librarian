@@ -33,6 +33,10 @@ import javaclasses.exlibris.Category;
 import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.AddBook;
+import javaclasses.exlibris.c.RemoveBook;
+
+import static io.spine.time.Time.getCurrentTime;
+import static javaclasses.exlibris.c.RemoveBook.BookRemovalReasonCase.OUTDATED;
 import javaclasses.exlibris.c.UpdateBook;
 
 /**
@@ -49,6 +53,12 @@ public class BookCommandFactory {
                                                                     .setValue(
                                                                             "paulageyev@gmail.com"))
                                               .build();
+
+    public static final UserId librarianId = UserId.newBuilder()
+                                                   .setEmail(EmailAddress.newBuilder()
+                                                                         .setValue(
+                                                                                 "smb@teamdev.com"))
+                                                   .build();
     public static final BookDetails bookDetails = BookDetails.newBuilder()
                                                              .setTitle(BookTitle.newBuilder()
                                                                                 .setTitle(
@@ -89,6 +99,10 @@ public class BookCommandFactory {
                                                                                              "Programming"))
                                                               .build();
 
+    public static final String customReason = "The book was burned damaged";
+
+    public static final RemoveBook.BookRemovalReasonCase removalReason = OUTDATED;
+
     private BookCommandFactory() {
     }
 
@@ -121,4 +135,33 @@ public class BookCommandFactory {
 
     }
 
+    public static RemoveBook removeBookInstance(BookId bookId, UserId librarianId,
+                                                RemoveBook.BookRemovalReasonCase removalReasonCase) {
+
+        final RemoveBook.Builder result = RemoveBook.newBuilder()
+                                                    .setBookId(bookId)
+                                                    .setLibrarianId(librarianId)
+                                                    .setWhenRemoved(getCurrentTime());
+
+        switch (removalReasonCase) {
+            case OUTDATED: {
+                return result
+                        .setOutdated(true)
+                        .build();
+            }
+            case CUSTOM_REASON: {
+                return result
+                        .setCustomReason(customReason)
+                        .build();
+
+            } // TODO 12-Feb-2018[Dmytry Dyachenko]: write the rejection below
+            /* case BOOKREMOVALREASON_NOT_SET: {
+
+                break;
+            }*/
+            default: {
+                return result.build();
+            }
+        }
+    }
 }

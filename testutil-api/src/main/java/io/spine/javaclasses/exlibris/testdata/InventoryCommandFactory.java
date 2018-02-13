@@ -30,6 +30,7 @@ import javaclasses.exlibris.Rfid;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.AppendInventory;
+import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
@@ -78,6 +79,17 @@ public class InventoryCommandFactory {
                                                 .setLibrarianId(userId)
                                                 .setRfid(rfid)
                                                 .build();
+        return result;
+    }
+
+    public static BorrowBook borrowBookInstance(InventoryId inventoryId,
+                                                InventoryItemId inventoryItemId,
+                                                UserId userId) {
+        final BorrowBook result = BorrowBook.newBuilder()
+                                            .setIntentoryId(inventoryId)
+                                            .setIntentoryItemId(inventoryItemId)
+                                            .setUserId(userId)
+                                            .build();
         return result;
     }
 

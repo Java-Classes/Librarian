@@ -124,35 +124,31 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
 
         final String customReason = cmd.getCustomReason();
 
-        final BookRemoved bookRemoved = BookRemoved.newBuilder()
-                                                   .setBookId(bookId)
-                                                   .setLibrarianId(userId)
-                                                   .setWhenRemoved(getCurrentTime())
-                                                   .build();
+        final BookRemoved.Builder bookRemoved = BookRemoved.newBuilder()
+                                                           .setBookId(bookId)
+                                                           .setLibrarianId(userId)
+                                                           .setWhenRemoved(getCurrentTime());
 
         switch (cmd.getBookRemovalReasonCase()) {
             case OUTDATED: {
-                bookRemoved.toBuilder()
-                           .setOutdated(true)
-                           .build();
-                break;
+                return singletonList(bookRemoved
+                                             .setOutdated(true)
+                                             .build());
             }
             case CUSTOM_REASON: {
-                bookRemoved.toBuilder()
-                           .setCustomReason(customReason)
-                           .build();
-                break;
+                return singletonList(bookRemoved
+                                             .setCustomReason(customReason)
+                                             .build());
             } // TODO 12-Feb-2018[Dmytry Dyachenko]: write the rejection below
 /*            case BOOKREMOVALREASON_NOT_SET: {
 
                 break;
             }*/
             default: {
-                break;
+                return singletonList(bookRemoved.build());
             }
 
         }
-        return singletonList(bookRemoved);
     }
 
     @Apply
@@ -177,11 +173,11 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
 
     }
 
-    /*@Apply
+    @Apply
     private void bookRemoved(BookRemoved event) {
 
         getBuilder().clearBookId()
                     .clearBookDetails();
-
-    }*/
+    }
 }
+

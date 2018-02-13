@@ -122,13 +122,13 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
         final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
-        final UserId userId = cmd.getLibrarianId();
+        final UserId librarianId = cmd.getLibrarianId();
         final WriteOffReason writeOffReason = cmd.getWriteBookOffReason();
         final InventoryDecreased result = InventoryDecreased.newBuilder()
                                                             .setInventoryId(inventoryId)
                                                             .setInventoryItemId(inventoryItemId)
                                                             .setWhenDecreased(getCurrentTime())
-                                                            .setLibrarianId(userId)
+                                                            .setLibrarianId(librarianId)
                                                             .setWriteOffReason(writeOffReason)
                                                             .build();
         return singletonList(result);
@@ -153,6 +153,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final InventoryId inventoryId = cmd.getIntentoryId();
         final InventoryItemId inventoryItemId = cmd.getIntentoryItemId();
         final UserId userId = cmd.getUserId();
+
         final BookBorrowed result = BookBorrowed.newBuilder()
                                                 .setInventoryId(inventoryId)
                                                 .setInventoryItemId(inventoryItemId)
@@ -309,20 +310,36 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                              .getItemNumber()) {
                 borrowItemPosition = i;
             }
-
-//        final InventoryItem item = inventoryItems.get(borrowItemPosition);
-            final InventoryItem borrowedItem = InventoryItem.newBuilder()
-                                                            .setBorrowed(true)
-                                                            .setUserId(event.getWhoBorrowed())
-                                                            .setInventoryItemId(
-                                                                    event.getInventoryItemId())
-                                                            .build();
-            getBuilder().setInventoryItems(borrowItemPosition, borrowedItem);
         }
+
+        final InventoryItem borrowedItem = InventoryItem.newBuilder()
+                                                        .setBorrowed(true)
+                                                        .setUserId(event.getWhoBorrowed())
+                                                        .setInventoryItemId(
+                                                                event.getInventoryItemId())
+                                                        .build();
+
+        final int secondsInTwoWeeks = 1209600;
+        final Loan loan = Loan.newBuilder()
+                              .setLoanId(LoanId.newBuilder()
+                                               .setValue(getCurrentTime().getSeconds())
+                                               .build())
+                              .setInventoryItemId(event.getInventoryItemId())
+                              .setWhoBorrowed(event.getWhoBorrowed())
+                              .setWhenTaken(getCurrentTime())
+                              .setWhenDue(Timestamp.newBuilder()
+                                                   .setSeconds(System.currentTimeMillis() / 1000 +
+                                                                       secondsInTwoWeeks)
+                                                   .build())
+                              .build();
+
+        getBuilder().setInventoryItems(borrowItemPosition, borrowedItem)
+                    .addLoans(loan);
     }
 
     @Apply
     private void loanBecameOverdue(LoanBecameOverdue event) {
+
     }
 
     @Apply
