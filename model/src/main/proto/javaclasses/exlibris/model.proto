@@ -64,7 +64,7 @@ message Inventory {
     repeated Reservation reservations = 4;
 
     // A list of loans.
-    repeated LoanId loans = 5;
+    repeated Loan loans = 5;
 }
 
 // State for `InventoryItem`.

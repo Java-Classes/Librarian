@@ -31,6 +31,7 @@ import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.InventoryItem;
 import javaclasses.exlibris.InventoryItemId;
 import javaclasses.exlibris.InventoryVBuilder;
+import javaclasses.exlibris.Loan;
 import javaclasses.exlibris.LoanId;
 import javaclasses.exlibris.Reservation;
 import javaclasses.exlibris.Rfid;
@@ -307,16 +308,16 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                              .getItemNumber()) {
                 borrowItemPosition = i;
             }
-        }
 
-        final InventoryItem item = inventoryItems.get(borrowItemPosition);
-        final InventoryItem borrowedItem = InventoryItem.newBuilder()
-                                                        .setBorrowed(true)
-                                                        .setUserId(event.getWhoBorrowed())
-                                                        .setInventoryItemId(
-                                                                event.getInventoryItemId())
-                                                        .build();
-        getBuilder().setInventoryItems(borrowItemPosition, borrowedItem);
+//        final InventoryItem item = inventoryItems.get(borrowItemPosition);
+            final InventoryItem borrowedItem = InventoryItem.newBuilder()
+                                                            .setBorrowed(true)
+                                                            .setUserId(event.getWhoBorrowed())
+                                                            .setInventoryItemId(
+                                                                    event.getInventoryItemId())
+                                                            .build();
+            getBuilder().setInventoryItems(borrowItemPosition, borrowedItem);
+        }
     }
 
     @Apply
@@ -326,28 +327,49 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
     @Apply
     private void loanPeriodExtended(LoanPeriodExtended event) {
-        final int loanPosition = getBuilder().getLoans()
-                                             .indexOf(event.getLoanId());
 
+        final List<Loan> loans = getBuilder().getLoans();
+        int loanPosition = -1;
+        for (int i = 0; i < loans.size(); i++) {
+            Loan loan = loans.get(i);
+            if (loan.getLoanId()
+                    .getValue() == event.getLoanId()
+                                        .getValue()) {
+                loanPosition = i;
+            }
+        }
+
+        Loan previousLoan = getBuilder().getLoans()
+                                        .get(loanPosition);
+
+        Loan loan = Loan.newBuilder(previousLoan)
+                        .setWhenDue(event.getNewDueDate())
+                        .build();
+
+        getBuilder().setLoans(loanPosition, loan);
     }
 
     @Apply
     private void reservationCanceled(ReservationCanceled event) {
+
 
     }
 
     @Apply
     private void reservationPickUpPeriodExpired(ReservationPickUpPeriodExpired event) {
 
+
     }
 
     @Apply
     private void bookReturned(BookReturned event) {
 
+
     }
 
     @Apply
     private void bookLost(BookLost event) {
+
 
     }
 }
