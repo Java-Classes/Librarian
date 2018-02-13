@@ -25,21 +25,19 @@ import io.spine.client.TestActorRequestFactory;
 import io.spine.core.CommandEnvelope;
 import io.spine.server.aggregate.AggregateCommandTest;
 import javaclasses.exlibris.BookId;
+import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.Isbn62;
-import javaclasses.exlibris.c.aggregate.BookAggregate;
-
-import static io.spine.Identifier.newUuid;
+import javaclasses.exlibris.c.aggregate.InventoryAggregate;
 
 /**
- * @author Paul Ageyev
+ * @author Alexander Karpets
  */
-abstract class BookCommandTest<C extends Message> extends AggregateCommandTest<C, BookAggregate> {
-
+public class InventoryCommandTest<C extends Message> extends AggregateCommandTest<C, InventoryAggregate> {
     private final TestActorRequestFactory requestFactory =
             TestActorRequestFactory.newInstance(getClass());
 
-    BookAggregate aggregate;
-    BookId bookId;
+    InventoryAggregate aggregate;
+    InventoryId inventoryId;
 
     @Override
     protected void setUp() {
@@ -48,9 +46,9 @@ abstract class BookCommandTest<C extends Message> extends AggregateCommandTest<C
     }
 
     @Override
-    protected BookAggregate createAggregate() {
-        bookId = createBookId();
-        return new BookAggregate(bookId);
+    protected InventoryAggregate createAggregate() {
+        inventoryId = createBookId();
+        return new InventoryAggregate(inventoryId);
     }
 
     CommandEnvelope envelopeOf(Message commandMessage) {
@@ -58,11 +56,12 @@ abstract class BookCommandTest<C extends Message> extends AggregateCommandTest<C
                                                 .create(commandMessage));
     }
 
-    private static BookId createBookId() {
+    private static InventoryId createBookId() {
 
-        return BookId.newBuilder()
-                     .setIsbn62(Isbn62.newBuilder()
-                                      .setValue("1"))
-                     .build();
+        return InventoryId.newBuilder()
+                          .setBookId(BookId.newBuilder()
+                                           .setIsbn62(Isbn62.newBuilder()
+                                                            .setValue("123456789")))
+                          .build();
     }
 }

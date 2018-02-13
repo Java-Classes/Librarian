@@ -26,6 +26,7 @@ import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
 import javaclasses.exlibris.Book;
 import javaclasses.exlibris.BookDetails;
+import javaclasses.exlibris.BookDetailsChange;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.BookVBuilder;
 import javaclasses.exlibris.UserId;
@@ -103,12 +104,12 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
         final BookId bookId = cmd.getBookId();
         final UserId userId = cmd.getLibrarianId();
 
-        final BookDetails bookDetails = cmd.getBookDetails();
+        final BookDetailsChange bookDetails = cmd.getBookDetails();
 
         final BookUpdated result = BookUpdated.newBuilder()
                                               .setBookId(bookId)
                                               .setLibrarianId(userId)
-                                              .setNewBookDetails(bookDetails)
+                                              .setBookDetailsChange(bookDetails)
                                               .setWhenUpdated(getCurrentTime())
                                               .build();
 
@@ -160,13 +161,17 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
                     .setBookDetails(bookDetails);
     }
 
-/*    @Apply
+    @Apply
     private void bookUpdated(BookUpdated event) {
 
-        final BookDetails newBookDetails = event.getNewBookDetails();
+        final BookId bookId = event.getBookId();
 
-        getBuilder().setBookDetails(newBookDetails);
-    }*/
+        final BookDetailsChange bookDetails = event.getBookDetailsChange();
+
+        getBuilder().setBookId(bookId)
+                    .setBookDetails(bookDetails.getNewBookDetails());
+
+    }
 
     @Apply
     private void bookRemoved(BookRemoved event) {

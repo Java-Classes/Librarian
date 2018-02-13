@@ -140,3 +140,13 @@ message WriteOffReason {
         string custom_reason = 3;
     }
 }
+
+
+// The information about a book.
+//
+message BookDetailsChange {
+
+    BookDetails previous_book_details = 1;
+    BookDetails new_book_details = 2;
+
+}

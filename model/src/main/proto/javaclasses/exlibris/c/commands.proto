@@ -65,7 +65,7 @@ message UpdateBook {
     UserId librarian_id = 2;
 
     // New details for the existed book.
-    BookDetails book_details = 3;
+    BookDetailsChange book_details = 3;
 }
 
 // An attempt to remove a book.

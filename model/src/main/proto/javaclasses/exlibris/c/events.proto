@@ -323,16 +323,13 @@ message BookUpdated {
     BookId book_id = 1;
 
     // Details of a current book.
-    BookDetails current_book_details = 2;
-
-    // New book details.
-    BookDetails new_book_details = 3;
+    BookDetailsChange book_details_change = 2;
 
     // Who updated a book.
-    UserId librarian_id = 4;
+    UserId librarian_id = 3;
 
     // The time when book was updated.
-    google.protobuf.Timestamp when_updated = 5;
+    google.protobuf.Timestamp when_updated = 4;
 }
 
 // An event fired when librarian removes book from a library.

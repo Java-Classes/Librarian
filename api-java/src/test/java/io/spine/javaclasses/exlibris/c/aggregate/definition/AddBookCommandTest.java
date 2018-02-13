@@ -58,5 +58,6 @@ public class AddBookCommandTest extends BookCommandTest<AddBook> {
 
         final Book state = aggregate.getState();
         assertEquals(state.getBookId(), addBook.getBookId());
+
     }
 }
