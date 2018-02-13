@@ -31,6 +31,7 @@ import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.InventoryItem;
 import javaclasses.exlibris.InventoryItemId;
 import javaclasses.exlibris.InventoryVBuilder;
+import javaclasses.exlibris.Loan;
 import javaclasses.exlibris.LoanId;
 import javaclasses.exlibris.Reservation;
 import javaclasses.exlibris.Rfid;
@@ -294,54 +295,77 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                       .build();
         getBuilder().addReservations(newReservation);
     }
+
     @Apply
     private void bookBorrowed(BookBorrowed event) {
         final List<InventoryItem> inventoryItems = getBuilder().getInventoryItems();
         int borrowItemPosition = -1;
         for (int i = 0; i < inventoryItems.size(); i++) {
             InventoryItem item = inventoryItems.get(i);
-            if (item.getInventoryItemId() == event.getInventoryItemId()) {
+            if (item.getInventoryItemId()
+                    .getItemNumber() == event.getInventoryItemId()
+                                             .getItemNumber()) {
                 borrowItemPosition = i;
             }
-        }
 
-        final InventoryItem item = inventoryItems.get(borrowItemPosition);
-        final InventoryItem borrowedItem = InventoryItem.newBuilder()
-                                                 .setBorrowed(true)
-                                                 .setUserId(event.getWhoBorrowed())
-                                                 .setInventoryItemId(event.getInventoryItemId())
-                                                 .build();
-        getBuilder().setInventoryItems(borrowItemPosition, borrowedItem);
+//        final InventoryItem item = inventoryItems.get(borrowItemPosition);
+            final InventoryItem borrowedItem = InventoryItem.newBuilder()
+                                                            .setBorrowed(true)
+                                                            .setUserId(event.getWhoBorrowed())
+                                                            .setInventoryItemId(
+                                                                    event.getInventoryItemId())
+                                                            .build();
+            getBuilder().setInventoryItems(borrowItemPosition, borrowedItem);
+        }
     }
 
     @Apply
     private void loanBecameOverdue(LoanBecameOverdue event) {
-
     }
+
     @Apply
     private void loanPeriodExtended(LoanPeriodExtended event) {
-        final int loanPosition = getBuilder().getLoans()
-                                  .indexOf(event.getLoanId());
 
+        final List<Loan> loans = getBuilder().getLoans();
+        int loanPosition = -1;
+        for (int i = 0; i < loans.size(); i++) {
+            Loan loan = loans.get(i);
+            if (loan.getLoanId()
+                    .getValue() == event.getLoanId()
+                                        .getValue()) {
+                loanPosition = i;
+            }
+        }
+
+        Loan previousLoan = getBuilder().getLoans()
+                                        .get(loanPosition);
+
+        Loan loan = Loan.newBuilder(previousLoan)
+                        .setWhenDue(event.getNewDueDate())
+                        .build();
+
+        getBuilder().setLoans(loanPosition, loan);
     }
+
     @Apply
     private void reservationCanceled(ReservationCanceled event) {
 
 
+
     }
+
     @Apply
     private void reservationPickUpPeriodExpired(ReservationPickUpPeriodExpired event) {
 
-
     }
+
     @Apply
     private void bookReturned(BookReturned event) {
 
-
     }
+
     @Apply
     private void bookLost(BookLost event) {
-
 
     }
 }
