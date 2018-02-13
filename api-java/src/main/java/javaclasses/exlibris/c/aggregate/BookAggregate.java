@@ -26,6 +26,7 @@ import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
 import javaclasses.exlibris.Book;
 import javaclasses.exlibris.BookDetails;
+import javaclasses.exlibris.BookDetailsChange;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.BookVBuilder;
 import javaclasses.exlibris.UserId;
@@ -40,15 +41,25 @@ import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
-/*
- *
+
+/**
  * The aggregate managing the state of a {@link Book}.
  *
  * @author Alexander Karpets
+ * @author Paul Ageyev
  */
 
+@SuppressWarnings({"ClassWithTooManyMethods", /* Task definition cannot be separated and should
+                                                 process all commands and events related to it
+                                                 according to the domain model.
+                                                 The {@code Aggregate} does it with methods
+                                                 annotated as {@code Assign} and {@code Apply}.
+                                                 In that case class has too many methods.*/
+        "OverlyCoupledClass"}) /* As each method needs dependencies  necessary to perform execution
+                                                 that class also overly coupled.*/
+
 public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
-    /*
+    /**
      * Creates a new instance.
      *
      * <p>Constructors of derived classes should have package access level
@@ -61,7 +72,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
      *
      * <p>Because of the last reason consider annotating constructors with
      * {@code @VisibleForTesting}. The package access is needed only for tests.
-     * Otherwise aggregate constructors (that are invoked by {@link }
+     * Otherwise aggregate constructors (that are invoked by {@link javaclasses.exlibris.repository.BookRepository}
      * via Reflection) may be left {@code private}.
      *
      * @param id the ID for the new aggregate
@@ -74,7 +85,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     List<? extends Message> handle(AddBook cmd) {
 
         final BookId bookId = cmd.getBookId();
-        final UserId userId = cmd.getUserId();
+        final UserId userId = cmd.getLibrarianId();
         final BookDetails bookDetails = cmd.getBookDetails();
 
         final BookAdded result = BookAdded.newBuilder()
@@ -91,14 +102,14 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     List<? extends Message> handle(UpdateBook cmd) {
 
         final BookId bookId = cmd.getBookId();
-        final UserId userId = cmd.getUserId();
+        final UserId userId = cmd.getLibrarianId();
 
-        final BookDetails bookDetails = cmd.getBookDetails();
+        final BookDetailsChange bookDetails = cmd.getBookDetails();
 
         final BookUpdated result = BookUpdated.newBuilder()
                                               .setBookId(bookId)
                                               .setLibrarianId(userId)
-                                              .setNewBookDetails(bookDetails)
+                                              .setBookDetailsChange(bookDetails)
                                               .setWhenUpdated(getCurrentTime())
                                               .build();
 
@@ -109,39 +120,35 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     List<? extends Message> handle(RemoveBook cmd) {
 
         final BookId bookId = cmd.getBookId();
-        final UserId userId = cmd.getUserId();
+        final UserId userId = cmd.getLibrarianId();
 
         final String customReason = cmd.getCustomReason();
 
-        final BookRemoved bookRemoved = BookRemoved.newBuilder()
-                                                   .setBookId(bookId)
-                                                   .setLibrarianId(userId)
-                                                   .setWhenRemoved(getCurrentTime())
-                                                   .build();
+        final BookRemoved.Builder bookRemoved = BookRemoved.newBuilder()
+                                                           .setBookId(bookId)
+                                                           .setLibrarianId(userId)
+                                                           .setWhenRemoved(getCurrentTime());
 
         switch (cmd.getBookRemovalReasonCase()) {
             case OUTDATED: {
-                bookRemoved.toBuilder()
-                           .setOutdated(true)
-                           .build();
-                break;
+                return singletonList(bookRemoved
+                                             .setOutdated(true)
+                                             .build());
             }
             case CUSTOM_REASON: {
-                bookRemoved.toBuilder()
-                           .setCustomReason(customReason)
-                           .build();
-                break;
+                return singletonList(bookRemoved
+                                             .setCustomReason(customReason)
+                                             .build());
             } // TODO 12-Feb-2018[Dmytry Dyachenko]: write the rejection below
 /*            case BOOKREMOVALREASON_NOT_SET: {
 
                 break;
             }*/
             default: {
-                break;
+                return singletonList(bookRemoved.build());
             }
 
         }
-        return singletonList(bookRemoved);
     }
 
     @Apply
@@ -154,12 +161,16 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
                     .setBookDetails(bookDetails);
     }
 
-  /*  @Apply
+    @Apply
     private void bookUpdated(BookUpdated event) {
 
-        final BookDetails newBookDetails = event.getNewBookDetails();
+        final BookId bookId = event.getBookId();
 
-        getBuilder().setBookDetails(newBookDetails);
+        final BookDetailsChange bookDetails = event.getBookDetailsChange();
+
+        getBuilder().setBookId(bookId)
+                    .setBookDetails(bookDetails.getNewBookDetails());
+
     }
 
     @Apply
@@ -167,6 +178,6 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
 
         getBuilder().clearBookId()
                     .clearBookDetails();
-
-    }*/
+    }
 }
+

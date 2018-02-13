@@ -21,9 +21,11 @@
 package javaclasses.exlibris.repository;
 
 import io.spine.server.aggregate.AggregateRepository;
-import javaclasses.exlibris.BookId;
-import javaclasses.exlibris.c.aggregate.BookAggregate;
+import javaclasses.exlibris.InventoryId;
+import javaclasses.exlibris.c.aggregate.InventoryAggregate;
 
-public class BookRepository extends AggregateRepository<BookId, BookAggregate> {
-
+/**
+ * @author Alexander Karpets
+ */
+public class InventoryRepository extends AggregateRepository<InventoryId, InventoryAggregate> {
 }
