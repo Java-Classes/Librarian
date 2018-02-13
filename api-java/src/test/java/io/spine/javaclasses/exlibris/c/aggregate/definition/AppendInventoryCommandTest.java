@@ -51,7 +51,6 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
         final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
 
         final List<? extends Message> messageList = dispatchCommand(aggregate, envelopeOf(appendInventory));
-
         assertNotNull(aggregate.getId());
         assertEquals(1, messageList.size());
         assertEquals(InventoryAppended.class, messageList.get(0)
