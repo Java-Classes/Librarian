@@ -136,7 +136,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     List<? extends Message> handle(ReserveBook cmd) {
 
-        final InventoryId inventoryId = cmd.getIntentoryId();
+        final InventoryId inventoryId = cmd.getInventoryId();
         final UserId userId = cmd.getUserId();
         final ReservationAdded result = ReservationAdded.newBuilder()
                                                         .setInventoryId(inventoryId)
@@ -275,7 +275,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         int decreaseItemPosition = -1;
         for (int i = 0; i < inventoryItems.size(); i++) {
             InventoryItem item = inventoryItems.get(i);
-            if (item.getInventoryItemId() == event.getInventoryItemId()) {
+            if (item.getInventoryItemId().getItemNumber()==event.getInventoryItemId().getItemNumber()) {
                 decreaseItemPosition = i;
             }
         }

@@ -27,8 +27,11 @@ import javaclasses.exlibris.InventoryItemId;
 import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.Rfid;
 import javaclasses.exlibris.UserId;
+import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BorrowBook;
+import javaclasses.exlibris.c.ReserveBook;
+import javaclasses.exlibris.c.WriteBookOff;
 
 public class InventoryCommandFactory {
     public static final BookId bookId = BookId.newBuilder()
@@ -49,6 +52,9 @@ public class InventoryCommandFactory {
     public static final Rfid rfid = Rfid.newBuilder()
                                         .setValue("4321")
                                         .build();
+    public static final WriteOffReason reason = WriteOffReason.newBuilder()
+                                                              .setOutdated(true)
+                                                              .build();
 
     private InventoryCommandFactory() {
     }
@@ -81,6 +87,39 @@ public class InventoryCommandFactory {
                                             .setIntentoryItemId(inventoryItemId)
                                             .setUserId(userId)
                                             .build();
+        return result;
+    }
+
+    public static WriteBookOff writeBookOffInstance() {
+
+        final WriteBookOff result = writeBookOffInstance(inventoryId, inventoryItemId, userId,
+                                                         reason);
+        return result;
+    }
+
+    public static WriteBookOff writeBookOffInstance(InventoryId inventoryId,
+                                                    InventoryItemId inventoryItemId,
+                                                    UserId librarianId, WriteOffReason reason) {
+        WriteBookOff result = WriteBookOff.newBuilder()
+                                          .setInventoryId(inventoryId)
+                                          .setInventoryItemId(inventoryItemId)
+                                          .setLibrarianId(librarianId)
+                                          .setWriteBookOffReason(reason)
+                                          .build();
+        return result;
+    }
+
+    public static ReserveBook reserveBookInstance() {
+
+        final ReserveBook result = reserveBookInstance(userId, inventoryId);
+        return result;
+    }
+
+    public static ReserveBook reserveBookInstance(UserId userId, InventoryId inventoryId) {
+        ReserveBook result = ReserveBook.newBuilder()
+                                        .setInventoryId(inventoryId)
+                                        .setUserId(userId)
+                                        .build();
         return result;
     }
 }
