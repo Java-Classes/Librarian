@@ -42,22 +42,10 @@ public class Server {
     private final BoundedContext boundedContext;
 
     /**
-     * Creates a server with the {@link CommandService Command}, {@link QueryService Query} and
-     * {@link SubscriptionService Subscription} gRPC services.
+     * Creates a new instance of {@code Server}.
      *
      * @param port           the port to bind the server to
      * @param boundedContext the {@link BoundedContext} to serve
-     * @return a new instance of {@code Server}
-     */
-    public static Server newServer(int port, BoundedContext boundedContext) {
-        return new Server(port, boundedContext);
-    }
-
-    /**
-     * Creates a new instance of {@code Server}.
-     *
-     * @param port                      the port to bind the server to
-     * @param boundedContext            the {@link BoundedContext} to serve
      */
     private Server(int port, BoundedContext boundedContext) {
         this.port = port;
@@ -67,6 +55,18 @@ public class Server {
         final QueryService queryService = initQueryService();
         final SubscriptionService subscriptionService = initSubscriptionService();
         this.grpcContainer = initGrpcContainer(commandService, queryService, subscriptionService);
+    }
+
+    /**
+     * Creates a server with the {@link CommandService Command}, {@link QueryService Query} and
+     * {@link SubscriptionService Subscription} gRPC services.
+     *
+     * @param port           the port to bind the server to
+     * @param boundedContext the {@link BoundedContext} to serve
+     * @return a new instance of {@code Server}
+     */
+    public static Server newServer(int port, BoundedContext boundedContext) {
+        return new Server(port, boundedContext);
     }
 
     private SubscriptionService initSubscriptionService() {

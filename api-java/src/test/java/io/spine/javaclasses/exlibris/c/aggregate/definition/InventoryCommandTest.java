@@ -39,10 +39,13 @@ public class InventoryCommandTest<C extends Message> extends AggregateCommandTes
     InventoryAggregate aggregate;
     InventoryId inventoryId;
 
-    @Override
-    protected void setUp() {
-        super.setUp();
-        aggregate = aggregate().get();
+    private static InventoryId createBookId() {
+
+        return InventoryId.newBuilder()
+                          .setBookId(BookId.newBuilder()
+                                           .setIsbn62(Isbn62.newBuilder()
+                                                            .setValue("123456789")))
+                          .build();
     }
 
     @Override
@@ -51,17 +54,14 @@ public class InventoryCommandTest<C extends Message> extends AggregateCommandTes
         return new InventoryAggregate(inventoryId);
     }
 
+    @Override
+    protected void setUp() {
+        super.setUp();
+        aggregate = aggregate().get();
+    }
+
     CommandEnvelope envelopeOf(Message commandMessage) {
         return CommandEnvelope.of(requestFactory.command()
                                                 .create(commandMessage));
-    }
-
-    private static InventoryId createBookId() {
-
-        return InventoryId.newBuilder()
-                          .setBookId(BookId.newBuilder()
-                                           .setIsbn62(Isbn62.newBuilder()
-                                                            .setValue("123456789")))
-                          .build();
     }
 }

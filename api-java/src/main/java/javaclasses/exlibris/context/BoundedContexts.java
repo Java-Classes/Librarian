@@ -21,12 +21,13 @@
 package javaclasses.exlibris.context;
 
 import com.google.common.annotations.VisibleForTesting;
-import javaclasses.exlibris.repository.BookRepository;
 import io.spine.server.BoundedContext;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
+import javaclasses.exlibris.repository.BookRepository;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Utilities for creation the {@link BoundedContext} instances.
  *

@@ -34,10 +34,10 @@ import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.RemoveBook;
+import javaclasses.exlibris.c.UpdateBook;
 
 import static io.spine.time.Time.getCurrentTime;
 import static javaclasses.exlibris.c.RemoveBook.BookRemovalReasonCase.OUTDATED;
-import javaclasses.exlibris.c.UpdateBook;
 
 /**
  * @author Paul Ageyev

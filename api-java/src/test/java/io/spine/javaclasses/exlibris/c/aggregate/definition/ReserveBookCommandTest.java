@@ -1,5 +1,3 @@
-
-
 package io.spine.javaclasses.exlibris.c.aggregate.definition;
 
 import com.google.protobuf.Message;
@@ -15,6 +13,7 @@ import java.util.List;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 /**
  * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
@@ -48,7 +47,8 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
     void produceEvent() {
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
 
-        final List<? extends Message> messageList = dispatchCommand(aggregate, envelopeOf(reserveBook));
+        final List<? extends Message> messageList = dispatchCommand(aggregate,
+                                                                    envelopeOf(reserveBook));
 
         assertNotNull(aggregate.getId());
         assertEquals(1, messageList.size());
@@ -59,15 +59,24 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
 
         assertEquals(InventoryCommandFactory.inventoryId, reservationAdded.getInventoryId());
 
-        assertEquals("petr@gmail.com", reservationAdded.getForWhomReserved().getEmail().getValue());
+        assertEquals("petr@gmail.com", reservationAdded.getForWhomReserved()
+                                                       .getEmail()
+                                                       .getValue());
     }
+
     @Test
     void reserveBook() {
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
         dispatchCommand(aggregate, envelopeOf(reserveBook));
 
         final Inventory inventory = aggregate.getState();
-        assertEquals("123456789", inventory.getReservations(0).getBookId().getIsbn62().getValue());
-        assertEquals("petr@gmail.com", inventory.getReservations(0).getWhoReserved().getEmail().getValue());
+        assertEquals("123456789", inventory.getReservations(0)
+                                           .getBookId()
+                                           .getIsbn62()
+                                           .getValue());
+        assertEquals("petr@gmail.com", inventory.getReservations(0)
+                                                .getWhoReserved()
+                                                .getEmail()
+                                                .getValue());
     }
 }

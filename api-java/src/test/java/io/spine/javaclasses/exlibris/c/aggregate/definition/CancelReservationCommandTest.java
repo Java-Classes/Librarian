@@ -46,7 +46,8 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
     void produceEvent() {
         final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
 
-        final List<? extends Message> messageList = dispatchCommand(aggregate, envelopeOf(appendInventory));
+        final List<? extends Message> messageList = dispatchCommand(aggregate,
+                                                                    envelopeOf(appendInventory));
         assertNotNull(aggregate.getId());
         assertEquals(1, messageList.size());
         assertEquals(InventoryAppended.class, messageList.get(0)
@@ -61,6 +62,7 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
                                                                                  .getEmail()
                                                                                  .getValue());
     }
+
     @Test
     void appendInventory() {
         final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();

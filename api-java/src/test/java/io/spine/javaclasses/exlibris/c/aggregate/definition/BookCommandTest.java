@@ -28,8 +28,6 @@ import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.c.aggregate.BookAggregate;
 
-import static io.spine.Identifier.newUuid;
-
 /**
  * @author Paul Ageyev
  */
@@ -41,10 +39,12 @@ abstract class BookCommandTest<C extends Message> extends AggregateCommandTest<C
     BookAggregate aggregate;
     BookId bookId;
 
-    @Override
-    protected void setUp() {
-        super.setUp();
-        aggregate = aggregate().get();
+    private static BookId createBookId() {
+
+        return BookId.newBuilder()
+                     .setIsbn62(Isbn62.newBuilder()
+                                      .setValue("1"))
+                     .build();
     }
 
     @Override
@@ -53,16 +53,14 @@ abstract class BookCommandTest<C extends Message> extends AggregateCommandTest<C
         return new BookAggregate(bookId);
     }
 
+    @Override
+    protected void setUp() {
+        super.setUp();
+        aggregate = aggregate().get();
+    }
+
     CommandEnvelope envelopeOf(Message commandMessage) {
         return CommandEnvelope.of(requestFactory.command()
                                                 .create(commandMessage));
-    }
-
-    private static BookId createBookId() {
-
-        return BookId.newBuilder()
-                     .setIsbn62(Isbn62.newBuilder()
-                                      .setValue("1"))
-                     .build();
     }
 }

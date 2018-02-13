@@ -141,7 +141,6 @@ message WriteOffReason {
     }
 }
 
-
 // The information about a book.
 //
 message BookDetailsChange {
