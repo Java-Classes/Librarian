@@ -25,6 +25,7 @@ import io.spine.net.Url;
 import io.spine.people.PersonName;
 import javaclasses.exlibris.AuthorName;
 import javaclasses.exlibris.BookDetails;
+import javaclasses.exlibris.BookDetailsChange;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.BookSynopsis;
 import javaclasses.exlibris.BookTitle;
@@ -32,6 +33,7 @@ import javaclasses.exlibris.Category;
 import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.AddBook;
+import javaclasses.exlibris.c.UpdateBook;
 
 /**
  * @author Paul Ageyev
@@ -67,6 +69,26 @@ public class BookCommandFactory {
                                                                                             "Programming"))
                                                              .build();
 
+    public static final BookDetails bookDetails2 = BookDetails.newBuilder()
+                                                              .setTitle(BookTitle.newBuilder()
+                                                                                 .setTitle(
+                                                                                         "Refactoring: Improving the Design of Existing Code"))
+                                                              .setAuthor(AuthorName.newBuilder()
+                                                                                   .addAuthorName(
+                                                                                           PersonName.newBuilder()
+                                                                                                     .setFamilyName(
+                                                                                                             "Martin Fowler")))
+                                                              .setBookCoverUrl(Url.newBuilder()
+                                                                                  .setRaw("http://library.teamdev.com/book/1"))
+                                                              .setSynopsis(BookSynopsis.newBuilder()
+                                                                                       .setBookSynopsis(
+                                                                                               "As the application of object " +
+                                                                                                       "technology--particularly the Java programming language"))
+                                                              .addCategories(Category.newBuilder()
+                                                                                     .setValue(
+                                                                                             "Programming"))
+                                                              .build();
+
     private BookCommandFactory() {
     }
 
@@ -78,11 +100,25 @@ public class BookCommandFactory {
                                              BookDetails bookDetails) {
 
         final AddBook result = AddBook.newBuilder()
-                                          .setBookId(bookId)
-                                          .setLibrarianId(userId)
-                                          .setBookDetails(bookDetails).build();
+                                      .setBookId(bookId)
+                                      .setLibrarianId(userId)
+                                      .setBookDetails(bookDetails)
+                                      .build();
 
         return result;
+    }
+
+    public static UpdateBook updateBookInstance(BookId bookId, UserId userId,
+                                                BookDetailsChange bookDetails) {
+
+        final UpdateBook result = UpdateBook.newBuilder()
+                                            .setBookId(bookId)
+                                            .setLibrarianId(userId)
+                                            .setBookDetails(bookDetails)
+                                            .build();
+
+        return result;
+
     }
 
 }

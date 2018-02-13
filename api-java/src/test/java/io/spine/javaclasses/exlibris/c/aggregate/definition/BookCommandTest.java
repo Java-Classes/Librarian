@@ -62,7 +62,7 @@ abstract class BookCommandTest<C extends Message> extends AggregateCommandTest<C
 
         return BookId.newBuilder()
                      .setIsbn62(Isbn62.newBuilder()
-                                      .setValue(newUuid()))
+                                      .setValue("1"))
                      .build();
     }
 }
