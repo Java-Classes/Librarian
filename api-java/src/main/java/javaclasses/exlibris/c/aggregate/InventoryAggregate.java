@@ -64,6 +64,8 @@ import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
 
 /**
+ * The aggregate managing the state of a {@link Inventory}.
+ *
  * @author Alexander Karpets
  * @author Paul Ageyev
  */
