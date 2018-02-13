@@ -80,6 +80,11 @@ public class InventoryCommandFactory {
         return result;
     }
 
+    public static BorrowBook borrowBookInstance() {
+
+        return borrowBookInstance(inventoryId, inventoryItemId, userId);
+    }
+
     public static BorrowBook borrowBookInstance(InventoryId inventoryId,
                                                 InventoryItemId inventoryItemId,
                                                 UserId userId) {
