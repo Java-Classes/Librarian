@@ -276,7 +276,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         int decreaseItemPosition = -1;
         for (int i = 0; i < inventoryItems.size(); i++) {
             InventoryItem item = inventoryItems.get(i);
-            if (item.getInventoryItemId().getItemNumber()==event.getInventoryItemId().getItemNumber()) {
+            if (item.getInventoryItemId()
+                    .getItemNumber() == event.getInventoryItemId()
+                                             .getItemNumber()) {
                 decreaseItemPosition = i;
             }
         }
@@ -308,16 +310,31 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                              .getItemNumber()) {
                 borrowItemPosition = i;
             }
-
-//        final InventoryItem item = inventoryItems.get(borrowItemPosition);
-            final InventoryItem borrowedItem = InventoryItem.newBuilder()
-                                                            .setBorrowed(true)
-                                                            .setUserId(event.getWhoBorrowed())
-                                                            .setInventoryItemId(
-                                                                    event.getInventoryItemId())
-                                                            .build();
-            getBuilder().setInventoryItems(borrowItemPosition, borrowedItem);
         }
+
+        final InventoryItem borrowedItem = InventoryItem.newBuilder()
+                                                        .setBorrowed(true)
+                                                        .setUserId(event.getWhoBorrowed())
+                                                        .setInventoryItemId(
+                                                                event.getInventoryItemId())
+                                                        .build();
+
+        final int secondsInTwoWeeks = 1209600;
+        final Loan loan = Loan.newBuilder()
+                              .setLoanId(LoanId.newBuilder()
+                                               .setValue(getCurrentTime().getSeconds())
+                                               .build())
+                              .setInventoryItemId(event.getInventoryItemId())
+                              .setWhoBorrowed(event.getWhoBorrowed())
+                              .setWhenTaken(getCurrentTime())
+                              .setWhenDue(Timestamp.newBuilder()
+                                                   .setSeconds(System.currentTimeMillis() / 1000 +
+                                                                       secondsInTwoWeeks)
+                                                   .build())
+                              .build();
+
+        getBuilder().setInventoryItems(borrowItemPosition, borrowedItem)
+                    .addLoans(loan);
     }
 
     @Apply
@@ -352,24 +369,20 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Apply
     private void reservationCanceled(ReservationCanceled event) {
 
-
     }
 
     @Apply
     private void reservationPickUpPeriodExpired(ReservationPickUpPeriodExpired event) {
-
 
     }
 
     @Apply
     private void bookReturned(BookReturned event) {
 
-
     }
 
     @Apply
     private void bookLost(BookLost event) {
-
 
     }
 }

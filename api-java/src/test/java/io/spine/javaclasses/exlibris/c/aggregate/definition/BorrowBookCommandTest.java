@@ -83,6 +83,26 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
 
     }
 
+    @Test
+    @DisplayName("create the loan for the borrowed book and the specific user")
+    void createLoan() {
+        dispatchAppendInventory();
+
+        final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
+
+        dispatchCommand(aggregate, envelopeOf(borrowBook));
+        final Inventory state = aggregate.getState();
+
+        assertEquals(1, state.getLoansCount());
+
+        assertEquals(state.getLoans(state.getLoansCount() - 1)
+                          .getInventoryItemId(), inventoryItemId);
+
+        assertEquals(state.getLoans(state.getLoansCount() - 1)
+                          .getWhoBorrowed(), userId);
+
+    }
+
     private void dispatchAppendInventory() {
         final AppendInventory appendInventory = appendInventoryInstance();
         dispatchCommand(aggregate, envelopeOf(appendInventory));
