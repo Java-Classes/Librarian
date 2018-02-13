@@ -65,6 +65,8 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.sort;
 
 /**
+ * The aggregate managing the state of a {@link Inventory}.
+ *
  * @author Alexander Karpets
  * @author Paul Ageyev
  */
@@ -326,6 +328,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                .setValue(getCurrentTime().getSeconds())
                                                .build())
                               .setInventoryItemId(event.getInventoryItemId())
+                              .setOverdue(false)
                               .setWhoBorrowed(event.getWhoBorrowed())
                               .setWhenTaken(getCurrentTime())
                               .setWhenDue(Timestamp.newBuilder()
@@ -340,6 +343,20 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
     @Apply
     private void loanBecameOverdue(LoanBecameOverdue event) {
+        final List<Loan> loans = getBuilder().getLoans();
+
+        int loanPosition = -1;
+
+        for (int i = 0; i < loans.size(); i++) {
+            if (loans.get(i)
+                     .getLoanId()
+                     .equals(event.getLoanId())) {
+                loanPosition = i;
+            }
+        }
+        getBuilder().setLoans(loanPosition, Loan.newBuilder(loans.get(loanPosition))
+                                                .setOverdue(true)
+                                                .build());
 
     }
 
@@ -362,6 +379,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
         Loan loan = Loan.newBuilder(previousLoan)
                         .setWhenDue(event.getNewDueDate())
+                        .setOverdue(false)
                         .build();
 
         getBuilder().setLoans(loanPosition, loan);
@@ -428,6 +446,20 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                             .setInLibrary(true)
                                                             .build();
         getBuilder().setInventoryItems(returnedItemPosition, newInventoryItem);
+        int loanIndex = -1;
+        List<Loan> loans = getBuilder().getLoans();
+        for (int i = 0; i < loans.size(); i++) {
+            Loan loan = loans.get(i);
+            if (loan.getWhoBorrowed()
+                    .getEmail()
+                    .getValue()
+                    .equals(event.getWhoReturned()
+                                 .getEmail()
+                                 .getValue())) {
+                loanIndex = i;
+            }
+        }
+        getBuilder().removeLoans(loanIndex);
     }
 
     @Apply

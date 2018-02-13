@@ -103,7 +103,7 @@ message RemoveBook {
 message AppendInventory {
 
     // The identifier of an inventory.
-    InventoryId inventory_id = 1;
+    InventoryId inventFory_id = 1;
 
     // The identifier of an added item.
     InventoryItemId inventory_item_id = 2;

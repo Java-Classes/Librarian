@@ -24,7 +24,10 @@ import com.google.protobuf.Message;
 import io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory;
 import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.c.AppendInventory;
+import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.InventoryAppended;
+import javaclasses.exlibris.c.ReservationCanceled;
+import javaclasses.exlibris.c.ReserveBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,6 +36,7 @@ import java.util.List;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CancelReservationCommandTest extends InventoryCommandTest<AppendInventory> {
 
@@ -42,33 +46,39 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
         super.setUp();
     }
 
+    private void reserveBook() {
+        final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
+        dispatchCommand(aggregate, envelopeOf(reserveBook));
+    }
     @Test
     void produceEvent() {
-        final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
+        reserveBook();
+        final CancelReservation cancelReservation = InventoryCommandFactory.cancelReservationInstance();
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
-                                                                    envelopeOf(appendInventory));
+                                                                    envelopeOf(cancelReservation));
         assertNotNull(aggregate.getId());
         assertEquals(1, messageList.size());
-        assertEquals(InventoryAppended.class, messageList.get(0)
+        assertEquals(ReservationCanceled.class, messageList.get(0)
                                                          .getClass());
 
-        final InventoryAppended inventoryAppended = (InventoryAppended) messageList.get(0);
+        final ReservationCanceled reservationCanceled = (ReservationCanceled) messageList.get(0);
 
-        assertEquals(InventoryCommandFactory.inventoryId, inventoryAppended.getInventoryId());
+        assertEquals(InventoryCommandFactory.inventoryId, reservationCanceled.getInventoryId());
 
         assertEquals(InventoryCommandFactory.userId.getEmail()
-                                                   .getValue(), inventoryAppended.getLibrarianId()
-                                                                                 .getEmail()
-                                                                                 .getValue());
+                                                   .getValue(), reservationCanceled.getWhoCanceled().getEmail().getValue());
     }
 
     @Test
-    void appendInventory() {
-        final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
-        dispatchCommand(aggregate, envelopeOf(appendInventory));
+    void cancelReservation() {
+        reserveBook();
+        final Inventory inventoryReserved = aggregate.getState();
+        assertEquals(1, inventoryReserved.getReservationsList().size());
+        final CancelReservation cancelReservation = InventoryCommandFactory.cancelReservationInstance();
+        dispatchCommand(aggregate, envelopeOf(cancelReservation));
 
         final Inventory inventory = aggregate.getState();
-
+        assertEquals(0, inventory.getReservationsList().size());
     }
 }
