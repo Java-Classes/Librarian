@@ -44,7 +44,7 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
         super.setUp();
     }
 
-    public void appendInventory() {
+    private void appendInventory() {
         final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
         dispatchCommand(aggregate, envelopeOf(appendInventory));
     }
@@ -53,7 +53,6 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
     void produceEvent() {
         appendInventory();
         final WriteBookOff writeBookOff = InventoryCommandFactory.writeBookOffInstance();
-        System.out.println(aggregate);
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(writeBookOff));
 

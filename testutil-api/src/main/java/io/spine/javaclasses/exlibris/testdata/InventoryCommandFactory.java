@@ -31,13 +31,22 @@ import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
+import javaclasses.exlibris.c.MarkReservationExpired;
+import javaclasses.exlibris.c.ReportLostBook;
 import javaclasses.exlibris.c.ReserveBook;
+import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
 
+/**
+ * A factory of the task commands for the test needs.
+ *
+ * @author Alexander Karpets
+ */
 public class InventoryCommandFactory {
     public static final BookId bookId = BookId.newBuilder()
                                               .setIsbn62(Isbn62.newBuilder()
                                                                .setValue("123456789"))
+
                                               .build();
     public static final InventoryId inventoryId = InventoryId.newBuilder()
                                                              .setBookId(bookId)
@@ -72,20 +81,26 @@ public class InventoryCommandFactory {
                                                           UserId userId, Rfid rfid) {
 
         AppendInventory result = AppendInventory.newBuilder()
-                                                .setIntentoryId(inventoryId)
+                                                .setInventoryId(inventoryId)
                                                 .setInventoryItemId(inventoryItemId)
                                                 .setLibrarianId(userId)
                                                 .setRfid(rfid)
+
                                                 .build();
         return result;
+    }
+
+    public static BorrowBook borrowBookInstance() {
+
+        return borrowBookInstance(inventoryId, inventoryItemId, userId);
     }
 
     public static BorrowBook borrowBookInstance(InventoryId inventoryId,
                                                 InventoryItemId inventoryItemId,
                                                 UserId userId) {
         final BorrowBook result = BorrowBook.newBuilder()
-                                            .setIntentoryId(inventoryId)
-                                            .setIntentoryItemId(inventoryItemId)
+                                            .setInventoryId(inventoryId)
+                                            .setInventoryItemId(inventoryItemId)
                                             .setUserId(userId)
                                             .build();
         return result;
@@ -138,6 +153,56 @@ public class InventoryCommandFactory {
                                                     .build();
         return result;
     }
+
+    public static ReturnBook returnBookInstance() {
+
+        final ReturnBook result = returnBookInstance(inventoryId, inventoryItemId, userId);
+        return result;
+    }
+
+    public static ReturnBook returnBookInstance(InventoryId inventoryId,
+                                                InventoryItemId inventoryItemId, UserId userId) {
+        ReturnBook result = ReturnBook.newBuilder()
+                                      .setInventoryId(inventoryId)
+                                      .setInventoryItemId(inventoryItemId)
+                                      .setUserId(userId)
+                                      .build();
+        return result;
+    }
+
+    public static ReportLostBook reportLostBookInstance() {
+        return reportLostBook(inventoryId, inventoryItemId, userId);
+    }
+
+    public static ReportLostBook reportLostBook(InventoryId inventoryId,
+                                                InventoryItemId inventoryItemId, UserId userId) {
+
+        ReportLostBook result = ReportLostBook.newBuilder()
+                                              .setInventoryId(inventoryId)
+                                              .setInventoryItemId(inventoryItemId)
+                                              .setWhoLost(userId)
+                                              .build();
+
+        return result;
+    }
+
+    public static MarkReservationExpired reservationPickUpPeriodInstanceExpired() {
+
+        final MarkReservationExpired result = reservationPickUpPeriodInstanceExpired(inventoryId,
+                                                                                     userId);
+        return result;
+    }
+
+    public static MarkReservationExpired reservationPickUpPeriodInstanceExpired(
+            InventoryId inventoryId,
+            UserId userId) {
+        MarkReservationExpired result = MarkReservationExpired.newBuilder()
+                                                              .setInventoryId(inventoryId)
+                                                              .setUserId(userId)
+                                                              .build();
+        return result;
+    }
+
 //    public static ReturnBook returnBookInstance() {
 //
 //        final ReturnBook result = returnBookInstance(userId, inventoryId);

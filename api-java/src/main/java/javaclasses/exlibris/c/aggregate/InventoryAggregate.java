@@ -62,8 +62,11 @@ import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
+import static java.util.Collections.sort;
 
 /**
+ * The aggregate managing the state of a {@link Inventory}.
+ *
  * @author Alexander Karpets
  * @author Paul Ageyev
  */
@@ -103,7 +106,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     List<? extends Message> handle(AppendInventory cmd) {
 
-        final InventoryId inventoryId = cmd.getIntentoryId();
+        final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final Rfid rfid = cmd.getRfid();
         final UserId userId = cmd.getLibrarianId();
@@ -150,8 +153,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     List<? extends Message> handle(BorrowBook cmd) {
 
-        final InventoryId inventoryId = cmd.getIntentoryId();
-        final InventoryItemId inventoryItemId = cmd.getIntentoryItemId();
+        final InventoryId inventoryId = cmd.getInventoryId();
+        final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final UserId userId = cmd.getUserId();
 
         final BookBorrowed result = BookBorrowed.newBuilder()
@@ -166,7 +169,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     List<? extends Message> handle(MarkLoanOverdue cmd) {
 
-        final InventoryId inventoryId = cmd.getIntentoryId();
+        final InventoryId inventoryId = cmd.getInventoryId();
         final LoanId loanId = cmd.getLoanId();
         final LoanBecameOverdue result = LoanBecameOverdue.newBuilder()
                                                           .setInventoryId(inventoryId)
@@ -179,7 +182,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     List<? extends Message> handle(ExtendLoanPeriod cmd) {
 
-        final InventoryId inventoryId = cmd.getIntentoryId();
+        final InventoryId inventoryId = cmd.getInventoryId();
         final LoanId loanId = cmd.getLoanId();
         final UserId userId = cmd.getUserId();
         final Timestamp newDueDate = cmd.getNewDueDate();
@@ -216,7 +219,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     List<? extends Message> handle(MarkReservationExpired cmd) {
 
-        final InventoryId inventoryId = cmd.getIntentoryId();
+        final InventoryId inventoryId = cmd.getInventoryId();
         final UserId userId = cmd.getUserId();
         final ReservationPickUpPeriodExpired result = ReservationPickUpPeriodExpired.newBuilder()
                                                                                     .setInventoryId(
@@ -247,7 +250,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     List<? extends Message> handle(ReportLostBook cmd) {
 
-        final InventoryId inventoryId = cmd.getIntentoryId();
+        final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final UserId userId = cmd.getWhoLost();
         final BookLost result = BookLost.newBuilder()
@@ -325,6 +328,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                .setValue(getCurrentTime().getSeconds())
                                                .build())
                               .setInventoryItemId(event.getInventoryItemId())
+                              .setOverdue(false)
                               .setWhoBorrowed(event.getWhoBorrowed())
                               .setWhenTaken(getCurrentTime())
                               .setWhenDue(Timestamp.newBuilder()
@@ -339,6 +343,20 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
     @Apply
     private void loanBecameOverdue(LoanBecameOverdue event) {
+        final List<Loan> loans = getBuilder().getLoans();
+
+        int loanPosition = -1;
+
+        for (int i = 0; i < loans.size(); i++) {
+            if (loans.get(i)
+                     .getLoanId()
+                     .equals(event.getLoanId())) {
+                loanPosition = i;
+            }
+        }
+        getBuilder().setLoans(loanPosition, Loan.newBuilder(loans.get(loanPosition))
+                                                .setOverdue(true)
+                                                .build());
 
     }
 
@@ -361,6 +379,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
         Loan loan = Loan.newBuilder(previousLoan)
                         .setWhenDue(event.getNewDueDate())
+                        .setOverdue(false)
                         .build();
 
         getBuilder().setLoans(loanPosition, loan);
@@ -392,13 +411,17 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             Reservation reservation = reservations.get(i);
             if (reservation.getWhoReserved()
                            .getEmail()
-                           .getValue() == event.getUserId()
-                                               .getEmail()
-                                               .getValue()) {
+                           .getValue()
+                           .equals(event.getUserId()
+                                        .getEmail()
+                                        .getValue())) {
                 reservationPosition = i;
+
             }
         }
+
         getBuilder().removeReservations(reservationPosition);
+
     }
 
     @Apply
@@ -423,22 +446,41 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                             .setInLibrary(true)
                                                             .build();
         getBuilder().setInventoryItems(returnedItemPosition, newInventoryItem);
+        int loanIndex = -1;
+        List<Loan> loans = getBuilder().getLoans();
+        for (int i = 0; i < loans.size(); i++) {
+            Loan loan = loans.get(i);
+            if (loan.getWhoBorrowed()
+                    .getEmail()
+                    .getValue()
+                    .equals(event.getWhoReturned()
+                                 .getEmail()
+                                 .getValue())) {
+                loanIndex = i;
+            }
+        }
+        getBuilder().removeLoans(loanIndex);
     }
 
     @Apply
     private void bookLost(BookLost event) {
 
         final List<InventoryItem> inventoryItems = getBuilder().getInventoryItems();
-        int borrowItemPosition = -1;
+        int bookLostItemPosition = -1;
         for (int i = 0; i < inventoryItems.size(); i++) {
             InventoryItem item = inventoryItems.get(i);
             if (item.getInventoryItemId()
                     .getItemNumber() == event.getInventoryItemId()
                                              .getItemNumber()) {
-                borrowItemPosition = i;
+                bookLostItemPosition = i;
             }
         }
 
-        getBuilder().removeInventoryItems(borrowItemPosition);
+        InventoryItem inventoryItem = InventoryItem.newBuilder(
+                inventoryItems.get(bookLostItemPosition))
+                                                   .setLost(true)
+                                                   .build();
+
+        getBuilder().setInventoryItems(bookLostItemPosition, inventoryItem);
     }
 }

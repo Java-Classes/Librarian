@@ -103,7 +103,7 @@ message RemoveBook {
 message AppendInventory {
 
     // The identifier of an inventory.
-    InventoryId intentory_id = 1;
+    InventoryId inventory_id = 1;
 
     // The identifier of an added item.
     InventoryItemId inventory_item_id = 2;
@@ -125,10 +125,10 @@ message AppendInventory {
 message BorrowBook {
 
     // The identifier of an inventory.
-    InventoryId intentory_id = 1;
+    InventoryId inventory_id = 1;
 
     // The item that is planned to borrow.
-    InventoryItemId intentory_item_id = 2;
+    InventoryItemId inventory_item_id = 2;
 
     // Who borrows the book.
     UserId user_id = 3;
@@ -170,7 +170,7 @@ message CancelReservation {
 message ExtendLoanPeriod {
 
     // The identifier of an inventory.
-    InventoryId intentory_id = 1;
+    InventoryId inventory_id = 1;
     // The loan that is planned to extend.
     LoanId loan_id = 2;
 
@@ -186,7 +186,7 @@ message ExtendLoanPeriod {
 message MarkLoanOverdue {
 
     // The identifier of an inventory.
-    InventoryId intentory_id = 1;
+    InventoryId inventory_id = 1;
 
     // The loan that is overdue.
     LoanId loan_id = 2;
@@ -197,7 +197,7 @@ message MarkLoanOverdue {
 message MarkReservationExpired {
 
     // The identifier of an inventory.
-    InventoryId intentory_id = 1;
+    InventoryId inventory_id = 1;
 
     // Whose book reservation expires.
     UserId user_id = 2;
@@ -229,7 +229,7 @@ message ReturnBook {
 message ReportLostBook {
 
     // The identifier of an inventory.
-    InventoryId intentory_id = 1;
+    InventoryId inventory_id = 1;
 
     // The identifier of a lost book.
     InventoryItemId inventory_item_id = 2;
