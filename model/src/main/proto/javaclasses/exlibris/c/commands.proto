@@ -142,7 +142,7 @@ message BorrowBook {
 message ReserveBook {
 
     // The book that is planned to reserve.
-    InventoryId intentory_id = 1;
+    InventoryId inventory_id = 1;
 
     // Who reserves the book.
     UserId user_id = 2;
