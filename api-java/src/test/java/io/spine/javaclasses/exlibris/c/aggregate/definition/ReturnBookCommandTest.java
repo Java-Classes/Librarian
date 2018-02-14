@@ -67,7 +67,7 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(returnBook));
         assertNotNull(aggregate.getId());
-        assertEquals(1, messageList.size());
+        assertEquals(2, messageList.size());
         assertEquals(BookReturned.class, messageList.get(0)
                                                     .getClass());
 

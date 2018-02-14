@@ -125,6 +125,12 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                                      .build();
 
         result.add(inventoryAppended);
+        result.add(becameAvailableOrReadyToPickup(inventoryId, inventoryItemId));
+        return result;
+    }
+
+    private Message becameAvailableOrReadyToPickup(InventoryId inventoryId,
+                                                   InventoryItemId inventoryItemId) {
         if (getState().getReservationsList()
                       .isEmpty()) {
             final BookBecameAvailable bookBecameAvailable = BookBecameAvailable.newBuilder()
@@ -135,7 +141,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                                                .setWhenBecameAvailable(
                                                                                        getCurrentTime())
                                                                                .build();
-            result.add(bookBecameAvailable);
+            return bookBecameAvailable;
         } else {
             final Timestamp currentTime = getCurrentTime();
             final UserId nextInQueue = getState().getReservationsList()
@@ -160,9 +166,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                                                                                   2)
                                                                                           .build())
                                                                          .build();
-            result.add(bookReadyToPickup);
+            return bookReadyToPickup;
         }
-        return result;
     }
 
     @Assign
@@ -283,14 +288,16 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final UserId userId = cmd.getUserId();
-        final BookReturned result = BookReturned.newBuilder()
+        List<Message> result = new ArrayList<>();
+        final BookReturned bookReturned = BookReturned.newBuilder()
                                                 .setInventoryId(inventoryId)
                                                 .setInventoryItemId(inventoryItemId)
                                                 .setWhoReturned(userId)
                                                 .setWhenReturned(getCurrentTime())
                                                 .build();
-
-        return singletonList(result);
+        result.add(bookReturned);
+        result.add(becameAvailableOrReadyToPickup(inventoryId,inventoryItemId));
+        return result;
     }
 
     @Assign
