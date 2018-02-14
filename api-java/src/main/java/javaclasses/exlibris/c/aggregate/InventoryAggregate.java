@@ -216,7 +216,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                 .setWhenBorrowed(getCurrentTime())
                                                 .build();
         result.add(bookBorrowed);
-        if (userHasReservation(cmd.getUserId())) {
+        if (!getState().getReservationsList().isEmpty()&&getState().getReservationsList().get(0).getWhoReserved().getEmail().getValue().equals(cmd.getUserId().getEmail().getValue())) {
             final ReservationBecameLoan reservationBecameLoan = ReservationBecameLoan.newBuilder()
                                                                                      .setInventoryId(
                                                                                              inventoryId)
@@ -335,6 +335,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final InventoryItem newInventoryItem = InventoryItem.newBuilder()
                                                             .setInventoryItemId(
                                                                     event.getInventoryItemId())
+                                                            .setInLibrary(true)
                                                             .build();
         getBuilder().addInventoryItems(newInventoryItem);
     }
@@ -356,7 +357,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         }
         getBuilder().setInventoryItems(availableBookIndex, InventoryItem.newBuilder()
                                                                         .setInventoryItemId(
-                                                                                availableItem.getInventoryItemId())
+                                                                                event.getInventoryItemId())
                                                                         .setInLibrary(true)
                                                                         .build());
     }
