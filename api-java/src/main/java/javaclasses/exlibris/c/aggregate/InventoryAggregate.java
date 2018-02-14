@@ -38,8 +38,10 @@ import javaclasses.exlibris.Rfid;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.AppendInventory;
+import javaclasses.exlibris.c.BookBecameAvailable;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookLost;
+import javaclasses.exlibris.c.BookReadyToPickup;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
@@ -58,11 +60,11 @@ import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
-import static java.util.Collections.sort;
 
 /**
  * The aggregate managing the state of a {@link Inventory}.
@@ -110,14 +112,57 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final Rfid rfid = cmd.getRfid();
         final UserId userId = cmd.getLibrarianId();
-        final InventoryAppended result = InventoryAppended.newBuilder()
-                                                          .setInventoryId(inventoryId)
-                                                          .setInventoryItemId(inventoryItemId)
-                                                          .setRfid(rfid)
-                                                          .setWhenAppended(getCurrentTime())
-                                                          .setLibrarianId(userId)
-                                                          .build();
-        return singletonList(result);
+
+        final List<Message> result = new ArrayList<>();
+        final InventoryAppended inventoryAppended = InventoryAppended.newBuilder()
+                                                                     .setInventoryId(inventoryId)
+                                                                     .setInventoryItemId(
+                                                                             inventoryItemId)
+                                                                     .setRfid(rfid)
+                                                                     .setWhenAppended(
+                                                                             getCurrentTime())
+                                                                     .setLibrarianId(userId)
+                                                                     .build();
+
+        result.add(inventoryAppended);
+        if (getState().getReservationsList()
+                      .isEmpty()) {
+            final BookBecameAvailable bookBecameAvailable = BookBecameAvailable.newBuilder()
+                                                                               .setInventoryId(
+                                                                                       inventoryId)
+                                                                               .setInventoryItemId(
+                                                                                       inventoryItemId)
+                                                                               .setWhenBecameAvailable(
+                                                                                       getCurrentTime())
+                                                                               .build();
+            result.add(bookBecameAvailable);
+        } else {
+            final Timestamp currentTime = getCurrentTime();
+            final UserId nextInQueue = getState().getReservationsList()
+                                                 .get(0)
+                                                 .getWhoReserved();
+            final BookReadyToPickup bookReadyToPickup = BookReadyToPickup.newBuilder()
+                                                                         .setInventoryId(
+                                                                                 inventoryId)
+                                                                         .setInventoryItemId(
+                                                                                 inventoryItemId)
+                                                                         .setForWhom(nextInQueue)
+                                                                         .setWhenBecameReadyToPickup(
+                                                                                 currentTime)
+                                                                         .setPickUpDeadline(
+                                                                                 // User has two days to pickup the book.
+                                                                                 Timestamp.newBuilder()
+                                                                                          .setSeconds(
+                                                                                                  currentTime.getSeconds() +
+                                                                                                          60 *
+                                                                                                                  60 *
+                                                                                                                  24 *
+                                                                                                                  2)
+                                                                                          .build())
+                                                                         .build();
+            result.add(bookReadyToPickup);
+        }
+        return result;
     }
 
     @Assign
@@ -244,6 +289,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                 .setWhoReturned(userId)
                                                 .setWhenReturned(getCurrentTime())
                                                 .build();
+
         return singletonList(result);
     }
 
@@ -266,11 +312,37 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     private void inventoryAppended(InventoryAppended event) {
 
         final InventoryItem newInventoryItem = InventoryItem.newBuilder()
-                                                            .setInLibrary(true)
                                                             .setInventoryItemId(
                                                                     event.getInventoryItemId())
                                                             .build();
         getBuilder().addInventoryItems(newInventoryItem);
+    }
+
+    @Apply
+    private void bookBecameAvailable(BookBecameAvailable event) {
+        InventoryItem availableItem = null;
+        int availableBookIndex = -1;
+
+        List<InventoryItem> inventoryItems = getBuilder().getInventoryItems();
+        for (int i = 0; i < inventoryItems.size(); i++) {
+            InventoryItem item = inventoryItems.get(i);
+            if (item.getInventoryItemId()
+                    .getItemNumber() == event.getInventoryItemId()
+                                             .getItemNumber()) {
+                availableItem = item;
+                availableBookIndex = i;
+            }
+        }
+        getBuilder().setInventoryItems(availableBookIndex, InventoryItem.newBuilder()
+                                                                        .setInventoryItemId(
+                                                                                availableItem.getInventoryItemId())
+                                                                        .setInLibrary(true)
+                                                                        .build());
+    }
+
+    @Apply
+    private void bookReadyToPickup(BookReadyToPickup event) {
+
     }
 
     @Apply

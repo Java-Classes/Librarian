@@ -51,8 +51,9 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(appendInventory));
+
         assertNotNull(aggregate.getId());
-        assertEquals(1, messageList.size());
+        assertEquals(2, messageList.size());
         assertEquals(InventoryAppended.class, messageList.get(0)
                                                          .getClass());
 
@@ -64,6 +65,7 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
                                                    .getValue(), inventoryAppended.getLibrarianId()
                                                                                  .getEmail()
                                                                                  .getValue());
+
     }
 
     @Test
@@ -72,7 +74,6 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
         dispatchCommand(aggregate, envelopeOf(appendInventory));
 
         final Inventory inventory = aggregate.getState();
-        System.out.println(inventory);
         assertEquals(1, inventory.getInventoryItemsList()
                                  .size());
         assertEquals(true, inventory.getInventoryItemsList()

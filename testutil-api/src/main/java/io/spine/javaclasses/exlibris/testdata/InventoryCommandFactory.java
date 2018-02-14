@@ -202,18 +202,4 @@ public class InventoryCommandFactory {
                                                               .build();
         return result;
     }
-
-//    public static ReturnBook returnBookInstance() {
-//
-//        final ReturnBook result = returnBookInstance(userId, inventoryId);
-//        return result;
-//    }
-//
-//    public static ReturnBook returnBookInstance(InventoryId inventoryId, InventoryItemId inventoryItemId, UserId userId) {
-//        ReturnBook result = ReturnBook.newBuilder()
-//                                        .setInventoryId(inventoryId)
-//                                        .setUserId(userId)
-//                                        .build();
-//        return result;
-//    }
 }
