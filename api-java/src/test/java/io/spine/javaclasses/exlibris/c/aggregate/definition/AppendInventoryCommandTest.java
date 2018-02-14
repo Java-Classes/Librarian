@@ -39,65 +39,65 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInventory> {
 
-//    @Override
-//    @BeforeEach
-//    public void setUp() {
-//        super.setUp();
-//    }
-//
-//    @Test
-//    void produceEvent() {
-//        final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
-//
-//        final List<? extends Message> messageList = dispatchCommand(aggregate,
-//                                                                    envelopeOf(appendInventory));
-//        assertNotNull(aggregate.getId());
-//        assertEquals(1, messageList.size());
-//        assertEquals(InventoryAppended.class, messageList.get(0)
-//                                                         .getClass());
-//
-//        final InventoryAppended inventoryAppended = (InventoryAppended) messageList.get(0);
-//
-//        assertEquals(InventoryCommandFactory.inventoryId, inventoryAppended.getInventoryId());
-//
-//        assertEquals(InventoryCommandFactory.userId.getEmail()
-//                                                   .getValue(), inventoryAppended.getLibrarianId()
-//                                                                                 .getEmail()
-//                                                                                 .getValue());
-//    }
-//
-//    @Test
-//    void appendInventory() {
-//        final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
-//        dispatchCommand(aggregate, envelopeOf(appendInventory));
-//
-//        final Inventory inventory = aggregate.getState();
-//        System.out.println(inventory);
-//        assertEquals(1, inventory.getInventoryItemsList()
-//                                 .size());
-//        assertEquals(true, inventory.getInventoryItemsList()
-//                                    .get(0)
-//                                    .getInLibrary());
-//        assertEquals(false, inventory.getInventoryItemsList()
-//                                     .get(0)
-//                                     .getLost());
-//        assertEquals(false, inventory.getInventoryItemsList()
-//                                     .get(0)
-//                                     .getBorrowed());
-//        assertEquals(1, inventory.getInventoryItemsList()
-//                                 .get(0)
-//                                 .getInventoryItemId()
-//                                 .getItemNumber());
-//        assertEquals("123456789", inventory.getInventoryItemsList()
-//                                           .get(0)
-//                                           .getInventoryItemId()
-//                                           .getBookId()
-//                                           .getIsbn62()
-//                                           .getValue());
-//        assertEquals("", inventory.getInventoryItemsList()
-//                                  .get(0)
-//                                  .getUserId()
-//                                  .getEmail()
-//                                  .getValue());
-//    }
+    @Override
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+    }
+
+    @Test
+    void produceEvent() {
+        final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
+
+        final List<? extends Message> messageList = dispatchCommand(aggregate,
+                                                                    envelopeOf(appendInventory));
+        assertNotNull(aggregate.getId());
+        assertEquals(1, messageList.size());
+        assertEquals(InventoryAppended.class, messageList.get(0)
+                                                         .getClass());
+
+        final InventoryAppended inventoryAppended = (InventoryAppended) messageList.get(0);
+
+        assertEquals(InventoryCommandFactory.inventoryId, inventoryAppended.getInventoryId());
+
+        assertEquals(InventoryCommandFactory.userId.getEmail()
+                                                   .getValue(), inventoryAppended.getLibrarianId()
+                                                                                 .getEmail()
+                                                                                 .getValue());
+    }
+
+    @Test
+    void appendInventory() {
+        final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
+        dispatchCommand(aggregate, envelopeOf(appendInventory));
+
+        final Inventory inventory = aggregate.getState();
+        System.out.println(inventory);
+        assertEquals(1, inventory.getInventoryItemsList()
+                                 .size());
+        assertEquals(true, inventory.getInventoryItemsList()
+                                    .get(0)
+                                    .getInLibrary());
+        assertEquals(false, inventory.getInventoryItemsList()
+                                     .get(0)
+                                     .getLost());
+        assertEquals(false, inventory.getInventoryItemsList()
+                                     .get(0)
+                                     .getBorrowed());
+        assertEquals(1, inventory.getInventoryItemsList()
+                                 .get(0)
+                                 .getInventoryItemId()
+                                 .getItemNumber());
+        assertEquals("123456789", inventory.getInventoryItemsList()
+                                           .get(0)
+                                           .getInventoryItemId()
+                                           .getBookId()
+                                           .getIsbn62()
+                                           .getValue());
+        assertEquals("", inventory.getInventoryItemsList()
+                                  .get(0)
+                                  .getUserId()
+                                  .getEmail()
+                                  .getValue());
+    }
 }

@@ -62,6 +62,7 @@ import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
+import static java.util.Collections.sort;
 
 /**
  * The aggregate managing the state of a {@link Inventory}.
@@ -415,13 +416,17 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             Reservation reservation = reservations.get(i);
             if (reservation.getWhoReserved()
                            .getEmail()
-                           .getValue() == event.getUserId()
-                                               .getEmail()
-                                               .getValue()) {
+                           .getValue()
+                           .equals(event.getUserId()
+                                        .getEmail()
+                                        .getValue())) {
                 reservationPosition = i;
+
             }
         }
+
         getBuilder().removeReservations(reservationPosition);
+
     }
 
     @Apply
@@ -446,22 +451,41 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                             .setInLibrary(true)
                                                             .build();
         getBuilder().setInventoryItems(returnedItemPosition, newInventoryItem);
+        int loanIndex = -1;
+        List<Loan> loans = getBuilder().getLoans();
+        for (int i = 0; i < loans.size(); i++) {
+            Loan loan = loans.get(i);
+            if (loan.getWhoBorrowed()
+                    .getEmail()
+                    .getValue()
+                    .equals(event.getWhoReturned()
+                                 .getEmail()
+                                 .getValue())) {
+                loanIndex = i;
+            }
+        }
+        getBuilder().removeLoans(loanIndex);
     }
 
     @Apply
     private void bookLost(BookLost event) {
 
         final List<InventoryItem> inventoryItems = getBuilder().getInventoryItems();
-        int borrowItemPosition = -1;
+        int bookLostItemPosition = -1;
         for (int i = 0; i < inventoryItems.size(); i++) {
             InventoryItem item = inventoryItems.get(i);
             if (item.getInventoryItemId()
                     .getItemNumber() == event.getInventoryItemId()
                                              .getItemNumber()) {
-                borrowItemPosition = i;
+                bookLostItemPosition = i;
             }
         }
 
-        getBuilder().removeInventoryItems(borrowItemPosition);
+        InventoryItem inventoryItem = InventoryItem.newBuilder(
+                inventoryItems.get(bookLostItemPosition))
+                                                   .setLost(true)
+                                                   .build();
+
+        getBuilder().setInventoryItems(bookLostItemPosition, inventoryItem);
     }
 }
