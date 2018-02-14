@@ -55,6 +55,7 @@ import javaclasses.exlibris.c.MarkLoanOverdue;
 import javaclasses.exlibris.c.MarkReservationExpired;
 import javaclasses.exlibris.c.ReportLostBook;
 import javaclasses.exlibris.c.ReservationAdded;
+import javaclasses.exlibris.c.ReservationBecameLoan;
 import javaclasses.exlibris.c.ReservationCanceled;
 import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 import javaclasses.exlibris.c.ReserveBook;
@@ -207,14 +208,26 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final UserId userId = cmd.getUserId();
-
-        final BookBorrowed result = BookBorrowed.newBuilder()
+        final ImmutableList.Builder<Message> result= ImmutableList.builder();
+        final BookBorrowed bookBorrowed = BookBorrowed.newBuilder()
                                                 .setInventoryId(inventoryId)
                                                 .setInventoryItemId(inventoryItemId)
                                                 .setWhoBorrowed(userId)
                                                 .setWhenBorrowed(getCurrentTime())
                                                 .build();
-        return singletonList(result);
+        result.add(bookBorrowed);
+        if (userHasReservation(cmd.getUserId())) {
+            final ReservationBecameLoan reservationBecameLoan = ReservationBecameLoan.newBuilder()
+                                                                                     .setInventoryId(
+                                                                                             inventoryId)
+                                                                                     .setUserId(
+                                                                                             userId)
+                                                                                     .setWhenBecameLoan(
+                                                                                             getCurrentTime())
+                                                                                     .build();
+            result.add(reservationBecameLoan);
+        }
+        return result.build();
     }
 
     @Assign
@@ -291,13 +304,13 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final UserId userId = cmd.getUserId();
         List<Message> result = new ArrayList<>();
         final BookReturned bookReturned = BookReturned.newBuilder()
-                                                .setInventoryId(inventoryId)
-                                                .setInventoryItemId(inventoryItemId)
-                                                .setWhoReturned(userId)
-                                                .setWhenReturned(getCurrentTime())
-                                                .build();
+                                                      .setInventoryId(inventoryId)
+                                                      .setInventoryItemId(inventoryItemId)
+                                                      .setWhoReturned(userId)
+                                                      .setWhenReturned(getCurrentTime())
+                                                      .build();
         result.add(bookReturned);
-        result.add(becameAvailableOrReadyToPickup(inventoryId,inventoryItemId));
+        result.add(becameAvailableOrReadyToPickup(inventoryId, inventoryItemId));
         return result;
     }
 
@@ -351,6 +364,22 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Apply
     private void bookReadyToPickup(BookReadyToPickup event) {
 
+    }
+
+    @Apply
+    private void reservationBecameLoan(ReservationBecameLoan event) {
+        List<Reservation> reservations = getBuilder().getReservations();
+        for (int i = 0; i < reservations.size(); i++) {
+            Reservation reservation = reservations.get(i);
+            if (reservation.getWhoReserved()
+                           .getEmail()
+                           .getValue()
+                           .equals(event.getUserId()
+                                        .getEmail()
+                                        .getValue())) {
+                getBuilder().getReservations().remove(i);
+            }
+        }
     }
 
     @Apply
@@ -563,4 +592,19 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
         getBuilder().setInventoryItems(bookLostItemPosition, inventoryItem);
     }
+
+    private boolean userHasReservation(UserId userId) {
+        final Inventory inventory = getState();
+        for (Reservation reservation : inventory.getReservationsList()) {
+            if (reservation.getWhoReserved()
+                           .getEmail()
+                           .getValue()
+                           .equals(userId.getEmail()
+                                         .getValue())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
