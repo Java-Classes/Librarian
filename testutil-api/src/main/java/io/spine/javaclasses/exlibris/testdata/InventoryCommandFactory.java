@@ -39,9 +39,6 @@ import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
 
-import static io.spine.time.Time.getCurrentTime;
-
-
 /**
  * A factory of the task commands for the test needs.
  *
@@ -177,9 +174,6 @@ public class InventoryCommandFactory {
                                                 InventoryItemId inventoryItemId, UserId userId) {
         ReturnBook result = ReturnBook.newBuilder()
                                       .setInventoryId(inventoryId)
-                                      .setUserId(userId)
-                                      .build();
-                                      .setInventoryId(inventoryId)
                                       .setInventoryItemId(inventoryItemId)
                                       .setUserId(userId)
                                       .build();
@@ -218,18 +212,4 @@ public class InventoryCommandFactory {
                                                               .build();
         return result;
     }
-
-//    public static ReturnBook returnBookInstance() {
-//
-//        final ReturnBook result = returnBookInstance(userId, inventoryId);
-//        return result;
-//    }
-//
-//    public static ReturnBook returnBookInstance(InventoryId inventoryId, InventoryItemId inventoryItemId, UserId userId) {
-//        ReturnBook result = ReturnBook.newBuilder()
-//                                        .setInventoryId(inventoryId)
-//                                        .setUserId(userId)
-//                                        .build();
-//        return result;
-//    }
 }
