@@ -25,12 +25,14 @@ import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.InventoryItemId;
 import javaclasses.exlibris.Isbn62;
+import javaclasses.exlibris.LoanId;
 import javaclasses.exlibris.Rfid;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
+import javaclasses.exlibris.c.MarkLoanOverdue;
 import javaclasses.exlibris.c.MarkReservationExpired;
 import javaclasses.exlibris.c.ReportLostBook;
 import javaclasses.exlibris.c.ReserveBook;
@@ -103,6 +105,14 @@ public class InventoryCommandFactory {
                                             .setInventoryItemId(inventoryItemId)
                                             .setUserId(userId)
                                             .build();
+        return result;
+    }
+
+    public static MarkLoanOverdue markLoanOverdue(LoanId loanId, InventoryId inventoryId) {
+        final MarkLoanOverdue result = MarkLoanOverdue.newBuilder()
+                                                      .setLoanId(loanId)
+                                                      .setInventoryId(inventoryId)
+                                                      .build();
         return result;
     }
 
@@ -202,18 +212,4 @@ public class InventoryCommandFactory {
                                                               .build();
         return result;
     }
-
-//    public static ReturnBook returnBookInstance() {
-//
-//        final ReturnBook result = returnBookInstance(userId, inventoryId);
-//        return result;
-//    }
-//
-//    public static ReturnBook returnBookInstance(InventoryId inventoryId, InventoryItemId inventoryItemId, UserId userId) {
-//        ReturnBook result = ReturnBook.newBuilder()
-//                                        .setInventoryId(inventoryId)
-//                                        .setUserId(userId)
-//                                        .build();
-//        return result;
-//    }
 }
