@@ -160,6 +160,10 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                 .setInventoryId(inventoryId)
                                                 .setInventoryItemId(inventoryItemId)
                                                 .setWhoBorrowed(userId)
+                                                .setLoanId(LoanId.newBuilder()
+                                                                 .setValue(
+                                                                         getCurrentTime().getSeconds())
+                                                                 .build())
                                                 .setWhenBorrowed(getCurrentTime())
                                                 .build();
         return singletonList(result);
@@ -321,18 +325,18 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                                 event.getInventoryItemId())
                                                         .build();
 
-        final int secondsInTwoWeeks = 1209600;
+        // The loan period time is seconds.
+        final int loanPeriod = 1209600;
+
         final Loan loan = Loan.newBuilder()
-                              .setLoanId(LoanId.newBuilder()
-                                               .setValue(getCurrentTime().getSeconds())
-                                               .build())
+                              .setLoanId(event.getLoanId())
                               .setInventoryItemId(event.getInventoryItemId())
                               .setOverdue(false)
                               .setWhoBorrowed(event.getWhoBorrowed())
                               .setWhenTaken(getCurrentTime())
                               .setWhenDue(Timestamp.newBuilder()
                                                    .setSeconds(System.currentTimeMillis() / 1000 +
-                                                                       secondsInTwoWeeks)
+                                                                       loanPeriod)
                                                    .build())
                               .build();
 
@@ -349,7 +353,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (int i = 0; i < loans.size(); i++) {
             if (loans.get(i)
                      .getLoanId()
-                     .equals(event.getLoanId())) {
+                     .getValue() == event.getLoanId()
+                                         .getValue()) {
                 loanPosition = i;
             }
         }

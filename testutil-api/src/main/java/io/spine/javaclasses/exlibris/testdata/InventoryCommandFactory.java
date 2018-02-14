@@ -25,15 +25,20 @@ import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.InventoryItemId;
 import javaclasses.exlibris.Isbn62;
+import javaclasses.exlibris.LoanId;
 import javaclasses.exlibris.Rfid;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
+import javaclasses.exlibris.c.MarkLoanOverdue;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
+
+import static io.spine.time.Time.getCurrentTime;
+
 /**
  * A factory of the task commands for the test needs.
  *
@@ -54,6 +59,9 @@ public class InventoryCommandFactory {
     public static final UserId userId = UserId.newBuilder()
                                               .setEmail(EmailAddress.newBuilder()
                                                                     .setValue("petr@gmail.com"))
+                                              .build();
+    public static final LoanId loanId = LoanId.newBuilder()
+                                              .setValue(getCurrentTime().getSeconds())
                                               .build();
     public static final Rfid rfid = Rfid.newBuilder()
                                         .setValue("4321")
@@ -98,6 +106,14 @@ public class InventoryCommandFactory {
                                             .setInventoryItemId(inventoryItemId)
                                             .setUserId(userId)
                                             .build();
+        return result;
+    }
+
+    public static MarkLoanOverdue markLoanOverdue(LoanId loanId, InventoryId inventoryId) {
+        final MarkLoanOverdue result = MarkLoanOverdue.newBuilder()
+                                                      .setLoanId(loanId)
+                                                      .setInventoryId(inventoryId)
+                                                      .build();
         return result;
     }
 
@@ -148,17 +164,19 @@ public class InventoryCommandFactory {
                                                     .build();
         return result;
     }
+
     public static ReturnBook returnBookInstance() {
 
-        final ReturnBook result = returnBookInstance(inventoryId, inventoryItemId,userId);
+        final ReturnBook result = returnBookInstance(inventoryId, inventoryItemId, userId);
         return result;
     }
 
-    public static ReturnBook returnBookInstance(InventoryId inventoryId, InventoryItemId inventoryItemId, UserId userId) {
+    public static ReturnBook returnBookInstance(InventoryId inventoryId,
+                                                InventoryItemId inventoryItemId, UserId userId) {
         ReturnBook result = ReturnBook.newBuilder()
-                                        .setInventoryId(inventoryId)
-                                        .setUserId(userId)
-                                        .build();
+                                      .setInventoryId(inventoryId)
+                                      .setUserId(userId)
+                                      .build();
         return result;
     }
 }
