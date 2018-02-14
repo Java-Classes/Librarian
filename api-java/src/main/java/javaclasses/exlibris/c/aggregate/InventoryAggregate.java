@@ -20,6 +20,7 @@
 
 package javaclasses.exlibris.c.aggregate;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.spine.server.aggregate.Aggregate;
@@ -113,7 +114,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final Rfid rfid = cmd.getRfid();
         final UserId userId = cmd.getLibrarianId();
 
-        final List<Message> result = new ArrayList<>();
+        final ImmutableList.Builder<Message> result = ImmutableList.builder();
         final InventoryAppended inventoryAppended = InventoryAppended.newBuilder()
                                                                      .setInventoryId(inventoryId)
                                                                      .setInventoryItemId(
@@ -126,7 +127,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
         result.add(inventoryAppended);
         result.add(becameAvailableOrReadyToPickup(inventoryId, inventoryItemId));
-        return result;
+        return result.build();
     }
 
     private Message becameAvailableOrReadyToPickup(InventoryId inventoryId,
