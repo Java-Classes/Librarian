@@ -36,11 +36,13 @@ import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.BookUpdated;
 import javaclasses.exlibris.c.RemoveBook;
 import javaclasses.exlibris.c.UpdateBook;
+import javaclasses.exlibris.c.rejection.BookAlreadyExists;
 
 import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
+import static javaclasses.exlibris.c.aggregate.rejection.BookAggregateRejections.AddBookRejection.throwBookAlreadyExists;
 
 /**
  * The aggregate managing the state of a {@link Book}.
@@ -82,9 +84,19 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
 
     @Assign
-    List<? extends Message> handle(AddBook cmd) {
+    List<? extends Message> handle(AddBook cmd) throws BookAlreadyExists {
 
         final BookId bookId = cmd.getBookId();
+
+        if (bookId.getIsbn62()
+                  .getValue()
+                  .equals(getState().getBookId()
+                                    .getIsbn62()
+                                    .getValue())) {
+
+            throwBookAlreadyExists(cmd);
+        }
+
         final UserId userId = cmd.getLibrarianId();
         final BookDetails bookDetails = cmd.getBookDetails();
 

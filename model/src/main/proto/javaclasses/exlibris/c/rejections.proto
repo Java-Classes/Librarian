@@ -26,7 +26,7 @@ import "spine/options.proto";
 
 option (type_url_prefix) = "type.javaclasses.exlibris";
 option java_package = "javaclasses.exlibris.c.rejection";
-option java_outer_classname = "RejectionsProto";
+option java_outer_classname = "Rejections";
 option java_multiple_files = false;
 option java_generate_equals_and_hash = true;
 
