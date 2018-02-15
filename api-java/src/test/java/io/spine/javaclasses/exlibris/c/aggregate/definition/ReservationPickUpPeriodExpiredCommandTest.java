@@ -22,8 +22,6 @@ package io.spine.javaclasses.exlibris.c.aggregate.definition;
 
 import com.google.protobuf.Message;
 import io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory;
-import javaclasses.exlibris.Inventory;
-import javaclasses.exlibris.c.InventoryDecreased;
 import javaclasses.exlibris.c.MarkReservationExpired;
 import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 import javaclasses.exlibris.c.ReserveBook;

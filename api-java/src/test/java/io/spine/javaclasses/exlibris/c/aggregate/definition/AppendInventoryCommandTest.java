@@ -25,14 +25,18 @@ import io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory;
 import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.InventoryAppended;
+import javaclasses.exlibris.c.ReserveBook;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Alexander Karpets
@@ -51,8 +55,9 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(appendInventory));
+
         assertNotNull(aggregate.getId());
-        assertEquals(1, messageList.size());
+        assertEquals(2, messageList.size());
         assertEquals(InventoryAppended.class, messageList.get(0)
                                                          .getClass());
 
@@ -64,15 +69,16 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
                                                    .getValue(), inventoryAppended.getLibrarianId()
                                                                                  .getEmail()
                                                                                  .getValue());
+
     }
 
     @Test
-    void appendInventory() {
+    @DisplayName("append inventory with no reservations")
+    void appendInventoryWithoutReservation() {
         final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
         dispatchCommand(aggregate, envelopeOf(appendInventory));
 
         final Inventory inventory = aggregate.getState();
-        System.out.println(inventory);
         assertEquals(1, inventory.getInventoryItemsList()
                                  .size());
         assertEquals(true, inventory.getInventoryItemsList()
@@ -82,6 +88,44 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
                                      .get(0)
                                      .getLost());
         assertEquals(false, inventory.getInventoryItemsList()
+                                     .get(0)
+                                     .getBorrowed());
+        assertEquals(1, inventory.getInventoryItemsList()
+                                 .get(0)
+                                 .getInventoryItemId()
+                                 .getItemNumber());
+        assertEquals("123456789", inventory.getInventoryItemsList()
+                                           .get(0)
+                                           .getInventoryItemId()
+                                           .getBookId()
+                                           .getIsbn62()
+                                           .getValue());
+        assertEquals("", inventory.getInventoryItemsList()
+                                  .get(0)
+                                  .getUserId()
+                                  .getEmail()
+                                  .getValue());
+        System.out.println(inventory);
+    }
+    @Test
+    @DisplayName("append inventory with reservation")
+    void appendInventoryWithReservation() {
+        final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
+        dispatchCommand(aggregate,envelopeOf(reserveBook));
+
+        final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
+        dispatchCommand(aggregate, envelopeOf(appendInventory));
+        final Inventory inventory = aggregate.getState();
+        System.out.println(inventory);
+        assertEquals(1, inventory.getInventoryItemsList()
+                                 .size());
+        assertTrue(inventory.getInventoryItemsList()
+                                    .get(0)
+                                    .getInLibrary());
+        assertFalse(inventory.getInventoryItemsList()
+                                     .get(0)
+                                     .getLost());
+        assertFalse(inventory.getInventoryItemsList()
                                      .get(0)
                                      .getBorrowed());
         assertEquals(1, inventory.getInventoryItemsList()
