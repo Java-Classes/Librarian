@@ -22,6 +22,7 @@ package javaclasses.exlibris.c.aggregate;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
+import io.spine.core.React;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
@@ -38,6 +39,7 @@ import javaclasses.exlibris.Rfid;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.AppendInventory;
+import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookReturned;
@@ -45,6 +47,7 @@ import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.ExtendLoanPeriod;
 import javaclasses.exlibris.c.InventoryAppended;
+import javaclasses.exlibris.c.InventoryCreated;
 import javaclasses.exlibris.c.InventoryDecreased;
 import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanPeriodExtended;
@@ -263,6 +266,26 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                         .setWhenReported(getCurrentTime())
                                         .build();
         return singletonList(result);
+    }
+
+    @React
+    InventoryCreated on(BookAdded event) {
+
+        final InventoryCreated result = InventoryCreated.newBuilder()
+                                                        .setInventoryId(InventoryId.newBuilder()
+                                                                                   .setBookId(
+                                                                                           event.getBookId())
+                                                                                   .build())
+                                                        .setWhenCreated(getCurrentTime())
+                                                        .build();
+        return result;
+    }
+
+    @Apply
+    private void inventoryCreated(InventoryCreated event) {
+
+        getBuilder().setInventoryId(event.getInventoryId())
+                    .build();
     }
 
     @Apply
