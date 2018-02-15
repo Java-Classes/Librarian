@@ -373,6 +373,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * This method does not change the state of an aggregate but this event is necessary for the read side.
      * @param event Book is ready to pickup for a user who is next in a queue.
      */
+    @SuppressWarnings("all")
     @Apply
     private void bookReadyToPickup(BookReadyToPickup event) {
     }
