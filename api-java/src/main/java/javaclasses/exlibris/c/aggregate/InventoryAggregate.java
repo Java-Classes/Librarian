@@ -342,7 +342,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
     @Apply
     private void bookBecameAvailable(BookBecameAvailable event) {
-        InventoryItem availableItem = null;
         int availableBookIndex = -1;
 
         List<InventoryItem> inventoryItems = getBuilder().getInventoryItems();
@@ -351,7 +350,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             if (item.getInventoryItemId()
                     .getItemNumber() == event.getInventoryItemId()
                                              .getItemNumber()) {
-                availableItem = item;
                 availableBookIndex = i;
             }
         }
