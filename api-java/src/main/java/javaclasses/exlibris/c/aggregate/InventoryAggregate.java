@@ -598,19 +598,4 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
         getBuilder().setInventoryItems(bookLostItemPosition, inventoryItem);
     }
-
-    private boolean userHasReservation(UserId userId) {
-        final Inventory inventory = getState();
-        for (Reservation reservation : inventory.getReservationsList()) {
-            if (reservation.getWhoReserved()
-                           .getEmail()
-                           .getValue()
-                           .equals(userId.getEmail()
-                                         .getValue())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 }

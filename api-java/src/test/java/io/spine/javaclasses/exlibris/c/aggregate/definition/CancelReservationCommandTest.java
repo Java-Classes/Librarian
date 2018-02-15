@@ -25,7 +25,6 @@ import io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory;
 import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.CancelReservation;
-import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.c.ReservationCanceled;
 import javaclasses.exlibris.c.ReserveBook;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +35,6 @@ import java.util.List;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CancelReservationCommandTest extends InventoryCommandTest<AppendInventory> {
 

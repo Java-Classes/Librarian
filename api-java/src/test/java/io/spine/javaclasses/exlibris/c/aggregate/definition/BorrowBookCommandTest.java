@@ -39,7 +39,6 @@ import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.inv
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
