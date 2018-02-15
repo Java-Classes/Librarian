@@ -141,8 +141,11 @@ message BookBorrowed {
     // Who borrowed a book.
     UserId who_borrowed = 3;
 
+    // The loan period.
+    LoanId loan_id = 4;
+
     // The time when user borrowed a book.
-    google.protobuf.Timestamp when_borrowed = 4;
+    google.protobuf.Timestamp when_borrowed = 5;
 }
 
 // An event when a reservation was successfully finished.
