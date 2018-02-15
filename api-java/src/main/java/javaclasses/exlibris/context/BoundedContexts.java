@@ -25,6 +25,7 @@ import io.spine.server.BoundedContext;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import javaclasses.exlibris.repository.BookRepository;
+import javaclasses.exlibris.repository.InventoryRepository;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -65,9 +66,13 @@ public final class BoundedContexts {
      */
     public static BoundedContext create(StorageFactory storageFactory) {
         checkNotNull(storageFactory);
-        final BookRepository taskRepo = new BookRepository();
+
+        final BookRepository bookRepository = new BookRepository();
+        final InventoryRepository inventoryRepository = new InventoryRepository();
+
         final BoundedContext boundedContext = createBoundedContext(storageFactory);
-        boundedContext.register(taskRepo);
+        boundedContext.register(bookRepository);
+        boundedContext.register(inventoryRepository);
         return boundedContext;
     }
 
