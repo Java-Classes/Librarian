@@ -28,6 +28,7 @@ import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.ReturnBook;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -78,7 +79,8 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
     }
 
     @Test
-    void returnBook() {
+    @DisplayName("return book without reservation")
+    void returnBookWithoutReservation() {
         appendInventory();
         final Inventory inventoryAppended = aggregate.getState();
         assertEquals(0, inventoryAppended.getLoansList()

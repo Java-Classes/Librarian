@@ -21,10 +21,12 @@
 package io.spine.javaclasses.exlibris.c.aggregate.definition;
 
 import com.google.protobuf.Message;
+import io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory;
 import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BorrowBook;
+import javaclasses.exlibris.c.ReserveBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,6 +39,7 @@ import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.inv
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -101,6 +104,31 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
         assertEquals(state.getLoans(state.getLoansCount() - 1)
                           .getWhoBorrowed(), userId);
 
+    }
+    @Test
+    @DisplayName("reservation became loan")
+    void reservationBecameLoan() {
+        dispatchAppendInventory();
+        dispatchReserveBook();
+        final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
+
+        dispatchCommand(aggregate, envelopeOf(borrowBook));
+        final Inventory state = aggregate.getState();
+
+        assertEquals(1, state.getLoansCount());
+
+        assertEquals(state.getLoans(state.getLoansCount() - 1)
+                          .getInventoryItemId(), inventoryItemId);
+
+        assertEquals(state.getLoans(state.getLoansCount() - 1)
+                          .getWhoBorrowed(), userId);
+        assertEquals(0,state.getReservationsList().size());
+
+    }
+
+    private void dispatchReserveBook() {
+        final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
+        dispatchCommand(aggregate, envelopeOf(reserveBook));
     }
 
     private void dispatchAppendInventory() {

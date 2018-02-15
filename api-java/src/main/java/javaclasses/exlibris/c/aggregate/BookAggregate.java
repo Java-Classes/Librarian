@@ -21,6 +21,7 @@
 package javaclasses.exlibris.c.aggregate;
 
 import com.google.protobuf.Message;
+import io.spine.core.Subscribe;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;

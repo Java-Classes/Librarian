@@ -380,7 +380,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                            .equals(event.getUserId()
                                         .getEmail()
                                         .getValue())) {
-                getBuilder().getReservations().remove(i);
+                getBuilder().removeReservations(i);
             }
         }
     }
