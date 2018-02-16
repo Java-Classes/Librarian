@@ -22,13 +22,13 @@ package javaclasses.exlibris.c.aggregate.rejection;
 
 import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.ReserveBook;
+import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
 import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
-import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.rejection.CannotReserveBook;
-import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
 import javaclasses.exlibris.c.rejection.CannotReturnMissingBook;
 import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
+import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
 
 import static io.spine.time.Time.getCurrentTime;
 
@@ -45,6 +45,9 @@ public class InventoryAggregateRejections {
     private InventoryAggregateRejections() {
     }
 
+    /**
+     * A rejection when a user tries to reserve a book that he borrowed by himself or a book that he already reserved.
+     */
     public static class ReserveBookRejection {
 
         private ReserveBookRejection() {
@@ -58,6 +61,9 @@ public class InventoryAggregateRejections {
         }
     }
 
+    /**
+     * A rejection when a user tries to cancel a missing reservation.
+     */
     public static class CancelReservationRejection {
 
         private CancelReservationRejection() {
@@ -72,6 +78,9 @@ public class InventoryAggregateRejections {
 
     }
 
+    /**
+     * A rejection when a librarian tries to write a missing book off.
+     */
     public static class WriteBookOffRejection {
 
         private WriteBookOffRejection() {
@@ -84,6 +93,11 @@ public class InventoryAggregateRejections {
         }
     }
 
+    /**
+     * Holds two rejections:
+     * 1. a rejection when a user tries to return a non-borrowed book.
+     * 2. a rejection when a user tries to return the missing {@link javaclasses.exlibris.InventoryItem}.
+     */
     public static class ReturnBookRejection {
         private ReturnBookRejection() {
         }
