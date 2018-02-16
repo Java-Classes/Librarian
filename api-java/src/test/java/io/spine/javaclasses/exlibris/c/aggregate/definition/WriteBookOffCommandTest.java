@@ -20,6 +20,7 @@
 
 package io.spine.javaclasses.exlibris.c.aggregate.definition;
 
+import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory;
 import javaclasses.exlibris.Inventory;
@@ -27,6 +28,7 @@ import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.InventoryDecreased;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.WriteBookOff;
+import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,11 +36,15 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Alexander Karpets
+ * @author Paul Ageyev
  */
 public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
 
@@ -97,5 +103,22 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
         final Inventory inventoryAfter = aggregate.getState();
         assertEquals(0, inventoryAfter.getInventoryItemsList()
                                       .size());
+    }
+
+    @Test
+    @DisplayName("throw WriteBookOffRejection rejection upon " +
+            "an attempt to write off a missing book")
+    void notWriteOffBook() {
+
+        final WriteBookOff writeBookOff = InventoryCommandFactory.writeBookOffInstance();
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(writeBookOff)));
+
+        final Throwable cause = Throwables.getRootCause(t);
+
+        assertThat(cause, instanceOf(CannotWriteMissingBookOff.class));
+
     }
 }

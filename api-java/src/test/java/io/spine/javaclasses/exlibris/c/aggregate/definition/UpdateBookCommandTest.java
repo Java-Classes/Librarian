@@ -145,8 +145,6 @@ public class UpdateBookCommandTest extends BookCommandTest<UpdateBook> {
                                          () -> dispatchCommand(aggregate,
                                                                envelopeOf(updateBook)));
 
-        Book state = aggregate.getState();
-
     }
 
     private void dispatchAddBookCmd() {
