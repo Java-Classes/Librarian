@@ -30,7 +30,12 @@ import javaclasses.exlibris.c.rejection.CannotUpdateMissingBook;
 import static io.spine.time.Time.getCurrentTime;
 
 /**
+ * Generate rejections for {@link javaclasses.exlibris.c.aggregate.BookAggregate}.
+ * To throw a rejection it is necessary to call static method.
+ *
  * @author Paul Ageyev
+ * @author Alexander Karpets
+ * @see javaclasses.exlibris.c.aggregate.BookAggregate
  */
 public class BookAggregateRejections {
 

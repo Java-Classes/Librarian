@@ -86,9 +86,11 @@ public class InventoryAggregateRejections {
         private WriteBookOffRejection() {
         }
 
-        public static void throwCannotWriteMissingBookOff(WriteBookOff cmd) throws CannotWriteMissingBookOff {
+        public static void throwCannotWriteMissingBookOff(WriteBookOff cmd) throws
+                                                                            CannotWriteMissingBookOff {
 
-            throw new CannotWriteMissingBookOff(cmd.getInventoryId(), cmd.getLibrarianId(), cmd.getInventoryItemId(), getCurrentTime());
+            throw new CannotWriteMissingBookOff(cmd.getInventoryId(), cmd.getLibrarianId(),
+                                                cmd.getInventoryItemId(), getCurrentTime());
 
         }
     }
