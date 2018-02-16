@@ -29,7 +29,12 @@ import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
 import static io.spine.time.Time.getCurrentTime;
 
 /**
- * @author Paul Ageyev, Alexander Karpets
+ * Generate rejections for {@link javaclasses.exlibris.c.aggregate.InventoryAggregate}.
+ * To throw a rejection it is necessary to call static method.
+ *
+ * @author Paul Ageyev
+ * @author Alexander Karpets
+ * @see javaclasses.exlibris.c.aggregate.InventoryAggregate
  */
 public class InventoryAggregateRejections {
 
