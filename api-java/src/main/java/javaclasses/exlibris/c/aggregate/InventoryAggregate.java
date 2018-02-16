@@ -64,6 +64,7 @@ import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
 import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
 
 import java.util.List;
+
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
 import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.CancelReservationRejection.throwCannotCancelMissingReservation;

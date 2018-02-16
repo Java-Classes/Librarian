@@ -21,10 +21,12 @@
 package javaclasses.exlibris.c.aggregate.rejection;
 
 import javaclasses.exlibris.c.CancelReservation;
+import javaclasses.exlibris.c.ExtendLoanPeriod;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
 import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
+import javaclasses.exlibris.c.rejection.CannotExtendLoanPeriod;
 import javaclasses.exlibris.c.rejection.CannotReserveBook;
 import javaclasses.exlibris.c.rejection.CannotReturnMissingBook;
 import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
@@ -101,6 +103,7 @@ public class InventoryAggregateRejections {
      * 2. a rejection when a user tries to return the missing {@link javaclasses.exlibris.InventoryItem}.
      */
     public static class ReturnBookRejection {
+
         private ReturnBookRejection() {
         }
 
@@ -114,6 +117,18 @@ public class InventoryAggregateRejections {
                                                                         CannotReturnMissingBook {
             throw new CannotReturnMissingBook(cmd.getInventoryId(), cmd.getInventoryItemId(),
                                               cmd.getUserId(), getCurrentTime());
+        }
+    }
+
+    public static class ExtendLoanPeriodRejection {
+
+        private ExtendLoanPeriodRejection() {
+        }
+
+        public static void throwCannotExtendLoanPeriod(ExtendLoanPeriod cmd) throws
+                                                                             CannotExtendLoanPeriod {
+            throw new CannotExtendLoanPeriod(cmd.getInventoryId(), cmd.getLoanId(), cmd.getUserId(),
+                                             getCurrentTime());
         }
     }
 }

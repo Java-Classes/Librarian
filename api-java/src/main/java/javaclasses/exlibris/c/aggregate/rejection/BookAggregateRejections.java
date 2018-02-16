@@ -42,6 +42,9 @@ public class BookAggregateRejections {
     private BookAggregateRejections() {
     }
 
+    /**
+     * A rejection when a librarian tries to add an existing book.
+     */
     public static class AddBookRejection {
 
         private AddBookRejection() {
@@ -55,6 +58,9 @@ public class BookAggregateRejections {
         }
     }
 
+    /**
+     * A rejection when a librarian tries to update a missing book.
+     */
     public static class UpdateBookRejection {
 
         private UpdateBookRejection() {
@@ -68,6 +74,9 @@ public class BookAggregateRejections {
         }
     }
 
+    /**
+     * A rejection when a librarian tries to remove a missing book.
+     */
     public static class RemoveBookRejection {
 
         private RemoveBookRejection() {
