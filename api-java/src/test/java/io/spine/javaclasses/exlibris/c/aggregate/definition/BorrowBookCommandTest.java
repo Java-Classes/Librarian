@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * @author Dmytry Dyachenko
+ * @author Dmytry Dyachenko, Alexander Karpets
  */
 @DisplayName("BorrowBook command should be interpreted by InventoryAggregate and")
 public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {

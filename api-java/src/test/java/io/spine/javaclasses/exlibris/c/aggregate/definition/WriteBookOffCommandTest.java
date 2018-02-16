@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * @author Unknown
+ * @author Alexander Karpets
  * @author Paul Ageyev
  */
 public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
@@ -60,6 +60,7 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
     }
 
     @Test
+    @DisplayName("write book off successfully produces event")
     void produceEvent() {
         appendInventory();
         final WriteBookOff writeBookOff = InventoryCommandFactory.writeBookOffInstance();
@@ -90,6 +91,7 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
     }
 
     @Test
+    @DisplayName("inventory decreased")
     void writeOffBook() {
         appendInventory();
         final Inventory inventoryBefore = aggregate.getState();

@@ -26,6 +26,7 @@ import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.InventoryAppended;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -46,6 +47,7 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
     }
 
     @Test
+    @DisplayName("append inventory produce invent")
     void produceEvent() {
         final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
 
@@ -67,6 +69,7 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
     }
 
     @Test
+    @DisplayName("inventory successfully appended")
     void appendInventory() {
         final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
         dispatchCommand(aggregate, envelopeOf(appendInventory));

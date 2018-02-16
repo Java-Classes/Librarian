@@ -59,14 +59,17 @@ import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
 import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
 import javaclasses.exlibris.c.rejection.CannotReserveBook;
+import javaclasses.exlibris.c.rejection.CannotReturnMissingBook;
+import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
 import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
 
 import java.util.List;
-
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
 import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.CancelReservationRejection.throwCannotCancelMissingReservation;
 import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ReserveBookRejection.throwCannotReserveBook;
+import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ReturnBookRejection.throwCannotReturnMissingBook;
+import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ReturnBookRejection.throwCannotReturnNonBorrowedBook;
 import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.WriteBookOffRejection.throwCannotWriteMissingBookOff;
 
 /**
@@ -126,7 +129,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     @Assign
-    List<? extends Message> handle(WriteBookOff cmd) throws CannotWriteMissingBookOff {
+    List<? extends Message> handle(WriteBookOff cmd) throws CannotWriteMissingBookOff,
+                                                            CannotWriteMissingBookOff {
 
         List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
 
@@ -311,7 +315,14 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     @Assign
-    List<? extends Message> handle(ReturnBook cmd) {
+    List<? extends Message> handle(ReturnBook cmd) throws CannotReturnNonBorrowedBook,
+                                                          CannotReturnMissingBook {
+        if (!inventoryItemExists(cmd.getInventoryItemId())) {
+            throwCannotReturnMissingBook(cmd);
+        }
+        if (!userBorrowedBook(cmd.getUserId())) {
+            throwCannotReturnNonBorrowedBook(cmd);
+        }
 
         final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
@@ -563,5 +574,28 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                    .build();
 
         getBuilder().setInventoryItems(bookLostItemPosition, inventoryItem);
+    }
+
+    private boolean userBorrowedBook(UserId userId) {
+        for (InventoryItem item : getState().getInventoryItemsList()) {
+            if (item.getUserId()
+                    .getEmail()
+                    .getValue()
+                    .equals(userId.getEmail()
+                                  .getValue())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean inventoryItemExists(InventoryItemId inventoryItemId) {
+        for (InventoryItem item : getState().getInventoryItemsList()) {
+            if (item.getInventoryItemId()
+                    .getItemNumber() == inventoryItemId.getItemNumber()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
