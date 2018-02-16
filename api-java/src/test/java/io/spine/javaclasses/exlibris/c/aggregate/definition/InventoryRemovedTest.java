@@ -29,7 +29,7 @@ import io.spine.server.entity.Repository;
 import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.c.AddBook;
-import javaclasses.exlibris.c.BookAdded;
+import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.aggregate.BookAggregate;
 import javaclasses.exlibris.c.aggregate.InventoryAggregate;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,8 +46,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * @author Dmytry Dyachenko
  */
-@DisplayName("InventoryCreated event should be react on BookAdded and")
-public class InventoryCreatedTest extends InventoryCommandTest<AddBook> {
+@DisplayName("InventoryRemoved event should be react on BookRemoved and")
+public class InventoryRemovedTest extends InventoryCommandTest<AddBook> {
 
     @Override
     @BeforeEach
@@ -56,40 +56,45 @@ public class InventoryCreatedTest extends InventoryCommandTest<AddBook> {
     }
 
     @Test
-    @DisplayName("create InventoryAggregate")
+    @DisplayName("remove InventoryAggregate")
     void produceEvent() {
 
         final BoundedContext sourceContext = create();
 
-        final Event event = bookAdded();
+        final Event event = bookRemoved();
         sourceContext.getEventBus()
                      .post(event);
 
-        final BookAdded bookAdded = unpack(event.getMessage());
+        final BookRemoved bookRemoved = unpack(event.getMessage());
 
         final Optional<Repository> repository = sourceContext.findRepository(Inventory.class);
 
         final Optional<InventoryAggregate> optional = repository.get()
                                                                 .find(InventoryId.newBuilder()
                                                                                  .setBookId(
-                                                                                         bookAdded.getBookId())
+                                                                                         bookRemoved.getBookId())
                                                                                  .build());
 
         assertNotNull(optional);
 
-        assertEquals(optional.get()
-                             .getState()
-                             .getInventoryId()
-                             .getBookId(), bookAdded.getBookId());
+        assertEquals("", optional.get()
+                                 .getState()
+                                 .getInventoryId()
+                                 .toString());
+        assertEquals(0, optional.get()
+                                .getState()
+                                .getInventoryItemsList()
+                                .size());
+
     }
 
-    private static Event bookAdded() {
+    private static Event bookRemoved() {
 
         final TestEventFactory eventFactory = newInstance(pack(BookCommandFactory.bookId),
                                                           BookAggregate.class);
-        return eventFactory.createEvent(BookAdded.newBuilder()
-                                                 .setBookId(BookCommandFactory.bookId)
-                                                 .build()
+        return eventFactory.createEvent(BookRemoved.newBuilder()
+                                                   .setBookId(BookCommandFactory.bookId)
+                                                   .build()
         );
     }
 }
