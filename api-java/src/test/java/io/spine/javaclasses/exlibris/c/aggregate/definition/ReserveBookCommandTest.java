@@ -1,20 +1,4 @@
-package io.spine.javaclasses.exlibris.c.aggregate.definition;
-
-import com.google.protobuf.Message;
-import io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory;
-import javaclasses.exlibris.Inventory;
-import javaclasses.exlibris.c.ReservationAdded;
-import javaclasses.exlibris.c.ReserveBook;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-/**
+/*
  * Copyright 2018, TeamDev Ltd. All rights reserved.
  *
  * Redistribution and use in source and/or binary forms, with or without
@@ -32,7 +16,42 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
+ */
+
+package io.spine.javaclasses.exlibris.c.aggregate.definition;
+
+import com.google.common.base.Throwables;
+import com.google.protobuf.Message;
+import io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory;
+import javaclasses.exlibris.BookId;
+import javaclasses.exlibris.Inventory;
+import javaclasses.exlibris.c.AppendInventory;
+import javaclasses.exlibris.c.BorrowBook;
+import javaclasses.exlibris.c.ReservationAdded;
+import javaclasses.exlibris.c.ReserveBook;
+import javaclasses.exlibris.c.rejection.BookAlreadyExists;
+import javaclasses.exlibris.c.rejection.CannotReserveBook;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
+import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
+import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryItemId;
+import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
+import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.stringContainsInOrder;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+/**
  * @author Alexander Karpets
  */
 public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
@@ -78,5 +97,63 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
                                                 .getWhoReserved()
                                                 .getEmail()
                                                 .getValue());
+
     }
+
+    @Test
+    @DisplayName("not reserve the book that is already reserved")
+    void notReserveBook() {
+        final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
+        dispatchCommand(aggregate, envelopeOf(reserveBook));
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(reserveBook)));
+        final Throwable cause = Throwables.getRootCause(t);
+
+        assertThat(cause, instanceOf(CannotReserveBook.class));
+
+        final CannotReserveBook rejection = (CannotReserveBook) cause;
+        final BookId actualBookId = rejection.getMessageThrown()
+                                             .getInventoryId()
+                                             .getBookId();
+        assertEquals(reserveBook.getInventoryId()
+                                .getBookId(), actualBookId);
+
+        assertEquals(true, rejection.getMessageThrown()
+                                    .getAlreadyReserved());
+    }
+
+    @Test
+    @DisplayName("not reserve the book that is already borrowed")
+    void notReserveBorrowedBook() {
+
+        final AppendInventory appendInventory = appendInventoryInstance();
+        dispatchCommand(aggregate, envelopeOf(appendInventory));
+
+        final BorrowBook borrowBook = borrowBookInstance(InventoryCommandFactory.inventoryId,
+                                                         InventoryCommandFactory.inventoryItemId,
+                                                         InventoryCommandFactory.userId);
+
+        dispatchCommand(aggregate, envelopeOf(borrowBook));
+
+        final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(reserveBook)));
+        final Throwable cause = Throwables.getRootCause(t);
+
+        assertThat(cause, instanceOf(CannotReserveBook.class));
+
+        final CannotReserveBook rejection = (CannotReserveBook) cause;
+        final BookId actualBookId = rejection.getMessageThrown()
+                                             .getInventoryId()
+                                             .getBookId();
+        assertEquals(reserveBook.getInventoryId()
+                                .getBookId(), actualBookId);
+        assertFalse(rejection.getMessageThrown()
+                            .getAlreadyReserved());
+    }
+
 }

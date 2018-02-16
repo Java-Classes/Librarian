@@ -57,11 +57,14 @@ import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
+import javaclasses.exlibris.c.rejection.CannotReserveBook;
 
 import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
+import static java.util.Collections.sort;
+import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ReserveBookRejection.throwCannotReserveBook;
 
 /**
  * The aggregate managing the state of a {@link Inventory}.
@@ -137,7 +140,34 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     @Assign
-    List<? extends Message> handle(ReserveBook cmd) {
+    List<? extends Message> handle(ReserveBook cmd) throws CannotReserveBook {
+
+        List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
+
+        for (int i = 0; i < inventoryItems.size(); i++) {
+            if (inventoryItems.get(i)
+                              .getInventoryItemId()
+                              .getBookId()
+                              .equals(cmd.getInventoryId()
+                                         .getBookId())) {
+
+                throwCannotReserveBook(cmd, true, false);
+            }
+        }
+
+        List<Reservation> reservations = getState().getReservationsList();
+
+        for (Reservation reservation : reservations) {
+            if (reservation.getBookId()
+                           .equals(cmd.getInventoryId()
+                                      .getBookId()) || reservation.getWhoReserved()
+                                                                  .getEmail()
+                                                                  .equals(
+                                                                          cmd.getUserId()
+                                                                             .getEmail())) {
+                throwCannotReserveBook(cmd, false, true);
+            }
+        }
 
         final InventoryId inventoryId = cmd.getInventoryId();
         final UserId userId = cmd.getUserId();
