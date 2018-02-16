@@ -59,6 +59,7 @@ import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
 import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
 import javaclasses.exlibris.c.rejection.CannotReserveBook;
+import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
 
 import java.util.List;
 
@@ -66,6 +67,7 @@ import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
 import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.CancelReservationRejection.throwCannotCancelMissingReservation;
 import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ReserveBookRejection.throwCannotReserveBook;
+import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.WriteBookOffRejection.throwCannotWriteMissingBookOff;
 
 /**
  * The aggregate managing the state of a {@link Inventory}.
@@ -124,19 +126,37 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     @Assign
-    List<? extends Message> handle(WriteBookOff cmd) {
+    List<? extends Message> handle(WriteBookOff cmd) throws CannotWriteMissingBookOff {
 
-        final InventoryId inventoryId = cmd.getInventoryId();
-        final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
-        final UserId librarianId = cmd.getLibrarianId();
-        final WriteOffReason writeOffReason = cmd.getWriteBookOffReason();
-        final InventoryDecreased result = InventoryDecreased.newBuilder()
-                                                            .setInventoryId(inventoryId)
-                                                            .setInventoryItemId(inventoryItemId)
-                                                            .setWhenDecreased(getCurrentTime())
-                                                            .setLibrarianId(librarianId)
-                                                            .setWriteOffReason(writeOffReason)
-                                                            .build();
+        List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
+
+        InventoryDecreased result = null;
+
+        for (InventoryItem inventoryItem : inventoryItems) {
+            if (inventoryItem.getInventoryItemId()
+                             .equals(cmd.getInventoryItemId())) {
+                final InventoryId inventoryId = cmd.getInventoryId();
+                final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
+                final UserId librarianId = cmd.getLibrarianId();
+                final WriteOffReason writeOffReason = cmd.getWriteBookOffReason();
+                result = InventoryDecreased.newBuilder()
+                                           .setInventoryId(inventoryId)
+                                           .setInventoryItemId(
+                                                   inventoryItemId)
+                                           .setWhenDecreased(
+                                                   getCurrentTime())
+                                           .setLibrarianId(librarianId)
+                                           .setWriteOffReason(
+                                                   writeOffReason)
+                                           .build();
+                break;
+            }
+        }
+
+        if (result == null) {
+            throwCannotWriteMissingBookOff(cmd);
+        }
+
         return singletonList(result);
     }
 
