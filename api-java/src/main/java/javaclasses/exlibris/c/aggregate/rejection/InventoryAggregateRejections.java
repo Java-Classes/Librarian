@@ -29,7 +29,7 @@ import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
 import static io.spine.time.Time.getCurrentTime;
 
 /**
- * @author Paul Ageyev
+ * @author Paul Ageyev, Alexander Karpets
  */
 public class InventoryAggregateRejections {
 

@@ -164,10 +164,10 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             if (reservation.getBookId()
                            .equals(cmd.getInventoryId()
                                       .getBookId()) || reservation.getWhoReserved()
-                                                                  .getEmail()
+
                                                                   .equals(
                                                                           cmd.getUserId()
-                                                                             .getEmail())) {
+                                                                  )) {
                 throwCannotReserveBook(cmd, false, true);
             }
         }
@@ -323,8 +323,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (int i = 0; i < inventoryItems.size(); i++) {
             InventoryItem item = inventoryItems.get(i);
             if (item.getInventoryItemId()
-                    .getItemNumber() == event.getInventoryItemId()
-                                             .getItemNumber()) {
+                    .equals(event.getInventoryItemId())
+                    ) {
                 decreaseItemPosition = i;
             }
         }
@@ -352,8 +352,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (int i = 0; i < inventoryItems.size(); i++) {
             InventoryItem item = inventoryItems.get(i);
             if (item.getInventoryItemId()
-                    .getItemNumber() == event.getInventoryItemId()
-                                             .getItemNumber()) {
+                    .equals(event.getInventoryItemId())
+                    ) {
                 borrowItemPosition = i;
             }
         }
@@ -395,8 +395,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (int i = 0; i < loans.size(); i++) {
             if (loans.get(i)
                      .getLoanId()
-                     .getValue() == event.getLoanId()
-                                         .getValue()) {
+                     .equals(event.getLoanId())) {
                 loanPosition = i;
             }
         }
@@ -414,8 +413,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (int i = 0; i < loans.size(); i++) {
             Loan loan = loans.get(i);
             if (loan.getLoanId()
-                    .getValue() == event.getLoanId()
-                                        .getValue()) {
+                    .equals(event.getLoanId())) {
                 loanPosition = i;
             }
         }
@@ -437,12 +435,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final List<Reservation> reservations = getBuilder().getReservations();
         for (int i = 0; i < reservations.size(); i++) {
             Reservation reservation = reservations.get(i);
+
             if (reservation.getWhoReserved()
-                           .getEmail()
-                           .getValue()
-                           .equals(event.getWhoCanceled()
-                                        .getEmail()
-                                        .getValue())) {
+                           .equals(event.getWhoCanceled())) {
                 reservationCancelIndex = i;
             }
         }
@@ -456,11 +451,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (int i = 0; i < reservations.size(); i++) {
             Reservation reservation = reservations.get(i);
             if (reservation.getWhoReserved()
-                           .getEmail()
-                           .getValue()
                            .equals(event.getUserId()
-                                        .getEmail()
-                                        .getValue())) {
+                           )) {
                 reservationPosition = i;
 
             }
@@ -478,11 +470,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (int i = 0; i < inventoryItems.size(); i++) {
             InventoryItem item = inventoryItems.get(i);
             if (item.getUserId()
-                    .getEmail()
-                    .getValue()
                     .equals(event.getWhoReturned()
-                                 .getEmail()
-                                 .getValue()) && item.getBorrowed()) {
+                    ) && item.getBorrowed()) {
                 returnedItemPosition = i;
             }
         }
@@ -497,11 +486,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (int i = 0; i < loans.size(); i++) {
             Loan loan = loans.get(i);
             if (loan.getWhoBorrowed()
-                    .getEmail()
-                    .getValue()
+
                     .equals(event.getWhoReturned()
-                                 .getEmail()
-                                 .getValue())) {
+                    )) {
                 loanIndex = i;
             }
         }
@@ -516,8 +503,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (int i = 0; i < inventoryItems.size(); i++) {
             InventoryItem item = inventoryItems.get(i);
             if (item.getInventoryItemId()
-                    .getItemNumber() == event.getInventoryItemId()
-                                             .getItemNumber()) {
+                    .equals(event.getInventoryItemId())) {
                 bookLostItemPosition = i;
             }
         }
@@ -533,10 +519,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     private boolean userBorrowedBook(UserId userId) {
         for (InventoryItem item : getState().getInventoryItemsList()) {
             if (item.getUserId()
-                    .getEmail()
-                    .getValue()
-                    .equals(userId.getEmail()
-                                  .getValue())) {
+
+                    .equals(userId)) {
                 return true;
             }
         }
@@ -546,7 +530,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     private boolean inventoryItemExists(InventoryItemId inventoryItemId) {
         for (InventoryItem item : getState().getInventoryItemsList()) {
             if (item.getInventoryItemId()
-                    .getItemNumber() == inventoryItemId.getItemNumber()) {
+                    .equals(inventoryItemId)) {
                 return true;
             }
         }
