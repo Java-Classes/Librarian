@@ -245,7 +245,7 @@ subprojects {
 
         selectors {
             directory "${sourcesRootDir}/test/java"
-            packages 'io.spine.javaclasses.exlibris', 'io.spine.cli', 'io.spine.server'
+            packages 'io.spine.javaclasses.exlibris'
         }
 
         filters {

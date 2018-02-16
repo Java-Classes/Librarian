@@ -21,13 +21,16 @@
 package javaclasses.exlibris.context;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
 import io.spine.server.BoundedContext;
+import io.spine.server.event.EventBus;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import javaclasses.exlibris.repository.BookRepository;
 import javaclasses.exlibris.repository.InventoryRepository;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Utilities for creation the {@link BoundedContext} instances.
@@ -70,18 +73,33 @@ public final class BoundedContexts {
         final BookRepository bookRepository = new BookRepository();
         final InventoryRepository inventoryRepository = new InventoryRepository();
 
-        final BoundedContext boundedContext = createBoundedContext(storageFactory);
+        final EventBus.Builder eventBus = createEventBus(storageFactory);
+
+        final BoundedContext boundedContext = createBoundedContext(eventBus);
         boundedContext.register(bookRepository);
+
         boundedContext.register(inventoryRepository);
         return boundedContext;
     }
 
+    private static EventBus.Builder createEventBus(StorageFactory storageFactory) {
+
+        final EventBus.Builder eventBus = EventBus.newBuilder()
+                                                  .setStorageFactory(storageFactory);
+        return eventBus;
+    }
+
     @VisibleForTesting
-    static BoundedContext createBoundedContext(StorageFactory storageFactory) {
-        checkNotNull(storageFactory);
+    static BoundedContext createBoundedContext(EventBus.Builder eventBus) {
+        checkNotNull(eventBus);
+        final Optional<StorageFactory> storageFactory = eventBus.getStorageFactory();
+        if (!storageFactory.isPresent()) {
+            throw newIllegalStateException("EventBus does not specify a StorageFactory.");
+        }
         return BoundedContext.newBuilder()
-                             .setStorageFactorySupplier(() -> storageFactory)
+                             .setStorageFactorySupplier(storageFactory::get)
                              .setName(NAME)
+                             .setEventBus(eventBus)
                              .build();
     }
 }

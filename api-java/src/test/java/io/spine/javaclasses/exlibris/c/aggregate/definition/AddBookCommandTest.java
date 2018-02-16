@@ -21,10 +21,14 @@
 package io.spine.javaclasses.exlibris.c.aggregate.definition;
 
 import com.google.protobuf.Message;
+import io.spine.core.Event;
 import io.spine.javaclasses.exlibris.testdata.BookCommandFactory;
+import io.spine.server.BoundedContext;
+import io.spine.server.command.TestEventFactory;
 import javaclasses.exlibris.Book;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookAdded;
+import javaclasses.exlibris.c.aggregate.BookAggregate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,9 +37,13 @@ import java.util.List;
 
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.createBookInstance;
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.userId;
+import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static io.spine.server.command.TestEventFactory.newInstance;
+import static javaclasses.exlibris.context.BoundedContexts.create;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 
 /**
  * @author Paul Ageyev
@@ -68,6 +76,23 @@ public class AddBookCommandTest extends BookCommandTest<AddBook> {
                            .getValue(), bookAdded.getLibrarianId()
                                                  .getEmail()
                                                  .getValue());
+
+        final BoundedContext sourceContext = create();
+
+        final Event event = bookAdded();
+        sourceContext.getEventBus()
+                     .post(event);
+
+    }
+
+    public static Event bookAdded() {
+
+        final TestEventFactory eventFactory = newInstance(pack(BookCommandFactory.bookId),
+                                                          BookAggregate.class);
+        return eventFactory.createEvent(BookAdded.newBuilder()
+                                                 .setBookId(BookCommandFactory.bookId)
+                                                 .build()
+        );
     }
 
     @Test

@@ -214,19 +214,27 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final UserId userId = cmd.getUserId();
-        final ImmutableList.Builder<Message> result= ImmutableList.builder();
+        final ImmutableList.Builder<Message> result = ImmutableList.builder();
         final BookBorrowed bookBorrowed = BookBorrowed.newBuilder()
-                                                .setInventoryId(inventoryId)
-                                                .setInventoryItemId(inventoryItemId)
-                                                .setWhoBorrowed(userId)
-                                                .setLoanId(LoanId.newBuilder()
-                                                                 .setValue(
-                                                                         getCurrentTime().getSeconds())
-                                                                 .build())
-                                                .setWhenBorrowed(getCurrentTime())
-                                                .build();
+                                                      .setInventoryId(inventoryId)
+                                                      .setInventoryItemId(inventoryItemId)
+                                                      .setWhoBorrowed(userId)
+                                                      .setLoanId(LoanId.newBuilder()
+                                                                       .setValue(
+                                                                               getCurrentTime().getSeconds())
+                                                                       .build())
+                                                      .setWhenBorrowed(getCurrentTime())
+                                                      .build();
         result.add(bookBorrowed);
-        if (!getState().getReservationsList().isEmpty()&&getState().getReservationsList().get(0).getWhoReserved().getEmail().getValue().equals(cmd.getUserId().getEmail().getValue())) {
+        if (!getState().getReservationsList()
+                       .isEmpty() && getState().getReservationsList()
+                                               .get(0)
+                                               .getWhoReserved()
+                                               .getEmail()
+                                               .getValue()
+                                               .equals(cmd.getUserId()
+                                                          .getEmail()
+                                                          .getValue())) {
             final ReservationBecameLoan reservationBecameLoan = ReservationBecameLoan.newBuilder()
                                                                                      .setInventoryId(
                                                                                              inventoryId)
@@ -395,6 +403,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * A book becomes available for a user.
      *
      * This method does not change the state of an aggregate but this event is necessary for the read side.
+     *
      * @param event Book is ready to pickup for a user who is next in a queue.
      */
     @SuppressWarnings("all")
