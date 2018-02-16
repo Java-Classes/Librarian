@@ -267,7 +267,19 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final InventoryId inventoryId = cmd.getInventoryId();
         final LoanId loanId = cmd.getLoanId();
         final UserId userId = cmd.getUserId();
-        final Timestamp newDueDate = cmd.getNewDueDate();
+        int loanPosition = -1;
+
+        List<Loan> loansList = getState().getLoansList();
+        for (int i = 0; i < loansList.size(); i++) {
+            if (loansList.get(i)
+                         .getLoanId()
+                         .getValue() == cmd.getLoanId()
+                                           .getValue()) {
+                loanPosition = i;
+            }
+        }
+        final Timestamp newDueDate = getState().getLoans(loanPosition)
+                                               .getWhenDue();
 
         // Two weeks before new due on date.
         final Timestamp previousDueDate = Timestamp.newBuilder()

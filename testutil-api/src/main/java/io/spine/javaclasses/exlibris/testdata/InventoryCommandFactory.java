@@ -36,6 +36,7 @@ import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.ExtendLoanPeriod;
 import javaclasses.exlibris.c.LoanPeriodExtended;
+import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.c.MarkLoanOverdue;
 import javaclasses.exlibris.c.MarkReservationExpired;
 import javaclasses.exlibris.c.ReportLostBook;
@@ -74,6 +75,7 @@ public class InventoryCommandFactory {
     public static final WriteOffReason reason = WriteOffReason.newBuilder()
                                                               .setOutdated(true)
                                                               .build();
+    private static LoanId loanId;
 
     public static final Loan loan = Loan.newBuilder()
                                         .setLoanId(LoanId.newBuilder()
@@ -248,5 +250,22 @@ public class InventoryCommandFactory {
 
         return result;
 
+    }
+
+    public static LoanPeriodExtended loanPeriodExtended() {
+
+        final LoanPeriodExtended result = loanPeriodExtended(inventoryId, loanId,
+                                                             userId);
+        return result;
+    }
+
+    public static LoanPeriodExtended loanPeriodExtended(InventoryId inventoryId, LoanId loanId,
+                                                        UserId userId) {
+        LoanPeriodExtended result = LoanPeriodExtended.newBuilder()
+                                                      .setInventoryId(inventoryId)
+                                                      .setUserId(userId)
+                                                      .setLoanId(loanId)
+                                                      .build();
+        return result;
     }
 }
