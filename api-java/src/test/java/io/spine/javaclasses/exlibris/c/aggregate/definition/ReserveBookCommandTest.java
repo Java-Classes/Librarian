@@ -58,6 +58,7 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
     }
 
     @Test
+    @DisplayName("reserve book successfully produces event")
     void produceEvent() {
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
 
@@ -79,6 +80,7 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
     }
 
     @Test
+    @DisplayName("book reserved")
     void reserveBook() {
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
         dispatchCommand(aggregate, envelopeOf(reserveBook));

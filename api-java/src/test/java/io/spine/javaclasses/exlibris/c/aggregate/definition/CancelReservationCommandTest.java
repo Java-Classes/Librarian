@@ -25,10 +25,10 @@ import io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory;
 import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.CancelReservation;
-import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.c.ReservationCanceled;
 import javaclasses.exlibris.c.ReserveBook;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -36,8 +36,10 @@ import java.util.List;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * @author Alexander Karpets
+ */
 public class CancelReservationCommandTest extends InventoryCommandTest<AppendInventory> {
 
     @Override
@@ -51,6 +53,7 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
         dispatchCommand(aggregate, envelopeOf(reserveBook));
     }
     @Test
+    @DisplayName("cancel reservation successfully produces event")
     void produceEvent() {
         reserveBook();
         final CancelReservation cancelReservation = InventoryCommandFactory.cancelReservationInstance();
@@ -71,6 +74,7 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
     }
 
     @Test
+    @DisplayName("a reservation canceled")
     void cancelReservation() {
         reserveBook();
         final Inventory inventoryReserved = aggregate.getState();

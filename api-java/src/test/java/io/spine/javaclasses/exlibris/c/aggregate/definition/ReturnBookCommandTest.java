@@ -67,6 +67,7 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
     }
 
     @Test
+    @DisplayName("return book successfully produces event")
     void produceEvent() {
         appendInventory();
         borrowBook();
@@ -86,6 +87,7 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
     }
 
     @Test
+    @DisplayName("borrowed book returned")
     void returnBook() {
         appendInventory();
         final Inventory inventoryAppended = aggregate.getState();

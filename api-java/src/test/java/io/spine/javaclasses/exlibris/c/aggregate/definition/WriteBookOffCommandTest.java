@@ -28,6 +28,7 @@ import javaclasses.exlibris.c.InventoryDecreased;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.WriteBookOff;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -36,6 +37,9 @@ import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchComma
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+/**
+ * @author Alexander Karpets
+ */
 public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
 
     @Override
@@ -50,6 +54,7 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
     }
 
     @Test
+    @DisplayName("write book off successfully produces event")
     void produceEvent() {
         appendInventory();
         final WriteBookOff writeBookOff = InventoryCommandFactory.writeBookOffInstance();
@@ -80,6 +85,7 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
     }
 
     @Test
+    @DisplayName("inventory decreased")
     void writeOffBook() {
         appendInventory();
         final Inventory inventoryBefore = aggregate.getState();
