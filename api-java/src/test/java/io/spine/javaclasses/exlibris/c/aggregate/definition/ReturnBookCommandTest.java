@@ -42,7 +42,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -76,7 +75,7 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(returnBook));
         assertNotNull(aggregate.getId());
-        assertEquals(1, messageList.size());
+        assertEquals(2, messageList.size());
         assertEquals(BookReturned.class, messageList.get(0)
                                                     .getClass());
 
@@ -87,8 +86,8 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
     }
 
     @Test
-    @DisplayName("borrowed book returned")
-    void returnBook() {
+    @DisplayName("return book without reservation")
+    void returnBookWithoutReservation() {
         appendInventory();
         final Inventory inventoryAppended = aggregate.getState();
         assertEquals(0, inventoryAppended.getLoansList()

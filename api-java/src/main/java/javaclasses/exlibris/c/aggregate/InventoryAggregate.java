@@ -20,6 +20,7 @@
 
 package javaclasses.exlibris.c.aggregate;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.spine.server.aggregate.Aggregate;
@@ -38,8 +39,10 @@ import javaclasses.exlibris.Rfid;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.AppendInventory;
+import javaclasses.exlibris.c.BookBecameAvailable;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookLost;
+import javaclasses.exlibris.c.BookReadyToPickup;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
@@ -52,6 +55,7 @@ import javaclasses.exlibris.c.MarkLoanOverdue;
 import javaclasses.exlibris.c.MarkReservationExpired;
 import javaclasses.exlibris.c.ReportLostBook;
 import javaclasses.exlibris.c.ReservationAdded;
+import javaclasses.exlibris.c.ReservationBecameLoan;
 import javaclasses.exlibris.c.ReservationCanceled;
 import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 import javaclasses.exlibris.c.ReserveBook;
@@ -63,6 +67,7 @@ import javaclasses.exlibris.c.rejection.CannotReturnMissingBook;
 import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
 import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
 
+import java.util.ArrayList;
 import java.util.List;
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
@@ -85,8 +90,11 @@ import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejec
                                                  The {@code Aggregate} does it with methods
                                                  annotated as {@code Assign} and {@code Apply}.
                                                  In that case class has too many methods.*/
-        "OverlyCoupledClass"}) /* As each method needs dependencies  necessary to perform execution
+        "OverlyCoupledClass", /* As each method needs dependencies  necessary to perform execution
                                                  that class also overly coupled.*/
+
+
+        "unused"})  /* Apply methods are private according to the spine design and not used because there is no directly usage.*/
 
 public class InventoryAggregate extends Aggregate<InventoryId, Inventory, InventoryVBuilder> {
     /**
@@ -118,14 +126,62 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final Rfid rfid = cmd.getRfid();
         final UserId userId = cmd.getLibrarianId();
-        final InventoryAppended result = InventoryAppended.newBuilder()
-                                                          .setInventoryId(inventoryId)
-                                                          .setInventoryItemId(inventoryItemId)
-                                                          .setRfid(rfid)
-                                                          .setWhenAppended(getCurrentTime())
-                                                          .setLibrarianId(userId)
-                                                          .build();
-        return singletonList(result);
+
+        final ImmutableList.Builder<Message> result = ImmutableList.builder();
+        final InventoryAppended inventoryAppended = InventoryAppended.newBuilder()
+                                                                     .setInventoryId(inventoryId)
+                                                                     .setInventoryItemId(
+                                                                             inventoryItemId)
+                                                                     .setRfid(rfid)
+                                                                     .setWhenAppended(
+                                                                             getCurrentTime())
+                                                                     .setLibrarianId(userId)
+                                                                     .build();
+
+        result.add(inventoryAppended);
+        result.add(becameAvailableOrReadyToPickup(inventoryId, inventoryItemId));
+        return result.build();
+    }
+
+    private Message becameAvailableOrReadyToPickup(InventoryId inventoryId,
+                                                   InventoryItemId inventoryItemId) {
+        if (getState().getReservationsList()
+                      .isEmpty()) {
+            final BookBecameAvailable bookBecameAvailable = BookBecameAvailable.newBuilder()
+                                                                               .setInventoryId(
+                                                                                       inventoryId)
+                                                                               .setInventoryItemId(
+                                                                                       inventoryItemId)
+                                                                               .setWhenBecameAvailable(
+                                                                                       getCurrentTime())
+                                                                               .build();
+            return bookBecameAvailable;
+        } else {
+            final Timestamp currentTime = getCurrentTime();
+            final UserId nextInQueue = getState().getReservationsList()
+                                                 .get(0)
+                                                 .getWhoReserved();
+            final BookReadyToPickup bookReadyToPickup = BookReadyToPickup.newBuilder()
+                                                                         .setInventoryId(
+                                                                                 inventoryId)
+                                                                         .setInventoryItemId(
+                                                                                 inventoryItemId)
+                                                                         .setForWhom(nextInQueue)
+                                                                         .setWhenBecameReadyToPickup(
+                                                                                 currentTime)
+                                                                         .setPickUpDeadline(
+                                                                                 // User has two days to pickup the book.
+                                                                                 Timestamp.newBuilder()
+                                                                                          .setSeconds(
+                                                                                                  currentTime.getSeconds() +
+                                                                                                          60 *
+                                                                                                                  60 *
+                                                                                                                  24 *
+                                                                                                                  2)
+                                                                                          .build())
+                                                                         .build();
+            return bookReadyToPickup;
+        }
     }
 
     @Assign
@@ -210,8 +266,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final UserId userId = cmd.getUserId();
-
-        final BookBorrowed result = BookBorrowed.newBuilder()
+        final ImmutableList.Builder<Message> result= ImmutableList.builder();
+        final BookBorrowed bookBorrowed = BookBorrowed.newBuilder()
                                                 .setInventoryId(inventoryId)
                                                 .setInventoryItemId(inventoryItemId)
                                                 .setWhoBorrowed(userId)
@@ -221,7 +277,19 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                                  .build())
                                                 .setWhenBorrowed(getCurrentTime())
                                                 .build();
-        return singletonList(result);
+        result.add(bookBorrowed);
+        if (!getState().getReservationsList().isEmpty()&&getState().getReservationsList().get(0).getWhoReserved().getEmail().getValue().equals(cmd.getUserId().getEmail().getValue())) {
+            final ReservationBecameLoan reservationBecameLoan = ReservationBecameLoan.newBuilder()
+                                                                                     .setInventoryId(
+                                                                                             inventoryId)
+                                                                                     .setUserId(
+                                                                                             userId)
+                                                                                     .setWhenBecameLoan(
+                                                                                             getCurrentTime())
+                                                                                     .build();
+            result.add(reservationBecameLoan);
+        }
+        return result.build();
     }
 
     @Assign
@@ -327,13 +395,16 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final UserId userId = cmd.getUserId();
-        final BookReturned result = BookReturned.newBuilder()
-                                                .setInventoryId(inventoryId)
-                                                .setInventoryItemId(inventoryItemId)
-                                                .setWhoReturned(userId)
-                                                .setWhenReturned(getCurrentTime())
-                                                .build();
-        return singletonList(result);
+        List<Message> result = new ArrayList<>();
+        final BookReturned bookReturned = BookReturned.newBuilder()
+                                                      .setInventoryId(inventoryId)
+                                                      .setInventoryItemId(inventoryItemId)
+                                                      .setWhoReturned(userId)
+                                                      .setWhenReturned(getCurrentTime())
+                                                      .build();
+        result.add(bookReturned);
+        result.add(becameAvailableOrReadyToPickup(inventoryId, inventoryItemId));
+        return result;
     }
 
     @Assign
@@ -355,11 +426,58 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     private void inventoryAppended(InventoryAppended event) {
 
         final InventoryItem newInventoryItem = InventoryItem.newBuilder()
-                                                            .setInLibrary(true)
                                                             .setInventoryItemId(
                                                                     event.getInventoryItemId())
+                                                            .setInLibrary(true)
                                                             .build();
         getBuilder().addInventoryItems(newInventoryItem);
+    }
+
+    @Apply
+    private void bookBecameAvailable(BookBecameAvailable event) {
+        int availableBookIndex = -1;
+
+        List<InventoryItem> inventoryItems = getBuilder().getInventoryItems();
+        for (int i = 0; i < inventoryItems.size(); i++) {
+            InventoryItem item = inventoryItems.get(i);
+            if (item.getInventoryItemId()
+                    .getItemNumber() == event.getInventoryItemId()
+                                             .getItemNumber()) {
+                availableBookIndex = i;
+            }
+        }
+        getBuilder().setInventoryItems(availableBookIndex, InventoryItem.newBuilder()
+                                                                        .setInventoryItemId(
+                                                                                event.getInventoryItemId())
+                                                                        .setInLibrary(true)
+                                                                        .build());
+    }
+
+    /**
+     * A book becomes available for a user.
+     *
+     * This method does not change the state of an aggregate but this event is necessary for the read side.
+     * @param event Book is ready to pickup for a user who is next in a queue.
+     */
+    @SuppressWarnings("all")
+    @Apply
+    private void bookReadyToPickup(BookReadyToPickup event) {
+    }
+
+    @Apply
+    private void reservationBecameLoan(ReservationBecameLoan event) {
+        List<Reservation> reservations = getBuilder().getReservations();
+        for (int i = 0; i < reservations.size(); i++) {
+            Reservation reservation = reservations.get(i);
+            if (reservation.getWhoReserved()
+                           .getEmail()
+                           .getValue()
+                           .equals(event.getUserId()
+                                        .getEmail()
+                                        .getValue())) {
+                getBuilder().removeReservations(i);
+            }
+        }
     }
 
     @Apply
