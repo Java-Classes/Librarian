@@ -29,7 +29,6 @@ import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.ReservationAdded;
 import javaclasses.exlibris.c.ReserveBook;
-import javaclasses.exlibris.c.rejection.BookAlreadyExists;
 import javaclasses.exlibris.c.rejection.CannotReserveBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,17 +38,13 @@ import java.util.List;
 
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
-import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryItemId;
-import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.stringContainsInOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Alexander Karpets
@@ -153,7 +148,7 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
         assertEquals(reserveBook.getInventoryId()
                                 .getBookId(), actualBookId);
         assertFalse(rejection.getMessageThrown()
-                            .getAlreadyReserved());
+                             .getAlreadyReserved());
     }
 
 }
