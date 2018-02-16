@@ -133,7 +133,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                                              getCurrentTime())
                                                                      .setLibrarianId(userId)
                                                                      .build();
-
         result.add(inventoryAppended);
         result.add(becameAvailableOrReadyToPickup(inventoryId, inventoryItemId));
         return result.build();
@@ -365,8 +364,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Apply
     private void inventoryCreated(InventoryCreated event) {
 
-        getBuilder().setInventoryId(event.getInventoryId())
-                    .build();
+        getBuilder().setInventoryId(event.getInventoryId());
     }
 
     @React
@@ -386,8 +384,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     private void inventoryRemoved(InventoryRemoved event) {
 
         getBuilder().clearInventoryId()
-                    .clearInventoryItems()
-                    .build();
+                    .clearInventoryItems();
     }
 
     @Apply

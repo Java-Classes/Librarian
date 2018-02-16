@@ -52,19 +52,16 @@ message Inventory {
     // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
-    // The identifier of a book.
-    BookId book_id = 2;
-
     // A list of inventory items.
-    repeated InventoryItem inventory_items = 3;
+    repeated InventoryItem inventory_items = 2;
 
     // A list of reservations.
     //
     // If reservations are absent the list is empty.
-    repeated Reservation reservations = 4;
+    repeated Reservation reservations = 3;
 
     // A list of loans.
-    repeated Loan loans = 5;
+    repeated Loan loans = 4;
 }
 
 // State for `InventoryItem`.

@@ -42,7 +42,9 @@ public class InventoryRepository extends AggregateRepository<InventoryId, Invent
                 return ImmutableSet.of(InventoryId.newBuilder()
                                                   .setBookId(bookAdded.getBookId())
                                                   .build());
-            } else if (message instanceof BookRemoved) {
+            }
+
+            if (message instanceof BookRemoved) {
                 final BookRemoved bookRemoved = (BookRemoved) message;
                 return ImmutableSet.of(InventoryId.newBuilder()
                                                   .setBookId(bookRemoved.getBookId())

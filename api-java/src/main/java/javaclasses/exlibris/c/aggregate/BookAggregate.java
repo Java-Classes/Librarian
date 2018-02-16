@@ -140,16 +140,12 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
                 return singletonList(bookRemoved
                                              .setCustomReason(customReason)
                                              .build());
-            } // TODO 12-Feb-2018[Dmytry Dyachenko]: write the rejection below
-/*            case BOOKREMOVALREASON_NOT_SET: {
-
-                break;
-            }*/
-            default: {
-                return singletonList(bookRemoved.build());
             }
-
+            case BOOKREMOVALREASON_NOT_SET: {
+                throw new IllegalArgumentException("The book couldn’t be removed without reason.");
+            }
         }
+        return singletonList(bookRemoved.build());
     }
 
     @Apply
