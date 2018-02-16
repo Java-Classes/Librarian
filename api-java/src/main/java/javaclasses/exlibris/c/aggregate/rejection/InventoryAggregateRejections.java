@@ -20,7 +20,9 @@
 
 package javaclasses.exlibris.c.aggregate.rejection;
 
+import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.ReserveBook;
+import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
 import javaclasses.exlibris.c.rejection.CannotReserveBook;
 
 import static io.spine.time.Time.getCurrentTime;
@@ -44,6 +46,20 @@ public class InventoryAggregateRejections {
             throw new CannotReserveBook(cmd.getInventoryId(), cmd.getUserId(), getCurrentTime(),
                                         borrowed, reserved);
         }
+    }
+
+    public static class CancelReservationRejection {
+
+        private CancelReservationRejection() {
+        }
+
+        public static void throwCannotCancelMissingReservation(CancelReservation cmd) throws
+                                                                                      CannotCancelMissingReservation {
+
+            throw new CannotCancelMissingReservation(cmd.getInventoryId(), cmd.getUserId(),
+                                                     getCurrentTime());
+        }
+
     }
 
 }

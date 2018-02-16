@@ -57,13 +57,14 @@ import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
+import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
 import javaclasses.exlibris.c.rejection.CannotReserveBook;
 
 import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
-import static java.util.Collections.sort;
+import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.CancelReservationRejection.throwCannotCancelMissingReservation;
 import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ReserveBookRejection.throwCannotReserveBook;
 
 /**
@@ -237,15 +238,39 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     @Assign
-    List<? extends Message> handle(CancelReservation cmd) {
+    List<? extends Message> handle(CancelReservation cmd) throws CannotCancelMissingReservation {
 
-        final InventoryId inventoryId = cmd.getInventoryId();
-        final UserId userId = cmd.getUserId();
-        final ReservationCanceled result = ReservationCanceled.newBuilder()
-                                                              .setInventoryId(inventoryId)
-                                                              .setWhoCanceled(userId)
-                                                              .setWhenCanceled(getCurrentTime())
-                                                              .build();
+        ReservationCanceled result = null;
+
+        final List<Reservation> reservations = getState().getReservationsList();
+
+        if (reservations.isEmpty()) {
+            throwCannotCancelMissingReservation(cmd);
+        }
+
+        for (Reservation reservation :
+                reservations) {
+            if (reservation.getBookId()
+                           .equals(cmd.getInventoryId()
+                                      .getBookId()) && reservation.getWhoReserved()
+                                                                  .getEmail()
+                                                                  .equals(cmd.getUserId()
+                                                                             .getEmail())) {
+                final InventoryId inventoryId = cmd.getInventoryId();
+                final UserId userId = cmd.getUserId();
+                result = ReservationCanceled.newBuilder()
+                                            .setInventoryId(inventoryId)
+                                            .setWhoCanceled(userId)
+                                            .setWhenCanceled(
+                                                    getCurrentTime())
+                                            .build();
+            }
+        }
+
+        if (result == null) {
+            throwCannotCancelMissingReservation(cmd);
+        }
+
         return singletonList(result);
     }
 
