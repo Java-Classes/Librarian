@@ -109,7 +109,9 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     void reservationBecameLoan() {
         dispatchAppendInventory();
         dispatchReserveBook();
-        final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
+        final BorrowBook borrowBook = borrowBookInstance(InventoryCommandFactory.inventoryId,
+                                                         InventoryCommandFactory.inventoryItemId,
+                                                         InventoryCommandFactory.userId);
 
         dispatchCommand(aggregate, envelopeOf(borrowBook));
         final Inventory state = aggregate.getState();
