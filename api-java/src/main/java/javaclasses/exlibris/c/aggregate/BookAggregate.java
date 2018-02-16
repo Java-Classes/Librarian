@@ -44,7 +44,6 @@ import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
-import static java.util.Collections.sort;
 import static javaclasses.exlibris.c.aggregate.rejection.BookAggregateRejections.AddBookRejection.throwBookAlreadyExists;
 import static javaclasses.exlibris.c.aggregate.rejection.BookAggregateRejections.RemoveBookRejection.throwCannotRemoveMissingBook;
 import static javaclasses.exlibris.c.aggregate.rejection.BookAggregateRejections.UpdateBookRejection.throwCannotUpdateMissingBook;
@@ -95,11 +94,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
         final BookId bookId = cmd.getBookId();
 
         if (cmd.getBookDetails()
-               .getTitle()
-               .getTitle()
-               .equals(getState().getBookDetails()
-                                 .getTitle()
-                                 .getTitle())) {
+               .equals(getState().getBookDetails())) {
 
             throwBookAlreadyExists(cmd);
         }
@@ -151,11 +146,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
         final BookId bookId = cmd.getBookId();
 
         if (!cmd.getBookId()
-                .getIsbn62()
-                .getValue()
-                .equals(getState().getBookId()
-                                  .getIsbn62()
-                                  .getValue())) {
+                .equals(getState().getBookId())) {
             throwCannotRemoveMissingBook(cmd);
         }
 

@@ -144,50 +144,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return result.build();
     }
 
-    private Message becameAvailableOrReadyToPickup(InventoryId inventoryId,
-                                                   InventoryItemId inventoryItemId) {
-        if (getState().getReservationsList()
-                      .isEmpty()) {
-            final BookBecameAvailable bookBecameAvailable = BookBecameAvailable.newBuilder()
-                                                                               .setInventoryId(
-                                                                                       inventoryId)
-                                                                               .setInventoryItemId(
-                                                                                       inventoryItemId)
-                                                                               .setWhenBecameAvailable(
-                                                                                       getCurrentTime())
-                                                                               .build();
-            return bookBecameAvailable;
-        } else {
-            final Timestamp currentTime = getCurrentTime();
-            final UserId nextInQueue = getState().getReservationsList()
-                                                 .get(0)
-                                                 .getWhoReserved();
-            final BookReadyToPickup bookReadyToPickup = BookReadyToPickup.newBuilder()
-                                                                         .setInventoryId(
-                                                                                 inventoryId)
-                                                                         .setInventoryItemId(
-                                                                                 inventoryItemId)
-                                                                         .setForWhom(nextInQueue)
-                                                                         .setWhenBecameReadyToPickup(
-                                                                                 currentTime)
-                                                                         .setPickUpDeadline(
-                                                                                 // User has two days to pickup the book.
-                                                                                 Timestamp.newBuilder()
-                                                                                          .setSeconds(
-                                                                                                  currentTime.getSeconds() +
-                                                                                                          60 *
-                                                                                                                  60 *
-                                                                                                                  24 *
-                                                                                                                  2)
-                                                                                          .build())
-                                                                         .build();
-            return bookReadyToPickup;
-        }
-    }
-
     @Assign
-    List<? extends Message> handle(WriteBookOff cmd) throws CannotWriteMissingBookOff,
-                                                            CannotWriteMissingBookOff {
+    List<? extends Message> handle(WriteBookOff cmd) throws CannotWriteMissingBookOff {
 
         List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
 
@@ -210,14 +168,11 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                            .setWriteOffReason(
                                                    writeOffReason)
                                            .build();
-                break;
             }
         }
-
         if (result == null) {
             throwCannotWriteMissingBookOff(cmd);
         }
-
         return singletonList(result);
     }
 
@@ -337,18 +292,14 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
         final List<Reservation> reservations = getState().getReservationsList();
 
-        if (reservations.isEmpty()) {
+        if (!userHasReservation(cmd)) {
             throwCannotCancelMissingReservation(cmd);
         }
 
         for (Reservation reservation :
                 reservations) {
-            if (reservation.getBookId()
-                           .equals(cmd.getInventoryId()
-                                      .getBookId()) && reservation.getWhoReserved()
-                                                                  .getEmail()
-                                                                  .equals(cmd.getUserId()
-                                                                             .getEmail())) {
+            if (reservation.getWhoReserved()
+                           .equals(cmd.getUserId())) {
                 final InventoryId inventoryId = cmd.getInventoryId();
                 final UserId userId = cmd.getUserId();
                 result = ReservationCanceled.newBuilder()
@@ -359,11 +310,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                             .build();
             }
         }
-
-        if (result == null) {
-            throwCannotCancelMissingReservation(cmd);
-        }
-
         return singletonList(result);
     }
 
@@ -701,5 +647,56 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             }
         }
         return false;
+    }
+
+    private boolean userHasReservation(CancelReservation cmd) {
+        for (Reservation reservation : getState().getReservationsList()) {
+            if (reservation.getWhoReserved()
+                           .equals(cmd.getUserId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Message becameAvailableOrReadyToPickup(InventoryId inventoryId,
+                                                   InventoryItemId inventoryItemId) {
+        if (getState().getReservationsList()
+                      .isEmpty()) {
+            final BookBecameAvailable bookBecameAvailable = BookBecameAvailable.newBuilder()
+                                                                               .setInventoryId(
+                                                                                       inventoryId)
+                                                                               .setInventoryItemId(
+                                                                                       inventoryItemId)
+                                                                               .setWhenBecameAvailable(
+                                                                                       getCurrentTime())
+                                                                               .build();
+            return bookBecameAvailable;
+        } else {
+            final Timestamp currentTime = getCurrentTime();
+            final UserId nextInQueue = getState().getReservationsList()
+                                                 .get(0)
+                                                 .getWhoReserved();
+            final BookReadyToPickup bookReadyToPickup = BookReadyToPickup.newBuilder()
+                                                                         .setInventoryId(
+                                                                                 inventoryId)
+                                                                         .setInventoryItemId(
+                                                                                 inventoryItemId)
+                                                                         .setForWhom(nextInQueue)
+                                                                         .setWhenBecameReadyToPickup(
+                                                                                 currentTime)
+                                                                         .setPickUpDeadline(
+                                                                                 // User has two days to pickup the book.
+                                                                                 Timestamp.newBuilder()
+                                                                                          .setSeconds(
+                                                                                                  currentTime.getSeconds() +
+                                                                                                          60 *
+                                                                                                                  60 *
+                                                                                                                  24 *
+                                                                                                                  2)
+                                                                                          .build())
+                                                                         .build();
+            return bookReadyToPickup;
+        }
     }
 }
