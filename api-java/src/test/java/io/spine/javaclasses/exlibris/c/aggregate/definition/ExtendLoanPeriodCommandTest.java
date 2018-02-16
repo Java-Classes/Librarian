@@ -20,32 +20,29 @@
 
 package io.spine.javaclasses.exlibris.c.aggregate.definition;
 
-import com.google.protobuf.Message;
-import io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory;
 import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.c.AppendInventory;
-import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BorrowBook;
-import javaclasses.exlibris.c.ReserveBook;
+import javaclasses.exlibris.c.ExtendLoanPeriod;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
+import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.extendLoanPeriodInstance;
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryItemId;
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static io.spine.time.Time.getCurrentTime;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * @author Dmytry Dyachenko, Alexander Karpets
+ * @author Paul Ageyev
  */
-@DisplayName("BorrowBook command should be interpreted by InventoryAggregate and")
-public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
+@DisplayName("ExtendLoanPeriod command should be interpreted by InventoryAggregate and")
+public class ExtendLoanPeriodCommandTest extends InventoryCommandTest<ExtendLoanPeriod> {
 
     @Override
     @BeforeEach
@@ -54,48 +51,24 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     }
 
     @Test
-    @DisplayName("produce BookBorrowed event")
-    void produceEvent() {
-        dispatchAppendInventory();
+    @DisplayName("extend loan period")
+    void extendLoanPeriod() {
 
-        final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
-
-        final List<? extends Message> messageList = dispatchCommand(aggregate,
-                                                                    envelopeOf(borrowBook));
-        assertEquals(1, messageList.size());
-        assertEquals(BookBorrowed.class, messageList.get(0)
-                                                    .getClass());
-        final BookBorrowed bookBorrowed = (BookBorrowed) messageList.get(0);
-
-        assertEquals(inventoryId, bookBorrowed.getInventoryId());
-    }
-
-    @Test
-    @DisplayName("borrow the book")
-    void borrowBook() {
         dispatchAppendInventory();
 
         final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
 
         dispatchCommand(aggregate, envelopeOf(borrowBook));
-        final Inventory state = aggregate.getState();
+        Inventory state = aggregate.getState();
 
         assertTrue(state.getInventoryItems(0)
                         .getBorrowed());
 
-    }
+        ExtendLoanPeriod extendLoanPeriod = extendLoanPeriodInstance(inventoryId, state.getLoans(0).getLoanId(), userId, getCurrentTime());
 
-    @Test
-    @DisplayName("create the loan for the borrowed book and the specific user")
-    void createLoan() {
-        dispatchAppendInventory();
+        dispatchCommand(aggregate, envelopeOf(extendLoanPeriod));
 
-        final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
-
-        dispatchCommand(aggregate, envelopeOf(borrowBook));
-        final Inventory state = aggregate.getState();
-
-        assertEquals(1, state.getLoansCount());
+        state = aggregate.getState();
 
         assertEquals(state.getLoans(state.getLoansCount() - 1)
                           .getInventoryItemId(), inventoryItemId);
@@ -103,34 +76,9 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
         assertEquals(state.getLoans(state.getLoansCount() - 1)
                           .getWhoBorrowed(), userId);
 
-    }
-
-    @Test
-    @DisplayName("reservation became loan")
-    void reservationBecameLoan() {
-        dispatchAppendInventory();
-        dispatchReserveBook();
-        final BorrowBook borrowBook = borrowBookInstance(InventoryCommandFactory.inventoryId,
-                                                         InventoryCommandFactory.inventoryItemId,
-                                                         InventoryCommandFactory.userId);
-
-        dispatchCommand(aggregate, envelopeOf(borrowBook));
-        final Inventory state = aggregate.getState();
-
-        assertEquals(1, state.getLoansCount());
-
         assertEquals(state.getLoans(state.getLoansCount() - 1)
-                          .getInventoryItemId(), inventoryItemId);
+                          .getWhenDue(), getCurrentTime());
 
-        assertEquals(state.getLoans(state.getLoansCount() - 1)
-                          .getWhoBorrowed(), userId);
-        assertEquals(0,state.getReservationsList().size());
-
-    }
-
-    private void dispatchReserveBook() {
-        final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
-        dispatchCommand(aggregate, envelopeOf(reserveBook));
     }
 
     private void dispatchAppendInventory() {

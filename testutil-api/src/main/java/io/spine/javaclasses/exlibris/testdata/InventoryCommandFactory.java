@@ -20,11 +20,13 @@
 
 package io.spine.javaclasses.exlibris.testdata;
 
+import com.google.protobuf.Timestamp;
 import io.spine.net.EmailAddress;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.InventoryItemId;
 import javaclasses.exlibris.Isbn62;
+import javaclasses.exlibris.Loan;
 import javaclasses.exlibris.LoanId;
 import javaclasses.exlibris.Rfid;
 import javaclasses.exlibris.UserId;
@@ -32,12 +34,16 @@ import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
+import javaclasses.exlibris.c.ExtendLoanPeriod;
+import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.c.MarkLoanOverdue;
 import javaclasses.exlibris.c.MarkReservationExpired;
 import javaclasses.exlibris.c.ReportLostBook;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
+
+import static io.spine.time.Time.getCurrentTime;
 
 /**
  * A factory of the task commands for the test needs.
@@ -64,9 +70,17 @@ public class InventoryCommandFactory {
     public static final Rfid rfid = Rfid.newBuilder()
                                         .setValue("4321")
                                         .build();
+
     public static final WriteOffReason reason = WriteOffReason.newBuilder()
                                                               .setOutdated(true)
                                                               .build();
+
+    public static final Loan loan = Loan.newBuilder()
+                                        .setLoanId(LoanId.newBuilder()
+                                                         .setValue(1))
+                                        .setInventoryItemId(inventoryItemId)
+                                        .setWhenDue(getCurrentTime())
+                                        .build();
 
     private InventoryCommandFactory() {
     }
@@ -211,5 +225,28 @@ public class InventoryCommandFactory {
                                                               .setUserId(userId)
                                                               .build();
         return result;
+    }
+
+    public static ExtendLoanPeriod extendLoanPeriodInstance() {
+
+        final ExtendLoanPeriod result = extendLoanPeriodInstance(inventoryId, loan.getLoanId(),
+                                                                 userId, getCurrentTime());
+
+        return result;
+
+    }
+
+    public static ExtendLoanPeriod extendLoanPeriodInstance(InventoryId inventoryId, LoanId loanId,
+                                                            UserId userId, Timestamp timestamp) {
+
+        final ExtendLoanPeriod result = ExtendLoanPeriod.newBuilder()
+                                                        .setInventoryId(inventoryId)
+                                                        .setLoanId(loanId)
+                                                        .setUserId(userId)
+                                                        .setNewDueDate(timestamp)
+                                                        .build();
+
+        return result;
+
     }
 }
