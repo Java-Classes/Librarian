@@ -45,6 +45,7 @@ import javaclasses.exlibris.c.BookBecameAvailable;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookReadyToPickup;
+import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
@@ -52,6 +53,7 @@ import javaclasses.exlibris.c.ExtendLoanPeriod;
 import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.c.InventoryCreated;
 import javaclasses.exlibris.c.InventoryDecreased;
+import javaclasses.exlibris.c.InventoryRemoved;
 import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.c.MarkLoanOverdue;
@@ -364,6 +366,27 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     private void inventoryCreated(InventoryCreated event) {
 
         getBuilder().setInventoryId(event.getInventoryId())
+                    .build();
+    }
+
+    @React
+    InventoryRemoved on(BookRemoved event) {
+
+        final InventoryRemoved result = InventoryRemoved.newBuilder()
+                                                        .setInventoryId(InventoryId.newBuilder()
+                                                                                   .setBookId(
+                                                                                           event.getBookId())
+                                                                                   .build())
+                                                        .setWhenRemoved(getCurrentTime())
+                                                        .build();
+        return result;
+    }
+
+    @Apply
+    private void inventoryRemoved(InventoryRemoved event) {
+
+        getBuilder().clearInventoryId()
+                    .clearInventoryItems()
                     .build();
     }
 

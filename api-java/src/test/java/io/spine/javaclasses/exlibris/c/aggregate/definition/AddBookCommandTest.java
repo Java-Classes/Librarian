@@ -28,6 +28,7 @@ import io.spine.server.command.TestEventFactory;
 import javaclasses.exlibris.Book;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookAdded;
+import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.aggregate.BookAggregate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +44,6 @@ import static io.spine.server.command.TestEventFactory.newInstance;
 import static javaclasses.exlibris.context.BoundedContexts.create;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 
 /**
  * @author Paul Ageyev
@@ -80,8 +80,9 @@ public class AddBookCommandTest extends BookCommandTest<AddBook> {
         final BoundedContext sourceContext = create();
 
         final Event event = bookAdded();
+        final Event event1 = bookRemoved();
         sourceContext.getEventBus()
-                     .post(event);
+                     .post(event1);
 
     }
 
@@ -92,6 +93,16 @@ public class AddBookCommandTest extends BookCommandTest<AddBook> {
         return eventFactory.createEvent(BookAdded.newBuilder()
                                                  .setBookId(BookCommandFactory.bookId)
                                                  .build()
+        );
+    }
+
+    public static Event bookRemoved() {
+
+        final TestEventFactory eventFactory = newInstance(pack(BookCommandFactory.bookId),
+                                                          BookAggregate.class);
+        return eventFactory.createEvent(BookRemoved.newBuilder()
+                                                   .setBookId(BookCommandFactory.bookId)
+                                                   .build()
         );
     }
 

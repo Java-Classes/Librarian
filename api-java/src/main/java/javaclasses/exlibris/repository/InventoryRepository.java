@@ -26,6 +26,7 @@ import io.spine.server.aggregate.AggregateRepository;
 import io.spine.server.route.EventRoute;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.c.BookAdded;
+import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.aggregate.InventoryAggregate;
 
 /**
@@ -41,8 +42,14 @@ public class InventoryRepository extends AggregateRepository<InventoryId, Invent
                 return ImmutableSet.of(InventoryId.newBuilder()
                                                   .setBookId(bookAdded.getBookId())
                                                   .build());
+            } else if (message instanceof BookRemoved) {
+                final BookRemoved bookRemoved = (BookRemoved) message;
+                return ImmutableSet.of(InventoryId.newBuilder()
+                                                  .setBookId(bookRemoved.getBookId())
+                                                  .build());
             }
             return null;
         });
     }
+
 }
