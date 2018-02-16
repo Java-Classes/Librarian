@@ -37,12 +37,17 @@ import javaclasses.exlibris.c.BookUpdated;
 import javaclasses.exlibris.c.RemoveBook;
 import javaclasses.exlibris.c.UpdateBook;
 import javaclasses.exlibris.c.rejection.BookAlreadyExists;
+import javaclasses.exlibris.c.rejection.CannotRemoveMissingBook;
+import javaclasses.exlibris.c.rejection.CannotUpdateMissingBook;
 
 import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
+import static java.util.Collections.sort;
 import static javaclasses.exlibris.c.aggregate.rejection.BookAggregateRejections.AddBookRejection.throwBookAlreadyExists;
+import static javaclasses.exlibris.c.aggregate.rejection.BookAggregateRejections.RemoveBookRejection.throwCannotRemoveMissingBook;
+import static javaclasses.exlibris.c.aggregate.rejection.BookAggregateRejections.UpdateBookRejection.throwCannotUpdateMissingBook;
 
 /**
  * The aggregate managing the state of a {@link Book}.
@@ -88,11 +93,12 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
 
         final BookId bookId = cmd.getBookId();
 
-        if (bookId.getIsbn62()
-                  .getValue()
-                  .equals(getState().getBookId()
-                                    .getIsbn62()
-                                    .getValue())) {
+        if (cmd.getBookDetails()
+               .getTitle()
+               .getTitle()
+               .equals(getState().getBookDetails()
+                                 .getTitle()
+                                 .getTitle())) {
 
             throwBookAlreadyExists(cmd);
         }
@@ -111,7 +117,17 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
 
     @Assign
-    List<? extends Message> handle(UpdateBook cmd) {
+    List<? extends Message> handle(UpdateBook cmd) throws CannotUpdateMissingBook {
+
+        if (!cmd.getBookId()
+                .getIsbn62()
+                .getValue()
+                .equals(getState().getBookId()
+                                  .getIsbn62()
+                                  .getValue())) {
+
+            throwCannotUpdateMissingBook(cmd);
+        }
 
         final BookId bookId = cmd.getBookId();
         final UserId userId = cmd.getLibrarianId();
@@ -129,9 +145,19 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
 
     @Assign
-    List<? extends Message> handle(RemoveBook cmd) {
+    List<? extends Message> handle(RemoveBook cmd) throws CannotRemoveMissingBook {
 
         final BookId bookId = cmd.getBookId();
+
+        if (!cmd.getBookId()
+                .getIsbn62()
+                .getValue()
+                .equals(getState().getBookId()
+                                  .getIsbn62()
+                                  .getValue())) {
+            throwCannotRemoveMissingBook(cmd);
+        }
+
         final UserId userId = cmd.getLibrarianId();
 
         final String customReason = cmd.getCustomReason();

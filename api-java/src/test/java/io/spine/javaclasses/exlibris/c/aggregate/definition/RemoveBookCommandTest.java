@@ -20,11 +20,16 @@
 
 package io.spine.javaclasses.exlibris.c.aggregate.definition;
 
+import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
+import io.spine.javaclasses.exlibris.testdata.BookCommandFactory;
 import javaclasses.exlibris.Book;
+import javaclasses.exlibris.BookId;
+import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.RemoveBook;
+import javaclasses.exlibris.c.rejection.CannotRemoveMissingBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,11 +40,14 @@ import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.createBo
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.librarianId;
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.removalReason;
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.removeBookInstance;
+import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.userId;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Dmytry Dyachenko
+ * @author Paul Ageyev
  */
 @DisplayName("RemoveBook command should be interpreted by BookAggregate and")
 public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
@@ -55,7 +63,8 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
     void removeBook() {
         dispatchAddBookCmd();
 
-        final RemoveBook removeBook = removeBookInstance(bookId, librarianId, removalReason);
+        final RemoveBook removeBook = removeBookInstance(BookCommandFactory.bookId, librarianId,
+                                                         removalReason);
 
         dispatchCommand(aggregate, envelopeOf(removeBook));
         final Book state = aggregate.getState();
@@ -72,7 +81,8 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
     void produceEvent() {
         dispatchAddBookCmd();
 
-        final RemoveBook removeBook = removeBookInstance(bookId, librarianId, removalReason);
+        final RemoveBook removeBook = removeBookInstance(BookCommandFactory.bookId, librarianId,
+                                                         removalReason);
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(removeBook));
@@ -81,7 +91,7 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
                                                    .getClass());
         final BookRemoved bookRemoved = (BookRemoved) messageList.get(0);
 
-        assertEquals(bookId, bookRemoved.getBookId());
+        assertEquals(BookCommandFactory.bookId, bookRemoved.getBookId());
     }
 
     @Test
@@ -89,7 +99,8 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
     void sameRemovalReason() {
         dispatchAddBookCmd();
 
-        final RemoveBook removeBook = removeBookInstance(bookId, librarianId, removalReason);
+        final RemoveBook removeBook = removeBookInstance(BookCommandFactory.bookId, librarianId,
+                                                         removalReason);
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(removeBook));
@@ -99,6 +110,34 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
                                .getNumber(),
                      bookRemoved.getBookRemovalReasonCase()
                                 .getNumber());
+
+    }
+
+    @Test
+    @DisplayName("throw CannotRemoveMissingBook rejection upon " +
+            "an attempt to remove a missing book")
+    void notRemoveBook() {
+
+        dispatchAddBookCmd();
+
+        BookId bookId2 = BookId.newBuilder()
+                               .setIsbn62(Isbn62.newBuilder()
+                                                .setValue("11")
+                                                .build())
+                               .build();
+
+        final RemoveBook removeBook = removeBookInstance(bookId2, userId,
+                                                         RemoveBook.BookRemovalReasonCase.OUTDATED);
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(removeBook)));
+
+        final Throwable cause = Throwables.getRootCause(t);
+
+        final CannotRemoveMissingBook rejection = (CannotRemoveMissingBook) cause;
+        assertEquals(rejection.getMessageThrown()
+                              .getBookId(), bookId2);
 
     }
 

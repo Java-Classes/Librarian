@@ -20,11 +20,15 @@
 
 package io.spine.javaclasses.exlibris.c.aggregate.definition;
 
+import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import io.spine.javaclasses.exlibris.testdata.BookCommandFactory;
 import javaclasses.exlibris.Book;
+import javaclasses.exlibris.BookId;
+import javaclasses.exlibris.BookTitle;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookAdded;
+import javaclasses.exlibris.c.rejection.BookAlreadyExists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,8 +38,11 @@ import java.util.List;
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.createBookInstance;
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.userId;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Paul Ageyev
@@ -80,4 +87,30 @@ public class AddBookCommandTest extends BookCommandTest<AddBook> {
         assertEquals(state.getBookId(), addBook.getBookId());
 
     }
+
+    @Test
+    @DisplayName("throw BookAlreadyExists rejection upon " +
+            "an attempt to add a book with the same title")
+    void notAddBook() {
+        final AddBook addBook = createBookInstance();
+        dispatchCommand(aggregate, envelopeOf(addBook));
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(addBook)));
+        final Throwable cause = Throwables.getRootCause(t);
+
+        assertThat(cause, instanceOf(BookAlreadyExists.class));
+
+        final BookAlreadyExists rejection = (BookAlreadyExists) cause;
+        final BookId actualBookId = rejection.getMessageThrown()
+                                             .getBookId();
+        assertEquals(addBook.getBookId(), actualBookId);
+
+        final BookTitle actualBookTitle = rejection.getMessageThrown()
+                                                   .getBookTitle();
+        assertEquals(addBook.getBookDetails()
+                            .getTitle(), actualBookTitle);
+    }
+
 }

@@ -21,7 +21,11 @@
 package javaclasses.exlibris.c.aggregate.rejection;
 
 import javaclasses.exlibris.c.AddBook;
+import javaclasses.exlibris.c.RemoveBook;
+import javaclasses.exlibris.c.UpdateBook;
 import javaclasses.exlibris.c.rejection.BookAlreadyExists;
+import javaclasses.exlibris.c.rejection.CannotRemoveMissingBook;
+import javaclasses.exlibris.c.rejection.CannotUpdateMissingBook;
 
 import static io.spine.time.Time.getCurrentTime;
 
@@ -40,8 +44,35 @@ public class BookAggregateRejections {
 
         public static void throwBookAlreadyExists(AddBook cmd) throws BookAlreadyExists {
 
-            throw new BookAlreadyExists(cmd.getBookId(), cmd.getLibrarianId(), getCurrentTime());
+            throw new BookAlreadyExists(cmd.getBookId(), cmd.getBookDetails()
+                                                            .getTitle(), cmd.getLibrarianId(),
+                                        getCurrentTime());
+        }
+    }
 
+    public static class UpdateBookRejection {
+
+        private UpdateBookRejection() {
+        }
+
+        public static void throwCannotUpdateMissingBook(UpdateBook cmd) throws
+                                                                        CannotUpdateMissingBook {
+
+            throw new CannotUpdateMissingBook(cmd.getBookId(), cmd.getLibrarianId(),
+                                              getCurrentTime());
+        }
+    }
+
+    public static class RemoveBookRejection {
+
+        private RemoveBookRejection() {
+        }
+
+        public static void throwCannotRemoveMissingBook(RemoveBook cmd) throws
+                                                                        CannotRemoveMissingBook {
+
+            throw new CannotRemoveMissingBook(cmd.getBookId(), cmd.getLibrarianId(),
+                                              cmd.getWhenRemoved());
         }
     }
 

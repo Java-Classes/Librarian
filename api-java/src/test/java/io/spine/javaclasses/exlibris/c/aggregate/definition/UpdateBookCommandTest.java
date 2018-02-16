@@ -24,6 +24,8 @@ import com.google.protobuf.Message;
 import io.spine.javaclasses.exlibris.testdata.BookCommandFactory;
 import javaclasses.exlibris.Book;
 import javaclasses.exlibris.BookDetailsChange;
+import javaclasses.exlibris.BookId;
+import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookUpdated;
 import javaclasses.exlibris.c.UpdateBook;
@@ -40,6 +42,7 @@ import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.updateBo
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Paul Ageyev
@@ -112,6 +115,37 @@ public class UpdateBookCommandTest extends BookCommandTest<UpdateBook> {
         assertEquals(state.getBookDetails()
                           .getTitle(), state.getBookDetails()
                                             .getTitle());
+
+    }
+
+    @Test
+    @DisplayName("not update the book")
+    void notUpdateBook() {
+
+        dispatchAddBookCmd();
+
+        final BookDetailsChange bookDetailsChange = BookDetailsChange.newBuilder()
+                                                                     .setPreviousBookDetails(
+                                                                             bookDetails)
+                                                                     .setNewBookDetails(
+                                                                             bookDetails2)
+                                                                     .build();
+
+        BookId bookId2 = BookId.newBuilder()
+                               .setIsbn62(Isbn62.newBuilder()
+                                                .setValue("1")
+                                                .build())
+                               .build();
+
+        final UpdateBook updateBook = updateBookInstance(bookId2,
+                                                         BookCommandFactory.userId,
+                                                         bookDetailsChange);
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(updateBook)));
+
+        Book state = aggregate.getState();
 
     }
 
