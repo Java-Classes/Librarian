@@ -29,6 +29,7 @@ import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookAdded;
+import javaclasses.exlibris.context.BoundedContexts;
 import javaclasses.exlibris.testdata.BookCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,6 +38,7 @@ import org.junit.jupiter.api.Test;
 import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.server.command.TestEventFactory.newInstance;
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static javaclasses.exlibris.context.BoundedContexts.create;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -79,6 +81,12 @@ public class InventoryCreatedTest extends InventoryCommandTest<AddBook> {
                              .getState()
                              .getInventoryId()
                              .getBookId(), bookAdded.getBookId());
+    }
+
+    @Test
+    @DisplayName("has the private parameterless constructor")
+    void hasPrivateCtor() {
+        assertHasPrivateParameterlessCtor(BoundedContexts.class);
     }
 
     private static Event bookAdded() {
