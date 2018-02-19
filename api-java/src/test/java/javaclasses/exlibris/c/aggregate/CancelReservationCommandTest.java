@@ -114,4 +114,20 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
         assertThat(cause, instanceOf(CannotCancelMissingReservation.class));
 
     }
+
+    @Test
+    @DisplayName("cannot cancel missing reservation")
+    void cancelMissingReservation() {
+        final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
+
+        dispatchCommand(aggregate, envelopeOf(appendInventory));
+        final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance(
+                InventoryCommandFactory.userId2, InventoryCommandFactory.inventoryId);
+
+        dispatchCommand(aggregate, envelopeOf(reserveBook));
+        final CancelReservation cancelReservation = InventoryCommandFactory.cancelReservationInstance();
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(cancelReservation)));
+    }
 }
