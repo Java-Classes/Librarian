@@ -37,13 +37,13 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static javaclasses.exlibris.c.RemoveBook.BookRemovalReasonCase.BOOKREMOVALREASON_NOT_SET;
 import static javaclasses.exlibris.testdata.BookCommandFactory.createBookInstance;
 import static javaclasses.exlibris.testdata.BookCommandFactory.librarianId;
 import static javaclasses.exlibris.testdata.BookCommandFactory.removalCustomReason;
-import static javaclasses.exlibris.testdata.BookCommandFactory.removalOudatedReason;
+import static javaclasses.exlibris.testdata.BookCommandFactory.removalOutdatedReason;
 import static javaclasses.exlibris.testdata.BookCommandFactory.removeBookInstance;
 import static javaclasses.exlibris.testdata.BookCommandFactory.userId;
+import static javaclasses.exlibris.testdata.BookCommandFactory.withoutRemovalReason;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -66,7 +66,7 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
         dispatchAddBookCmd();
 
         final RemoveBook removeBook = removeBookInstance(BookCommandFactory.bookId, librarianId,
-                                                         removalOudatedReason);
+                                                         removalOutdatedReason);
 
         dispatchCommand(aggregate, envelopeOf(removeBook));
         final Book state = aggregate.getState();
@@ -105,7 +105,7 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
                                            () -> {
                                                removeBookInstance(BookCommandFactory.bookId,
                                                                   librarianId,
-                                                                  BOOKREMOVALREASON_NOT_SET);
+                                                                  withoutRemovalReason);
                                            });
     }
 
@@ -115,7 +115,7 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
         dispatchAddBookCmd();
 
         final RemoveBook removeBook = removeBookInstance(BookCommandFactory.bookId, librarianId,
-                                                         removalOudatedReason);
+                                                         removalOutdatedReason);
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(removeBook));
@@ -133,7 +133,7 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
         dispatchAddBookCmd();
 
         final RemoveBook removeBook = removeBookInstance(BookCommandFactory.bookId, librarianId,
-                                                         removalOudatedReason);
+                                                         removalOutdatedReason);
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(removeBook));

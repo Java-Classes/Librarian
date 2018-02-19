@@ -35,7 +35,7 @@ public class InventoryCommandTest<C extends Message> extends AggregateCommandTes
     private final TestActorRequestFactory requestFactory =
             TestActorRequestFactory.newInstance(getClass());
 
-    InventoryAggregate aggregate;
+    protected InventoryAggregate aggregate;
     InventoryId inventoryId;
 
     private static InventoryId createBookId() {
@@ -59,7 +59,7 @@ public class InventoryCommandTest<C extends Message> extends AggregateCommandTes
         aggregate = aggregate().get();
     }
 
-    CommandEnvelope envelopeOf(Message commandMessage) {
+    protected CommandEnvelope envelopeOf(Message commandMessage) {
         return CommandEnvelope.of(requestFactory.command()
                                                 .create(commandMessage));
     }

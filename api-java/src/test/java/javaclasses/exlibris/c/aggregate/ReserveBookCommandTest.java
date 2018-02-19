@@ -86,7 +86,7 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
         dispatchCommand(aggregate, envelopeOf(reserveBook));
 
-        final Inventory inventory = aggregate.getState();
+        Inventory inventory = aggregate.getState();
         assertEquals("123456789", inventory.getReservations(0)
                                            .getBookId()
                                            .getIsbn62()
@@ -95,7 +95,12 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
                                                 .getWhoReserved()
                                                 .getEmail()
                                                 .getValue());
-
+        final ReserveBook reserveBook2 = InventoryCommandFactory.reserveBookInstance(
+                InventoryCommandFactory.userId2, InventoryCommandFactory.inventoryId);
+        dispatchCommand(aggregate, envelopeOf(reserveBook2));
+        inventory = aggregate.getState();
+        assertEquals(2, inventory.getReservationsList()
+                                 .size());
     }
 
     @Test
