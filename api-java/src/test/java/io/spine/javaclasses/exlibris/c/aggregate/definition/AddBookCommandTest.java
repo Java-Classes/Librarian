@@ -78,7 +78,7 @@ public class AddBookCommandTest extends BookCommandTest<AddBook> {
     }
 
     @Test
-    @DisplayName("add the book")
+    @DisplayName("add a book")
     void addBook() {
         final AddBook addBook = createBookInstance();
         dispatchCommand(aggregate, envelopeOf(addBook));

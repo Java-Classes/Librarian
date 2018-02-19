@@ -30,47 +30,58 @@ import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 public class RejectionConstructorsTest {
 
     @Test
-    @DisplayName("AddBookRejection has the private constructor")
+    @DisplayName("AddBookRejection has a private constructor")
     void bookAggregateRejectionsHasPrivateConstructor() {
         assertHasPrivateParameterlessCtor(BookAggregateRejections.AddBookRejection.class);
     }
 
     @Test
-    @DisplayName("RemoveBookRejection has the private constructor")
+    @DisplayName("RemoveBookRejection has a private constructor")
     void RemoveBookRejectionHasPrivateConstructor() {
         assertHasPrivateParameterlessCtor(BookAggregateRejections.RemoveBookRejection.class);
     }
 
     @Test
-    @DisplayName("UpdateBookRejection has the private constructor")
+    @DisplayName("UpdateBookRejection has a private constructor")
     void UpdateBookRejectionHasPrivateConstructor() {
         assertHasPrivateParameterlessCtor(BookAggregateRejections.UpdateBookRejection.class);
     }
 
     @Test
-    @DisplayName("ReturnBookRejection has the private constructor")
+    @DisplayName("ReturnBookRejection has a private constructor")
     void ReturnBookRejectionHasPrivateConstructor() {
         assertHasPrivateParameterlessCtor(InventoryAggregateRejections.ReturnBookRejection.class);
     }
 
     @Test
-    @DisplayName("CancelReservationRejection has the private constructor")
+    @DisplayName("CancelReservationRejection has a private constructor")
     void CancelReservationRejectionHasPrivateConstructor() {
         assertHasPrivateParameterlessCtor(
                 InventoryAggregateRejections.CancelReservationRejection.class);
     }
 
     @Test
-    @DisplayName("ReserveBookRejection has the private constructor")
+    @DisplayName("ReserveBookRejection has a private constructor")
     void ReserveBookRejectionHasPrivateConstructor() {
         assertHasPrivateParameterlessCtor(InventoryAggregateRejections.ReserveBookRejection.class);
     }
 
     @Test
-
-    @DisplayName("WriteBookOffRejection has the private constructor")
+    @DisplayName("WriteBookOffRejection has a private constructor")
     void WriteBookOffRejectionHasPrivateConstructor() {
         assertHasPrivateParameterlessCtor(InventoryAggregateRejections.WriteBookOffRejection.class);
     }
 
+    @Test
+    @DisplayName("ExtendLoanPeriodRejection has a private constructor")
+    void ExtendLoanPeriodRejectionHasPrivateConstructor() {
+        assertHasPrivateParameterlessCtor(
+                InventoryAggregateRejections.ExtendLoanPeriodRejection.class);
+    }
+
+    @Test
+    @DisplayName("InventoryAggregateRejections has a private constructor")
+    void InventoryAggregateRejectionsHasPrivateConstructor() {
+        assertHasPrivateParameterlessCtor(InventoryAggregateRejections.class);
+    }
 }
