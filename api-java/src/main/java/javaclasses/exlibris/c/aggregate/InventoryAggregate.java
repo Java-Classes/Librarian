@@ -62,6 +62,7 @@ import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
 import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
+import javaclasses.exlibris.c.rejection.CannotExtendLoanPeriod;
 import javaclasses.exlibris.c.rejection.CannotReserveBook;
 import javaclasses.exlibris.c.rejection.CannotReturnMissingBook;
 import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
@@ -73,6 +74,7 @@ import java.util.List;
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
 import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.CancelReservationRejection.throwCannotCancelMissingReservation;
+import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ExtendLoanPeriodRejection.throwCannotExtendLoanPeriod;
 import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ReserveBookRejection.throwCannotReserveBook;
 import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ReturnBookRejection.throwCannotReturnMissingBook;
 import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ReturnBookRejection.throwCannotReturnNonBorrowedBook;
@@ -262,7 +264,14 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     @Assign
-    List<? extends Message> handle(ExtendLoanPeriod cmd) {
+    List<? extends Message> handle(ExtendLoanPeriod cmd) throws CannotExtendLoanPeriod {
+
+        List<Reservation> reservations = getState().getReservationsList();
+
+        if (!getState().getReservationsList()
+                       .isEmpty()) {
+            throwCannotExtendLoanPeriod(cmd);
+        }
 
         final InventoryId inventoryId = cmd.getInventoryId();
         final LoanId loanId = cmd.getLoanId();
@@ -273,19 +282,17 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (int i = 0; i < loansList.size(); i++) {
             if (loansList.get(i)
                          .getLoanId()
-                         .getValue() == cmd.getLoanId()
-                                           .getValue()) {
+                         .equals(cmd.getLoanId())) {
                 loanPosition = i;
             }
         }
-        final Timestamp newDueDate = getState().getLoans(loanPosition)
-                                               .getWhenDue();
-
+        final Timestamp previousDueDate = getState().getLoans(loanPosition)
+                                                    .getWhenDue();
         // Two weeks before new due on date.
-        final Timestamp previousDueDate = Timestamp.newBuilder()
-                                                   .setSeconds(newDueDate.getSeconds() -
-                                                                       60 * 60 * 24 * 14)
-                                                   .build();
+        final Timestamp newDueDate = Timestamp.newBuilder()
+                                              .setSeconds(previousDueDate.getSeconds() +
+                                                                  60 * 60 * 24 * 14)
+                                              .build();
         final LoanPeriodExtended result = LoanPeriodExtended.newBuilder()
                                                             .setInventoryId(inventoryId)
                                                             .setLoanId(loanId)

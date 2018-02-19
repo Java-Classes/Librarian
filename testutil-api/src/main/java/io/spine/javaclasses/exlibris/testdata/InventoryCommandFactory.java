@@ -68,6 +68,11 @@ public class InventoryCommandFactory {
                                               .setEmail(EmailAddress.newBuilder()
                                                                     .setValue("petr@gmail.com"))
                                               .build();
+    public static final UserId userId2 = UserId.newBuilder()
+                                              .setEmail(EmailAddress.newBuilder()
+                                                                    .setValue("petr2@gmail.com"))
+                                              .build();
+
     public static final Rfid rfid = Rfid.newBuilder()
                                         .setValue("4321")
                                         .build();
@@ -232,20 +237,19 @@ public class InventoryCommandFactory {
     public static ExtendLoanPeriod extendLoanPeriodInstance() {
 
         final ExtendLoanPeriod result = extendLoanPeriodInstance(inventoryId, loan.getLoanId(),
-                                                                 userId, getCurrentTime());
+                                                                 userId);
 
         return result;
 
     }
 
     public static ExtendLoanPeriod extendLoanPeriodInstance(InventoryId inventoryId, LoanId loanId,
-                                                            UserId userId, Timestamp timestamp) {
+                                                            UserId userId) {
 
         final ExtendLoanPeriod result = ExtendLoanPeriod.newBuilder()
                                                         .setInventoryId(inventoryId)
                                                         .setLoanId(loanId)
                                                         .setUserId(userId)
-                                                        .setNewDueDate(timestamp)
                                                         .build();
 
         return result;
