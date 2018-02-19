@@ -18,18 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.javaclasses.exlibris.c.aggregate.definition;
+package javaclasses.exlibris.c.aggregate;
 
 import com.google.protobuf.Message;
-import io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory;
 import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.c.ReserveBook;
+import javaclasses.exlibris.testdata.InventoryCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import java.util.List;
+
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -105,7 +107,6 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
                                   .getUserId()
                                   .getEmail()
                                   .getValue());
-        System.out.println(inventory);
     }
     @Test
     @DisplayName("append inventory with reservation")
@@ -116,7 +117,6 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
         final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
         dispatchCommand(aggregate, envelopeOf(appendInventory));
         final Inventory inventory = aggregate.getState();
-        System.out.println(inventory);
         assertEquals(1, inventory.getInventoryItemsList()
                                  .size());
         assertTrue(inventory.getInventoryItemsList()

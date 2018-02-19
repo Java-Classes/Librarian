@@ -18,11 +18,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.javaclasses.exlibris.c.aggregate.definition;
+package javaclasses.exlibris.c.aggregate;
 
 import com.google.common.base.Optional;
 import io.spine.core.Event;
-import io.spine.javaclasses.exlibris.testdata.BookCommandFactory;
 import io.spine.server.BoundedContext;
 import io.spine.server.command.TestEventFactory;
 import io.spine.server.entity.Repository;
@@ -30,8 +29,7 @@ import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookRemoved;
-import javaclasses.exlibris.c.aggregate.BookAggregate;
-import javaclasses.exlibris.c.aggregate.InventoryAggregate;
+import javaclasses.exlibris.testdata.BookCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

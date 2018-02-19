@@ -18,21 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.javaclasses.exlibris.c.aggregate.definition;
+package javaclasses.exlibris.c.aggregate;
 
 import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
-import io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory;
 import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.InventoryDecreased;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.WriteBookOff;
 import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
+import javaclasses.exlibris.testdata.InventoryCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import java.util.List;
+
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;

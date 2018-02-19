@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.javaclasses.exlibris.c.aggregate.definition;
+package javaclasses.exlibris.c.aggregate;
 
 import javaclasses.exlibris.context.BoundedContexts;
 import org.junit.jupiter.api.DisplayName;
