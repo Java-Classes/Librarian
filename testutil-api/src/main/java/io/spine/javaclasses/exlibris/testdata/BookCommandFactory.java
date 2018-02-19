@@ -158,7 +158,7 @@ public class BookCommandFactory {
 
             }
             case BOOKREMOVALREASON_NOT_SET: {
-                throw new IllegalArgumentException("The book couldn’t be removed without reason.");
+                throw new IllegalArgumentException("The book cannot be removed without reason.");
             }
         }
         return result.build();

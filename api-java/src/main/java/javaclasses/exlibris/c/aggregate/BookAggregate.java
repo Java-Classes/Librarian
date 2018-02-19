@@ -171,7 +171,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
                                              .build());
             }
             case BOOKREMOVALREASON_NOT_SET: {
-                throw new IllegalArgumentException("The book couldn’t be removed without reason.");
+                throw new IllegalArgumentException("The book cannot be removed without reason.");
             }
         }
         return singletonList(bookRemoved.build());
