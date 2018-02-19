@@ -20,6 +20,7 @@
 
 package io.spine.javaclasses.exlibris.c.aggregate.definition;
 
+import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import io.spine.javaclasses.exlibris.testdata.BookCommandFactory;
 import javaclasses.exlibris.Book;
@@ -29,6 +30,8 @@ import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookUpdated;
 import javaclasses.exlibris.c.UpdateBook;
+import javaclasses.exlibris.c.rejection.CannotUpdateMissingBook;
+import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,6 +43,8 @@ import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.bookDeta
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.createBookInstance;
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.updateBookInstance;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -145,6 +150,9 @@ public class UpdateBookCommandTest extends BookCommandTest<UpdateBook> {
                                          () -> dispatchCommand(aggregate,
                                                                envelopeOf(updateBook)));
 
+        final Throwable cause = Throwables.getRootCause(t);
+
+        assertThat(cause, instanceOf(CannotUpdateMissingBook.class));
     }
 
     private void dispatchAddBookCmd() {

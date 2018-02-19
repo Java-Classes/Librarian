@@ -91,7 +91,7 @@ public class ExtendLoanPeriodCommandTest extends InventoryCommandTest<ExtendLoan
     }
 
     @Test
-    @DisplayName("extend loan period")
+    @DisplayName("not extend loan period")
     void notExtendLoanPeriod() {
 
         dispatchAppendInventory();
