@@ -18,26 +18,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.javaclasses.exlibris.c.aggregate.definition;
+package javaclasses.exlibris.c.aggregate;
 
 import com.google.common.base.Throwables;
-import io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory;
 import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.ExtendLoanPeriod;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.rejection.CannotExtendLoanPeriod;
+import javaclasses.exlibris.testdata.InventoryCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
-import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
-import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.extendLoanPeriodInstance;
-import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryItemId;
-import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
-import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.userId2;
+
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.extendLoanPeriodInstance;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryItemId;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId2;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;

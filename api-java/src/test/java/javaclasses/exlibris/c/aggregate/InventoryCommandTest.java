@@ -18,39 +18,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.javaclasses.exlibris.c.aggregate.definition;
+package javaclasses.exlibris.c.aggregate;
 
 import com.google.protobuf.Message;
 import io.spine.client.TestActorRequestFactory;
 import io.spine.core.CommandEnvelope;
 import io.spine.server.aggregate.AggregateCommandTest;
 import javaclasses.exlibris.BookId;
+import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.Isbn62;
-import javaclasses.exlibris.c.aggregate.BookAggregate;
 
 /**
- * @author Paul Ageyev
+ * @author Alexander Karpets
  */
-abstract class BookCommandTest<C extends Message> extends AggregateCommandTest<C, BookAggregate> {
-
+public class InventoryCommandTest<C extends Message> extends AggregateCommandTest<C, InventoryAggregate> {
     private final TestActorRequestFactory requestFactory =
             TestActorRequestFactory.newInstance(getClass());
 
-    BookAggregate aggregate;
-    BookId bookId;
+    InventoryAggregate aggregate;
+    InventoryId inventoryId;
 
-    private static BookId createBookId() {
+    private static InventoryId createBookId() {
 
-        return BookId.newBuilder()
-                     .setIsbn62(Isbn62.newBuilder()
-                                      .setValue("1"))
-                     .build();
+        return InventoryId.newBuilder()
+                          .setBookId(BookId.newBuilder()
+                                           .setIsbn62(Isbn62.newBuilder()
+                                                            .setValue("123456789")))
+                          .build();
     }
 
     @Override
-    protected BookAggregate createAggregate() {
-        bookId = createBookId();
-        return new BookAggregate(bookId);
+    protected InventoryAggregate createAggregate() {
+        inventoryId = createBookId();
+        return new InventoryAggregate(inventoryId);
     }
 
     @Override

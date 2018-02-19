@@ -18,26 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.javaclasses.exlibris.c.aggregate.definition;
+package javaclasses.exlibris.c.aggregate;
 
 import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
-import io.spine.javaclasses.exlibris.testdata.BookCommandFactory;
 import javaclasses.exlibris.Book;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.BookTitle;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.rejection.BookAlreadyExists;
+import javaclasses.exlibris.testdata.BookCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.createBookInstance;
-import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.userId;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static javaclasses.exlibris.testdata.BookCommandFactory.createBookInstance;
+import static javaclasses.exlibris.testdata.BookCommandFactory.userId;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
