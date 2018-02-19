@@ -30,9 +30,7 @@ import javaclasses.exlibris.c.ReserveBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import java.util.List;
-
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryItemId;
@@ -43,6 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Dmytry Dyachenko
+ * @author Alexander Karpets
  */
 @DisplayName("BorrowBook command should be interpreted by InventoryAggregate and")
 public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
@@ -104,12 +103,15 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
                           .getWhoBorrowed(), userId);
 
     }
+
     @Test
     @DisplayName("reservation became loan")
     void reservationBecameLoan() {
         dispatchAppendInventory();
         dispatchReserveBook();
-        final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
+        final BorrowBook borrowBook = borrowBookInstance(InventoryCommandFactory.inventoryId,
+                                                         InventoryCommandFactory.inventoryItemId,
+                                                         InventoryCommandFactory.userId);
 
         dispatchCommand(aggregate, envelopeOf(borrowBook));
         final Inventory state = aggregate.getState();

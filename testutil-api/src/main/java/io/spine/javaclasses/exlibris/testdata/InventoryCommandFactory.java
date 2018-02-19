@@ -25,6 +25,7 @@ import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.InventoryItemId;
 import javaclasses.exlibris.Isbn62;
+import javaclasses.exlibris.Loan;
 import javaclasses.exlibris.LoanId;
 import javaclasses.exlibris.Rfid;
 import javaclasses.exlibris.UserId;
@@ -32,12 +33,16 @@ import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
+import javaclasses.exlibris.c.ExtendLoanPeriod;
+import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.c.MarkLoanOverdue;
 import javaclasses.exlibris.c.MarkReservationExpired;
 import javaclasses.exlibris.c.ReportLostBook;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
+
+import static io.spine.time.Time.getCurrentTime;
 
 /**
  * A factory of the task commands for the test needs.
@@ -61,12 +66,26 @@ public class InventoryCommandFactory {
                                               .setEmail(EmailAddress.newBuilder()
                                                                     .setValue("petr@gmail.com"))
                                               .build();
+    public static final UserId userId2 = UserId.newBuilder()
+                                              .setEmail(EmailAddress.newBuilder()
+                                                                    .setValue("petr2@gmail.com"))
+                                              .build();
+
     public static final Rfid rfid = Rfid.newBuilder()
                                         .setValue("4321")
                                         .build();
+
     public static final WriteOffReason reason = WriteOffReason.newBuilder()
                                                               .setOutdated(true)
                                                               .build();
+    private static LoanId loanId;
+
+    public static final Loan loan = Loan.newBuilder()
+                                        .setLoanId(LoanId.newBuilder()
+                                                         .setValue(1))
+                                        .setInventoryItemId(inventoryItemId)
+                                        .setWhenDue(getCurrentTime())
+                                        .build();
 
     private InventoryCommandFactory() {
     }
@@ -210,6 +229,45 @@ public class InventoryCommandFactory {
                                                               .setInventoryId(inventoryId)
                                                               .setUserId(userId)
                                                               .build();
+        return result;
+    }
+
+    public static ExtendLoanPeriod extendLoanPeriodInstance() {
+
+        final ExtendLoanPeriod result = extendLoanPeriodInstance(inventoryId, loan.getLoanId(),
+                                                                 userId);
+
+        return result;
+
+    }
+
+    public static ExtendLoanPeriod extendLoanPeriodInstance(InventoryId inventoryId, LoanId loanId,
+                                                            UserId userId) {
+
+        final ExtendLoanPeriod result = ExtendLoanPeriod.newBuilder()
+                                                        .setInventoryId(inventoryId)
+                                                        .setLoanId(loanId)
+                                                        .setUserId(userId)
+                                                        .build();
+
+        return result;
+
+    }
+
+    public static LoanPeriodExtended loanPeriodExtended() {
+
+        final LoanPeriodExtended result = loanPeriodExtended(inventoryId, loanId,
+                                                             userId);
+        return result;
+    }
+
+    public static LoanPeriodExtended loanPeriodExtended(InventoryId inventoryId, LoanId loanId,
+                                                        UserId userId) {
+        LoanPeriodExtended result = LoanPeriodExtended.newBuilder()
+                                                      .setInventoryId(inventoryId)
+                                                      .setUserId(userId)
+                                                      .setLoanId(loanId)
+                                                      .build();
         return result;
     }
 }

@@ -72,7 +72,7 @@ public final class BoundedContexts {
     }
 
     @VisibleForTesting
-    static BoundedContext createBoundedContext(StorageFactory storageFactory) {
+    public static BoundedContext createBoundedContext(StorageFactory storageFactory) {
         checkNotNull(storageFactory);
         return BoundedContext.newBuilder()
                              .setStorageFactorySupplier(() -> storageFactory)

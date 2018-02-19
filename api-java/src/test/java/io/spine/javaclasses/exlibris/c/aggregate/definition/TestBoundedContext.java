@@ -18,20 +18,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.javaclasses.exlibris.server;
+package io.spine.javaclasses.exlibris.c.aggregate.definition;
 
-import javaclasses.exlibris.server.LocalInMemoryServer;
+import io.spine.test.Tests;
+import javaclasses.exlibris.context.BoundedContexts;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+import static javaclasses.exlibris.context.BoundedContexts.createBoundedContext;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("LocalInMemoryServer should")
-class LocalInMemoryServerTest {
-
+@DisplayName("BoundedContexts should")
+public class TestBoundedContext {
     @Test
     @DisplayName("have the private parameterless constructor")
     void havePrivateCtor() {
-        assertHasPrivateParameterlessCtor(LocalInMemoryServer.class);
+        assertHasPrivateParameterlessCtor(BoundedContexts.class);
+    }
+
+    @Test
+    @DisplayName("not create BoundedContext without a StorageFactory")
+    void notCreateBoundedContextWithoutStorageFactory() {
+        assertThrows(NullPointerException.class, () -> createBoundedContext(Tests.nullRef()));
     }
 }

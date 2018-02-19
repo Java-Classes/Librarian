@@ -26,12 +26,13 @@ import "spine/options.proto";
 
 option (type_url_prefix) = "type.javaclasses.exlibris";
 option java_package = "javaclasses.exlibris.c.rejection";
-option java_outer_classname = "RejectionsProto";
+option java_outer_classname = "Rejections";
 option java_multiple_files = false;
 option java_generate_equals_and_hash = true;
 
 import "google/protobuf/timestamp.proto";
 import "javaclasses/exlibris/identifiers.proto";
+import "javaclasses/exlibris/values.proto";
 
 // Rejection when a librarian tries to add an existing book.
 //
@@ -40,11 +41,14 @@ message BookAlreadyExists {
     // The identifier of a book.
     BookId book_id = 1;
 
+    // The DTO of a book title.
+    BookTitle book_title = 2;
+
     // Who tried to add a book.
-    UserId librarian_id = 2;
+    UserId librarian_id = 3;
 
     // The time when a librarian tried to add an existing book.
-    google.protobuf.Timestamp when_rejected = 3;
+    google.protobuf.Timestamp when_rejected = 4;
 }
 
 // Rejection when a librarian tries to remove a missing book.

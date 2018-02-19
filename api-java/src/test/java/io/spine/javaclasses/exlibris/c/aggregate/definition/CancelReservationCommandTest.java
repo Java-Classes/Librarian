@@ -20,6 +20,7 @@
 
 package io.spine.javaclasses.exlibris.c.aggregate.definition;
 
+import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory;
 import javaclasses.exlibris.Inventory;
@@ -27,15 +28,25 @@ import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.ReservationCanceled;
 import javaclasses.exlibris.c.ReserveBook;
+import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+/**
+ * @author Alexander Karpets
+ * @author Paul Ageyev
+ */
+@DisplayName("CancelReservation command should be interpreted by InventoryAggregate and")
 public class CancelReservationCommandTest extends InventoryCommandTest<AppendInventory> {
 
     @Override
@@ -48,7 +59,9 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
         dispatchCommand(aggregate, envelopeOf(reserveBook));
     }
+
     @Test
+    @DisplayName("produce ReservationCanceled event")
     void produceEvent() {
         reserveBook();
         final CancelReservation cancelReservation = InventoryCommandFactory.cancelReservationInstance();
@@ -58,25 +71,47 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
         assertNotNull(aggregate.getId());
         assertEquals(1, messageList.size());
         assertEquals(ReservationCanceled.class, messageList.get(0)
-                                                         .getClass());
+                                                           .getClass());
 
         final ReservationCanceled reservationCanceled = (ReservationCanceled) messageList.get(0);
 
         assertEquals(InventoryCommandFactory.inventoryId, reservationCanceled.getInventoryId());
 
         assertEquals(InventoryCommandFactory.userId.getEmail()
-                                                   .getValue(), reservationCanceled.getWhoCanceled().getEmail().getValue());
+                                                   .getValue(), reservationCanceled.getWhoCanceled()
+                                                                                   .getEmail()
+                                                                                   .getValue());
     }
 
     @Test
+    @DisplayName("cancel reservation")
     void cancelReservation() {
         reserveBook();
         final Inventory inventoryReserved = aggregate.getState();
-        assertEquals(1, inventoryReserved.getReservationsList().size());
+        assertEquals(1, inventoryReserved.getReservationsList()
+                                         .size());
         final CancelReservation cancelReservation = InventoryCommandFactory.cancelReservationInstance();
         dispatchCommand(aggregate, envelopeOf(cancelReservation));
 
         final Inventory inventory = aggregate.getState();
-        assertEquals(0, inventory.getReservationsList().size());
+        assertEquals(0, inventory.getReservationsList()
+                                 .size());
+    }
+
+    @Test
+    @DisplayName("throw CannotCancelMissingReservation rejection upon " +
+            "an attempt to cancel missing reservation")
+    void notCancelReservation() {
+
+        final CancelReservation cancelReservation = InventoryCommandFactory.cancelReservationInstance();
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(cancelReservation)));
+
+        final Throwable cause = Throwables.getRootCause(t);
+
+        assertThat(cause, instanceOf(CannotCancelMissingReservation.class));
+
     }
 }
