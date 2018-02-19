@@ -20,7 +20,6 @@
 
 package io.spine.javaclasses.exlibris.testdata;
 
-import com.google.protobuf.Timestamp;
 import io.spine.net.EmailAddress;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.InventoryId;
@@ -35,7 +34,6 @@ import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.ExtendLoanPeriod;
-import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.c.MarkLoanOverdue;
 import javaclasses.exlibris.c.MarkReservationExpired;

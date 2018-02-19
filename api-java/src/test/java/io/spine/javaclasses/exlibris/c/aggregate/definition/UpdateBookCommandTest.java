@@ -31,13 +31,10 @@ import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookUpdated;
 import javaclasses.exlibris.c.UpdateBook;
 import javaclasses.exlibris.c.rejection.CannotUpdateMissingBook;
-import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import java.util.List;
-
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.bookDetails;
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.bookDetails2;
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.createBookInstance;
@@ -96,7 +93,7 @@ public class UpdateBookCommandTest extends BookCommandTest<UpdateBook> {
     }
 
     @Test
-    @DisplayName("update the book")
+    @DisplayName("update a book")
     void updateBook() {
 
         dispatchAddBookCmd();
@@ -124,7 +121,8 @@ public class UpdateBookCommandTest extends BookCommandTest<UpdateBook> {
     }
 
     @Test
-    @DisplayName("not update the book")
+    @DisplayName("throw CannotUpdateMissingBook rejection upon " +
+            "an attempt to update a missing book")
     void notUpdateBook() {
 
         dispatchAddBookCmd();

@@ -32,9 +32,7 @@ import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import java.util.List;
-
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
@@ -46,6 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Alexander Karpets
  * @author Paul Ageyev
  */
+@DisplayName("WriteBookOffCommand command should be interpreted by InventoryAggregate and")
 public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
 
     @Override
@@ -60,7 +59,7 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
     }
 
     @Test
-    @DisplayName("write book off successfully produces event")
+    @DisplayName("produce InventoryDecreased event")
     void produceEvent() {
         appendInventory();
         final WriteBookOff writeBookOff = InventoryCommandFactory.writeBookOffInstance();
@@ -91,7 +90,7 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
     }
 
     @Test
-    @DisplayName("inventory decreased")
+    @DisplayName("decrease inventory")
     void writeOffBook() {
         appendInventory();
         final Inventory inventoryBefore = aggregate.getState();

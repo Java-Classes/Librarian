@@ -29,7 +29,6 @@ import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.ReservationCanceled;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
-import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,6 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Alexander Karpets
  * @author Paul Ageyev
  */
+@DisplayName("CancelReservation command should be interpreted by InventoryAggregate and")
 public class CancelReservationCommandTest extends InventoryCommandTest<AppendInventory> {
 
     @Override
@@ -61,7 +61,7 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
     }
 
     @Test
-    @DisplayName("cancel reservation successfully produces event")
+    @DisplayName("produce ReservationCanceled event")
     void produceEvent() {
         reserveBook();
         final CancelReservation cancelReservation = InventoryCommandFactory.cancelReservationInstance();
@@ -84,7 +84,7 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
     }
 
     @Test
-    @DisplayName("a reservation canceled")
+    @DisplayName("cancel reservation")
     void cancelReservation() {
         reserveBook();
         final Inventory inventoryReserved = aggregate.getState();
@@ -99,7 +99,8 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
     }
 
     @Test
-    @DisplayName("reservation not canceled")
+    @DisplayName("throw CannotCancelMissingReservation rejection upon " +
+            "an attempt to cancel missing reservation")
     void notCancelReservation() {
 
         final CancelReservation cancelReservation = InventoryCommandFactory.cancelReservationInstance();

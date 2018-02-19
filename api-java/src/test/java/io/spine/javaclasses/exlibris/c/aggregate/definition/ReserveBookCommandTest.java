@@ -33,9 +33,7 @@ import javaclasses.exlibris.c.rejection.CannotReserveBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import java.util.List;
-
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
@@ -49,6 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * @author Alexander Karpets
  */
+@DisplayName("ReserveBook command should be interpreted by InventoryAggregate and")
 public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
 
     @Override
@@ -58,7 +57,7 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
     }
 
     @Test
-    @DisplayName("reserve book successfully produces event")
+    @DisplayName("produce ReservationAdded event")
     void produceEvent() {
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
 
@@ -80,7 +79,7 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
     }
 
     @Test
-    @DisplayName("book reserved")
+    @DisplayName("reserve a book")
     void reserveBook() {
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
         dispatchCommand(aggregate, envelopeOf(reserveBook));
@@ -98,7 +97,8 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
     }
 
     @Test
-    @DisplayName("not reserve the book that is already reserved")
+    @DisplayName("throw CannotReserveBook rejection upon " +
+            "an attempt reserve the book that is already reserved")
     void notReserveBook() {
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
         dispatchCommand(aggregate, envelopeOf(reserveBook));
@@ -122,7 +122,8 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
     }
 
     @Test
-    @DisplayName("not reserve the book that is already borrowed")
+    @DisplayName("throw CannotReserveBook rejection upon " +
+            "an attempt reserve the book that is already borrowed")
     void notReserveBorrowedBook() {
 
         final AppendInventory appendInventory = appendInventoryInstance();

@@ -20,19 +20,17 @@
 
 package io.spine.javaclasses.exlibris.c.aggregate.definition;
 
-import com.google.protobuf.Message;
+import com.google.common.base.Throwables;
 import io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory;
 import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.ExtendLoanPeriod;
 import javaclasses.exlibris.c.ReserveBook;
+import javaclasses.exlibris.c.rejection.CannotExtendLoanPeriod;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.extendLoanPeriodInstance;
@@ -40,10 +38,10 @@ import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.inv
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.userId2;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static io.spine.time.Time.getCurrentTime;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Paul Ageyev
@@ -58,7 +56,7 @@ public class ExtendLoanPeriodCommandTest extends InventoryCommandTest<ExtendLoan
     }
 
     @Test
-    @DisplayName("extend loan period")
+    @DisplayName("extend a loan period")
     void extendLoanPeriod() {
 
         dispatchAppendInventory();
@@ -91,7 +89,8 @@ public class ExtendLoanPeriodCommandTest extends InventoryCommandTest<ExtendLoan
     }
 
     @Test
-    @DisplayName("not extend loan period")
+    @DisplayName("throw CannotExtendLoanPeriod rejection upon " +
+            "an attempt to extend loan period if the book has already been reserved or borrowed")
     void notExtendLoanPeriod() {
 
         dispatchAppendInventory();
@@ -117,6 +116,10 @@ public class ExtendLoanPeriodCommandTest extends InventoryCommandTest<ExtendLoan
         final Throwable t = assertThrows(Throwable.class,
                                          () -> dispatchCommand(aggregate,
                                                                envelopeOf(extendLoanPeriod)));
+
+        final Throwable cause = Throwables.getRootCause(t);
+
+        assertThat(cause, instanceOf(CannotExtendLoanPeriod.class));
 
     }
 

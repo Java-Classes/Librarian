@@ -30,9 +30,7 @@ import javaclasses.exlibris.c.ReserveBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import java.util.List;
-
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryItemId;
@@ -42,7 +40,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * @author Dmytry Dyachenko, Alexander Karpets
+ * @author Dmytry Dyachenko
+ * @author Alexander Karpets
  */
 @DisplayName("BorrowBook command should be interpreted by InventoryAggregate and")
 public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {

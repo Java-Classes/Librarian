@@ -33,9 +33,7 @@ import javaclasses.exlibris.c.rejection.CannotRemoveMissingBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import java.util.List;
-
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.createBookInstance;
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.librarianId;
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.removalReason;
@@ -59,7 +57,7 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
     }
 
     @Test
-    @DisplayName("remove the book")
+    @DisplayName("remove a book")
     void removeBook() {
         dispatchAddBookCmd();
 

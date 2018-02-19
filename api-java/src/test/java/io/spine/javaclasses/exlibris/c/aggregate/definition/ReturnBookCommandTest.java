@@ -34,9 +34,7 @@ import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import java.util.List;
-
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
@@ -48,6 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * @author Alexander Karpets
  */
+@DisplayName("ReturnBook command should be interpreted by InventoryAggregate and")
 public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory> {
 
     @Override
@@ -67,7 +66,7 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
     }
 
     @Test
-    @DisplayName("return book successfully produces event")
+    @DisplayName("produce BookReturned event")
     void produceEvent() {
         appendInventory();
         borrowBook();
@@ -115,7 +114,8 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
     }
 
     @Test
-    @DisplayName("cannot return non borrowed book")
+    @DisplayName("throw CannotReturnNonBorrowedBook rejection upon " +
+            "an attempt to return non borrowed book")
     void throwsCannotReturnNonBorrowedBook() {
         appendInventory();
         final ReturnBook returnBook = InventoryCommandFactory.returnBookInstance();
@@ -129,7 +129,8 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
     }
 
     @Test
-    @DisplayName("cannot return missing book")
+    @DisplayName("throw CannotReturnMissingBook rejection upon " +
+            "an attempt to return missing book")
     void throwsCannotReturnMissingBook() {
         appendInventory();
         borrowBook();
