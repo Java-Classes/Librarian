@@ -20,12 +20,16 @@
 
 package javaclasses.exlibris.c.aggregate;
 
+import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import javaclasses.exlibris.Inventory;
+import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.ReserveBook;
+import javaclasses.exlibris.c.rejection.BookAlreadyExists;
+import javaclasses.exlibris.c.rejection.CannotBorrowBook;
 import javaclasses.exlibris.testdata.InventoryCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,12 +42,18 @@ import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInvent
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryItemId;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId2;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId3;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Dmytry Dyachenko
  * @author Alexander Karpets
+ * @author Paul Ageyev
  */
 @DisplayName("BorrowBook command should be interpreted by InventoryAggregate and")
 public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
@@ -125,7 +135,59 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
 
         assertEquals(state.getLoans(state.getLoansCount() - 1)
                           .getWhoBorrowed(), userId);
-        assertEquals(0,state.getReservationsList().size());
+        assertEquals(0, state.getReservationsList()
+                             .size());
+
+    }
+
+    @Test
+    @DisplayName("throw CannotBorrowBook rejection upon " +
+            "an attempt to borrow a book that has already borrowed")
+    void bookAlreadyBorrowed() {
+
+        dispatchAppendInventory();
+
+        final BorrowBook borrowBook = borrowBookInstance(InventoryCommandFactory.inventoryId,
+                                                         inventoryItemId, userId);
+
+        dispatchCommand(aggregate, envelopeOf(borrowBook));
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(borrowBook)));
+        final Throwable cause = Throwables.getRootCause(t);
+
+        assertThat(cause, instanceOf(CannotBorrowBook.class));
+    }
+
+    @Test
+    @DisplayName("throw CannotBorrowBook rejection upon " +
+            "an attempt to borrow a book that isn't available")
+    void notAvailableBook() {
+
+        dispatchAppendInventory();
+
+        final BorrowBook borrowBook = borrowBookInstance(InventoryCommandFactory.inventoryId,
+                                                         inventoryItemId, userId);
+
+        dispatchCommand(aggregate, envelopeOf(borrowBook));
+
+        dispatchAppendInventory();
+
+        final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance(userId2,
+                                                                                    InventoryCommandFactory.inventoryId);
+
+        dispatchCommand(aggregate, envelopeOf(reserveBook));
+
+        final BorrowBook borrowBook2 = borrowBookInstance(InventoryCommandFactory.inventoryId,
+                                                          inventoryItemId, userId3);
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(borrowBook2)));
+        final Throwable cause = Throwables.getRootCause(t);
+
+        assertThat(cause, instanceOf(CannotBorrowBook.class));
 
     }
 

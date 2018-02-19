@@ -20,11 +20,13 @@
 
 package javaclasses.exlibris.c.aggregate.rejection;
 
+import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.ExtendLoanPeriod;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
+import javaclasses.exlibris.c.rejection.CannotBorrowBook;
 import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
 import javaclasses.exlibris.c.rejection.CannotExtendLoanPeriod;
 import javaclasses.exlibris.c.rejection.CannotReserveBook;
@@ -132,5 +134,17 @@ public class InventoryAggregateRejections {
         }
     }
 
+    public static class BorrowBookRejection {
+
+        private BorrowBookRejection() {
+        }
+
+        public static void throwCannotBorrowBook(BorrowBook cmd, boolean borrowed,
+                                                 boolean notAvailable) throws CannotBorrowBook {
+            throw new CannotBorrowBook(cmd.getInventoryId(), cmd.getInventoryItemId(),
+                                       cmd.getUserId(), getCurrentTime(), borrowed, notAvailable);
+        }
+
+    }
 
 }

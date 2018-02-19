@@ -66,6 +66,7 @@ import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
+import javaclasses.exlibris.c.rejection.CannotBorrowBook;
 import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
 import javaclasses.exlibris.c.rejection.CannotExtendLoanPeriod;
 import javaclasses.exlibris.c.rejection.CannotReserveBook;
@@ -78,6 +79,7 @@ import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
+import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.BorrowBookRejection.throwCannotBorrowBook;
 import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.CancelReservationRejection.throwCannotCancelMissingReservation;
 import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ExtendLoanPeriodRejection.throwCannotExtendLoanPeriod;
 import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ReserveBookRejection.throwCannotReserveBook;
@@ -187,10 +189,10 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
         List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
 
-        for (int i = 0; i < inventoryItems.size(); i++) {
-            if (inventoryItems.get(i)
-                              .getUserId()
-                              .equals(cmd.getUserId())) {
+        for (InventoryItem inventoryItem : inventoryItems) {
+            if (inventoryItem
+                    .getUserId()
+                    .equals(cmd.getUserId())) {
                 throwCannotReserveBook(cmd, true, false);
             }
         }
@@ -215,7 +217,29 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     @Assign
-    List<? extends Message> handle(BorrowBook cmd) {
+    List<? extends Message> handle(BorrowBook cmd) throws CannotBorrowBook {
+
+        List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
+
+        int inLibraryCount = 0;
+
+        for (InventoryItem inventoryItem1 : inventoryItems) {
+            if (inventoryItem1.getInLibrary()) {
+                inLibraryCount++;
+            }
+        }
+
+        for (InventoryItem inventoryItem : inventoryItems) {
+            if (inventoryItem.getUserId()
+                             .equals(cmd.getUserId())) {
+                throwCannotBorrowBook(cmd, true, false);
+            }
+        }
+
+        if (getState().getReservationsList()
+                      .size() >= inLibraryCount && !(userHasReservation(cmd, inLibraryCount))) {
+            throwCannotBorrowBook(cmd, false, true);
+        }
 
         final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
@@ -252,6 +276,18 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             result.add(reservationBecameLoan);
         }
         return result.build();
+    }
+
+    private boolean userHasReservation(BorrowBook cmd, int inLibraryCount) {
+        List<Reservation> topReservations = getState().getReservationsList()
+                                                      .subList(0, inLibraryCount);
+        for (Reservation reservation : topReservations) {
+            if (reservation.getWhoReserved()
+                           .equals(cmd.getUserId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Assign

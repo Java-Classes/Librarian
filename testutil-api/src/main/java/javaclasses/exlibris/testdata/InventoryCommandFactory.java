@@ -70,6 +70,10 @@ public class InventoryCommandFactory {
                                               .setEmail(EmailAddress.newBuilder()
                                                                     .setValue("petr2@gmail.com"))
                                               .build();
+    public static final UserId userId3 = UserId.newBuilder()
+                                               .setEmail(EmailAddress.newBuilder()
+                                                                     .setValue("petr3@gmail.com"))
+                                               .build();
 
     public static final Rfid rfid = Rfid.newBuilder()
                                         .setValue("4321")
