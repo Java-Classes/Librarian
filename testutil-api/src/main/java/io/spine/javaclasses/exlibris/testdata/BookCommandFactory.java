@@ -156,14 +156,11 @@ public class BookCommandFactory {
                         .setCustomReason(customReason)
                         .build();
 
-            } // TODO 12-Feb-2018[Dmytry Dyachenko]: write the rejection below
-            /* case BOOKREMOVALREASON_NOT_SET: {
-
-                break;
-            }*/
-            default: {
-                return result.build();
+            }
+            case BOOKREMOVALREASON_NOT_SET: {
+                throw new IllegalArgumentException("The book cannot be removed without reason.");
             }
         }
+        return result.build();
     }
 }

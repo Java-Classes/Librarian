@@ -23,6 +23,7 @@ package javaclasses.exlibris.c.aggregate;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
+import io.spine.core.React;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
@@ -39,16 +40,20 @@ import javaclasses.exlibris.Rfid;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.AppendInventory;
+import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.BookBecameAvailable;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookReadyToPickup;
+import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.ExtendLoanPeriod;
 import javaclasses.exlibris.c.InventoryAppended;
+import javaclasses.exlibris.c.InventoryCreated;
 import javaclasses.exlibris.c.InventoryDecreased;
+import javaclasses.exlibris.c.InventoryRemoved;
 import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.c.MarkLoanOverdue;
@@ -140,7 +145,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                                              getCurrentTime())
                                                                      .setLibrarianId(userId)
                                                                      .build();
-
         result.add(inventoryAppended);
         result.add(becameAvailableOrReadyToPickup(inventoryId, inventoryItemId));
         return result.build();
@@ -388,10 +392,50 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return singletonList(result);
     }
 
+    @React
+    InventoryCreated on(BookAdded event) {
+
+        final InventoryCreated result = InventoryCreated.newBuilder()
+                                                        .setInventoryId(InventoryId.newBuilder()
+                                                                                   .setBookId(
+                                                                                           event.getBookId())
+                                                                                   .build())
+                                                        .setWhenCreated(getCurrentTime())
+                                                        .build();
+        return result;
+    }
+
+    @Apply
+    private void inventoryCreated(InventoryCreated event) {
+
+        getBuilder().setInventoryId(event.getInventoryId());
+    }
+
+    @React
+    InventoryRemoved on(BookRemoved event) {
+
+        final InventoryRemoved result = InventoryRemoved.newBuilder()
+                                                        .setInventoryId(InventoryId.newBuilder()
+                                                                                   .setBookId(
+                                                                                           event.getBookId())
+                                                                                   .build())
+                                                        .setWhenRemoved(getCurrentTime())
+                                                        .build();
+        return result;
+    }
+
+    @Apply
+    private void inventoryRemoved(InventoryRemoved event) {
+
+        getBuilder().clearInventoryId()
+                    .clearInventoryItems();
+    }
+
     @Apply
     private void inventoryAppended(InventoryAppended event) {
 
         final InventoryItem newInventoryItem = InventoryItem.newBuilder()
+                                                            .setInLibrary(true)
                                                             .setInventoryItemId(
                                                                     event.getInventoryItemId())
                                                             .setInLibrary(true)

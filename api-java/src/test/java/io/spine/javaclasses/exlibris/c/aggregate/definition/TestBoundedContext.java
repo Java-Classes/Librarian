@@ -20,14 +20,11 @@
 
 package io.spine.javaclasses.exlibris.c.aggregate.definition;
 
-import io.spine.test.Tests;
 import javaclasses.exlibris.context.BoundedContexts;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
-import static javaclasses.exlibris.context.BoundedContexts.createBoundedContext;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("BoundedContexts should")
 public class TestBoundedContext {
@@ -37,9 +34,4 @@ public class TestBoundedContext {
         assertHasPrivateParameterlessCtor(BoundedContexts.class);
     }
 
-    @Test
-    @DisplayName("not create BoundedContext without a StorageFactory")
-    void notCreateBoundedContextWithoutStorageFactory() {
-        assertThrows(NullPointerException.class, () -> createBoundedContext(Tests.nullRef()));
-    }
 }
