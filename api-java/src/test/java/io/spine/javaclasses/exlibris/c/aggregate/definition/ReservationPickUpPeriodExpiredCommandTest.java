@@ -28,9 +28,7 @@ import javaclasses.exlibris.c.ReserveBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import java.util.List;
-
 import static io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory.reservationPickUpPeriodInstanceExpired;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,6 +47,7 @@ public class ReservationPickUpPeriodExpiredCommandTest extends InventoryCommandT
     }
 
     @Test
+    @DisplayName("produce MarkReservationExpired event")
     void produceEvent() {
 
         dispatchReserveBook();
@@ -64,6 +63,7 @@ public class ReservationPickUpPeriodExpiredCommandTest extends InventoryCommandT
     }
 
     @Test
+    @DisplayName("mark reservation as expired")
     void reservationPickUpPeriodExpired() {
 
         dispatchReserveBook();

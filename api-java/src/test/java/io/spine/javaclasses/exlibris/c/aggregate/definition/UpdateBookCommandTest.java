@@ -20,26 +20,31 @@
 
 package io.spine.javaclasses.exlibris.c.aggregate.definition;
 
+import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import io.spine.javaclasses.exlibris.testdata.BookCommandFactory;
 import javaclasses.exlibris.Book;
 import javaclasses.exlibris.BookDetailsChange;
+import javaclasses.exlibris.BookId;
+import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookUpdated;
 import javaclasses.exlibris.c.UpdateBook;
+import javaclasses.exlibris.c.rejection.CannotUpdateMissingBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import java.util.List;
-
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.bookDetails;
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.bookDetails2;
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.createBookInstance;
 import static io.spine.javaclasses.exlibris.testdata.BookCommandFactory.updateBookInstance;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Paul Ageyev
@@ -88,7 +93,7 @@ public class UpdateBookCommandTest extends BookCommandTest<UpdateBook> {
     }
 
     @Test
-    @DisplayName("update the book")
+    @DisplayName("update a book")
     void updateBook() {
 
         dispatchAddBookCmd();
@@ -113,6 +118,39 @@ public class UpdateBookCommandTest extends BookCommandTest<UpdateBook> {
                           .getTitle(), state.getBookDetails()
                                             .getTitle());
 
+    }
+
+    @Test
+    @DisplayName("throw CannotUpdateMissingBook rejection upon " +
+            "an attempt to update a missing book")
+    void notUpdateBook() {
+
+        dispatchAddBookCmd();
+
+        final BookDetailsChange bookDetailsChange = BookDetailsChange.newBuilder()
+                                                                     .setPreviousBookDetails(
+                                                                             bookDetails)
+                                                                     .setNewBookDetails(
+                                                                             bookDetails2)
+                                                                     .build();
+
+        BookId bookId2 = BookId.newBuilder()
+                               .setIsbn62(Isbn62.newBuilder()
+                                                .setValue("1")
+                                                .build())
+                               .build();
+
+        final UpdateBook updateBook = updateBookInstance(bookId2,
+                                                         BookCommandFactory.userId,
+                                                         bookDetailsChange);
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(updateBook)));
+
+        final Throwable cause = Throwables.getRootCause(t);
+
+        assertThat(cause, instanceOf(CannotUpdateMissingBook.class));
     }
 
     private void dispatchAddBookCmd() {

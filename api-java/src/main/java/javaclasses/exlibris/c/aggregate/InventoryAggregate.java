@@ -66,12 +66,24 @@ import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
+import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
+import javaclasses.exlibris.c.rejection.CannotExtendLoanPeriod;
+import javaclasses.exlibris.c.rejection.CannotReserveBook;
+import javaclasses.exlibris.c.rejection.CannotReturnMissingBook;
+import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
+import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 import static java.util.Collections.singletonList;
+import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.CancelReservationRejection.throwCannotCancelMissingReservation;
+import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ExtendLoanPeriodRejection.throwCannotExtendLoanPeriod;
+import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ReserveBookRejection.throwCannotReserveBook;
+import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ReturnBookRejection.throwCannotReturnMissingBook;
+import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ReturnBookRejection.throwCannotReturnNonBorrowedBook;
+import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.WriteBookOffRejection.throwCannotWriteMissingBookOff;
 
 /**
  * The aggregate managing the state of a {@link Inventory}.
@@ -138,66 +150,59 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return result.build();
     }
 
-    private Message becameAvailableOrReadyToPickup(InventoryId inventoryId,
-                                                   InventoryItemId inventoryItemId) {
-        if (getState().getReservationsList()
-                      .isEmpty()) {
-            final BookBecameAvailable bookBecameAvailable = BookBecameAvailable.newBuilder()
-                                                                               .setInventoryId(
-                                                                                       inventoryId)
-                                                                               .setInventoryItemId(
-                                                                                       inventoryItemId)
-                                                                               .setWhenBecameAvailable(
-                                                                                       getCurrentTime())
-                                                                               .build();
-            return bookBecameAvailable;
-        } else {
-            final Timestamp currentTime = getCurrentTime();
-            final UserId nextInQueue = getState().getReservationsList()
-                                                 .get(0)
-                                                 .getWhoReserved();
-            final BookReadyToPickup bookReadyToPickup = BookReadyToPickup.newBuilder()
-                                                                         .setInventoryId(
-                                                                                 inventoryId)
-                                                                         .setInventoryItemId(
-                                                                                 inventoryItemId)
-                                                                         .setForWhom(nextInQueue)
-                                                                         .setWhenBecameReadyToPickup(
-                                                                                 currentTime)
-                                                                         .setPickUpDeadline(
-                                                                                 // User has two days to pickup the book.
-                                                                                 Timestamp.newBuilder()
-                                                                                          .setSeconds(
-                                                                                                  currentTime.getSeconds() +
-                                                                                                          60 *
-                                                                                                                  60 *
-                                                                                                                  24 *
-                                                                                                                  2)
-                                                                                          .build())
-                                                                         .build();
-            return bookReadyToPickup;
-        }
-    }
-
     @Assign
-    List<? extends Message> handle(WriteBookOff cmd) {
+    List<? extends Message> handle(WriteBookOff cmd) throws CannotWriteMissingBookOff {
 
-        final InventoryId inventoryId = cmd.getInventoryId();
-        final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
-        final UserId librarianId = cmd.getLibrarianId();
-        final WriteOffReason writeOffReason = cmd.getWriteBookOffReason();
-        final InventoryDecreased result = InventoryDecreased.newBuilder()
-                                                            .setInventoryId(inventoryId)
-                                                            .setInventoryItemId(inventoryItemId)
-                                                            .setWhenDecreased(getCurrentTime())
-                                                            .setLibrarianId(librarianId)
-                                                            .setWriteOffReason(writeOffReason)
-                                                            .build();
+        List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
+
+        InventoryDecreased result = null;
+
+        for (InventoryItem inventoryItem : inventoryItems) {
+            if (inventoryItem.getInventoryItemId()
+                             .equals(cmd.getInventoryItemId())) {
+                final InventoryId inventoryId = cmd.getInventoryId();
+                final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
+                final UserId librarianId = cmd.getLibrarianId();
+                final WriteOffReason writeOffReason = cmd.getWriteBookOffReason();
+                result = InventoryDecreased.newBuilder()
+                                           .setInventoryId(inventoryId)
+                                           .setInventoryItemId(
+                                                   inventoryItemId)
+                                           .setWhenDecreased(
+                                                   getCurrentTime())
+                                           .setLibrarianId(librarianId)
+                                           .setWriteOffReason(
+                                                   writeOffReason)
+                                           .build();
+            }
+        }
+        if (result == null) {
+            throwCannotWriteMissingBookOff(cmd);
+        }
         return singletonList(result);
     }
 
     @Assign
-    List<? extends Message> handle(ReserveBook cmd) {
+    List<? extends Message> handle(ReserveBook cmd) throws CannotReserveBook {
+
+        List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
+
+        for (int i = 0; i < inventoryItems.size(); i++) {
+            if (inventoryItems.get(i)
+                              .getUserId()
+                              .equals(cmd.getUserId())) {
+                throwCannotReserveBook(cmd, true, false);
+            }
+        }
+
+        List<Reservation> reservations = getState().getReservationsList();
+
+        for (Reservation reservation : reservations) {
+            if (reservation.getWhoReserved()
+                           .equals(cmd.getUserId())) {
+                throwCannotReserveBook(cmd, false, true);
+            }
+        }
 
         final InventoryId inventoryId = cmd.getInventoryId();
         final UserId userId = cmd.getUserId();
@@ -263,18 +268,35 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     @Assign
-    List<? extends Message> handle(ExtendLoanPeriod cmd) {
+    List<? extends Message> handle(ExtendLoanPeriod cmd) throws CannotExtendLoanPeriod {
+
+        List<Reservation> reservations = getState().getReservationsList();
+
+        if (!getState().getReservationsList()
+                       .isEmpty()) {
+            throwCannotExtendLoanPeriod(cmd);
+        }
 
         final InventoryId inventoryId = cmd.getInventoryId();
         final LoanId loanId = cmd.getLoanId();
         final UserId userId = cmd.getUserId();
-        final Timestamp newDueDate = cmd.getNewDueDate();
+        int loanPosition = -1;
 
+        List<Loan> loansList = getState().getLoansList();
+        for (int i = 0; i < loansList.size(); i++) {
+            if (loansList.get(i)
+                         .getLoanId()
+                         .equals(cmd.getLoanId())) {
+                loanPosition = i;
+            }
+        }
+        final Timestamp previousDueDate = getState().getLoans(loanPosition)
+                                                    .getWhenDue();
         // Two weeks before new due on date.
-        final Timestamp previousDueDate = Timestamp.newBuilder()
-                                                   .setSeconds(newDueDate.getSeconds() -
-                                                                       60 * 60 * 24 * 14)
-                                                   .build();
+        final Timestamp newDueDate = Timestamp.newBuilder()
+                                              .setSeconds(previousDueDate.getSeconds() +
+                                                                  60 * 60 * 24 * 14)
+                                              .build();
         final LoanPeriodExtended result = LoanPeriodExtended.newBuilder()
                                                             .setInventoryId(inventoryId)
                                                             .setLoanId(loanId)
@@ -287,15 +309,30 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     @Assign
-    List<? extends Message> handle(CancelReservation cmd) {
+    List<? extends Message> handle(CancelReservation cmd) throws CannotCancelMissingReservation {
 
-        final InventoryId inventoryId = cmd.getInventoryId();
-        final UserId userId = cmd.getUserId();
-        final ReservationCanceled result = ReservationCanceled.newBuilder()
-                                                              .setInventoryId(inventoryId)
-                                                              .setWhoCanceled(userId)
-                                                              .setWhenCanceled(getCurrentTime())
-                                                              .build();
+        ReservationCanceled result = null;
+
+        final List<Reservation> reservations = getState().getReservationsList();
+
+        if (!userHasReservation(cmd)) {
+            throwCannotCancelMissingReservation(cmd);
+        }
+
+        for (Reservation reservation :
+                reservations) {
+            if (reservation.getWhoReserved()
+                           .equals(cmd.getUserId())) {
+                final InventoryId inventoryId = cmd.getInventoryId();
+                final UserId userId = cmd.getUserId();
+                result = ReservationCanceled.newBuilder()
+                                            .setInventoryId(inventoryId)
+                                            .setWhoCanceled(userId)
+                                            .setWhenCanceled(
+                                                    getCurrentTime())
+                                            .build();
+            }
+        }
         return singletonList(result);
     }
 
@@ -316,7 +353,14 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     @Assign
-    List<? extends Message> handle(ReturnBook cmd) {
+    List<? extends Message> handle(ReturnBook cmd) throws CannotReturnNonBorrowedBook,
+                                                          CannotReturnMissingBook {
+        if (!inventoryItemExists(cmd.getInventoryItemId())) {
+            throwCannotReturnMissingBook(cmd);
+        }
+        if (!userBorrowedBook(cmd.getUserId())) {
+            throwCannotReturnNonBorrowedBook(cmd);
+        }
 
         final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
@@ -454,8 +498,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (int i = 0; i < inventoryItems.size(); i++) {
             InventoryItem item = inventoryItems.get(i);
             if (item.getInventoryItemId()
-                    .getItemNumber() == event.getInventoryItemId()
-                                             .getItemNumber()) {
+                    .equals(event.getInventoryItemId())
+                    ) {
                 decreaseItemPosition = i;
             }
         }
@@ -483,8 +527,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (int i = 0; i < inventoryItems.size(); i++) {
             InventoryItem item = inventoryItems.get(i);
             if (item.getInventoryItemId()
-                    .getItemNumber() == event.getInventoryItemId()
-                                             .getItemNumber()) {
+                    .equals(event.getInventoryItemId())
+                    ) {
                 borrowItemPosition = i;
             }
         }
@@ -526,8 +570,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (int i = 0; i < loans.size(); i++) {
             if (loans.get(i)
                      .getLoanId()
-                     .getValue() == event.getLoanId()
-                                         .getValue()) {
+                     .equals(event.getLoanId())) {
                 loanPosition = i;
             }
         }
@@ -545,8 +588,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (int i = 0; i < loans.size(); i++) {
             Loan loan = loans.get(i);
             if (loan.getLoanId()
-                    .getValue() == event.getLoanId()
-                                        .getValue()) {
+                    .equals(event.getLoanId())) {
                 loanPosition = i;
             }
         }
@@ -568,12 +610,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final List<Reservation> reservations = getBuilder().getReservations();
         for (int i = 0; i < reservations.size(); i++) {
             Reservation reservation = reservations.get(i);
+
             if (reservation.getWhoReserved()
-                           .getEmail()
-                           .getValue()
-                           .equals(event.getWhoCanceled()
-                                        .getEmail()
-                                        .getValue())) {
+                           .equals(event.getWhoCanceled())) {
                 reservationCancelIndex = i;
             }
         }
@@ -587,11 +626,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (int i = 0; i < reservations.size(); i++) {
             Reservation reservation = reservations.get(i);
             if (reservation.getWhoReserved()
-                           .getEmail()
-                           .getValue()
                            .equals(event.getUserId()
-                                        .getEmail()
-                                        .getValue())) {
+                           )) {
                 reservationPosition = i;
 
             }
@@ -609,11 +645,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (int i = 0; i < inventoryItems.size(); i++) {
             InventoryItem item = inventoryItems.get(i);
             if (item.getUserId()
-                    .getEmail()
-                    .getValue()
                     .equals(event.getWhoReturned()
-                                 .getEmail()
-                                 .getValue()) && item.getBorrowed()) {
+                    ) && item.getBorrowed()) {
                 returnedItemPosition = i;
             }
         }
@@ -628,11 +661,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (int i = 0; i < loans.size(); i++) {
             Loan loan = loans.get(i);
             if (loan.getWhoBorrowed()
-                    .getEmail()
-                    .getValue()
+
                     .equals(event.getWhoReturned()
-                                 .getEmail()
-                                 .getValue())) {
+                    )) {
                 loanIndex = i;
             }
         }
@@ -647,8 +678,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (int i = 0; i < inventoryItems.size(); i++) {
             InventoryItem item = inventoryItems.get(i);
             if (item.getInventoryItemId()
-                    .getItemNumber() == event.getInventoryItemId()
-                                             .getItemNumber()) {
+                    .equals(event.getInventoryItemId())) {
                 bookLostItemPosition = i;
             }
         }
@@ -659,5 +689,77 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                    .build();
 
         getBuilder().setInventoryItems(bookLostItemPosition, inventoryItem);
+    }
+
+    private boolean userBorrowedBook(UserId userId) {
+        for (InventoryItem item : getState().getInventoryItemsList()) {
+            if (item.getUserId()
+
+                    .equals(userId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean inventoryItemExists(InventoryItemId inventoryItemId) {
+        for (InventoryItem item : getState().getInventoryItemsList()) {
+            if (item.getInventoryItemId()
+                    .equals(inventoryItemId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean userHasReservation(CancelReservation cmd) {
+        for (Reservation reservation : getState().getReservationsList()) {
+            if (reservation.getWhoReserved()
+                           .equals(cmd.getUserId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Message becameAvailableOrReadyToPickup(InventoryId inventoryId,
+                                                   InventoryItemId inventoryItemId) {
+        if (getState().getReservationsList()
+                      .isEmpty()) {
+            final BookBecameAvailable bookBecameAvailable = BookBecameAvailable.newBuilder()
+                                                                               .setInventoryId(
+                                                                                       inventoryId)
+                                                                               .setInventoryItemId(
+                                                                                       inventoryItemId)
+                                                                               .setWhenBecameAvailable(
+                                                                                       getCurrentTime())
+                                                                               .build();
+            return bookBecameAvailable;
+        } else {
+            final Timestamp currentTime = getCurrentTime();
+            final UserId nextInQueue = getState().getReservationsList()
+                                                 .get(0)
+                                                 .getWhoReserved();
+            final BookReadyToPickup bookReadyToPickup = BookReadyToPickup.newBuilder()
+                                                                         .setInventoryId(
+                                                                                 inventoryId)
+                                                                         .setInventoryItemId(
+                                                                                 inventoryItemId)
+                                                                         .setForWhom(nextInQueue)
+                                                                         .setWhenBecameReadyToPickup(
+                                                                                 currentTime)
+                                                                         .setPickUpDeadline(
+                                                                                 // User has two days to pickup the book.
+                                                                                 Timestamp.newBuilder()
+                                                                                          .setSeconds(
+                                                                                                  currentTime.getSeconds() +
+                                                                                                          60 *
+                                                                                                                  60 *
+                                                                                                                  24 *
+                                                                                                                  2)
+                                                                                          .build())
+                                                                         .build();
+            return bookReadyToPickup;
+        }
     }
 }

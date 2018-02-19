@@ -20,27 +20,33 @@
 
 package io.spine.javaclasses.exlibris.c.aggregate.definition;
 
+import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import io.spine.javaclasses.exlibris.testdata.InventoryCommandFactory;
 import javaclasses.exlibris.Inventory;
+import javaclasses.exlibris.InventoryItemId;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.ReturnBook;
+import javaclasses.exlibris.c.rejection.CannotReturnMissingBook;
+import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import java.util.List;
-
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Alexander Karpets
  */
+@DisplayName("ReturnBook command should be interpreted by InventoryAggregate and")
 public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory> {
 
     @Override
@@ -60,6 +66,7 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
     }
 
     @Test
+    @DisplayName("produce BookReturned event")
     void produceEvent() {
         appendInventory();
         borrowBook();
@@ -97,7 +104,49 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
         final Inventory inventoryReturned = aggregate.getState();
         assertEquals(0, inventoryReturned.getLoansList()
                                          .size());
-        assertTrue(inventoryReturned.getInventoryItemsList().get(0).getInLibrary());
-        assertEquals(1, inventoryReturned.getInventoryItemsList().get(0).getInventoryItemId().getItemNumber());
+        assertTrue(inventoryReturned.getInventoryItemsList()
+                                    .get(0)
+                                    .getInLibrary());
+        assertEquals(1, inventoryReturned.getInventoryItemsList()
+                                         .get(0)
+                                         .getInventoryItemId()
+                                         .getItemNumber());
     }
+
+    @Test
+    @DisplayName("throw CannotReturnNonBorrowedBook rejection upon " +
+            "an attempt to return non borrowed book")
+    void throwsCannotReturnNonBorrowedBook() {
+        appendInventory();
+        final ReturnBook returnBook = InventoryCommandFactory.returnBookInstance();
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(returnBook)));
+        final Throwable cause = Throwables.getRootCause(t);
+
+        assertThat(cause, instanceOf(CannotReturnNonBorrowedBook.class));
+    }
+
+    @Test
+    @DisplayName("throw CannotReturnMissingBook rejection upon " +
+            "an attempt to return missing book")
+    void throwsCannotReturnMissingBook() {
+        appendInventory();
+        borrowBook();
+        final InventoryItemId incorrectBookId = InventoryItemId.newBuilder()
+                                                               .setItemNumber(1323)
+                                                               .build();
+        final ReturnBook returnBook = InventoryCommandFactory.returnBookInstance(
+                InventoryCommandFactory.inventoryId,
+                incorrectBookId, InventoryCommandFactory.userId);
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(returnBook)));
+        final Throwable cause = Throwables.getRootCause(t);
+
+        assertThat(cause, instanceOf(CannotReturnMissingBook.class));
+    }
+
 }
