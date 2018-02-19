@@ -37,6 +37,7 @@ import javaclasses.exlibris.c.RemoveBook;
 import javaclasses.exlibris.c.UpdateBook;
 
 import static io.spine.time.Time.getCurrentTime;
+import static javaclasses.exlibris.c.RemoveBook.BookRemovalReasonCase.CUSTOM_REASON;
 import static javaclasses.exlibris.c.RemoveBook.BookRemovalReasonCase.OUTDATED;
 
 /**
@@ -103,7 +104,8 @@ public class BookCommandFactory {
 
     public static final String customReason = "The book was burned damaged";
 
-    public static final RemoveBook.BookRemovalReasonCase removalReason = OUTDATED;
+    public static final RemoveBook.BookRemovalReasonCase removalOudatedReason = OUTDATED;
+    public static final RemoveBook.BookRemovalReasonCase removalCustomReason = CUSTOM_REASON;
 
     private BookCommandFactory() {
     }

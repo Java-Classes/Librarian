@@ -84,4 +84,11 @@ public class RejectionConstructorsTest {
     void InventoryAggregateRejectionsHasPrivateConstructor() {
         assertHasPrivateParameterlessCtor(InventoryAggregateRejections.class);
     }
+
+    @Test
+    @DisplayName("BookAggregateRejections has a private constructor")
+    void  BookAggregateRejectionsHasPrivateConstructor() {
+        assertHasPrivateParameterlessCtor(BookAggregateRejections.class);
+    }
+
 }
