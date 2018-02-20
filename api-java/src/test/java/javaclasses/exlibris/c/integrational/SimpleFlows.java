@@ -49,12 +49,50 @@ import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookIn
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.reserveBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.returnBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.writeBookOffInstance;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Alexander Karpets
  */
 public class SimpleFlows extends InventoryCommandTest<Message> {
+    private final TestActorRequestFactory requestFactory =
+            TestActorRequestFactory.newInstance(getClass());
+    private final BookDetailsChange newBookDetails = BookDetailsChange.newBuilder()
+                                                                      .setNewBookDetails(
+                                                                              BookCommandFactory.bookDetails2)
+                                                                      .build();
+    private final Command addBook = requestFactory.createCommand(toMessage(createBookInstance()));
+    private final Command updateBook = requestFactory.createCommand(
+            toMessage(updateBookInstance(BookCommandFactory.bookId,
+                                         BookCommandFactory.userId2,
+                                         newBookDetails)));
+    private final Command appendInventory = requestFactory.createCommand(
+            toMessage(appendInventoryInstance()));
+    private final Command borrowBook = requestFactory.createCommand(
+            toMessage(borrowBookInstance()));
+    private final Command reserveBook = requestFactory.createCommand(
+            toMessage(reserveBookInstance(InventoryCommandFactory.userId,
+                                          InventoryCommandFactory.inventoryId)));
+    private final Command reserveBook2 = requestFactory.createCommand(
+            toMessage(reserveBookInstance(InventoryCommandFactory.userId2,
+                                          InventoryCommandFactory.inventoryId)));
+    private final Command returnBook = requestFactory.createCommand(
+            toMessage(returnBookInstance()));
+    private final Command borrowBook2 = requestFactory.createCommand(
+            toMessage(borrowBookInstance(InventoryCommandFactory.inventoryId,
+                                         InventoryCommandFactory.inventoryItemId,
+                                         InventoryCommandFactory.userId2)));
+    private final Command returnBook2 = requestFactory.createCommand(
+            toMessage(returnBookInstance(InventoryCommandFactory.inventoryId,
+                                         InventoryCommandFactory.inventoryItemId,
+                                         InventoryCommandFactory.userId2)));
+    private final Command writeBookOff = requestFactory.createCommand(
+            toMessage(writeBookOffInstance()));
+    private final Command removeBook = requestFactory.createCommand(
+            toMessage(removeBookInstance(BookCommandFactory.bookId,
+                                         BookCommandFactory.librarianId,
+                                         RemoveBook.BookRemovalReasonCase.OUTDATED)));
 
     @Override
     @BeforeEach
@@ -65,38 +103,7 @@ public class SimpleFlows extends InventoryCommandTest<Message> {
     @Test
     @DisplayName("simple book lifecycle that doesn't throw a rejection")
     void useCase() {
-        final TestActorRequestFactory requestFactory =
-                TestActorRequestFactory.newInstance(getClass());
-        final BookDetailsChange newBookDetails = BookDetailsChange.newBuilder()
-                                                                  .setNewBookDetails(
-                                                                          BookCommandFactory.bookDetails2)
-                                                                  .build();
-        final Command addBook = requestFactory.createCommand(toMessage(createBookInstance()));
-        final Command updateBook = requestFactory.createCommand(
-                toMessage(updateBookInstance(BookCommandFactory.bookId,
-                                             BookCommandFactory.userId2,
-                                             newBookDetails)));
-        final Command appendInventory = requestFactory.createCommand(
-                toMessage(appendInventoryInstance()));
-        final Command borrowBook = requestFactory.createCommand(toMessage(borrowBookInstance()));
-        final Command reserveBook = requestFactory.createCommand(
-                toMessage(reserveBookInstance(InventoryCommandFactory.userId2,
-                                              InventoryCommandFactory.inventoryId)));
-        final Command returnBook = requestFactory.createCommand(toMessage(returnBookInstance()));
-        final Command borrowBook2 = requestFactory.createCommand(
-                toMessage(borrowBookInstance(InventoryCommandFactory.inventoryId,
-                                             InventoryCommandFactory.inventoryItemId,
-                                             InventoryCommandFactory.userId2)));
-        final Command returnBook2 = requestFactory.createCommand(
-                toMessage(returnBookInstance(InventoryCommandFactory.inventoryId,
-                                             InventoryCommandFactory.inventoryItemId,
-                                             InventoryCommandFactory.userId2)));
-        final Command writeBookOff = requestFactory.createCommand(
-                toMessage(writeBookOffInstance()));
-        final Command removeBook = requestFactory.createCommand(
-                toMessage(removeBookInstance(BookCommandFactory.bookId,
-                                             BookCommandFactory.librarianId,
-                                             RemoveBook.BookRemovalReasonCase.OUTDATED)));
+
         final BoundedContext boundedContext = BoundedContexts.create();
         final CommandBus commandBus = boundedContext.getCommandBus();
         final StreamObserver<Ack> observer = StreamObservers.noOpObserver();
@@ -110,13 +117,63 @@ public class SimpleFlows extends InventoryCommandTest<Message> {
         commandBus.post(updateBook, observer);
         commandBus.post(appendInventory, observer);
         commandBus.post(borrowBook, observer);
-        commandBus.post(reserveBook, observer);
+        commandBus.post(reserveBook2, observer);
         commandBus.post(returnBook, observer);
         commandBus.post(borrowBook2, observer);
         commandBus.post(returnBook2, observer);
         commandBus.post(writeBookOff, observer);
         commandBus.post(removeBook, observer);
-        assertEquals(false, bookRejectionsSubscriber.wasCalled());
-        assertEquals(false, inventoryRejectionsSubscriber.wasCalled());
+        assertFalse(bookRejectionsSubscriber.wasCalled());
+        assertFalse(inventoryRejectionsSubscriber.wasCalled());
+    }
+
+    @Test
+    @DisplayName("simple flow that throw rejections")
+    void rejectionsThrow() {
+        final BoundedContext boundedContext = BoundedContexts.create();
+        final CommandBus commandBus = boundedContext.getCommandBus();
+        final StreamObserver<Ack> observer = StreamObservers.noOpObserver();
+        final BookRejectionsSubscriber bookRejectionsSubscriber = new BookRejectionsSubscriber();
+        final InventoryRejectionsSubscriber inventoryRejectionsSubscriber = new InventoryRejectionsSubscriber();
+        boundedContext.getRejectionBus()
+                      .register(bookRejectionsSubscriber);
+        boundedContext.getRejectionBus()
+                      .register(inventoryRejectionsSubscriber);
+
+        commandBus.post(borrowBook, observer);
+        assertTrue(InventoryRejectionsSubscriber.wasCalled());
+        InventoryRejectionsSubscriber.clear();
+
+        commandBus.post(updateBook, observer);
+        assertTrue(BookRejectionsSubscriber.wasCalled());
+        BookRejectionsSubscriber.clear();
+
+        commandBus.post(addBook, observer);
+        assertFalse(BookRejectionsSubscriber.wasCalled());
+
+        commandBus.post(returnBook, observer);
+        assertTrue(InventoryRejectionsSubscriber.wasCalled());
+        InventoryRejectionsSubscriber.clear();
+
+        commandBus.post(appendInventory, observer);
+        assertFalse(InventoryRejectionsSubscriber.wasCalled());
+
+        commandBus.post(reserveBook, observer);
+        assertFalse(InventoryRejectionsSubscriber.wasCalled());
+
+        commandBus.post(reserveBook, observer);
+        assertTrue(InventoryRejectionsSubscriber.wasCalled());
+        InventoryRejectionsSubscriber.clear();
+
+        commandBus.post(returnBook, observer);
+        assertTrue(InventoryRejectionsSubscriber.wasCalled());
+        InventoryRejectionsSubscriber.clear();
+
+        commandBus.post(borrowBook, observer);
+        assertFalse(InventoryRejectionsSubscriber.wasCalled());
+
+        commandBus.post(borrowBook, observer);
+        assertTrue(InventoryRejectionsSubscriber.wasCalled());
+        InventoryRejectionsSubscriber.clear();
     }
 }

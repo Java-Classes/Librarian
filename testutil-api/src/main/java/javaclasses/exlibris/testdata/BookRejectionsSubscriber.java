@@ -60,5 +60,6 @@ public class BookRejectionsSubscriber extends RejectionSubscriber {
 
     public static void clear() {
         rejection = null;
+        wasCalled = false;
     }
 }

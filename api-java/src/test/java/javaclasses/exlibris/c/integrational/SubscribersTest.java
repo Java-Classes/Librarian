@@ -88,16 +88,16 @@ public class SubscribersTest extends BookCommandTest<AddBook> {
         commandBus.post(addBook, StreamObservers.noOpObserver());
         commandBus.post(addBook, StreamObservers.noOpObserver());
 
-        Rejections.BookAlreadyExists menuNotAvailable = BookRejectionsSubscriber.getRejection();
+        Rejections.BookAlreadyExists bookAlreadyExists = BookRejectionsSubscriber.getRejection();
 
-        assertEquals("paulageyev@gmail.com", menuNotAvailable.getLibrarianId()
+        assertEquals("paulageyev@gmail.com", bookAlreadyExists.getLibrarianId()
                                                              .getEmail()
                                                              .getValue());
-        assertEquals("0201485672", menuNotAvailable.getBookId()
-                                                   .getIsbn62()
-                                                   .getValue());
-        assertEquals("Refactoring", menuNotAvailable.getBookTitle()
-                                                    .getTitle());
+        assertEquals("0201485672", bookAlreadyExists.getBookId()
+                                                    .getIsbn62()
+                                                    .getValue());
+        assertEquals("Refactoring", bookAlreadyExists.getBookTitle()
+                                                     .getTitle());
     }
 
     @Test
