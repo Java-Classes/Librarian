@@ -63,7 +63,7 @@ public class SimpleFlows extends InventoryCommandTest<Message> {
     }
 
     @Test
-    @DisplayName("d")
+    @DisplayName("simple book lifecycle that doesn't throw a rejection")
     void useCase() {
         final TestActorRequestFactory requestFactory =
                 TestActorRequestFactory.newInstance(getClass());
