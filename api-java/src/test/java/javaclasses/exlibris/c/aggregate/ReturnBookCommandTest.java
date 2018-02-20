@@ -70,8 +70,10 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
     @Test
     @DisplayName("produce BookReturned event")
     void produceEvent() {
+
         appendInventory();
         borrowBook();
+
         final ReturnBook returnBook = InventoryCommandFactory.returnBookInstance();
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
@@ -90,7 +92,9 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
     @Test
     @DisplayName("return book without reservation")
     void returnBookWithoutReservation() {
+
         appendInventory();
+
         final Inventory inventoryAppended = aggregate.getState();
         assertEquals(0, inventoryAppended.getLoansList()
                                          .size());
@@ -119,7 +123,9 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
     @DisplayName("throw CannotReturnNonBorrowedBook rejection upon " +
             "an attempt to return non borrowed book")
     void throwsCannotReturnNonBorrowedBook() {
+
         appendInventory();
+
         final ReturnBook returnBook = InventoryCommandFactory.returnBookInstance();
 
         final Throwable t = assertThrows(Throwable.class,
@@ -134,8 +140,10 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
     @DisplayName("throw CannotReturnMissingBook rejection upon " +
             "an attempt to return missing book")
     void throwsCannotReturnMissingBook() {
+
         appendInventory();
         borrowBook();
+
         final InventoryItemId incorrectBookId = InventoryItemId.newBuilder()
                                                                .setItemNumber(1323)
                                                                .build();

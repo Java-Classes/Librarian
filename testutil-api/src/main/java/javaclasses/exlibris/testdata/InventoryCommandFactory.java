@@ -50,6 +50,7 @@ import static io.spine.time.Time.getCurrentTime;
  * @author Alexander Karpets
  */
 public class InventoryCommandFactory {
+
     public static final BookId bookId = BookId.newBuilder()
                                               .setIsbn62(Isbn62.newBuilder()
                                                                .setValue("123456789"))
@@ -82,7 +83,6 @@ public class InventoryCommandFactory {
     public static final WriteOffReason reason = WriteOffReason.newBuilder()
                                                               .setOutdated(true)
                                                               .build();
-    private static LoanId loanId;
 
     public static final Loan loan = Loan.newBuilder()
                                         .setLoanId(LoanId.newBuilder()
@@ -260,7 +260,7 @@ public class InventoryCommandFactory {
 
     public static LoanPeriodExtended loanPeriodExtended() {
 
-        final LoanPeriodExtended result = loanPeriodExtended(inventoryId, loanId,
+        final LoanPeriodExtended result = loanPeriodExtended(inventoryId, loan.getLoanId(),
                                                              userId);
         return result;
     }

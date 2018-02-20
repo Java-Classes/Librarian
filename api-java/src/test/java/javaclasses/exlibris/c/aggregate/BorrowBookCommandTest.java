@@ -23,12 +23,10 @@ package javaclasses.exlibris.c.aggregate;
 import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import javaclasses.exlibris.Inventory;
-import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.ReserveBook;
-import javaclasses.exlibris.c.rejection.BookAlreadyExists;
 import javaclasses.exlibris.c.rejection.CannotBorrowBook;
 import javaclasses.exlibris.testdata.InventoryCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,6 +65,7 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     @Test
     @DisplayName("produce BookBorrowed event")
     void produceEvent() {
+
         dispatchAppendInventory();
 
         final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
@@ -84,6 +83,7 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     @Test
     @DisplayName("borrow the book")
     void borrowBook() {
+
         dispatchAppendInventory();
 
         final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
@@ -99,6 +99,7 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     @Test
     @DisplayName("create the loan for the borrowed book and the specific user")
     void createLoan() {
+
         dispatchAppendInventory();
 
         final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
@@ -119,8 +120,10 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     @Test
     @DisplayName("reservation became loan")
     void reservationBecameLoan() {
+
         dispatchAppendInventory();
         dispatchReserveBook();
+
         final BorrowBook borrowBook = borrowBookInstance(InventoryCommandFactory.inventoryId,
                                                          InventoryCommandFactory.inventoryItemId,
                                                          InventoryCommandFactory.userId);

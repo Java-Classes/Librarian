@@ -59,6 +59,7 @@ public class AddBookCommandTest extends BookCommandTest<AddBook> {
     @Test
     @DisplayName("produce BookAdded event")
     void produceEvent() {
+
         final AddBook addBook = createBookInstance();
         final List<? extends Message> messageList = dispatchCommand(aggregate, envelopeOf(addBook));
 
@@ -80,6 +81,7 @@ public class AddBookCommandTest extends BookCommandTest<AddBook> {
     @Test
     @DisplayName("add a book")
     void addBook() {
+
         final AddBook addBook = createBookInstance();
         dispatchCommand(aggregate, envelopeOf(addBook));
 
@@ -92,6 +94,7 @@ public class AddBookCommandTest extends BookCommandTest<AddBook> {
     @DisplayName("throw BookAlreadyExists rejection upon " +
             "an attempt to add a book with the same title")
     void notAddBook() {
+
         final AddBook addBook = createBookInstance();
         dispatchCommand(aggregate, envelopeOf(addBook));
 

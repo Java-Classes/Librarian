@@ -63,7 +63,9 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
     @Test
     @DisplayName("produce ReservationCanceled event")
     void produceEvent() {
+
         reserveBook();
+
         final CancelReservation cancelReservation = InventoryCommandFactory.cancelReservationInstance();
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
@@ -86,7 +88,9 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
     @Test
     @DisplayName("cancel reservation")
     void cancelReservation() {
+
         reserveBook();
+
         final Inventory inventoryReserved = aggregate.getState();
         assertEquals(1, inventoryReserved.getReservationsList()
                                          .size());
@@ -118,6 +122,7 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
     @Test
     @DisplayName("cannot cancel missing reservation")
     void cancelMissingReservation() {
+
         final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
 
         dispatchCommand(aggregate, envelopeOf(appendInventory));

@@ -54,6 +54,7 @@ public class ReportLostBookCommandTest extends InventoryCommandTest<ReserveBook>
     @Test
     @DisplayName("produce BookLost event")
     void produceEvent() {
+
         dispatchAppendInventory();
 
         final ReportLostBook reportLostBook = reportLostBookInstance();

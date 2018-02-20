@@ -63,7 +63,9 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
     @Test
     @DisplayName("produce InventoryDecreased event")
     void produceEvent() {
+
         appendInventory();
+
         final WriteBookOff writeBookOff = InventoryCommandFactory.writeBookOffInstance();
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(writeBookOff));
@@ -94,7 +96,9 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
     @Test
     @DisplayName("decrease inventory")
     void writeOffBook() {
+
         appendInventory();
+
         final Inventory inventoryBefore = aggregate.getState();
         assertEquals(1, inventoryBefore.getInventoryItemsList()
                                        .size());
