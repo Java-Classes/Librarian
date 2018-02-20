@@ -32,14 +32,14 @@ import javaclasses.exlibris.Isbn62;
  * @author Alexander Karpets
  */
 public class InventoryCommandTest<C extends Message> extends AggregateCommandTest<C, InventoryAggregate> {
+
     private final TestActorRequestFactory requestFactory =
             TestActorRequestFactory.newInstance(getClass());
 
-    protected InventoryAggregate aggregate;
+    InventoryAggregate aggregate;
     InventoryId inventoryId;
 
     private static InventoryId createBookId() {
-
         return InventoryId.newBuilder()
                           .setBookId(BookId.newBuilder()
                                            .setIsbn62(Isbn62.newBuilder()

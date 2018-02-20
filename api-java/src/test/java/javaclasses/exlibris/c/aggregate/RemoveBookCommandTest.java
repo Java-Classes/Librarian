@@ -103,12 +103,12 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
     public void removeBookWithoutReason() {
 
         dispatchAddBookCmd();
-        Throwable exception = assertThrows(IllegalArgumentException.class,
-                                           () -> {
-                                               removeBookInstance(BookCommandFactory.bookId,
-                                                                  librarianId,
-                                                                  BOOKREMOVALREASON_NOT_SET);
-                                           });
+        final Throwable exception = assertThrows(IllegalArgumentException.class,
+                                                 () -> {
+                                                     removeBookInstance(BookCommandFactory.bookId,
+                                                                        librarianId,
+                                                                        BOOKREMOVALREASON_NOT_SET);
+                                                 });
     }
 
     @Test
@@ -157,11 +157,11 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
 
         dispatchAddBookCmd();
 
-        BookId bookId2 = BookId.newBuilder()
-                               .setIsbn62(Isbn62.newBuilder()
+        final BookId bookId2 = BookId.newBuilder()
+                                     .setIsbn62(Isbn62.newBuilder()
                                                 .setValue("11")
                                                 .build())
-                               .build();
+                                     .build();
 
         final RemoveBook removeBook = removeBookInstance(bookId2, userId,
                                                          RemoveBook.BookRemovalReasonCase.OUTDATED);

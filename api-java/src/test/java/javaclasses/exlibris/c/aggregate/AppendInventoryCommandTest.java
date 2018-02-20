@@ -67,11 +67,7 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
         final InventoryAppended inventoryAppended = (InventoryAppended) messageList.get(0);
 
         assertEquals(InventoryCommandFactory.inventoryId, inventoryAppended.getInventoryId());
-
-        assertEquals(InventoryCommandFactory.userId.getEmail()
-                                                   .getValue(), inventoryAppended.getLibrarianId()
-                                                                                 .getEmail()
-                                                                                 .getValue());
+        assertEquals(InventoryCommandFactory.userId, inventoryAppended.getLibrarianId());
 
     }
 

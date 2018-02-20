@@ -71,11 +71,7 @@ public class AddBookCommandTest extends BookCommandTest<AddBook> {
         final BookAdded bookAdded = (BookAdded) messageList.get(0);
 
         assertEquals(BookCommandFactory.bookId, bookAdded.getBookId());
-
-        assertEquals(userId.getEmail()
-                           .getValue(), bookAdded.getLibrarianId()
-                                                 .getEmail()
-                                                 .getValue());
+        assertEquals(userId, bookAdded.getLibrarianId());
     }
 
     @Test
@@ -87,7 +83,6 @@ public class AddBookCommandTest extends BookCommandTest<AddBook> {
 
         final Book state = aggregate.getState();
         assertEquals(state.getBookId(), addBook.getBookId());
-
     }
 
     @Test

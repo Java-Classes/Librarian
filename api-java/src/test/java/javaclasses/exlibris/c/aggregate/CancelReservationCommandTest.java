@@ -79,10 +79,7 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
 
         assertEquals(InventoryCommandFactory.inventoryId, reservationCanceled.getInventoryId());
 
-        assertEquals(InventoryCommandFactory.userId.getEmail()
-                                                   .getValue(), reservationCanceled.getWhoCanceled()
-                                                                                   .getEmail()
-                                                                                   .getValue());
+        assertEquals(InventoryCommandFactory.userId, reservationCanceled.getWhoCanceled());
     }
 
     @Test
