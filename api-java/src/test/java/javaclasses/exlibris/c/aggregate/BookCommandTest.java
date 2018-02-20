@@ -30,9 +30,9 @@ import javaclasses.exlibris.Isbn62;
 /**
  * @author Paul Ageyev
  */
-abstract class BookCommandTest<C extends Message> extends AggregateCommandTest<C, BookAggregate> {
+public abstract class BookCommandTest<C extends Message> extends AggregateCommandTest<C, BookAggregate> {
 
-    private final TestActorRequestFactory requestFactory =
+    public final TestActorRequestFactory requestFactory =
             TestActorRequestFactory.newInstance(getClass());
 
     BookAggregate aggregate;

@@ -51,17 +51,34 @@ public class BookCommandFactory {
                                               .setIsbn62(Isbn62.newBuilder()
                                                                .setValue("0201485672"))
                                               .build();
+    public static final BookId bookId2 = BookId.newBuilder()
+                                               .setIsbn62(Isbn62.newBuilder()
+                                                                .setValue("19411945"))
+                                               .build();
+
     public static final UserId userId = UserId.newBuilder()
                                               .setEmail(EmailAddress.newBuilder()
                                                                     .setValue(
                                                                             "paulageyev@gmail.com"))
                                               .build();
 
+    public static final UserId userId2 = UserId.newBuilder()
+                                               .setEmail(EmailAddress.newBuilder()
+                                                                     .setValue(
+                                                                             "petrVase4kin@gmail.com"))
+                                               .build();
     public static final UserId librarianId = UserId.newBuilder()
                                                    .setEmail(EmailAddress.newBuilder()
                                                                          .setValue(
                                                                                  "smb@teamdev.com"))
                                                    .build();
+
+    public static final UserId librarianId2 = UserId.newBuilder()
+                                                    .setEmail(EmailAddress.newBuilder()
+                                                                          .setValue(
+                                                                                  "Inn4ka@teamdev.com"))
+                                                    .build();
+
     public static final BookDetails bookDetails = BookDetails.newBuilder()
                                                              .setTitle(BookTitle.newBuilder()
                                                                                 .setTitle(
@@ -85,22 +102,22 @@ public class BookCommandFactory {
     public static final BookDetails bookDetails2 = BookDetails.newBuilder()
                                                               .setTitle(BookTitle.newBuilder()
                                                                                  .setTitle(
-                                                                                         "Refactoring: Improving the Design of Existing Code"))
+                                                                                         "WHY SOFTWARE SUX"))
                                                               .setAuthor(AuthorName.newBuilder()
                                                                                    .addAuthorName(
                                                                                            PersonName.newBuilder()
                                                                                                      .setFamilyName(
-                                                                                                             "Martin Fowler")))
+                                                                                                             "Erik Cartman")))
                                                               .setBookCoverUrl(Url.newBuilder()
-                                                                                  .setRaw("http://library.teamdev.com/book/1"))
+                                                                                  .setRaw("http://library.teamdev.com/book/144"))
                                                               .setSynopsis(BookSynopsis.newBuilder()
                                                                                        .setBookSynopsis(
-                                                                                               "As the application of object " +
-                                                                                                       "technology--particularly the Java programming language"))
+                                                                                               "Some info about software and why it sucks "))
                                                               .addCategories(Category.newBuilder()
                                                                                      .setValue(
-                                                                                             "Programming"))
+                                                                                             "Architecture"))
                                                               .build();
+
 
     public static final String customReason = "The book was burned damaged";
 

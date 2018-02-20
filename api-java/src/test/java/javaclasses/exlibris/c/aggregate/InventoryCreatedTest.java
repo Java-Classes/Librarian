@@ -27,11 +27,9 @@ import io.spine.server.command.TestEventFactory;
 import io.spine.server.entity.Repository;
 import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.InventoryId;
-import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.context.BoundedContexts;
 import javaclasses.exlibris.testdata.BookCommandFactory;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -47,12 +45,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @author Dmytry Dyachenko
  */
 @DisplayName("InventoryCreated event should be react on BookAdded and")
-public class InventoryCreatedTest extends InventoryCommandTest<AddBook> {
+public class InventoryCreatedTest {
 
-    @Override
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
+    private static Event bookAdded() {
+
+        final TestEventFactory eventFactory = newInstance(pack(BookCommandFactory.bookId),
+                                                          BookAggregate.class);
+        return eventFactory.createEvent(BookAdded.newBuilder()
+                                                 .setBookId(BookCommandFactory.bookId)
+                                                 .build()
+        );
     }
 
     @Test
@@ -74,7 +76,6 @@ public class InventoryCreatedTest extends InventoryCommandTest<AddBook> {
                                                                                  .setBookId(
                                                                                          bookAdded.getBookId())
                                                                                  .build());
-
         assertNotNull(optional);
 
         assertEquals(optional.get()
@@ -87,15 +88,5 @@ public class InventoryCreatedTest extends InventoryCommandTest<AddBook> {
     @DisplayName("has the private parameterless constructor")
     void hasPrivateCtor() {
         assertHasPrivateParameterlessCtor(BoundedContexts.class);
-    }
-
-    private static Event bookAdded() {
-
-        final TestEventFactory eventFactory = newInstance(pack(BookCommandFactory.bookId),
-                                                          BookAggregate.class);
-        return eventFactory.createEvent(BookAdded.newBuilder()
-                                                 .setBookId(BookCommandFactory.bookId)
-                                                 .build()
-        );
     }
 }
