@@ -35,6 +35,7 @@ import javaclasses.exlibris.context.BoundedContexts;
 import javaclasses.exlibris.testdata.BookCommandFactory;
 import javaclasses.exlibris.testdata.BookRejectionsSubscriber;
 import javaclasses.exlibris.testdata.InventoryCommandFactory;
+import javaclasses.exlibris.testdata.InventoryRejectionsSubscriber;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -100,8 +101,11 @@ public class SimpleFlows extends InventoryCommandTest<Message> {
         final CommandBus commandBus = boundedContext.getCommandBus();
         final StreamObserver<Ack> observer = StreamObservers.noOpObserver();
         final BookRejectionsSubscriber bookRejectionsSubscriber = new BookRejectionsSubscriber();
+        final InventoryRejectionsSubscriber inventoryRejectionsSubscriber = new InventoryRejectionsSubscriber();
         boundedContext.getRejectionBus()
                       .register(bookRejectionsSubscriber);
+        boundedContext.getRejectionBus()
+                      .register(inventoryRejectionsSubscriber);
         commandBus.post(addBook, observer);
         commandBus.post(updateBook, observer);
         commandBus.post(appendInventory, observer);
@@ -112,7 +116,7 @@ public class SimpleFlows extends InventoryCommandTest<Message> {
         commandBus.post(returnBook2, observer);
         commandBus.post(writeBookOff, observer);
         commandBus.post(removeBook, observer);
-        assertEquals(false, BookRejectionsSubscriber.wasCalled());
-
+        assertEquals(false, bookRejectionsSubscriber.wasCalled());
+        assertEquals(false, inventoryRejectionsSubscriber.wasCalled());
     }
 }

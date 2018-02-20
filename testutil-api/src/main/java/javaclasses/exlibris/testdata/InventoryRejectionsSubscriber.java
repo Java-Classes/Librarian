@@ -24,6 +24,11 @@ import io.spine.core.Subscribe;
 import io.spine.server.rejection.RejectionSubscriber;
 import javaclasses.exlibris.c.rejection.Rejections;
 
+/**
+ * The subscriber which holds the rejection.
+ *
+ * @author Alexander Karpets
+ */
 public class InventoryRejectionsSubscriber extends RejectionSubscriber {
 
     private static boolean wasCalled = false;

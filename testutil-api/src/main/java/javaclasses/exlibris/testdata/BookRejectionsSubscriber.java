@@ -24,6 +24,11 @@ import io.spine.core.Subscribe;
 import io.spine.server.rejection.RejectionSubscriber;
 import javaclasses.exlibris.c.rejection.Rejections;
 
+/**
+ * The subscriber which holds the rejection.
+ *
+ * @author Alexander Karpets
+ */
 public class BookRejectionsSubscriber extends RejectionSubscriber {
 
     private static Rejections.BookAlreadyExists rejection = null;
