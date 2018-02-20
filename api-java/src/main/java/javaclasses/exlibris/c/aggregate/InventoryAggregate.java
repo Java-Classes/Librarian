@@ -77,7 +77,6 @@ import javaclasses.exlibris.c.rejection.CannotReturnMissingBook;
 import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
 import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -131,6 +130,14 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     public InventoryAggregate(InventoryId id) {
         super(id);
     }
+
+    /**
+     * The loan period time in seconds.
+     * This period is equals two weeks.
+     * secondsInMinute * minutesInHour * hoursInDay * daysInTwoWeeks
+     * 60 * 60 * 24 * 14 = 1209600.
+     */
+    private final int LOAN_PERIOD = 1209600;
 
     /**
      * {@code AppendInventory} command handler. For details see {@link AppendInventory}.
@@ -406,13 +413,12 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final Timestamp previousDueDate = getState().getLoans(loanPosition)
                                                     .getWhenDue();
 
-        // Two weeks before new due on date.
-        final long secondsInTwoWeeks = previousDueDate.getSeconds() +
-                60 * 60 * 24 * 14;
-
+        final long newDueDateInSeconds = previousDueDate.getSeconds() +
+                LOAN_PERIOD;
         final Timestamp newDueDate = Timestamp.newBuilder()
-                                              .setSeconds(secondsInTwoWeeks)
+                                              .setSeconds(newDueDateInSeconds)
                                               .build();
+
         final LoanPeriodExtended result = LoanPeriodExtended.newBuilder()
                                                             .setInventoryId(inventoryId)
                                                             .setLoanId(loanId)
@@ -734,11 +740,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                                 inventoryItemId)
                                                         .build();
 
-        // The loan period time in seconds.
-        // This period is equals two weeks.
-        // secondsInMinute * minutesInHour * hoursInDay * daysInTwoWeeks = 1209600.
-        final int loanPeriod = 1209600;
-
         final Loan loan = Loan.newBuilder()
                               .setLoanId(event.getLoanId())
                               .setInventoryItemId(inventoryItemId)
@@ -747,7 +748,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                               .setWhenTaken(getCurrentTime())
                               .setWhenDue(Timestamp.newBuilder()
                                                    .setSeconds(System.currentTimeMillis() / 1000 +
-                                                                       loanPeriod)
+                                                                       LOAN_PERIOD)
                                                    .build())
                               .build();
 
