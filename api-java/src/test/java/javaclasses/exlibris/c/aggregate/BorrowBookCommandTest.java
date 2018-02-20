@@ -72,7 +72,7 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(borrowBook));
-        assertEquals(1, messageList.size());
+        assertEquals(2, messageList.size());
         assertEquals(BookBorrowed.class, messageList.get(0)
                                                     .getClass());
         final BookBorrowed bookBorrowed = (BookBorrowed) messageList.get(0);
