@@ -113,7 +113,7 @@ public class UpdateBookCommandTest extends BookCommandTest<UpdateBook> {
 
         dispatchCommand(aggregate, envelopeOf(updateBook));
 
-        Book state = aggregate.getState();
+        final Book state = aggregate.getState();
 
         assertEquals(BookCommandFactory.bookId, state.getBookId());
         assertEquals(state.getBookDetails()
@@ -136,11 +136,11 @@ public class UpdateBookCommandTest extends BookCommandTest<UpdateBook> {
                                                                              bookDetails2)
                                                                      .build();
 
-        BookId bookId2 = BookId.newBuilder()
-                               .setIsbn62(Isbn62.newBuilder()
+        final BookId bookId2 = BookId.newBuilder()
+                                     .setIsbn62(Isbn62.newBuilder()
                                                 .setValue("1")
                                                 .build())
-                               .build();
+                                     .build();
 
         final UpdateBook updateBook = updateBookInstance(bookId2,
                                                          BookCommandFactory.userId,

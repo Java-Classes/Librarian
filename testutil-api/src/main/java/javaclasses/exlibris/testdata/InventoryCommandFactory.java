@@ -48,6 +48,7 @@ import static io.spine.time.Time.getCurrentTime;
  * A factory of the task commands for the test needs.
  *
  * @author Alexander Karpets
+ * @author Paul Ageyev
  */
 public class InventoryCommandFactory {
 

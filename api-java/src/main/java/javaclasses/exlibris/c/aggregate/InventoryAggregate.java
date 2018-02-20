@@ -77,6 +77,7 @@ import javaclasses.exlibris.c.rejection.CannotReturnMissingBook;
 import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
 import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -406,9 +407,11 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                     .getWhenDue();
 
         // Two weeks before new due on date.
+        final long secondsInTwoWeeks = previousDueDate.getSeconds() +
+                60 * 60 * 24 * 14;
+
         final Timestamp newDueDate = Timestamp.newBuilder()
-                                              .setSeconds(previousDueDate.getSeconds() +
-                                                                  60 * 60 * 24 * 14)
+                                              .setSeconds(secondsInTwoWeeks)
                                               .build();
         final LoanPeriodExtended result = LoanPeriodExtended.newBuilder()
                                                             .setInventoryId(inventoryId)
@@ -417,7 +420,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                             .setPreviousDueDate(previousDueDate)
                                                             .setNewDueDate(newDueDate)
                                                             .build();
-
         return result;
     }
 
@@ -452,28 +454,20 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     ReservationCanceled handle(CancelReservation cmd) throws CannotCancelMissingReservation {
 
-        ReservationCanceled result = null;
-
         final List<Reservation> reservations = getState().getReservationsList();
 
         if (!userHasReservation(cmd.getUserId())) {
             throwCannotCancelMissingReservation(cmd);
         }
 
-        for (Reservation reservation :
-                reservations) {
-            if (reservation.getWhoReserved()
-                           .equals(cmd.getUserId())) {
-                final InventoryId inventoryId = cmd.getInventoryId();
-                final UserId userId = cmd.getUserId();
-                result = ReservationCanceled.newBuilder()
-                                            .setInventoryId(inventoryId)
-                                            .setWhoCanceled(userId)
-                                            .setWhenCanceled(
-                                                    getCurrentTime())
-                                            .build();
-            }
-        }
+        final InventoryId inventoryId = cmd.getInventoryId();
+        final UserId userId = cmd.getUserId();
+        final ReservationCanceled result = ReservationCanceled.newBuilder()
+                                                              .setInventoryId(inventoryId)
+                                                              .setWhoCanceled(userId)
+                                                              .setWhenCanceled(
+                                                                      getCurrentTime())
+                                                              .build();
         return result;
     }
 
@@ -585,7 +579,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      */
     @Apply
     void inventoryCreated(InventoryCreated event) {
-
         getBuilder().setInventoryId(event.getInventoryId());
     }
 
@@ -615,7 +608,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      */
     @Apply
     void inventoryRemoved(InventoryRemoved event) {
-
         getBuilder().clearInventoryId()
                     .clearInventoryItems();
     }
@@ -953,10 +945,10 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
         final int bookLostItemPosition = getItemPosition(inventoryItems, inventoryItemId);
 
-        InventoryItem inventoryItem = InventoryItem.newBuilder(
+        final InventoryItem inventoryItem = InventoryItem.newBuilder(
                 inventoryItems.get(bookLostItemPosition))
-                                                   .setLost(true)
-                                                   .build();
+                                                         .setLost(true)
+                                                         .build();
 
         getBuilder().setInventoryItems(bookLostItemPosition, inventoryItem);
     }
@@ -1023,6 +1015,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             final UserId nextInQueue = getState().getReservationsList()
                                                  .get(0)
                                                  .getWhoReserved();
+
+            // User has two days to pickup the book.
+            final long secondInTwoDays = currentTime.getSeconds() + 60 * 60 * 24 * 2;
             final BookReadyToPickup bookReadyToPickup = BookReadyToPickup.newBuilder()
                                                                          .setInventoryId(
                                                                                  inventoryId)
@@ -1032,14 +1027,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                                          .setWhenBecameReadyToPickup(
                                                                                  currentTime)
                                                                          .setPickUpDeadline(
-                                                                                 // User has two days to pickup the book.
                                                                                  Timestamp.newBuilder()
                                                                                           .setSeconds(
-                                                                                                  currentTime.getSeconds() +
-                                                                                                          60 *
-                                                                                                                  60 *
-                                                                                                                  24 *
-                                                                                                                  2)
+                                                                                                  secondInTwoDays)
                                                                                           .build())
                                                                          .build();
             return bookReadyToPickup;
