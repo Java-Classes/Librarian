@@ -39,9 +39,11 @@ import java.util.List;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.exlibris.testdata.BookCommandFactory.createBookInstance;
 import static javaclasses.exlibris.testdata.BookCommandFactory.librarianId;
-import static javaclasses.exlibris.testdata.BookCommandFactory.removalReason;
+import static javaclasses.exlibris.testdata.BookCommandFactory.removalCustomReason;
+import static javaclasses.exlibris.testdata.BookCommandFactory.removalOutdatedReason;
 import static javaclasses.exlibris.testdata.BookCommandFactory.removeBookInstance;
 import static javaclasses.exlibris.testdata.BookCommandFactory.userId;
+import static javaclasses.exlibris.testdata.BookCommandFactory.withoutRemovalReason;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -59,12 +61,12 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
     }
 
     @Test
-    @DisplayName("remove a book")
-    void removeBook() {
+    @DisplayName("remove a book with a outdated reason")
+    void removeBookWithOutdatedReason() {
         dispatchAddBookCmd();
 
         final RemoveBook removeBook = removeBookInstance(BookCommandFactory.bookId, librarianId,
-                                                         removalReason);
+                                                         removalOutdatedReason);
 
         dispatchCommand(aggregate, envelopeOf(removeBook));
         final Book state = aggregate.getState();
@@ -77,12 +79,43 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
     }
 
     @Test
+    @DisplayName("remove a book with a custom reason")
+    void removeBookWithCustomReason() {
+        dispatchAddBookCmd();
+
+        final RemoveBook removeBook = removeBookInstance(BookCommandFactory.bookId, librarianId,
+                                                         removalCustomReason);
+
+        dispatchCommand(aggregate, envelopeOf(removeBook));
+        final Book state = aggregate.getState();
+
+        assertEquals("", state.getBookDetails()
+                              .toString());
+
+        assertEquals("", state.getBookId()
+                              .toString());
+    }
+
+    @Test
+    @DisplayName("remove a book without a reason")
+    public void removeBookWithoutReason() {
+
+        dispatchAddBookCmd();
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                                           () -> {
+                                               removeBookInstance(BookCommandFactory.bookId,
+                                                                  librarianId,
+                                                                  withoutRemovalReason);
+                                           });
+    }
+
+    @Test
     @DisplayName("produce BookRemoved event")
     void produceEvent() {
         dispatchAddBookCmd();
 
         final RemoveBook removeBook = removeBookInstance(BookCommandFactory.bookId, librarianId,
-                                                         removalReason);
+                                                         removalOutdatedReason);
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(removeBook));
@@ -100,7 +133,7 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
         dispatchAddBookCmd();
 
         final RemoveBook removeBook = removeBookInstance(BookCommandFactory.bookId, librarianId,
-                                                         removalReason);
+                                                         removalOutdatedReason);
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(removeBook));

@@ -27,6 +27,8 @@ import io.spine.core.React;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
+import io.spine.server.tuple.EitherOfTwo;
+import io.spine.server.tuple.Pair;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.InventoryId;
@@ -73,7 +75,6 @@ import javaclasses.exlibris.c.rejection.CannotReturnMissingBook;
 import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
 import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
@@ -128,14 +129,14 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     @Assign
-    List<? extends Message> handle(AppendInventory cmd) {
+    Pair<InventoryAppended, EitherOfTwo<BookBecameAvailable, BookReadyToPickup>> handle(
+            AppendInventory cmd) {
 
         final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final Rfid rfid = cmd.getRfid();
         final UserId userId = cmd.getLibrarianId();
 
-        final ImmutableList.Builder<Message> result = ImmutableList.builder();
         final InventoryAppended inventoryAppended = InventoryAppended.newBuilder()
                                                                      .setInventoryId(inventoryId)
                                                                      .setInventoryItemId(
@@ -145,9 +146,11 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                                              getCurrentTime())
                                                                      .setLibrarianId(userId)
                                                                      .build();
-        result.add(inventoryAppended);
-        result.add(becameAvailableOrReadyToPickup(inventoryId, inventoryItemId));
-        return result.build();
+
+        final Pair result = Pair.of(inventoryAppended,
+                                    becameAvailableOrReadyToPickup(inventoryId, inventoryItemId));
+
+        return result;
     }
 
     @Assign
@@ -353,8 +356,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     @Assign
-    List<? extends Message> handle(ReturnBook cmd) throws CannotReturnNonBorrowedBook,
-                                                          CannotReturnMissingBook {
+    Pair<InventoryAppended, EitherOfTwo<BookBecameAvailable, BookReadyToPickup>> handle(
+            ReturnBook cmd) throws CannotReturnNonBorrowedBook,
+                                   CannotReturnMissingBook {
         if (!inventoryItemExists(cmd.getInventoryItemId())) {
             throwCannotReturnMissingBook(cmd);
         }
@@ -365,15 +369,17 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final UserId userId = cmd.getUserId();
-        List<Message> result = new ArrayList<>();
+
         final BookReturned bookReturned = BookReturned.newBuilder()
                                                       .setInventoryId(inventoryId)
                                                       .setInventoryItemId(inventoryItemId)
                                                       .setWhoReturned(userId)
                                                       .setWhenReturned(getCurrentTime())
                                                       .build();
-        result.add(bookReturned);
-        result.add(becameAvailableOrReadyToPickup(inventoryId, inventoryItemId));
+
+        final Pair result = Pair.of(bookReturned,
+                                    becameAvailableOrReadyToPickup(inventoryId, inventoryItemId));
+
         return result;
     }
 
