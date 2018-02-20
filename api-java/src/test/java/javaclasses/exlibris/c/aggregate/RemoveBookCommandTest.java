@@ -37,13 +37,13 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static javaclasses.exlibris.c.RemoveBook.BookRemovalReasonCase.BOOKREMOVALREASON_NOT_SET;
 import static javaclasses.exlibris.testdata.BookCommandFactory.createBookInstance;
 import static javaclasses.exlibris.testdata.BookCommandFactory.librarianId;
 import static javaclasses.exlibris.testdata.BookCommandFactory.removalCustomReason;
 import static javaclasses.exlibris.testdata.BookCommandFactory.removalOutdatedReason;
 import static javaclasses.exlibris.testdata.BookCommandFactory.removeBookInstance;
 import static javaclasses.exlibris.testdata.BookCommandFactory.userId;
-import static javaclasses.exlibris.testdata.BookCommandFactory.withoutRemovalReason;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -63,10 +63,11 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
     @Test
     @DisplayName("remove a book with a outdated reason")
     void removeBookWithOutdatedReason() {
+
         dispatchAddBookCmd();
 
         final RemoveBook removeBook = removeBookInstance(BookCommandFactory.bookId, librarianId,
-                                                         removalOutdatedReason);
+                                                         BookCommandFactory.removalOutdatedReason);
 
         dispatchCommand(aggregate, envelopeOf(removeBook));
         final Book state = aggregate.getState();
@@ -81,6 +82,7 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
     @Test
     @DisplayName("remove a book with a custom reason")
     void removeBookWithCustomReason() {
+
         dispatchAddBookCmd();
 
         final RemoveBook removeBook = removeBookInstance(BookCommandFactory.bookId, librarianId,
@@ -105,13 +107,14 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
                                            () -> {
                                                removeBookInstance(BookCommandFactory.bookId,
                                                                   librarianId,
-                                                                  withoutRemovalReason);
+                                                                  BOOKREMOVALREASON_NOT_SET);
                                            });
     }
 
     @Test
     @DisplayName("produce BookRemoved event")
     void produceEvent() {
+
         dispatchAddBookCmd();
 
         final RemoveBook removeBook = removeBookInstance(BookCommandFactory.bookId, librarianId,
@@ -130,6 +133,7 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
     @Test
     @DisplayName("has the same removal reason")
     void sameRemovalReason() {
+
         dispatchAddBookCmd();
 
         final RemoveBook removeBook = removeBookInstance(BookCommandFactory.bookId, librarianId,

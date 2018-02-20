@@ -53,6 +53,7 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
     @Test
     @DisplayName("produce InventoryAppended event")
     void produceEvent() {
+
         final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
@@ -77,6 +78,7 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
     @Test
     @DisplayName("append inventory with no reservations")
     void appendInventoryWithoutReservation() {
+
         final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
         dispatchCommand(aggregate, envelopeOf(appendInventory));
 
@@ -111,6 +113,7 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
     @Test
     @DisplayName("append inventory with reservation")
     void appendInventoryWithReservation() {
+
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
         dispatchCommand(aggregate,envelopeOf(reserveBook));
 

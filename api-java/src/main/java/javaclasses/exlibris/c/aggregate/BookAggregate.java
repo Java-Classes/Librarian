@@ -20,7 +20,6 @@
 
 package javaclasses.exlibris.c.aggregate;
 
-import com.google.protobuf.Message;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
@@ -40,10 +39,7 @@ import javaclasses.exlibris.c.rejection.BookAlreadyExists;
 import javaclasses.exlibris.c.rejection.CannotRemoveMissingBook;
 import javaclasses.exlibris.c.rejection.CannotUpdateMissingBook;
 
-import java.util.List;
-
 import static io.spine.time.Time.getCurrentTime;
-import static java.util.Collections.singletonList;
 import static javaclasses.exlibris.c.aggregate.rejection.BookAggregateRejections.AddBookRejection.throwBookAlreadyExists;
 import static javaclasses.exlibris.c.aggregate.rejection.BookAggregateRejections.RemoveBookRejection.throwCannotRemoveMissingBook;
 import static javaclasses.exlibris.c.aggregate.rejection.BookAggregateRejections.UpdateBookRejection.throwCannotUpdateMissingBook;
@@ -54,16 +50,6 @@ import static javaclasses.exlibris.c.aggregate.rejection.BookAggregateRejections
  * @author Alexander Karpets
  * @author Paul Ageyev
  */
-
-@SuppressWarnings({"ClassWithTooManyMethods", /* Task definition cannot be separated and should
-                                                 process all commands and events related to it
-                                                 according to the domain model.
-                                                 The {@code Aggregate} does it with methods
-                                                 annotated as {@code Assign} and {@code Apply}.
-                                                 In that case class has too many methods.*/
-        "OverlyCoupledClass", /* As each method needs dependencies  necessary to perform execution
-                                                 that class also overly coupled.*/
-        "unused"})  /* Apply methods are private according to the spine design and not used because there is no directly usage.*/
 
 public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     /**
@@ -89,13 +75,12 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
 
     @Assign
-    List<? extends Message> handle(AddBook cmd) throws BookAlreadyExists {
+    BookAdded handle(AddBook cmd) throws BookAlreadyExists {
 
         final BookId bookId = cmd.getBookId();
 
         if (cmd.getBookDetails()
                .equals(getState().getBookDetails())) {
-
             throwBookAlreadyExists(cmd);
         }
 
@@ -109,19 +94,14 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
                                           .setWhenAdded(getCurrentTime())
                                           .build();
 
-        return singletonList(result);
+        return result;
     }
 
     @Assign
-    List<? extends Message> handle(UpdateBook cmd) throws CannotUpdateMissingBook {
+    BookUpdated handle(UpdateBook cmd) throws CannotUpdateMissingBook {
 
         if (!cmd.getBookId()
-                .getIsbn62()
-                .getValue()
-                .equals(getState().getBookId()
-                                  .getIsbn62()
-                                  .getValue())) {
-
+                .equals(getState().getBookId())) {
             throwCannotUpdateMissingBook(cmd);
         }
 
@@ -137,11 +117,11 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
                                               .setWhenUpdated(getCurrentTime())
                                               .build();
 
-        return singletonList(result);
+        return result;
     }
 
     @Assign
-    List<? extends Message> handle(RemoveBook cmd) throws CannotRemoveMissingBook {
+    BookRemoved handle(RemoveBook cmd) throws CannotRemoveMissingBook {
 
         final BookId bookId = cmd.getBookId();
 
@@ -161,24 +141,24 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
 
         switch (cmd.getBookRemovalReasonCase()) {
             case OUTDATED: {
-                return singletonList(bookRemoved
-                                             .setOutdated(true)
-                                             .build());
+                return bookRemoved
+                        .setOutdated(true)
+                        .build();
             }
             case CUSTOM_REASON: {
-                return singletonList(bookRemoved
-                                             .setCustomReason(customReason)
-                                             .build());
+                return bookRemoved
+                        .setCustomReason(customReason)
+                        .build();
             }
             case BOOKREMOVALREASON_NOT_SET: {
                 throw new IllegalArgumentException("The book cannot be removed without reason.");
             }
         }
-        return singletonList(bookRemoved.build());
+        return bookRemoved.build();
     }
 
     @Apply
-    private void bookAdded(BookAdded event) {
+    void bookAdded(BookAdded event) {
 
         final BookId bookId = event.getBookId();
         final BookDetails bookDetails = event.getDetails();
@@ -188,10 +168,9 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
 
     @Apply
-    private void bookUpdated(BookUpdated event) {
+    void bookUpdated(BookUpdated event) {
 
         final BookId bookId = event.getBookId();
-
         final BookDetailsChange bookDetails = event.getBookDetailsChange();
 
         getBuilder().setBookId(bookId)
@@ -200,7 +179,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
 
     @Apply
-    private void bookRemoved(BookRemoved event) {
+    void bookRemoved(BookRemoved event) {
 
         getBuilder().clearBookId()
                     .clearBookDetails();

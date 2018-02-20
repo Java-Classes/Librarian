@@ -56,7 +56,9 @@ public class MarkLoanOverdueCommandTest extends InventoryCommandTest<MarkLoanOve
     @Test
     @DisplayName("produce LoanBecameOverdue event")
     void produceEvent() {
+
         dispatchAppendInventory();
+
         final LoanId eventLoanId = dispatchBorrowBookAndReturnLoanId();
 
         final MarkLoanOverdue markLoanOverdue = markLoanOverdue(eventLoanId, inventoryId);
@@ -75,7 +77,9 @@ public class MarkLoanOverdueCommandTest extends InventoryCommandTest<MarkLoanOve
     @Test
     @DisplayName("marks loan as overdue")
     void markLoanPeriodAsOverdue() {
+
         dispatchAppendInventory();
+
         final LoanId eventLoanId = dispatchBorrowBookAndReturnLoanId();
 
         final MarkLoanOverdue markLoanOverdue = markLoanOverdue(eventLoanId, inventoryId);
@@ -97,6 +101,7 @@ public class MarkLoanOverdueCommandTest extends InventoryCommandTest<MarkLoanOve
     }
 
     private LoanId dispatchBorrowBookAndReturnLoanId() {
+
         final BorrowBook borrowBook = borrowBookInstance();
 
         final List<? extends Message> messages = dispatchCommand(aggregate, envelopeOf(borrowBook));
