@@ -30,8 +30,6 @@ import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.aggregate.InventoryAggregate;
 
-import java.util.Set;
-
 import static io.spine.server.route.CommandRouting.newInstance;
 
 /**
@@ -58,7 +56,7 @@ public class InventoryRepository extends AggregateRepository<InventoryId, Invent
                                                   .setBookId(bookRemoved.getBookId())
                                                   .build());
             }
-            return (Set<InventoryId>) commandRouting.apply(message, context);
+            throw new IllegalArgumentException("Cannot route the unreacted event.");
         });
     }
 
