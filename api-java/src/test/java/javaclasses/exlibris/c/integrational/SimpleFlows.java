@@ -21,19 +21,34 @@
 package javaclasses.exlibris.c.integrational;
 
 import com.google.protobuf.Message;
+import io.grpc.stub.StreamObserver;
+import io.spine.client.TestActorRequestFactory;
+import io.spine.core.Ack;
+import io.spine.core.Command;
+import io.spine.grpc.StreamObservers;
+import io.spine.server.BoundedContext;
+import io.spine.server.commandbus.CommandBus;
 import javaclasses.exlibris.BookDetailsChange;
-import javaclasses.exlibris.c.AddBook;
-import javaclasses.exlibris.c.AppendInventory;
-import javaclasses.exlibris.c.UpdateBook;
+import javaclasses.exlibris.c.RemoveBook;
 import javaclasses.exlibris.c.aggregate.InventoryCommandTest;
+import javaclasses.exlibris.context.BoundedContexts;
 import javaclasses.exlibris.testdata.BookCommandFactory;
+import javaclasses.exlibris.testdata.BookRejectionsSubscriber;
+import javaclasses.exlibris.testdata.InventoryCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.protobuf.TypeConverter.toMessage;
 import static javaclasses.exlibris.testdata.BookCommandFactory.createBookInstance;
+import static javaclasses.exlibris.testdata.BookCommandFactory.removeBookInstance;
 import static javaclasses.exlibris.testdata.BookCommandFactory.updateBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.reserveBookInstance;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.returnBookInstance;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.writeBookOffInstance;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Alexander Karpets
@@ -49,15 +64,55 @@ public class SimpleFlows extends InventoryCommandTest<Message> {
     @Test
     @DisplayName("d")
     void useCase() {
+        final TestActorRequestFactory requestFactory =
+                TestActorRequestFactory.newInstance(getClass());
         final BookDetailsChange newBookDetails = BookDetailsChange.newBuilder()
                                                                   .setNewBookDetails(
                                                                           BookCommandFactory.bookDetails2)
                                                                   .build();
-        final AddBook addBook = createBookInstance();
-        final UpdateBook updateBook = updateBookInstance(BookCommandFactory.bookId2,
-                                                         BookCommandFactory.userId2,
-                                                         newBookDetails);
-        final AppendInventory appendInventory = appendInventoryInstance();
+        final Command addBook = requestFactory.createCommand(toMessage(createBookInstance()));
+        final Command updateBook = requestFactory.createCommand(
+                toMessage(updateBookInstance(BookCommandFactory.bookId,
+                                             BookCommandFactory.userId2,
+                                             newBookDetails)));
+        final Command appendInventory = requestFactory.createCommand(
+                toMessage(appendInventoryInstance()));
+        final Command borrowBook = requestFactory.createCommand(toMessage(borrowBookInstance()));
+        final Command reserveBook = requestFactory.createCommand(
+                toMessage(reserveBookInstance(InventoryCommandFactory.userId2,
+                                              InventoryCommandFactory.inventoryId)));
+        final Command returnBook = requestFactory.createCommand(toMessage(returnBookInstance()));
+        final Command borrowBook2 = requestFactory.createCommand(
+                toMessage(borrowBookInstance(InventoryCommandFactory.inventoryId,
+                                             InventoryCommandFactory.inventoryItemId,
+                                             InventoryCommandFactory.userId2)));
+        final Command returnBook2 = requestFactory.createCommand(
+                toMessage(returnBookInstance(InventoryCommandFactory.inventoryId,
+                                             InventoryCommandFactory.inventoryItemId,
+                                             InventoryCommandFactory.userId2)));
+        final Command writeBookOff = requestFactory.createCommand(
+                toMessage(writeBookOffInstance()));
+        final Command removeBook = requestFactory.createCommand(
+                toMessage(removeBookInstance(BookCommandFactory.bookId,
+                                             BookCommandFactory.librarianId,
+                                             RemoveBook.BookRemovalReasonCase.OUTDATED)));
+        final BoundedContext boundedContext = BoundedContexts.create();
+        final CommandBus commandBus = boundedContext.getCommandBus();
+        final StreamObserver<Ack> observer = StreamObservers.noOpObserver();
+        final BookRejectionsSubscriber bookRejectionsSubscriber = new BookRejectionsSubscriber();
+        boundedContext.getRejectionBus()
+                      .register(bookRejectionsSubscriber);
+        commandBus.post(addBook, observer);
+        commandBus.post(updateBook, observer);
+        commandBus.post(appendInventory, observer);
+        commandBus.post(borrowBook, observer);
+        commandBus.post(reserveBook, observer);
+        commandBus.post(returnBook, observer);
+        commandBus.post(borrowBook2, observer);
+        commandBus.post(returnBook2, observer);
+        commandBus.post(writeBookOff, observer);
+        commandBus.post(removeBook, observer);
+        assertEquals(false, BookRejectionsSubscriber.wasCalled());
 
     }
 }

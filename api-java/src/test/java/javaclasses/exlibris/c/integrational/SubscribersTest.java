@@ -75,9 +75,9 @@ public class SubscribersTest extends BookCommandTest<AddBook> {
         final CommandBus commandBus = boundedContext.getCommandBus();
         final RejectionBus rejectionBus = boundedContext.getRejectionBus();
 
-        final Command addBook = requestFactory.command()
-                                              .create(toMessage(
-                                                      BookCommandFactory.createBookInstance()));
+        final Command addBook = requestFactory.createCommand(
+                toMessage(
+                        BookCommandFactory.createBookInstance()));
 
         final BookRejectionsSubscriber vendorRejectionsSubscriber = new BookRejectionsSubscriber();
 

@@ -27,10 +27,26 @@ import javaclasses.exlibris.c.rejection.Rejections;
 public class BookRejectionsSubscriber extends RejectionSubscriber {
 
     private static Rejections.BookAlreadyExists rejection = null;
+    private static boolean wasCalled = false;
+
+    public static boolean wasCalled() {
+        return wasCalled;
+    }
 
     @Subscribe
     public void on(Rejections.BookAlreadyExists rejection) {
         this.rejection = rejection;
+        wasCalled = true;
+    }
+
+    @Subscribe
+    public void on(Rejections.CannotUpdateMissingBook rejection) {
+        wasCalled = true;
+    }
+
+    @Subscribe
+    public void on(Rejections.CannotRemoveMissingBook rejection) {
+        wasCalled = true;
     }
 
     public static Rejections.BookAlreadyExists getRejection() {
