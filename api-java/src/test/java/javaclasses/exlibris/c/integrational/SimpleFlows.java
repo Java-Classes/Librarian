@@ -54,6 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Alexander Karpets
+ * @author Paul Ageyev
  */
 public class SimpleFlows extends InventoryCommandTest<Message> {
 
@@ -126,6 +127,21 @@ public class SimpleFlows extends InventoryCommandTest<Message> {
         commandBus.post(removeBook, observer);
         assertFalse(bookRejectionsSubscriber.wasCalled());
         assertFalse(inventoryRejectionsSubscriber.wasCalled());
+
+    }
+
+    @Test
+    @DisplayName("second simple book lifecycle that doesn't throw a rejection")
+    void secondUseCase() {
+
+        final BoundedContext boundedContext = BoundedContexts.create();
+        final CommandBus commandBus = boundedContext.getCommandBus();
+
+        final StreamObserver<Ack> observer = StreamObservers.noOpObserver();
+
+        final BookRejectionsSubscriber bookRejectionsSubscriber = new BookRejectionsSubscriber();
+        final InventoryRejectionsSubscriber inventoryRejectionsSubscriber = new InventoryRejectionsSubscriber();
+
     }
 
     @Test

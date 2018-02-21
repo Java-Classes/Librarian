@@ -394,13 +394,11 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * @return the {@code LoanPeriodExtended} event.
      * @throws CannotExtendLoanPeriod if a loan period extension isn’t possible.
      */
+
     @Assign
     LoanPeriodExtended handle(ExtendLoanPeriod cmd) throws CannotExtendLoanPeriod {
 
-        final List<Reservation> reservations = getState().getReservationsList();
-
-        if (!getState().getReservationsList()
-                       .isEmpty()) {
+        if (!userHasLoan(cmd)) {
             throwCannotExtendLoanPeriod(cmd);
         }
 
@@ -1041,5 +1039,27 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                                          .build();
             return bookReadyToPickup;
         }
+    }
+
+    private boolean userHasLoan(ExtendLoanPeriod cmd) {
+
+        final List<Reservation> reservations = getState().getReservationsList();
+
+        if (getState().getReservationsList()
+                      .size() > 0) {
+            return false;
+        }
+
+        final List<Loan> loans = getState().getLoansList();
+
+        for (Loan loan : loans) {
+            if (loan
+                    .getWhoBorrowed()
+                    .equals(cmd.getUserId())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
