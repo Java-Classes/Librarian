@@ -26,24 +26,24 @@ import io.spine.core.CommandEnvelope;
 import io.spine.server.aggregate.AggregateCommandTest;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.InventoryId;
-import javaclasses.exlibris.Isbn62;
+
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.isbn62;
 
 /**
  * @author Alexander Karpets
  */
 public class InventoryCommandTest<C extends Message> extends AggregateCommandTest<C, InventoryAggregate> {
+
     private final TestActorRequestFactory requestFactory =
             TestActorRequestFactory.newInstance(getClass());
 
-    protected InventoryAggregate aggregate;
+    InventoryAggregate aggregate;
     InventoryId inventoryId;
 
     private static InventoryId createBookId() {
-
         return InventoryId.newBuilder()
                           .setBookId(BookId.newBuilder()
-                                           .setIsbn62(Isbn62.newBuilder()
-                                                            .setValue("123456789")))
+                                           .setIsbn62(isbn62))
                           .build();
     }
 

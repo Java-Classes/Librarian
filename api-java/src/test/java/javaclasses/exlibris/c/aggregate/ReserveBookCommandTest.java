@@ -39,6 +39,9 @@ import java.util.List;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.isbn62;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.userEmailAddress1;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId2;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -61,6 +64,7 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
     @Test
     @DisplayName("produce ReservationAdded event")
     void produceEvent() {
+
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
@@ -73,30 +77,28 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
 
         final ReservationAdded reservationAdded = (ReservationAdded) messageList.get(0);
 
-        assertEquals(InventoryCommandFactory.inventoryId, reservationAdded.getInventoryId());
+        assertEquals(inventoryId, reservationAdded.getInventoryId());
 
-        assertEquals("petr@gmail.com", reservationAdded.getForWhomReserved()
-                                                       .getEmail()
-                                                       .getValue());
+        assertEquals(userEmailAddress1, reservationAdded.getForWhomReserved()
+                                                        .getEmail());
     }
 
     @Test
     @DisplayName("reserve a book")
     void reserveBook() {
+
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
         dispatchCommand(aggregate, envelopeOf(reserveBook));
 
         Inventory inventory = aggregate.getState();
-        assertEquals("123456789", inventory.getReservations(0)
-                                           .getBookId()
-                                           .getIsbn62()
-                                           .getValue());
-        assertEquals("petr@gmail.com", inventory.getReservations(0)
-                                                .getWhoReserved()
-                                                .getEmail()
-                                                .getValue());
-        final ReserveBook reserveBook2 = InventoryCommandFactory.reserveBookInstance(
-                InventoryCommandFactory.userId2, InventoryCommandFactory.inventoryId);
+        assertEquals(isbn62, inventory.getReservations(0)
+                                      .getBookId()
+                                      .getIsbn62());
+        assertEquals(userEmailAddress1, inventory.getReservations(0)
+                                                 .getWhoReserved()
+                                                 .getEmail());
+        final ReserveBook reserveBook2 = InventoryCommandFactory.reserveBookInstance(userId2,
+                                                                                     inventoryId);
         dispatchCommand(aggregate, envelopeOf(reserveBook2));
         inventory = aggregate.getState();
         assertEquals(2, inventory.getReservationsList()
@@ -107,6 +109,7 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
     @DisplayName("throw CannotReserveBook rejection upon " +
             "an attempt reserve the book that is already reserved")
     void notReserveBook() {
+
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
         dispatchCommand(aggregate, envelopeOf(reserveBook));
 

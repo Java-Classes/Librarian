@@ -48,12 +48,31 @@ import static io.spine.time.Time.getCurrentTime;
  * A factory of the task commands for the test needs.
  *
  * @author Alexander Karpets
+ * @author Paul Ageyev
  */
 public class InventoryCommandFactory {
-    public static final BookId bookId = BookId.newBuilder()
-                                              .setIsbn62(Isbn62.newBuilder()
-                                                               .setValue("123456789"))
 
+    public static final Isbn62 isbn62 = Isbn62.newBuilder()
+                                              .setValue("123456789")
+                                              .build();
+
+    public static final EmailAddress userEmailAddress1 = EmailAddress.newBuilder()
+                                                                     .setValue(
+                                                                             "petr@gmail.com")
+                                                                     .build();
+
+    private static final EmailAddress userEmailAddress2 = EmailAddress.newBuilder()
+                                                                      .setValue(
+                                                                              "petr2@gmail.com")
+                                                                      .build();
+
+    private static final EmailAddress userEmailAddress3 = EmailAddress.newBuilder()
+                                                                      .setValue(
+                                                                              "petr3@gmail.com")
+                                                                      .build();
+
+    public static final BookId bookId = BookId.newBuilder()
+                                              .setIsbn62(isbn62)
                                               .build();
     public static final InventoryId inventoryId = InventoryId.newBuilder()
                                                              .setBookId(bookId)
@@ -62,23 +81,30 @@ public class InventoryCommandFactory {
                                                                          .setBookId(bookId)
                                                                          .setItemNumber(1)
                                                                          .build();
+
+    public static final InventoryItemId inventoryItemId2 = InventoryItemId.newBuilder()
+                                                                          .setBookId(bookId)
+                                                                          .setItemNumber(2)
+                                                                          .build();
     public static final UserId userId = UserId.newBuilder()
-                                              .setEmail(EmailAddress.newBuilder()
-                                                                    .setValue("petr@gmail.com"))
+                                              .setEmail(userEmailAddress1)
                                               .build();
+
     public static final UserId userId2 = UserId.newBuilder()
-                                              .setEmail(EmailAddress.newBuilder()
-                                                                    .setValue("petr2@gmail.com"))
-                                              .build();
+                                               .setEmail(userEmailAddress2)
+                                               .build();
+
+    public static final UserId userId3 = UserId.newBuilder()
+                                               .setEmail(userEmailAddress3)
+                                               .build();
 
     public static final Rfid rfid = Rfid.newBuilder()
                                         .setValue("4321")
                                         .build();
 
-    public static final WriteOffReason reason = WriteOffReason.newBuilder()
-                                                              .setOutdated(true)
-                                                              .build();
-    private static LoanId loanId;
+    private static final WriteOffReason reason = WriteOffReason.newBuilder()
+                                                               .setOutdated(true)
+                                                               .build();
 
     public static final Loan loan = Loan.newBuilder()
                                         .setLoanId(LoanId.newBuilder()
@@ -256,13 +282,13 @@ public class InventoryCommandFactory {
 
     public static LoanPeriodExtended loanPeriodExtended() {
 
-        final LoanPeriodExtended result = loanPeriodExtended(inventoryId, loanId,
+        final LoanPeriodExtended result = loanPeriodExtended(inventoryId, loan.getLoanId(),
                                                              userId);
         return result;
     }
 
-    public static LoanPeriodExtended loanPeriodExtended(InventoryId inventoryId, LoanId loanId,
-                                                        UserId userId) {
+    private static LoanPeriodExtended loanPeriodExtended(InventoryId inventoryId, LoanId loanId,
+                                                         UserId userId) {
         LoanPeriodExtended result = LoanPeriodExtended.newBuilder()
                                                       .setInventoryId(inventoryId)
                                                       .setUserId(userId)

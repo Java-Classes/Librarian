@@ -59,6 +59,7 @@ public class AddBookCommandTest extends BookCommandTest<AddBook> {
     @Test
     @DisplayName("produce BookAdded event")
     void produceEvent() {
+
         final AddBook addBook = createBookInstance();
         final List<? extends Message> messageList = dispatchCommand(aggregate, envelopeOf(addBook));
 
@@ -70,28 +71,25 @@ public class AddBookCommandTest extends BookCommandTest<AddBook> {
         final BookAdded bookAdded = (BookAdded) messageList.get(0);
 
         assertEquals(BookCommandFactory.bookId, bookAdded.getBookId());
-
-        assertEquals(userId.getEmail()
-                           .getValue(), bookAdded.getLibrarianId()
-                                                 .getEmail()
-                                                 .getValue());
+        assertEquals(userId, bookAdded.getLibrarianId());
     }
 
     @Test
     @DisplayName("add a book")
     void addBook() {
+
         final AddBook addBook = createBookInstance();
         dispatchCommand(aggregate, envelopeOf(addBook));
 
         final Book state = aggregate.getState();
         assertEquals(state.getBookId(), addBook.getBookId());
-
     }
 
     @Test
     @DisplayName("throw BookAlreadyExists rejection upon " +
             "an attempt to add a book with the same title")
     void notAddBook() {
+
         final AddBook addBook = createBookInstance();
         dispatchCommand(aggregate, envelopeOf(addBook));
 

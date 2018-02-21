@@ -65,25 +65,28 @@ public class ExtendLoanPeriodCommandTest extends InventoryCommandTest<ExtendLoan
         final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
 
         dispatchCommand(aggregate, envelopeOf(borrowBook));
-        Inventory state = aggregate.getState();
+        final Inventory state = aggregate.getState();
+
+        long secondsInTwoWeeks = 60 * 60 * 24 * 14;
 
         assertEquals(state.getLoans(0)
                           .getWhenDue()
                           .getSeconds(), state.getLoans(0)
                                               .getWhenTaken()
-                                              .getSeconds() + 60 * 60 * 24 * 14);
+                                              .getSeconds() + secondsInTwoWeeks);
         long oldDueDate = state.getLoans(0)
                                .getWhenDue()
                                .getSeconds();
-        ExtendLoanPeriod extendLoanPeriod = extendLoanPeriodInstance(inventoryId, state.getLoans(0)
-                                                                                       .getLoanId(),
-                                                                     userId);
+        final ExtendLoanPeriod extendLoanPeriod = extendLoanPeriodInstance(inventoryId,
+                                                                           state.getLoans(0)
+                                                                                .getLoanId(),
+                                                                           userId);
 
         dispatchCommand(aggregate, envelopeOf(extendLoanPeriod));
 
-        Inventory state2 = aggregate.getState();
+        final Inventory state2 = aggregate.getState();
 
-        assertEquals(oldDueDate + 60 * 60 * 24 * 14, state2.getLoans(0)
+        assertEquals(oldDueDate + secondsInTwoWeeks, state2.getLoans(0)
                                                            .getWhenDue()
                                                            .getSeconds());
 
@@ -99,20 +102,23 @@ public class ExtendLoanPeriodCommandTest extends InventoryCommandTest<ExtendLoan
         final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
 
         dispatchCommand(aggregate, envelopeOf(borrowBook));
-        Inventory state = aggregate.getState();
+        final Inventory state = aggregate.getState();
+
+        long secondsInTwoWeeks = 60 * 60 * 24 * 14;
 
         assertEquals(state.getLoans(0)
                           .getWhenDue()
                           .getSeconds(), state.getLoans(0)
                                               .getWhenTaken()
-                                              .getSeconds() + 60 * 60 * 24 * 14);
+                                              .getSeconds() + secondsInTwoWeeks);
 
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance(userId2, inventoryId);
         dispatchCommand(aggregate, envelopeOf(reserveBook));
 
-        ExtendLoanPeriod extendLoanPeriod = extendLoanPeriodInstance(inventoryId, state.getLoans(0)
-                                                                                       .getLoanId(),
-                                                                     userId);
+        final ExtendLoanPeriod extendLoanPeriod = extendLoanPeriodInstance(inventoryId,
+                                                                           state.getLoans(0)
+                                                                                .getLoanId(),
+                                                                           userId);
 
         final Throwable t = assertThrows(Throwable.class,
                                          () -> dispatchCommand(aggregate,

@@ -68,6 +68,7 @@ public final class BoundedContexts {
      * @return the bounded context created with the storage factory
      */
     public static BoundedContext create(StorageFactory storageFactory) {
+
         checkNotNull(storageFactory);
 
         final BookRepository bookRepository = new BookRepository();
@@ -91,11 +92,15 @@ public final class BoundedContexts {
 
     @VisibleForTesting
     static BoundedContext createBoundedContext(EventBus.Builder eventBus) {
+
         checkNotNull(eventBus);
+
         final Optional<StorageFactory> storageFactory = eventBus.getStorageFactory();
+
         if (!storageFactory.isPresent()) {
             throw newIllegalStateException("EventBus does not specify a StorageFactory.");
         }
+
         return BoundedContext.newBuilder()
                              .setStorageFactorySupplier(storageFactory::get)
                              .setName(NAME)
