@@ -84,6 +84,7 @@ public class InventoryCommandFactory {
     public static final UserId userId = UserId.newBuilder()
                                               .setEmail(userEmailAddress1)
                                               .build();
+
     public static final UserId userId2 = UserId.newBuilder()
                                                .setEmail(userEmailAddress2)
                                                .build();
@@ -100,12 +101,12 @@ public class InventoryCommandFactory {
                                                                .setOutdated(true)
                                                                .build();
 
-    private static final Loan loan = Loan.newBuilder()
-                                         .setLoanId(LoanId.newBuilder()
+    public static final Loan loan = Loan.newBuilder()
+                                        .setLoanId(LoanId.newBuilder()
                                                           .setValue(1))
-                                         .setInventoryItemId(inventoryItemId)
-                                         .setWhenDue(getCurrentTime())
-                                         .build();
+                                        .setInventoryItemId(inventoryItemId)
+                                        .setWhenDue(getCurrentTime())
+                                        .build();
 
     private InventoryCommandFactory() {
     }

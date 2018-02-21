@@ -46,6 +46,7 @@ import static javaclasses.exlibris.testdata.BookCommandFactory.removeBookInstanc
 import static javaclasses.exlibris.testdata.BookCommandFactory.updateBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.extendLoanPeriodInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.reserveBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.returnBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.writeBookOffInstance;
@@ -60,41 +61,59 @@ public class SimpleFlows extends InventoryCommandTest<Message> {
 
     private final TestActorRequestFactory requestFactory =
             TestActorRequestFactory.newInstance(getClass());
+
     private final BookDetailsChange newBookDetails = BookDetailsChange.newBuilder()
                                                                       .setNewBookDetails(
                                                                               BookCommandFactory.bookDetails2)
                                                                       .build();
+
     private final Command addBook = requestFactory.createCommand(toMessage(createBookInstance()));
+
     private final Command updateBook = requestFactory.createCommand(
             toMessage(updateBookInstance(BookCommandFactory.bookId,
                                          BookCommandFactory.userId2,
                                          newBookDetails)));
     private final Command appendInventory = requestFactory.createCommand(
             toMessage(appendInventoryInstance()));
+
     private final Command borrowBook = requestFactory.createCommand(
             toMessage(borrowBookInstance()));
+
     private final Command reserveBook = requestFactory.createCommand(
             toMessage(reserveBookInstance(InventoryCommandFactory.userId,
                                           InventoryCommandFactory.inventoryId)));
+
     private final Command reserveBook2 = requestFactory.createCommand(
             toMessage(reserveBookInstance(InventoryCommandFactory.userId2,
                                           InventoryCommandFactory.inventoryId)));
+
     private final Command returnBook = requestFactory.createCommand(
             toMessage(returnBookInstance()));
+
     private final Command borrowBook2 = requestFactory.createCommand(
             toMessage(borrowBookInstance(InventoryCommandFactory.inventoryId,
                                          InventoryCommandFactory.inventoryItemId,
                                          InventoryCommandFactory.userId2)));
+
     private final Command returnBook2 = requestFactory.createCommand(
             toMessage(returnBookInstance(InventoryCommandFactory.inventoryId,
                                          InventoryCommandFactory.inventoryItemId,
                                          InventoryCommandFactory.userId2)));
     private final Command writeBookOff = requestFactory.createCommand(
             toMessage(writeBookOffInstance()));
+
     private final Command removeBook = requestFactory.createCommand(
             toMessage(removeBookInstance(BookCommandFactory.bookId,
                                          BookCommandFactory.librarianId,
                                          RemoveBook.BookRemovalReasonCase.OUTDATED)));
+
+    private final Command extendLoanPeriod = requestFactory.createCommand(
+            toMessage(extendLoanPeriodInstance()));
+
+    private final Command extendLoanPeriod2 = requestFactory.createCommand(
+            toMessage(extendLoanPeriodInstance(InventoryCommandFactory.inventoryId,
+                                               InventoryCommandFactory.loan.getLoanId(),
+                                               InventoryCommandFactory.userId2)));
 
     @Override
     @BeforeEach
@@ -192,5 +211,30 @@ public class SimpleFlows extends InventoryCommandTest<Message> {
         commandBus.post(borrowBook, observer);
         assertTrue(InventoryRejectionsSubscriber.wasCalled());
         InventoryRejectionsSubscriber.clear();
+    }
+
+    @Test
+    @DisplayName("simple loan flows")
+    void loanFlow() {
+
+        final BoundedContext boundedContext = BoundedContexts.create();
+        final CommandBus commandBus = boundedContext.getCommandBus();
+        final StreamObserver<Ack> observer = StreamObservers.noOpObserver();
+        final BookRejectionsSubscriber bookRejectionsSubscriber = new BookRejectionsSubscriber();
+        final InventoryRejectionsSubscriber inventoryRejectionsSubscriber = new InventoryRejectionsSubscriber();
+
+        boundedContext.getRejectionBus()
+                      .register(inventoryRejectionsSubscriber);
+        commandBus.post(addBook, observer);
+        commandBus.post(appendInventory, observer);
+        commandBus.post(borrowBook, observer);
+        commandBus.post(extendLoanPeriod, observer);
+        commandBus.post(extendLoanPeriod, observer);
+        commandBus.post(returnBook, observer);
+        commandBus.post(borrowBook2, observer);
+        commandBus.post(extendLoanPeriod2, observer);
+//        commandBus.post(returnBook2, observer);
+        commandBus.post(extendLoanPeriod2, observer);
+        assertFalse(inventoryRejectionsSubscriber.wasCalled());
     }
 }

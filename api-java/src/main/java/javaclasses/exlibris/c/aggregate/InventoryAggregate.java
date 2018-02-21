@@ -137,7 +137,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * secondsInMinute * minutesInHour * hoursInDay * daysInTwoWeeks
      * 60 * 60 * 24 * 14 = 1209600.
      */
-    private final int LOAN_PERIOD = 1209600;
+    private final int loanPeriod = 1209600;
 
     /**
      * {@code AppendInventory} command handler. For details see {@link AppendInventory}.
@@ -398,7 +398,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     LoanPeriodExtended handle(ExtendLoanPeriod cmd) throws CannotExtendLoanPeriod {
 
-        if (!userHasLoan(cmd)) {
+        if (!userHasLoan(cmd.getUserId())) {
             throwCannotExtendLoanPeriod(cmd);
         }
 
@@ -412,7 +412,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                     .getWhenDue();
 
         final long newDueDateInSeconds = previousDueDate.getSeconds() +
-                LOAN_PERIOD;
+                loanPeriod;
         final Timestamp newDueDate = Timestamp.newBuilder()
                                               .setSeconds(newDueDateInSeconds)
                                               .build();
@@ -746,7 +746,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                               .setWhenTaken(getCurrentTime())
                               .setWhenDue(Timestamp.newBuilder()
                                                    .setSeconds(System.currentTimeMillis() / 1000 +
-                                                                       LOAN_PERIOD)
+                                                                       loanPeriod)
                                                    .build())
                               .build();
 
@@ -1041,7 +1041,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         }
     }
 
-    private boolean userHasLoan(ExtendLoanPeriod cmd) {
+    private boolean userHasLoan(UserId userId) {
 
         final List<Reservation> reservations = getState().getReservationsList();
 
@@ -1055,7 +1055,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (Loan loan : loans) {
             if (loan
                     .getWhoBorrowed()
-                    .equals(cmd.getUserId())) {
+                    .equals(userId)) {
                 return true;
             }
         }
