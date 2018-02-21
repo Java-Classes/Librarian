@@ -18,10 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.exlibris.c.aggregate;
+package javaclasses.exlibris.c.inventory;
 
 import javaclasses.exlibris.c.book.BookAggregateRejections;
-import javaclasses.exlibris.c.inventory.InventoryAggregateRejections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

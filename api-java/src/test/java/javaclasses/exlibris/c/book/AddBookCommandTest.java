@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.exlibris.c.aggregate;
+package javaclasses.exlibris.c.book;
 
 import com.google.common.base.Throwables;
 import com.google.protobuf.Message;

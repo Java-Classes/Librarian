@@ -18,27 +18,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.exlibris.c.aggregate;
+package javaclasses.exlibris.c.inventory;
 
 import com.google.common.base.Optional;
 import io.spine.core.Event;
 import io.spine.server.BoundedContext;
 import io.spine.server.command.TestEventFactory;
 import io.spine.server.entity.Repository;
-import javaclasses.exlibris.BoundedContexts;
 import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.InventoryId;
-import javaclasses.exlibris.c.BookAdded;
+import javaclasses.exlibris.c.AddBook;
+import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.book.BookAggregate;
-import javaclasses.exlibris.c.inventory.InventoryAggregate;
 import javaclasses.exlibris.testdata.BookCommandFactory;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.server.command.TestEventFactory.newInstance;
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static javaclasses.exlibris.BoundedContexts.create;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -46,49 +45,55 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * @author Dmytry Dyachenko
  */
-@DisplayName("InventoryCreated event should be react on BookAdded and")
-public class InventoryCreatedTest {
+@DisplayName("InventoryRemoved event should be react on BookRemoved and")
+public class InventoryRemovedTest extends InventoryCommandTest<AddBook> {
 
-    private static Event bookAdded() {
-
-        final TestEventFactory eventFactory = newInstance(pack(BookCommandFactory.bookId),
-                                                          BookAggregate.class);
-        return eventFactory.createEvent(BookAdded.newBuilder()
-                                                 .setBookId(BookCommandFactory.bookId)
-                                                 .build()
-        );
+    @Override
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
     }
 
     @Test
-    @DisplayName("create InventoryAggregate")
+    @DisplayName("remove InventoryAggregate")
     void produceEvent() {
 
         final BoundedContext sourceContext = create();
 
-        final Event event = bookAdded();
+        final Event event = bookRemoved();
         sourceContext.getEventBus()
                      .post(event);
 
-        final BookAdded bookAdded = unpack(event.getMessage());
+        final BookRemoved bookRemoved = unpack(event.getMessage());
 
         final Optional<Repository> repository = sourceContext.findRepository(Inventory.class);
 
         final Optional<InventoryAggregate> optional = repository.get()
                                                                 .find(InventoryId.newBuilder()
                                                                                  .setBookId(
-                                                                                         bookAdded.getBookId())
+                                                                                         bookRemoved.getBookId())
                                                                                  .build());
+
         assertNotNull(optional);
 
-        assertEquals(optional.get()
-                             .getState()
-                             .getInventoryId()
-                             .getBookId(), bookAdded.getBookId());
+        assertEquals("", optional.get()
+                                 .getState()
+                                 .getInventoryId()
+                                 .toString());
+        assertEquals(0, optional.get()
+                                .getState()
+                                .getInventoryItemsList()
+                                .size());
+
     }
 
-    @Test
-    @DisplayName("has the private parameterless constructor")
-    void hasPrivateCtor() {
-        assertHasPrivateParameterlessCtor(BoundedContexts.class);
+    private static Event bookRemoved() {
+
+        final TestEventFactory eventFactory = newInstance(pack(BookCommandFactory.bookId),
+                                                          BookAggregate.class);
+        return eventFactory.createEvent(BookRemoved.newBuilder()
+                                                   .setBookId(BookCommandFactory.bookId)
+                                                   .build()
+        );
     }
 }

@@ -29,7 +29,7 @@ import io.spine.server.rejection.RejectionBus;
 import javaclasses.exlibris.BoundedContexts;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookAdded;
-import javaclasses.exlibris.c.aggregate.BookCommandTest;
+import javaclasses.exlibris.c.book.BookCommandTest;
 import javaclasses.exlibris.c.rejection.Rejections;
 import javaclasses.exlibris.testdata.BookCommandFactory;
 import javaclasses.exlibris.testdata.BookEventSubscriber;

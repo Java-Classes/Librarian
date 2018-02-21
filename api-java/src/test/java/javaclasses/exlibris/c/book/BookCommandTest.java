@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.exlibris.c.aggregate;
+package javaclasses.exlibris.c.book;
 
 import com.google.protobuf.Message;
 import io.spine.client.TestActorRequestFactory;
@@ -26,7 +26,6 @@ import io.spine.core.CommandEnvelope;
 import io.spine.server.aggregate.AggregateCommandTest;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.Isbn62;
-import javaclasses.exlibris.c.book.BookAggregate;
 
 /**
  * @author Paul Ageyev
