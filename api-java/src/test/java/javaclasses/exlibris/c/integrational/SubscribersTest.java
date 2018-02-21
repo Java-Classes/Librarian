@@ -20,9 +20,7 @@
 
 package javaclasses.exlibris.c.integrational;
 
-import io.spine.core.Ack;
 import io.spine.core.Command;
-import io.spine.grpc.MemoizingObserver;
 import io.spine.grpc.StreamObservers;
 import io.spine.server.BoundedContext;
 import io.spine.server.commandbus.CommandBus;
@@ -53,21 +51,6 @@ public class SubscribersTest extends BookCommandTest<AddBook> {
     @BeforeEach
     public void setUp() {
         super.setUp();
-    }
-
-    @Test
-    @DisplayName("produce book already exists rejection")
-    void produceRejection() {
-        final Command addBook = requestFactory.command()
-                                              .create(toMessage(
-                                                      BookCommandFactory.createBookInstance()));
-        final BoundedContext boundedContext = BoundedContexts.create();
-        final CommandBus commandBus = boundedContext.getCommandBus();
-        final MemoizingObserver<Ack> memorizingObserver = StreamObservers.memoizingObserver();
-        commandBus.post(addBook, StreamObservers.noOpObserver());
-        commandBus.post(addBook, memorizingObserver);
-//        AnyPacker.unpack(memorizingObserver.responses());
-//        assertEquals(" ", memorizingObserver.firstResponse());
     }
 
     @Test
