@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.exlibris.repository;
+package javaclasses.exlibris.c.inventory;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
@@ -27,7 +27,6 @@ import io.spine.server.route.EventRoute;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.BookRemoved;
-import javaclasses.exlibris.c.aggregate.InventoryAggregate;
 
 /**
  * @author Alexander Karpets

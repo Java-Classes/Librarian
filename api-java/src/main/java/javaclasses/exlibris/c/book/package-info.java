@@ -19,9 +19,9 @@
  */
 
 /**
- * This package provides implementation for the application context.
+ * This package provides implementation for {@code BookAggregate}, {@code BookRepository}, and {@code BookRejections} classes.
  */
 @ParametersAreNonnullByDefault
-package javaclasses.exlibris.context;
+package javaclasses.exlibris.c.book;
 
 import javax.annotation.ParametersAreNonnullByDefault;

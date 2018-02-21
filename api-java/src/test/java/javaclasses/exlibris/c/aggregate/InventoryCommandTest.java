@@ -26,6 +26,7 @@ import io.spine.core.CommandEnvelope;
 import io.spine.server.aggregate.AggregateCommandTest;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.InventoryId;
+import javaclasses.exlibris.c.inventory.InventoryAggregate;
 
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.isbn62;
 

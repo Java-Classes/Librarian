@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.exlibris.context;
+package javaclasses.exlibris;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
@@ -26,8 +26,8 @@ import io.spine.server.BoundedContext;
 import io.spine.server.event.EventBus;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
-import javaclasses.exlibris.repository.BookRepository;
-import javaclasses.exlibris.repository.InventoryRepository;
+import javaclasses.exlibris.c.book.BookRepository;
+import javaclasses.exlibris.c.inventory.InventoryRepository;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;

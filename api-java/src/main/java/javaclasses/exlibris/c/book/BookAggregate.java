@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.exlibris.c.aggregate;
+package javaclasses.exlibris.c.book;
 
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
@@ -40,9 +40,6 @@ import javaclasses.exlibris.c.rejection.CannotRemoveMissingBook;
 import javaclasses.exlibris.c.rejection.CannotUpdateMissingBook;
 
 import static io.spine.time.Time.getCurrentTime;
-import static javaclasses.exlibris.c.aggregate.rejection.BookAggregateRejections.AddBookRejection.throwBookAlreadyExists;
-import static javaclasses.exlibris.c.aggregate.rejection.BookAggregateRejections.RemoveBookRejection.throwCannotRemoveMissingBook;
-import static javaclasses.exlibris.c.aggregate.rejection.BookAggregateRejections.UpdateBookRejection.throwCannotUpdateMissingBook;
 
 /**
  * The aggregate managing the state of a {@link Book}.
@@ -73,7 +70,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
      *
      * <p>Because of the last reason consider annotating constructors with
      * {@code @VisibleForTesting}. The package access is needed only for tests.
-     * Otherwise aggregate constructors (that are invoked by {@link javaclasses.exlibris.repository.BookRepository}
+     * Otherwise aggregate constructors (that are invoked by {@link BookRepository}
      * via Reflection) may be left {@code private}.
      *
      * @param id the ID for the new aggregate
@@ -96,7 +93,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
 
         if (cmd.getBookDetails()
                .equals(getState().getBookDetails())) {
-            throwBookAlreadyExists(cmd);
+            BookAggregateRejections.AddBookRejection.throwBookAlreadyExists(cmd);
         }
 
         final UserId userId = cmd.getLibrarianId();
@@ -123,7 +120,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
 
         if (!cmd.getBookId()
                 .equals(getState().getBookId())) {
-            throwCannotUpdateMissingBook(cmd);
+            BookAggregateRejections.UpdateBookRejection.throwCannotUpdateMissingBook(cmd);
         }
 
         final BookId bookId = cmd.getBookId();
@@ -154,7 +151,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
 
         if (!cmd.getBookId()
                 .equals(getState().getBookId())) {
-            throwCannotRemoveMissingBook(cmd);
+            BookAggregateRejections.RemoveBookRejection.throwCannotRemoveMissingBook(cmd);
         }
 
         final UserId userId = cmd.getLibrarianId();
@@ -168,14 +165,12 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
 
         switch (cmd.getBookRemovalReasonCase()) {
             case OUTDATED: {
-                return bookRemoved
-                        .setOutdated(true)
-                        .build();
+                bookRemoved.setOutdated(true);
+                break;
             }
             case CUSTOM_REASON: {
-                return bookRemoved
-                        .setCustomReason(customReason)
-                        .build();
+                bookRemoved.setCustomReason(customReason);
+                break;
             }
             case BOOKREMOVALREASON_NOT_SET: {
                 throw new IllegalArgumentException("The book cannot be removed without reason.");

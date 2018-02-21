@@ -20,8 +20,8 @@
 
 package javaclasses.exlibris.c.aggregate;
 
-import javaclasses.exlibris.c.aggregate.rejection.BookAggregateRejections;
-import javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections;
+import javaclasses.exlibris.c.book.BookAggregateRejections;
+import javaclasses.exlibris.c.inventory.InventoryAggregateRejections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

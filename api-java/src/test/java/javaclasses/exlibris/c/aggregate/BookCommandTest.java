@@ -26,6 +26,7 @@ import io.spine.core.CommandEnvelope;
 import io.spine.server.aggregate.AggregateCommandTest;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.Isbn62;
+import javaclasses.exlibris.c.book.BookAggregate;
 
 /**
  * @author Paul Ageyev

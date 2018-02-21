@@ -19,9 +19,9 @@
  */
 
 /**
- * This package provides classes for working with aggregate and projection repositories.
+ * This package provides implementation for {@code InventoryAggregate}, {@code InventoryRepository}, and {@code InventoryRejections} classes.
  */
 @ParametersAreNonnullByDefault
-package javaclasses.exlibris.repository;
+package javaclasses.exlibris.c.inventory;
 
 import javax.annotation.ParametersAreNonnullByDefault;

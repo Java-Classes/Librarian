@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.exlibris.c.aggregate.rejection;
+package javaclasses.exlibris.c.inventory;
 
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
@@ -37,12 +37,12 @@ import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
 import static io.spine.time.Time.getCurrentTime;
 
 /**
- * Generate rejections for {@link javaclasses.exlibris.c.aggregate.InventoryAggregate}.
+ * Generate rejections for {@link InventoryAggregate}.
  * To throw a rejection it is necessary to call static method.
  *
  * @author Paul Ageyev
  * @author Alexander Karpets
- * @see javaclasses.exlibris.c.aggregate.InventoryAggregate
+ * @see InventoryAggregate
  */
 public class InventoryAggregateRejections {
 

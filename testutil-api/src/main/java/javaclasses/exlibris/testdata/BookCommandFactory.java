@@ -214,14 +214,12 @@ public class BookCommandFactory {
 
         switch (removalReasonCase) {
             case OUTDATED: {
-                return result
-                        .setOutdated(true)
-                        .build();
+                result.setOutdated(true);
+                break;
             }
             case CUSTOM_REASON: {
-                return result
-                        .setCustomReason(customReason)
-                        .build();
+                result.setCustomReason(customReason);
+                break;
 
             }
             case BOOKREMOVALREASON_NOT_SET: {

@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.exlibris.c.aggregate;
+package javaclasses.exlibris.c.inventory;
 
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
@@ -81,13 +81,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.spine.time.Time.getCurrentTime;
-import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.BorrowBookRejection.throwCannotBorrowBook;
-import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.CancelReservationRejection.throwCannotCancelMissingReservation;
-import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ExtendLoanPeriodRejection.throwCannotExtendLoanPeriod;
-import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ReserveBookRejection.throwCannotReserveBook;
-import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ReturnBookRejection.throwCannotReturnMissingBook;
-import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.ReturnBookRejection.throwCannotReturnNonBorrowedBook;
-import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejections.WriteBookOffRejection.throwCannotWriteMissingBookOff;
 
 /**
  * The aggregate managing the state of a {@link Inventory}.
@@ -111,9 +104,14 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * The loan period time in seconds.
      * This period is equals two weeks.
      * secondsInMinute * minutesInHour * hoursInDay * daysInTwoWeeks
-     * 60 * 60 * 24 * 14 = 1209600.
      */
-    private static final int loanPeriod = 1209600;
+    private static final int LOAN_PERIOD = 60 * 60 * 24 * 14;
+
+    /**
+     * User has two days to borrow the book.
+     * secondsInMinute * minutesInHours * hoursInTwoDays
+     */
+    private static final int OPEN_FOR_BORROW_PERIOD = 60 * 60 * 48;
 
     /**
      * Creates a new instance.
@@ -128,7 +126,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      *
      * <p>Because of the last reason consider annotating constructors with
      * {@code @VisibleForTesting}. The package access is needed only for tests.
-     * Otherwise aggregate constructors (that are invoked by {@link javaclasses.exlibris.repository.InventoryRepository}
+     * Otherwise aggregate constructors (that are invoked by {@link InventoryRepository}
      * via Reflection) may be left {@code private}.
      *
      * @param id the ID for the new aggregate
@@ -203,7 +201,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             }
         }
         if (result == null) {
-            throwCannotWriteMissingBookOff(cmd);
+            InventoryAggregateRejections.WriteBookOffRejection.throwCannotWriteMissingBookOff(cmd);
         }
         return result;
     }
@@ -227,14 +225,16 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             if (inventoryItem
                     .getUserId()
                     .equals(cmd.getUserId())) {
-                throwCannotReserveBook(cmd, true, false);
+                InventoryAggregateRejections.ReserveBookRejection.throwCannotReserveBook(cmd, true,
+                                                                                         false);
             }
         }
 
         for (Reservation reservation : reservations) {
             if (reservation.getWhoReserved()
                            .equals(cmd.getUserId())) {
-                throwCannotReserveBook(cmd, false, true);
+                InventoryAggregateRejections.ReserveBookRejection.throwCannotReserveBook(cmd, false,
+                                                                                         true);
             }
         }
 
@@ -268,14 +268,16 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (InventoryItem inventoryItem : inventoryItems) {
             if (inventoryItem.getUserId()
                              .equals(userId)) {
-                throwCannotBorrowBook(cmd, true, false);
+                InventoryAggregateRejections.BorrowBookRejection.throwCannotBorrowBook(cmd, true,
+                                                                                       false);
             }
         }
 
         if (getState().getReservationsList()
                       .size() >= inLibraryCount &&
                 !(userHasReservation(cmd.getUserId(), inLibraryCount))) {
-            throwCannotBorrowBook(cmd, false, true);
+            InventoryAggregateRejections.BorrowBookRejection.throwCannotBorrowBook(cmd, false,
+                                                                                   true);
         }
 
         final InventoryId inventoryId = cmd.getInventoryId();
@@ -346,7 +348,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      */
     @Apply
     void emptyEvent(Empty event) {
-        // Uses when command call an empty event.
+        // Uses when command calls an empty event.
     }
 
     private boolean userHasReservation(UserId userId, int inLibraryCount) {
@@ -394,7 +396,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     LoanPeriodExtended handle(ExtendLoanPeriod cmd) throws CannotExtendLoanPeriod {
 
         if (isBookReserved() || !userHasLoan(cmd.getUserId())) {
-            throwCannotExtendLoanPeriod(cmd);
+            InventoryAggregateRejections.ExtendLoanPeriodRejection.throwCannotExtendLoanPeriod(cmd);
         }
 
         final InventoryId inventoryId = cmd.getInventoryId();
@@ -407,7 +409,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                     .getWhenDue();
 
         final long newDueDateInSeconds = previousDueDate.getSeconds() +
-                loanPeriod;
+                LOAN_PERIOD;
         final Timestamp newDueDate = Timestamp.newBuilder()
                                               .setSeconds(newDueDateInSeconds)
                                               .build();
@@ -456,7 +458,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final List<Reservation> reservations = getState().getReservationsList();
 
         if (!userHasReservation(cmd.getUserId())) {
-            throwCannotCancelMissingReservation(cmd);
+            InventoryAggregateRejections.CancelReservationRejection.throwCannotCancelMissingReservation(
+                    cmd);
         }
 
         final InventoryId inventoryId = cmd.getInventoryId();
@@ -507,10 +510,10 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             ReturnBook cmd) throws CannotReturnNonBorrowedBook,
                                    CannotReturnMissingBook {
         if (!inventoryItemExists(cmd.getInventoryItemId())) {
-            throwCannotReturnMissingBook(cmd);
+            InventoryAggregateRejections.ReturnBookRejection.throwCannotReturnMissingBook(cmd);
         }
         if (!hasUserBorrowedBook(cmd.getUserId())) {
-            throwCannotReturnNonBorrowedBook(cmd);
+            InventoryAggregateRejections.ReturnBookRejection.throwCannotReturnNonBorrowedBook(cmd);
         }
 
         final InventoryId inventoryId = cmd.getInventoryId();
@@ -741,7 +744,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                               .setWhenTaken(getCurrentTime())
                               .setWhenDue(Timestamp.newBuilder()
                                                    .setSeconds(System.currentTimeMillis() / 1000 +
-                                                                       loanPeriod)
+                                                                       LOAN_PERIOD)
                                                    .build())
                               .build();
 
@@ -1013,11 +1016,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                  .get(0)
                                                  .getWhoReserved();
 
-            // User has two days to borrow the book.
-            // secondsInMinute * minutesInHours * hoursInTwoDays
-            // 60 * 60 * 48 = 172800.
-            final int openForBorrowPeriod = 172800;
-            final long expirationDate = currentTime.getSeconds() + openForBorrowPeriod;
+            final long expirationDate = currentTime.getSeconds() + OPEN_FOR_BORROW_PERIOD;
             final BookReadyToPickup bookReadyToPickup = BookReadyToPickup.newBuilder()
                                                                          .setInventoryId(
                                                                                  inventoryId)
@@ -1060,8 +1059,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final List<Loan> loans = getState().getLoansList();
 
         for (Loan loan : loans) {
-            if (loan
-                    .getWhoBorrowed()
+            if (loan.getWhoBorrowed()
                     .equals(userId)) {
                 return true;
             }

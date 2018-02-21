@@ -29,6 +29,8 @@ import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookRemoved;
+import javaclasses.exlibris.c.book.BookAggregate;
+import javaclasses.exlibris.c.inventory.InventoryAggregate;
 import javaclasses.exlibris.testdata.BookCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +39,7 @@ import org.junit.jupiter.api.Test;
 import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.server.command.TestEventFactory.newInstance;
-import static javaclasses.exlibris.context.BoundedContexts.create;
+import static javaclasses.exlibris.BoundedContexts.create;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
