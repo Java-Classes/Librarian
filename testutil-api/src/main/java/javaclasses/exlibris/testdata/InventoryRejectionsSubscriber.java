@@ -71,4 +71,8 @@ public class InventoryRejectionsSubscriber extends RejectionSubscriber {
     public void on(Rejections.CannotExtendLoanPeriod rejection) {
         wasCalled = true;
     }
+
+    public static void clear() {
+        wasCalled = false;
+    }
 }
