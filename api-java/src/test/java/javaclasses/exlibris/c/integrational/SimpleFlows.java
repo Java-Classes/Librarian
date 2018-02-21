@@ -235,5 +235,9 @@ public class SimpleFlows extends InventoryCommandTest<Message> {
         commandBus.post(extendLoanPeriod2, observer);
         commandBus.post(returnBook2, observer);
         assertFalse(inventoryRejectionsSubscriber.wasCalled());
+
+        commandBus.post(borrowBook, observer);
+        commandBus.post(extendLoanPeriod2, observer);
+        assertTrue(inventoryRejectionsSubscriber.wasCalled());
     }
 }
