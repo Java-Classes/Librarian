@@ -47,79 +47,127 @@ import static javaclasses.exlibris.c.RemoveBook.BookRemovalReasonCase.OUTDATED;
  */
 public class BookCommandFactory {
 
+    public static final Isbn62 isbn62Value = Isbn62.newBuilder()
+                                                   .setValue("0201485672")
+                                                   .build();
+
+    private static final Isbn62 isbn62Value2 = Isbn62.newBuilder()
+                                                     .setValue("19411945")
+                                                     .build();
+
+    public static final EmailAddress userEmailAddress1 = EmailAddress.newBuilder()
+                                                                     .setValue(
+                                                                             "paulageyev@gmail.com")
+                                                                     .build();
+
+    private static final EmailAddress userEmailAddress2 = EmailAddress.newBuilder()
+                                                                      .setValue(
+                                                                              "petrVase4kin@gmail.com")
+                                                                      .build();
+
+    private static final EmailAddress librarianEmailAddress1 = EmailAddress.newBuilder()
+                                                                           .setValue(
+                                                                                   "smb@teamdev.com")
+                                                                           .build();
+
+    private static final EmailAddress librarianEmailAddress2 = EmailAddress.newBuilder()
+                                                                           .setValue(
+                                                                                   "Inn4ka@teamdev.com")
+                                                                           .build();
+
+    public static final BookTitle bookTitle = BookTitle.newBuilder()
+                                                       .setTitle("Refactoring")
+                                                       .build();
+
+    private static final AuthorName authorName = AuthorName.newBuilder()
+                                                           .addAuthorName(
+                                                                   PersonName.newBuilder()
+                                                                             .setFamilyName(
+                                                                                     "Fowler")
+                                                                             .setGivenName(
+                                                                                     "Martin"))
+                                                           .build();
+
+    private static final Url bookCoverUrl = Url.newBuilder()
+                                               .setRaw("http://library.teamdev.com/book/1")
+                                               .build();
+
+    private static final BookSynopsis bookSynopsis = BookSynopsis.newBuilder()
+                                                                 .setBookSynopsis(
+                                                                         "As the application of object " +
+                                                                                 "technology--particularly the Java programming language")
+                                                                 .build();
+
+    private static final Category bookCategory = Category.newBuilder()
+                                                         .setValue("Programming")
+                                                         .build();
+    public static final BookTitle bookTitle2 = BookTitle.newBuilder()
+                                                        .setTitle("WHY SOFTWARE SUX")
+                                                        .build();
+
+    private static final AuthorName authorName2 = AuthorName.newBuilder()
+                                                            .addAuthorName(
+                                                                    PersonName.newBuilder()
+                                                                              .setFamilyName(
+                                                                                      "Cartman")
+                                                                              .setGivenName(
+                                                                                      "Eric"))
+                                                            .build();
+
+    private static final Url bookCoverUrl2 = Url.newBuilder()
+                                                .setRaw("http://library.teamdev.com/book/144")
+                                                .build();
+
+    private static final BookSynopsis bookSynopsis2 = BookSynopsis.newBuilder()
+                                                                  .setBookSynopsis(
+                                                                          "Some info about software and why it sucks ")
+                                                                  .build();
+
+    private static final Category bookCategory2 = Category.newBuilder()
+                                                          .setValue("Architecture")
+                                                          .build();
+
     public static final BookId bookId = BookId.newBuilder()
-                                              .setIsbn62(Isbn62.newBuilder()
-                                                               .setValue("0201485672"))
+                                              .setIsbn62(isbn62Value)
                                               .build();
+
     public static final BookId bookId2 = BookId.newBuilder()
-                                               .setIsbn62(Isbn62.newBuilder()
-                                                                .setValue("19411945"))
+                                               .setIsbn62(isbn62Value2)
                                                .build();
 
     public static final UserId userId = UserId.newBuilder()
-                                              .setEmail(EmailAddress.newBuilder()
-                                                                    .setValue(
-                                                                            "paulageyev@gmail.com"))
+                                              .setEmail(userEmailAddress1)
                                               .build();
 
     public static final UserId userId2 = UserId.newBuilder()
-                                               .setEmail(EmailAddress.newBuilder()
-                                                                     .setValue(
-                                                                             "petrVase4kin@gmail.com"))
+                                               .setEmail(userEmailAddress2)
                                                .build();
+
     public static final UserId librarianId = UserId.newBuilder()
-                                                   .setEmail(EmailAddress.newBuilder()
-                                                                         .setValue(
-                                                                                 "smb@teamdev.com"))
+                                                   .setEmail(librarianEmailAddress1)
                                                    .build();
 
     public static final UserId librarianId2 = UserId.newBuilder()
-                                                    .setEmail(EmailAddress.newBuilder()
-                                                                          .setValue(
-                                                                                  "Inn4ka@teamdev.com"))
+                                                    .setEmail(librarianEmailAddress2)
                                                     .build();
 
     public static final BookDetails bookDetails = BookDetails.newBuilder()
-                                                             .setTitle(BookTitle.newBuilder()
-                                                                                .setTitle(
-                                                                                        "Refactoring"))
-                                                             .setAuthor(AuthorName.newBuilder()
-                                                                                  .addAuthorName(
-                                                                                          PersonName.newBuilder()
-                                                                                                    .setFamilyName(
-                                                                                                            "Martin Fowler")))
-                                                             .setBookCoverUrl(Url.newBuilder()
-                                                                                 .setRaw("http://library.teamdev.com/book/1"))
-                                                             .setSynopsis(BookSynopsis.newBuilder()
-                                                                                      .setBookSynopsis(
-                                                                                              "As the application of object " +
-                                                                                                      "technology--particularly the Java programming language"))
-                                                             .addCategories(Category.newBuilder()
-                                                                                    .setValue(
-                                                                                            "Programming"))
+                                                             .setTitle(bookTitle)
+                                                             .setAuthor(authorName)
+                                                             .setBookCoverUrl(bookCoverUrl)
+                                                             .setSynopsis(bookSynopsis)
+                                                             .addCategories(bookCategory)
                                                              .build();
 
     public static final BookDetails bookDetails2 = BookDetails.newBuilder()
-                                                              .setTitle(BookTitle.newBuilder()
-                                                                                 .setTitle(
-                                                                                         "WHY SOFTWARE SUX"))
-                                                              .setAuthor(AuthorName.newBuilder()
-                                                                                   .addAuthorName(
-                                                                                           PersonName.newBuilder()
-                                                                                                     .setFamilyName(
-                                                                                                             "Erik Cartman")))
-                                                              .setBookCoverUrl(Url.newBuilder()
-                                                                                  .setRaw("http://library.teamdev.com/book/144"))
-                                                              .setSynopsis(BookSynopsis.newBuilder()
-                                                                                       .setBookSynopsis(
-                                                                                               "Some info about software and why it sucks "))
-                                                              .addCategories(Category.newBuilder()
-                                                                                     .setValue(
-                                                                                             "Architecture"))
+                                                              .setTitle(bookTitle2)
+                                                              .setAuthor(authorName2)
+                                                              .setBookCoverUrl(bookCoverUrl2)
+                                                              .setSynopsis(bookSynopsis2)
+                                                              .addCategories(bookCategory2)
                                                               .build();
 
-
-    public static final String customReason = "The book was burned damaged";
+    private static final String customReason = "The book was burned damaged";
 
     public static final RemoveBook.BookRemovalReasonCase removalOutdatedReason = OUTDATED;
     public static final RemoveBook.BookRemovalReasonCase removalCustomReason = CUSTOM_REASON;

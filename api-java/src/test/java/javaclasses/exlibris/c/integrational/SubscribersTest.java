@@ -20,9 +20,7 @@
 
 package javaclasses.exlibris.c.integrational;
 
-import io.spine.core.Ack;
 import io.spine.core.Command;
-import io.spine.grpc.MemoizingObserver;
 import io.spine.grpc.StreamObservers;
 import io.spine.server.BoundedContext;
 import io.spine.server.commandbus.CommandBus;
@@ -41,6 +39,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.protobuf.TypeConverter.toMessage;
+import static javaclasses.exlibris.testdata.BookCommandFactory.bookTitle;
+import static javaclasses.exlibris.testdata.BookCommandFactory.isbn62Value;
+import static javaclasses.exlibris.testdata.BookCommandFactory.userEmailAddress1;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -50,21 +51,6 @@ public class SubscribersTest extends BookCommandTest<AddBook> {
     @BeforeEach
     public void setUp() {
         super.setUp();
-    }
-
-    @Test
-    @DisplayName("produce book already exists rejection")
-    void produceRejection() {
-        final Command addBook = requestFactory.command()
-                                              .create(toMessage(
-                                                      BookCommandFactory.createBookInstance()));
-        final BoundedContext boundedContext = BoundedContexts.create();
-        final CommandBus commandBus = boundedContext.getCommandBus();
-        final MemoizingObserver<Ack> memorizingObserver = StreamObservers.memoizingObserver();
-        commandBus.post(addBook, StreamObservers.noOpObserver());
-        commandBus.post(addBook, memorizingObserver);
-//        AnyPacker.unpack(memorizingObserver.responses());
-//        assertEquals(" ", memorizingObserver.firstResponse());
     }
 
     @Test
@@ -90,14 +76,11 @@ public class SubscribersTest extends BookCommandTest<AddBook> {
 
         Rejections.BookAlreadyExists bookAlreadyExists = BookRejectionsSubscriber.getRejection();
 
-        assertEquals("paulageyev@gmail.com", bookAlreadyExists.getLibrarianId()
-                                                             .getEmail()
-                                                             .getValue());
-        assertEquals("0201485672", bookAlreadyExists.getBookId()
-                                                    .getIsbn62()
-                                                    .getValue());
-        assertEquals("Refactoring", bookAlreadyExists.getBookTitle()
-                                                     .getTitle());
+        assertEquals(userEmailAddress1, bookAlreadyExists.getLibrarianId()
+                                                         .getEmail());
+        assertEquals(isbn62Value, bookAlreadyExists.getBookId()
+                                                   .getIsbn62());
+        assertEquals(bookTitle, bookAlreadyExists.getBookTitle());
     }
 
     @Test
@@ -115,14 +98,11 @@ public class SubscribersTest extends BookCommandTest<AddBook> {
         eventBus.register(eventSubscriber);
         commandBus.post(addBook, StreamObservers.noOpObserver());
         final BookAdded event = BookEventSubscriber.getEvent();
-        assertEquals("0201485672", event.getBookId()
-                                        .getIsbn62()
-                                        .getValue());
-        assertEquals("Refactoring", event.getDetails()
-                                         .getTitle()
-                                         .getTitle());
-        assertEquals("paulageyev@gmail.com", event.getLibrarianId()
-                                                  .getEmail()
-                                                  .getValue());
+        assertEquals(isbn62Value, event.getBookId()
+                                       .getIsbn62());
+        assertEquals(bookTitle, event.getDetails()
+                                     .getTitle());
+        assertEquals(userEmailAddress1, event.getLibrarianId()
+                                             .getEmail());
     }
 }

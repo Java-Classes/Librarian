@@ -36,6 +36,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.isbn62;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.userEmailAddress1;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -77,19 +79,17 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
 
         final InventoryDecreased inventoryDecreased = (InventoryDecreased) messageList.get(0);
 
-        assertEquals(InventoryCommandFactory.inventoryId, inventoryDecreased.getInventoryId());
+        assertEquals(inventoryId, inventoryDecreased.getInventoryId());
 
-        assertEquals("123456789", inventoryDecreased.getInventoryId()
-                                                    .getBookId()
-                                                    .getIsbn62()
-                                                    .getValue());
+        assertEquals(isbn62, inventoryDecreased.getInventoryId()
+                                               .getBookId()
+                                               .getIsbn62());
         assertEquals(true, inventoryDecreased.getWriteOffReason()
                                              .getOutdated());
         assertEquals(false, inventoryDecreased.getWriteOffReason()
                                               .getLost());
-        assertEquals("petr@gmail.com", inventoryDecreased.getLibrarianId()
-                                                         .getEmail()
-                                                         .getValue());
+        assertEquals(userEmailAddress1, inventoryDecreased.getLibrarianId()
+                                                          .getEmail());
 
     }
 
