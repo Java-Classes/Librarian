@@ -113,7 +113,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * secondsInMinute * minutesInHour * hoursInDay * daysInTwoWeeks
      * 60 * 60 * 24 * 14 = 1209600.
      */
-    private final int loanPeriod = 1209600;
+    private static final int loanPeriod = 1209600;
 
     /**
      * Creates a new instance.
