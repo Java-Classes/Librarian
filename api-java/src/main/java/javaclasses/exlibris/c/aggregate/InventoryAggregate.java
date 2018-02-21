@@ -316,15 +316,12 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * @return true if the such reservation exists.
      */
     private boolean userHasReservation(UserId userId) {
-        return !getState().getReservationsList()
-                          .isEmpty() && getState().getReservationsList()
-                                                  .get(0)
-                                                  .getWhoReserved()
-                                                  .getEmail()
-                                                  .getValue()
-                                                  .equals(userId
-                                                                  .getEmail()
-                                                                  .getValue());
+        final boolean userHasReservation = !getState().getReservationsList()
+                                                      .isEmpty() && getState().getReservationsList()
+                                                                              .get(0)
+                                                                              .getWhoReserved()
+                                                                              .equals(userId);
+        return userHasReservation;
     }
 
     /**
