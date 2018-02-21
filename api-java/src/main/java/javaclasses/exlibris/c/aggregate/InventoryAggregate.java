@@ -398,7 +398,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     LoanPeriodExtended handle(ExtendLoanPeriod cmd) throws CannotExtendLoanPeriod {
 
-        if (!userHasLoan(cmd.getUserId())) {
+        if (isBookReserved() || !userHasLoan(cmd.getUserId())) {
             throwCannotExtendLoanPeriod(cmd);
         }
 
@@ -1041,14 +1041,26 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         }
     }
 
-    private boolean userHasLoan(UserId userId) {
+    /**
+     * Checks a book for reservations.
+     *
+     * @return true if the reservation exists.
+     */
+    private boolean isBookReserved() {
 
         final List<Reservation> reservations = getState().getReservationsList();
 
-        if (getState().getReservationsList()
-                      .size() > 0) {
-            return false;
-        }
+        return getState().getReservationsList()
+                         .size() > 0;
+    }
+
+    /**
+     * Checks if a user has a loan for the book.
+     *
+     * @param userId — the identifier of a user who has loan for the book.
+     * @return true if the user has a loan for the book.
+     */
+    private boolean userHasLoan(UserId userId) {
 
         final List<Loan> loans = getState().getLoansList();
 
@@ -1059,7 +1071,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                 return true;
             }
         }
-
         return false;
     }
 }
