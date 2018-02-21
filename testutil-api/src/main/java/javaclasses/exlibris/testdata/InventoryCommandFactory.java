@@ -81,6 +81,11 @@ public class InventoryCommandFactory {
                                                                          .setBookId(bookId)
                                                                          .setItemNumber(1)
                                                                          .build();
+
+    public static final InventoryItemId inventoryItemId2 = InventoryItemId.newBuilder()
+                                                                          .setBookId(bookId)
+                                                                          .setItemNumber(2)
+                                                                          .build();
     public static final UserId userId = UserId.newBuilder()
                                               .setEmail(userEmailAddress1)
                                               .build();
@@ -93,9 +98,9 @@ public class InventoryCommandFactory {
                                                .setEmail(userEmailAddress3)
                                                .build();
 
-    private static final Rfid rfid = Rfid.newBuilder()
-                                         .setValue("4321")
-                                         .build();
+    public static final Rfid rfid = Rfid.newBuilder()
+                                        .setValue("4321")
+                                        .build();
 
     private static final WriteOffReason reason = WriteOffReason.newBuilder()
                                                                .setOutdated(true)
@@ -103,7 +108,7 @@ public class InventoryCommandFactory {
 
     public static final Loan loan = Loan.newBuilder()
                                         .setLoanId(LoanId.newBuilder()
-                                                          .setValue(1))
+                                                         .setValue(1))
                                         .setInventoryItemId(inventoryItemId)
                                         .setWhenDue(getCurrentTime())
                                         .build();
