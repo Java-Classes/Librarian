@@ -204,6 +204,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
 
     /**
      * {@code BookUpdated} event handler. For details see {@link BookUpdated}.
+     *
      * @param event — the {@code BookUpdated} event message.
      */
     @Apply
@@ -218,6 +219,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
 
     /**
      * {@code BookRemoved} event handler. For details see {@link BookRemoved}.
+     *
      * @param event — the {@code BookRemoved} event message.
      */
     @Apply

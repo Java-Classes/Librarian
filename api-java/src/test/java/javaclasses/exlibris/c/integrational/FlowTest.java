@@ -57,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Alexander Karpets
  * @author Paul Ageyev
  */
-public class SimpleFlows extends InventoryCommandTest<Message> {
+public class FlowTest extends InventoryCommandTest<Message> {
 
     private final TestActorRequestFactory requestFactory =
             TestActorRequestFactory.newInstance(getClass());
