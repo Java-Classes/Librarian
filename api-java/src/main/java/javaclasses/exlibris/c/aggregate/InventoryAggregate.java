@@ -102,13 +102,19 @@ import static javaclasses.exlibris.c.aggregate.rejection.InventoryAggregateRejec
                                                  The {@code Aggregate} does it with methods
                                                  annotated as {@code Assign} and {@code Apply}.
                                                  In that case class has too many methods.*/
-        "OverlyCoupledClass", /* As each method needs dependencies  necessary to perform execution
+        "OverlyCoupledClass"})  /* As each method needs dependencies  necessary to perform execution
                                                  that class also overly coupled.*/
 
-
-        "unused"})  /* Apply methods are private according to the spine design and not used because there is no directly usage.*/
-
 public class InventoryAggregate extends Aggregate<InventoryId, Inventory, InventoryVBuilder> {
+
+    /**
+     * The loan period time in seconds.
+     * This period is equals two weeks.
+     * secondsInMinute * minutesInHour * hoursInDay * daysInTwoWeeks
+     * 60 * 60 * 24 * 14 = 1209600.
+     */
+    private final int loanPeriod = 1209600;
+
     /**
      * Creates a new instance.
      *
@@ -130,14 +136,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     public InventoryAggregate(InventoryId id) {
         super(id);
     }
-
-    /**
-     * The loan period time in seconds.
-     * This period is equals two weeks.
-     * secondsInMinute * minutesInHour * hoursInDay * daysInTwoWeeks
-     * 60 * 60 * 24 * 14 = 1209600.
-     */
-    private final int loanPeriod = 1209600;
 
     /**
      * {@code AppendInventory} command handler. For details see {@link AppendInventory}.
@@ -343,12 +341,12 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
     /**
      * {@code Empty} event handler.
-     * Uses when command call an empty event.
      *
      * @param event — the {@code Empty} event message.
      */
     @Apply
     void emptyEvent(Empty event) {
+        // Uses when command call an empty event.
     }
 
     private boolean userHasReservation(UserId userId, int inLibraryCount) {
