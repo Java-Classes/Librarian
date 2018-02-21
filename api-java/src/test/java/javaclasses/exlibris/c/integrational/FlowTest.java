@@ -76,8 +76,24 @@ public class FlowTest extends InventoryCommandTest<Message> {
     private final Command appendInventory = requestFactory.createCommand(
             toMessage(appendInventoryInstance()));
 
+    private final Command appendInventory2 = requestFactory.createCommand(
+            toMessage(appendInventoryInstance(InventoryCommandFactory.inventoryId,
+                                              InventoryCommandFactory.inventoryItemId2,
+                                              InventoryCommandFactory.userId,
+                                              InventoryCommandFactory.rfid)));
+
     private final Command borrowBook = requestFactory.createCommand(
             toMessage(borrowBookInstance()));
+
+    private final Command borrowBook2 = requestFactory.createCommand(
+            toMessage(borrowBookInstance(InventoryCommandFactory.inventoryId,
+                                         InventoryCommandFactory.inventoryItemId,
+                                         InventoryCommandFactory.userId2)));
+
+    private final Command borrowBook3 = requestFactory.createCommand(
+            toMessage(borrowBookInstance(InventoryCommandFactory.inventoryId,
+                                         InventoryCommandFactory.inventoryItemId2,
+                                         InventoryCommandFactory.userId2)));
 
     private final Command reserveBook = requestFactory.createCommand(
             toMessage(reserveBookInstance(InventoryCommandFactory.userId,
@@ -89,11 +105,6 @@ public class FlowTest extends InventoryCommandTest<Message> {
 
     private final Command returnBook = requestFactory.createCommand(
             toMessage(returnBookInstance()));
-
-    private final Command borrowBook2 = requestFactory.createCommand(
-            toMessage(borrowBookInstance(InventoryCommandFactory.inventoryId,
-                                         InventoryCommandFactory.inventoryItemId,
-                                         InventoryCommandFactory.userId2)));
 
     private final Command returnBook2 = requestFactory.createCommand(
             toMessage(returnBookInstance(InventoryCommandFactory.inventoryId,
@@ -160,6 +171,33 @@ public class FlowTest extends InventoryCommandTest<Message> {
 
         final BookRejectionsSubscriber bookRejectionsSubscriber = new BookRejectionsSubscriber();
         final InventoryRejectionsSubscriber inventoryRejectionsSubscriber = new InventoryRejectionsSubscriber();
+
+        boundedContext.getRejectionBus()
+                      .register(bookRejectionsSubscriber);
+        boundedContext.getRejectionBus()
+                      .register(inventoryRejectionsSubscriber);
+
+        commandBus.post(addBook, observer);
+
+        commandBus.post(appendInventory, observer);
+        commandBus.post(appendInventory2, observer);
+
+        commandBus.post(borrowBook, observer);
+        assertFalse(InventoryRejectionsSubscriber.wasCalled());
+
+        commandBus.post(borrowBook3, observer);
+        assertFalse(InventoryRejectionsSubscriber.wasCalled());
+
+        commandBus.post(reserveBook, observer);
+        assertTrue(InventoryRejectionsSubscriber.wasCalled());
+
+        InventoryRejectionsSubscriber.clear();
+
+        commandBus.post(extendLoanPeriod, observer);
+        assertFalse(InventoryRejectionsSubscriber.wasCalled());
+
+        commandBus.post(returnBook, observer);
+        assertFalse(InventoryRejectionsSubscriber.wasCalled());
 
     }
 
