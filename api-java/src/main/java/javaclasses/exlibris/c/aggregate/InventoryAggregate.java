@@ -1017,8 +1017,11 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                  .get(0)
                                                  .getWhoReserved();
 
-            // User has two days to pickup the book.
-            final long secondInTwoDays = currentTime.getSeconds() + 60 * 60 * 24 * 2;
+            // User has two days to borrow the book.
+            // secondsInMinute * minutesInHours * hoursInTwoDays
+            // 60 * 60 * 48 = 172800.
+            final int openForBorrowPeriod = 172800;
+            final long expirationDate = currentTime.getSeconds() + openForBorrowPeriod;
             final BookReadyToPickup bookReadyToPickup = BookReadyToPickup.newBuilder()
                                                                          .setInventoryId(
                                                                                  inventoryId)
@@ -1030,7 +1033,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                                          .setPickUpDeadline(
                                                                                  Timestamp.newBuilder()
                                                                                           .setSeconds(
-                                                                                                  secondInTwoDays)
+                                                                                                  expirationDate)
                                                                                           .build())
                                                                          .build();
             return bookReadyToPickup;

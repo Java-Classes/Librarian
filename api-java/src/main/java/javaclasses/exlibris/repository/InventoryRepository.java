@@ -23,22 +23,17 @@ package javaclasses.exlibris.repository;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
 import io.spine.server.aggregate.AggregateRepository;
-import io.spine.server.route.CommandRouting;
 import io.spine.server.route.EventRoute;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.aggregate.InventoryAggregate;
 
-import static io.spine.server.route.CommandRouting.newInstance;
-
 /**
  * @author Alexander Karpets
  * @author Dmytry Dyachenko
  */
 public class InventoryRepository extends AggregateRepository<InventoryId, InventoryAggregate> {
-
-    private CommandRouting commandRouting = newInstance();
 
     public InventoryRepository() {
         super();
@@ -49,7 +44,6 @@ public class InventoryRepository extends AggregateRepository<InventoryId, Invent
                                                   .setBookId(bookAdded.getBookId())
                                                   .build());
             }
-
             if (message instanceof BookRemoved) {
                 final BookRemoved bookRemoved = (BookRemoved) message;
                 return ImmutableSet.of(InventoryId.newBuilder()
