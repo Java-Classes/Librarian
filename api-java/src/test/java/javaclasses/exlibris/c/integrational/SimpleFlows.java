@@ -220,7 +220,6 @@ public class SimpleFlows extends InventoryCommandTest<Message> {
         final BoundedContext boundedContext = BoundedContexts.create();
         final CommandBus commandBus = boundedContext.getCommandBus();
         final StreamObserver<Ack> observer = StreamObservers.noOpObserver();
-        final BookRejectionsSubscriber bookRejectionsSubscriber = new BookRejectionsSubscriber();
         final InventoryRejectionsSubscriber inventoryRejectionsSubscriber = new InventoryRejectionsSubscriber();
 
         boundedContext.getRejectionBus()
@@ -233,8 +232,8 @@ public class SimpleFlows extends InventoryCommandTest<Message> {
         commandBus.post(returnBook, observer);
         commandBus.post(borrowBook2, observer);
         commandBus.post(extendLoanPeriod2, observer);
-//        commandBus.post(returnBook2, observer);
         commandBus.post(extendLoanPeriod2, observer);
+        commandBus.post(returnBook2, observer);
         assertFalse(inventoryRejectionsSubscriber.wasCalled());
     }
 }
