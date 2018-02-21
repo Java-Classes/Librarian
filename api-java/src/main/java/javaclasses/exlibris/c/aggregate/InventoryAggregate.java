@@ -174,7 +174,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     /**
      * {@code WriteBookOff} command handler. For details see {@link WriteBookOff}.
      *
-     * @param cmd — command with the reason of the book writing off.
+     * @param cmd — command with a reason of a book writing off.
      * @return the {@code WriteBookOff} event.
      * @throws CannotWriteMissingBookOff if that book is missing.
      */
@@ -215,7 +215,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      *
      * @param cmd — command with the reason of the book writing off.
      * @return the {@code ReservationAdded} event.
-     * @throws CannotReserveBook if that book is missing.
+     * @throws CannotReserveBook if that book is missing or a reservation already exists.
      */
     @Assign
     ReservationAdded handle(ReserveBook cmd) throws CannotReserveBook {
@@ -250,9 +250,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
     /**
      * {@code BorrowBook} command handler. For details see {@link BorrowBook}.
-     * You can take a book if books in the library more than reservations, or if
+     * You can take a book if amount of books in the library is more than amount of reservations, or if
      * as many "next" reservations as books available and among these reservations
-     * one is belong to the user.
+     * one belongs to the user.
      *
      * @param cmd — command with the reason of the book writing off.
      * @return the {@code ReservationAdded} event.
@@ -389,10 +389,10 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     /**
      * {@code ExtendLoanPeriod} command handler. For details see {@link ExtendLoanPeriod}.
      *
-     * @param cmd — command with the id of the loan
-     *            that the user is going to extend.
+     * @param cmd — command with the ID of a loan
+     *            that a user is going to extend.
      * @return the {@code LoanPeriodExtended} event.
-     * @throws CannotExtendLoanPeriod if the loan period extension isn’t possible.
+     * @throws CannotExtendLoanPeriod if a loan period extension isn’t possible.
      */
     @Assign
     LoanPeriodExtended handle(ExtendLoanPeriod cmd) throws CannotExtendLoanPeriod {
@@ -430,7 +430,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Give the position of a necessary loan.
+     * Returns a position of a necessary loan.
      *
      * @param loansList — all existing loans.
      * @param loanId    — an identifier of the necessary loan.
@@ -452,10 +452,10 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     /**
      * {@code CancelReservation} command handler. For details see {@link CancelReservation}.
      *
-     * @param cmd — command with the id of the reservation
-     *            that the user is going to cancel.
+     * @param cmd — command with the ID of a reservation
+     *            that a user is going to cancel.
      * @return the {@code ReservationCanceled} event.
-     * @throws CannotCancelMissingReservation if the reservation is missing.
+     * @throws CannotCancelMissingReservation if a reservation is missing.
      */
     @Assign
     ReservationCanceled handle(CancelReservation cmd) throws CannotCancelMissingReservation {
@@ -506,8 +506,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      *            that the user is going to return.
      * @return the {@code InventoryAppended} event in pair with either {@code BookBecameAvailable} or
      * {@code BookBecameAvailable} events.
-     * @throws CannotReturnNonBorrowedBook if the book isn’t borrowed by the user.
-     * @throws CannotReturnMissingBook     if the book is missing.
+     * @throws CannotReturnNonBorrowedBook if a book isn’t borrowed by the user.
+     * @throws CannotReturnMissingBook     if a book is missing.
      */
     @Assign
     Pair<InventoryAppended, EitherOfTwo<BookBecameAvailable, BookReadyToPickup>> handle(
@@ -516,7 +516,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         if (!inventoryItemExists(cmd.getInventoryItemId())) {
             throwCannotReturnMissingBook(cmd);
         }
-        if (!userBorrowedBook(cmd.getUserId())) {
+        if (!hasUserBorrowedBook(cmd.getUserId())) {
             throwCannotReturnNonBorrowedBook(cmd);
         }
 
@@ -540,8 +540,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     /**
      * {@code ReportLostBook} command handler. For details see {@link ReportLostBook}.
      *
-     * @param cmd — command that contains an identifier of the lost book
-     *            and the user who lost it.
+     * @param cmd — command that contains the identifier of a lost book
+     *            and a user who lost it.
      * @return the {@code BookLost} event.
      */
     @Assign
@@ -657,9 +657,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     /**
      * A book becomes available for a user.
      *
-     * This method does not change the state of an aggregate but this event is necessary for the read side.
+     * This method does not change a state of an aggregate but this event is necessary for a read side.
      *
-     * @param event Book is ready to pickup for a user who is next in a queue.
+     * @param event A book is ready to pickup for a user who is next in a queue.
      */
     @SuppressWarnings("all")
     @Apply
@@ -835,13 +835,14 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Give the position of a necessary reservation.
+     * Returns a position of a necessary reservation.
      *
      * @param reservations — all existing reservations.
      * @param whoCanceled  — an identifier of the necessary user.
      * @return the reservation position.
      */
     private int getReservationPosition(List<Reservation> reservations, UserId whoCanceled) {
+
         int reservationCancelIndex = 0;
         for (int i = 0; i < reservations.size(); i++) {
             Reservation reservation = reservations.get(i);
@@ -893,13 +894,14 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Give the position of a returned book.
+     * Returns a position of a returned book.
      *
      * @param event          — {@code BookReturned} event.
      * @param inventoryItems — an identifier of the necessary item.
      * @return the item position.
      */
     private int getReturnedItemPosition(BookReturned event, List<InventoryItem> inventoryItems) {
+
         int returnedItemPosition = 0;
         for (int i = 0; i < inventoryItems.size(); i++) {
             InventoryItem item = inventoryItems.get(i);
@@ -913,12 +915,13 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Give the position of a returned book loan.
+     * Returns a position of a returned book loan.
      *
      * @param event — {@code BookReturned} event.
      * @return the loan position.
      */
     private int getLoanIndex(BookReturned event) {
+
         int loanIndex = 0;
         List<Loan> loans = getBuilder().getLoans();
         for (int i = 0; i < loans.size(); i++) {
@@ -955,12 +958,12 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Check if the user borrowed the book.
+     * Checks if a user borrowed a book.
      *
-     * @param userId — an identifier of the user that could borrow the book.
+     * @param userId — the identifier of a user who could borrow a book.
      * @return true if the user did.
      */
-    private boolean userBorrowedBook(UserId userId) {
+    private boolean hasUserBorrowedBook(UserId userId) {
 
         for (InventoryItem item : getState().getInventoryItemsList()) {
             if (item.getUserId()
@@ -972,10 +975,10 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Check if the inventory item exists.
+     * Checks if an inventory item exists.
      *
-     * @param inventoryItemId — an identifier of the item that should exist.
-     * @return true if the item exists.
+     * @param inventoryItemId — the identifier of an item that should exist.
+     * @return true if an item exists.
      */
     private boolean inventoryItemExists(InventoryItemId inventoryItemId) {
 
@@ -989,12 +992,12 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Check the book for reservations.
-     * If the book has no reservations then the book {@code becameAvailable},
+     * Checks a book for reservations.
+     * If a book has no reservations then the book {@code becameAvailable},
      * in other way — {@code readyToPickUp}.
      *
-     * @param inventoryId     — an identifier of the inventory.
-     * @param inventoryItemId — an identifier of the specific item.
+     * @param inventoryId     — the identifier of an inventory.
+     * @param inventoryItemId — the identifier of a specific item.
      * @return either {@code BookBecameAvailable} or {@code BookReadyToPickup}.
      */
     private Message becameAvailableOrReadyToPickup(InventoryId inventoryId,
