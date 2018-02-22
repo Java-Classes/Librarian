@@ -23,8 +23,6 @@ package javaclasses.exlibris.c.book;
 import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import javaclasses.exlibris.Book;
-import javaclasses.exlibris.BookId;
-import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.RemoveBook;
@@ -154,16 +152,7 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
     @DisplayName("throw CannotRemoveMissingBook rejection upon " +
             "an attempt to remove a missing book")
     void notRemoveBook() {
-
-        dispatchAddBookCmd();
-
-        final BookId bookId2 = BookId.newBuilder()
-                                     .setIsbn62(Isbn62.newBuilder()
-                                                .setValue("11")
-                                                .build())
-                                     .build();
-
-        final RemoveBook removeBook = removeBookInstance(bookId2, userId,
+        final RemoveBook removeBook = removeBookInstance(bookId, userId,
                                                          RemoveBook.BookRemovalReasonCase.OUTDATED);
 
         final Throwable t = assertThrows(Throwable.class,
@@ -174,8 +163,7 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
 
         final CannotRemoveMissingBook rejection = (CannotRemoveMissingBook) cause;
         assertEquals(rejection.getMessageThrown()
-                              .getBookId(), bookId2);
-
+                              .getBookId(), bookId);
     }
 
     private void dispatchAddBookCmd() {

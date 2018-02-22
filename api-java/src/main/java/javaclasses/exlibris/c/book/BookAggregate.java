@@ -73,7 +73,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     /**
      * {@code AddBook} command handler. For details see {@link AddBook}.
      *
-     * @param cmd — a command with book parameters that necessary to add the book.
+     * @param cmd a command with book parameters that necessary to add the book.
      * @return the {@code BookAdded} event.
      * @throws BookAlreadyExists if a book already exists.
      */
@@ -101,12 +101,13 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     /**
      * {@code UpdateBook} command handler. For details see {@link UpdateBook}.
      *
-     * @param cmd — command with book details that the librarian is going to change.
+     * @param cmd command with book details that the librarian is going to change.
      * @return the {@code BookUpdated} event.
      * @throws CannotUpdateMissingBook if a book is missing.
      */
     @Assign
     BookUpdated handle(UpdateBook cmd) throws CannotUpdateMissingBook {
+
         if (!cmd.getBookId()
                 .equals(getState().getBookId())) {
             BookAggregateRejections.throwCannotUpdateMissingBook(cmd);
@@ -129,7 +130,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     /**
      * {@code RemoveBook} command handler. For details see {@link RemoveBook}.
      *
-     * @param cmd — command with the removal reason.
+     * @param cmd command with the removal reason.
      * @return the {@code BookRemoved} event.
      * @throws CannotRemoveMissingBook if a book is missing.
      */
@@ -137,8 +138,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     BookRemoved handle(RemoveBook cmd) throws CannotRemoveMissingBook {
         final BookId bookId = cmd.getBookId();
 
-        if (!cmd.getBookId()
-                .equals(getState().getBookId())) {
+        if (!getState().hasBookDetails()) {
             BookAggregateRejections.throwCannotRemoveMissingBook(cmd);
         }
 
@@ -170,7 +170,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     /**
      * {@code BookAdded} event handler. For details see {@link BookAdded}.
      *
-     * @param event — the {@code BookAdded} event message.
+     * @param event the {@code BookAdded} event message.
      */
     @Apply
     void bookAdded(BookAdded event) {
@@ -184,7 +184,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     /**
      * {@code BookUpdated} event handler. For details see {@link BookUpdated}.
      *
-     * @param event — the {@code BookUpdated} event message.
+     * @param event the {@code BookUpdated} event message.
      */
     @Apply
     void bookUpdated(BookUpdated event) {
@@ -198,7 +198,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     /**
      * {@code BookRemoved} event handler. For details see {@link BookRemoved}.
      *
-     * @param event — the {@code BookRemoved} event message.
+     * @param event the {@code BookRemoved} event message.
      */
     @Apply
     void bookRemoved(BookRemoved event) {
