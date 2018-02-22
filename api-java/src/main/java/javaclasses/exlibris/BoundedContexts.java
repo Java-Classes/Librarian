@@ -68,7 +68,6 @@ public final class BoundedContexts {
      * @return the bounded context created with the storage factory
      */
     public static BoundedContext create(StorageFactory storageFactory) {
-
         checkNotNull(storageFactory);
 
         final BookRepository bookRepository = new BookRepository();
@@ -84,7 +83,6 @@ public final class BoundedContexts {
     }
 
     private static EventBus.Builder createEventBus(StorageFactory storageFactory) {
-
         final EventBus.Builder eventBus = EventBus.newBuilder()
                                                   .setStorageFactory(storageFactory);
         return eventBus;
@@ -92,7 +90,6 @@ public final class BoundedContexts {
 
     @VisibleForTesting
     static BoundedContext createBoundedContext(EventBus.Builder eventBus) {
-
         checkNotNull(eventBus);
 
         final Optional<StorageFactory> storageFactory = eventBus.getStorageFactory();

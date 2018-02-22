@@ -88,12 +88,11 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
      */
     @Assign
     BookAdded handle(AddBook cmd) throws BookAlreadyExists {
-
         final BookId bookId = cmd.getBookId();
 
         if (cmd.getBookDetails()
                .equals(getState().getBookDetails())) {
-            BookAggregateRejections.AddBookRejection.throwBookAlreadyExists(cmd);
+            BookAggregateRejections.throwBookAlreadyExists(cmd);
         }
 
         final UserId userId = cmd.getLibrarianId();
@@ -117,10 +116,9 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
      */
     @Assign
     BookUpdated handle(UpdateBook cmd) throws CannotUpdateMissingBook {
-
         if (!cmd.getBookId()
                 .equals(getState().getBookId())) {
-            BookAggregateRejections.UpdateBookRejection.throwCannotUpdateMissingBook(cmd);
+            BookAggregateRejections.throwCannotUpdateMissingBook(cmd);
         }
 
         final BookId bookId = cmd.getBookId();
@@ -146,12 +144,11 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
      */
     @Assign
     BookRemoved handle(RemoveBook cmd) throws CannotRemoveMissingBook {
-
         final BookId bookId = cmd.getBookId();
 
         if (!cmd.getBookId()
                 .equals(getState().getBookId())) {
-            BookAggregateRejections.RemoveBookRejection.throwCannotRemoveMissingBook(cmd);
+            BookAggregateRejections.throwCannotRemoveMissingBook(cmd);
         }
 
         final UserId userId = cmd.getLibrarianId();
@@ -186,7 +183,6 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
      */
     @Apply
     void bookAdded(BookAdded event) {
-
         final BookId bookId = event.getBookId();
         final BookDetails bookDetails = event.getDetails();
 
@@ -201,7 +197,6 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
      */
     @Apply
     void bookUpdated(BookUpdated event) {
-
         final BookId bookId = event.getBookId();
         final BookDetailsChange bookDetails = event.getBookDetailsChange();
 
@@ -216,7 +211,6 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
      */
     @Apply
     void bookRemoved(BookRemoved event) {
-
         getBuilder().clearBookId()
                     .clearBookDetails();
     }

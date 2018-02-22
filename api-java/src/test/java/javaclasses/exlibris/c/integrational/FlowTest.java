@@ -237,7 +237,6 @@ public class FlowTest extends InventoryCommandTest<Message> {
     @Test
     @DisplayName("two users by turns borrow book and few times extend their loan periods")
     void loanFlow() {
-
         final BoundedContext boundedContext = BoundedContexts.create();
         final CommandBus commandBus = boundedContext.getCommandBus();
         final StreamObserver<Ack> observer = StreamObservers.noOpObserver();
