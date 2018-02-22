@@ -24,9 +24,12 @@ import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
 import io.spine.server.aggregate.AggregateRepository;
 import io.spine.server.route.EventRoute;
+import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.BookRemoved;
+
+import java.util.Set;
 
 /**
  * @author Alexander Karpets
@@ -35,22 +38,35 @@ import javaclasses.exlibris.c.BookRemoved;
 public class InventoryRepository extends AggregateRepository<InventoryId, InventoryAggregate> {
 
     public InventoryRepository() {
-        super();
         getEventRouting().replaceDefault((EventRoute<InventoryId, Message>) (message, context) -> {
             if (message instanceof BookAdded) {
-                final BookAdded bookAdded = (BookAdded) message;
-                return ImmutableSet.of(InventoryId.newBuilder()
-                                                  .setBookId(bookAdded.getBookId())
-                                                  .build());
+                return getInventoryIds((BookAdded) message);
             }
             if (message instanceof BookRemoved) {
-                final BookRemoved bookRemoved = (BookRemoved) message;
-                return ImmutableSet.of(InventoryId.newBuilder()
-                                                  .setBookId(bookRemoved.getBookId())
-                                                  .build());
+                return getInventoryIds((BookRemoved) message);
             }
             throw new IllegalArgumentException("Cannot route the unreacted event.");
         });
+    }
+
+    private static Set<InventoryId> getInventoryIds(BookRemoved message) {
+        final BookId bookId = message.getBookId();
+
+        final ImmutableSet<InventoryId> inventoryIds =
+                ImmutableSet.of(InventoryId.newBuilder()
+                                           .setBookId(bookId)
+                                           .build());
+        return inventoryIds;
+    }
+
+    private static Set<InventoryId> getInventoryIds(BookAdded message) {
+        final BookId bookId = message.getBookId();
+
+        final ImmutableSet<InventoryId> inventoryIds =
+                ImmutableSet.of(InventoryId.newBuilder()
+                                           .setBookId(bookId)
+                                           .build());
+        return inventoryIds;
     }
 
 }
