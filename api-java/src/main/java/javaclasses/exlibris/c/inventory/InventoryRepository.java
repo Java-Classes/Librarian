@@ -31,6 +31,8 @@ import javaclasses.exlibris.c.BookRemoved;
 
 import java.util.Set;
 
+import static io.spine.util.Exceptions.newIllegalArgumentException;
+
 /**
  * @author Alexander Karpets
  * @author Dmytry Dyachenko
@@ -45,7 +47,7 @@ public class InventoryRepository extends AggregateRepository<InventoryId, Invent
             if (message instanceof BookRemoved) {
                 return getInventoryIds((BookRemoved) message);
             }
-            throw new IllegalArgumentException("Cannot route the unreacted event.");
+            throw newIllegalArgumentException("Cannot route the unreacted event.", message);
         });
     }
 
