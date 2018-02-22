@@ -300,7 +300,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     /**
      * Checks for the availability of reservations from the user
      *
-     * @param userId — the book that a user is going to borrow.
+     * @param userId the book that a user is going to borrow.
      * @return true if the such reservation exists.
      */
     private boolean userHasReservation(UserId userId) {
@@ -316,7 +316,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     /**
      * Counts the quantity of books in a library.
      *
-     * @param inventoryItems — all existing items.
+     * @param inventoryItems all existing items.
      * @return the quantity of books in a library.
      */
     private int getInLibraryCount(List<InventoryItem> inventoryItems) {

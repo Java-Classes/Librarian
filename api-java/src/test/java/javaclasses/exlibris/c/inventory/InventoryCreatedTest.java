@@ -49,7 +49,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class InventoryCreatedTest {
 
     private static Event bookAdded() {
-
         final TestEventFactory eventFactory = newInstance(pack(BookCommandFactory.bookId),
                                                           BookAggregate.class);
         return eventFactory.createEvent(BookAdded.newBuilder()
@@ -61,7 +60,6 @@ public class InventoryCreatedTest {
     @Test
     @DisplayName("create InventoryAggregate")
     void produceEvent() {
-
         final BoundedContext sourceContext = create();
 
         final Event event = bookAdded();

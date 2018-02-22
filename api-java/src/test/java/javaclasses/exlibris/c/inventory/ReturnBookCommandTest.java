@@ -70,7 +70,6 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
     @Test
     @DisplayName("produce BookReturned event")
     void produceEvent() {
-
         appendInventory();
         borrowBook();
 
@@ -92,7 +91,6 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
     @Test
     @DisplayName("return book without reservation")
     void returnBookWithoutReservation() {
-
         appendInventory();
 
         final Inventory inventoryAppended = aggregate.getState();
@@ -123,7 +121,6 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
     @DisplayName("throw CannotReturnNonBorrowedBook rejection upon " +
             "an attempt to return non borrowed book")
     void throwsCannotReturnNonBorrowedBook() {
-
         appendInventory();
 
         final ReturnBook returnBook = InventoryCommandFactory.returnBookInstance();
@@ -140,7 +137,6 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
     @DisplayName("throw CannotReturnMissingBook rejection upon " +
             "an attempt to return missing book")
     void throwsCannotReturnMissingBook() {
-
         appendInventory();
         borrowBook();
 
@@ -158,5 +154,4 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
 
         assertThat(cause, instanceOf(CannotReturnMissingBook.class));
     }
-
 }

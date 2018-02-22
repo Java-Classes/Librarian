@@ -54,7 +54,6 @@ public class ReportLostBookCommandTest extends InventoryCommandTest<ReserveBook>
     @Test
     @DisplayName("produce BookLost event")
     void produceEvent() {
-
         dispatchAppendInventory();
 
         final ReportLostBook reportLostBook = reportLostBookInstance();
@@ -77,7 +76,6 @@ public class ReportLostBookCommandTest extends InventoryCommandTest<ReserveBook>
     @Test
     @DisplayName("report for lost book")
     void reportLostBook() {
-
         dispatchAppendInventory();
 
         final Inventory previousInventory = aggregate.getState();
@@ -90,7 +88,6 @@ public class ReportLostBookCommandTest extends InventoryCommandTest<ReserveBook>
         assertEquals(true, currentInventory.getInventoryItemsList()
                                            .get(0)
                                            .getLost());
-
     }
 
     private void dispatchAppendInventory() {

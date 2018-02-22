@@ -64,7 +64,6 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
     @Test
     @DisplayName("produce ReservationAdded event")
     void produceEvent() {
-
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
@@ -86,7 +85,6 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
     @Test
     @DisplayName("reserve a book")
     void reserveBook() {
-
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
         dispatchCommand(aggregate, envelopeOf(reserveBook));
 
@@ -109,7 +107,6 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
     @DisplayName("throw CannotReserveBook rejection upon " +
             "an attempt reserve the book that is already reserved")
     void notReserveBook() {
-
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
         dispatchCommand(aggregate, envelopeOf(reserveBook));
 
@@ -132,7 +129,6 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
     @DisplayName("throw CannotReserveBook rejection upon " +
             "an attempt reserve the book that is already borrowed")
     void notReserveBorrowedBook() {
-
         final AppendInventory appendInventory = appendInventoryInstance();
         dispatchCommand(aggregate, envelopeOf(appendInventory));
 

@@ -34,6 +34,8 @@ import java.util.Set;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
+ * Repository for {@link javaclasses.exlibris.Inventory}
+ *
  * @author Alexander Karpets
  * @author Dmytry Dyachenko
  */
