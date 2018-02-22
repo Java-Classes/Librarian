@@ -60,23 +60,22 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
 
     /**
-     * {@code AddBook} command handler. For details see {@link AddBook}.
+     * Handles a {@code AddBook} command. For details see {@link AddBook}.
      *
-     * @param cmd a command with book parameters that necessary to add the book.
-     * @return the {@code BookAdded} event.
+     * @param cmd command with book parameters that necessary to add the book.
+     * @return a {@code BookAdded} event.
      * @throws BookAlreadyExists if a book already exists.
      */
     @Assign
     BookAdded handle(AddBook cmd) throws BookAlreadyExists {
-        final BookId bookId = cmd.getBookId();
+        final BookDetails bookDetails = cmd.getBookDetails();
 
-        if (cmd.getBookDetails()
-               .equals(getState().getBookDetails())) {
+        if (bookDetails.equals(getState().getBookDetails())) {
             BookAggregateRejections.throwBookAlreadyExists(cmd);
         }
 
+        final BookId bookId = cmd.getBookId();
         final UserId userId = cmd.getLibrarianId();
-        final BookDetails bookDetails = cmd.getBookDetails();
 
         final BookAdded result = BookAdded.newBuilder()
                                           .setBookId(bookId)
@@ -88,28 +87,26 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
 
     /**
-     * {@code UpdateBook} command handler. For details see {@link UpdateBook}.
+     * Handles a {@code UpdateBook} command. For details see {@link UpdateBook}.
      *
-     * @param cmd command with book details that the librarian is going to change.
-     * @return the {@code BookUpdated} event.
+     * @param cmd command with book details that a librarian is going to change.
+     * @return a {@code BookUpdated} event.
      * @throws CannotUpdateMissingBook if a book is missing.
      */
     @Assign
     BookUpdated handle(UpdateBook cmd) throws CannotUpdateMissingBook {
+        final BookId bookId = cmd.getBookId();
 
-        if (!cmd.getBookId()
-                .equals(getState().getBookId())) {
+        if (!bookId.equals(getState().getBookId())) {
             BookAggregateRejections.throwCannotUpdateMissingBook(cmd);
         }
 
-        final BookId bookId = cmd.getBookId();
-        final UserId userId = cmd.getLibrarianId();
-
+        final UserId librarianId = cmd.getLibrarianId();
         final BookDetailsChange bookDetails = cmd.getBookDetails();
 
         final BookUpdated result = BookUpdated.newBuilder()
                                               .setBookId(bookId)
-                                              .setLibrarianId(userId)
+                                              .setLibrarianId(librarianId)
                                               .setBookDetailsChange(bookDetails)
                                               .setWhenUpdated(getCurrentTime())
                                               .build();
@@ -117,27 +114,25 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
 
     /**
-     * {@code RemoveBook} command handler. For details see {@link RemoveBook}.
+     * Handles a {@code RemoveBook} command. For details see {@link RemoveBook}.
      *
      * @param cmd command with the removal reason.
-     * @return the {@code BookRemoved} event.
+     * @return a {@code BookRemoved} event.
      * @throws CannotRemoveMissingBook if a book is missing.
      */
     @Assign
     BookRemoved handle(RemoveBook cmd) throws CannotRemoveMissingBook {
-        final BookId bookId = cmd.getBookId();
-
         if (!getState().hasBookDetails()) {
             BookAggregateRejections.throwCannotRemoveMissingBook(cmd);
         }
 
-        final UserId userId = cmd.getLibrarianId();
-
+        final BookId bookId = cmd.getBookId();
+        final UserId librarianId = cmd.getLibrarianId();
         final String customReason = cmd.getCustomReason();
 
         final BookRemoved.Builder bookRemoved = BookRemoved.newBuilder()
                                                            .setBookId(bookId)
-                                                           .setLibrarianId(userId)
+                                                           .setLibrarianId(librarianId)
                                                            .setWhenRemoved(getCurrentTime());
 
         final RemoveBook.BookRemovalReasonCase removalReasonCase = cmd.getBookRemovalReasonCase();
@@ -159,9 +154,9 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
 
     /**
-     * {@code BookAdded} event handler. For details see {@link BookAdded}.
+     * Handles a {@code BookAdded} event. For details see {@link BookAdded}.
      *
-     * @param event the {@code BookAdded} event message.
+     * @param event a {@code BookAdded} event message.
      */
     @Apply
     void bookAdded(BookAdded event) {
@@ -173,9 +168,9 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
 
     /**
-     * {@code BookUpdated} event handler. For details see {@link BookUpdated}.
+     * Handles a {@code BookUpdated} event. For details see {@link BookUpdated}.
      *
-     * @param event the {@code BookUpdated} event message.
+     * @param event a {@code BookUpdated} event message.
      */
     @Apply
     void bookUpdated(BookUpdated event) {
@@ -187,9 +182,9 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
 
     /**
-     * {@code BookRemoved} event handler. For details see {@link BookRemoved}.
+     * Handles a {@code BookRemoved} event. For details see {@link BookRemoved}.
      *
-     * @param event the {@code BookRemoved} event message.
+     * @param event a {@code BookRemoved} event message.
      */
     @Apply
     void bookRemoved(BookRemoved event) {
