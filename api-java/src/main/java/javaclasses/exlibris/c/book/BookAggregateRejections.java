@@ -27,6 +27,7 @@ import javaclasses.exlibris.c.rejection.BookAlreadyExists;
 import javaclasses.exlibris.c.rejection.CannotRemoveMissingBook;
 import javaclasses.exlibris.c.rejection.CannotUpdateMissingBook;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.time.Time.getCurrentTime;
 
 /**
@@ -45,10 +46,11 @@ public class BookAggregateRejections {
     /**
      * A rejection when a librarian tries to add an existing book.
      */
-        public static void throwBookAlreadyExists(AddBook cmd) throws BookAlreadyExists {
-            throw new BookAlreadyExists(cmd.getBookId(), cmd.getBookDetails()
-                                                            .getTitle(), cmd.getLibrarianId(),
-                                        getCurrentTime());
+    public static void throwBookAlreadyExists(AddBook cmd) throws BookAlreadyExists {
+        checkNotNull(cmd);
+        throw new BookAlreadyExists(cmd.getBookId(), cmd.getBookDetails()
+                                                        .getTitle(), cmd.getLibrarianId(),
+                                    getCurrentTime());
     }
 
     /**
@@ -56,6 +58,7 @@ public class BookAggregateRejections {
      */
     public static void throwCannotUpdateMissingBook(UpdateBook cmd) throws
                                                                     CannotUpdateMissingBook {
+        checkNotNull(cmd);
         throw new CannotUpdateMissingBook(cmd.getBookId(), cmd.getLibrarianId(),
                                           getCurrentTime());
 
@@ -66,6 +69,7 @@ public class BookAggregateRejections {
      */
     public static void throwCannotRemoveMissingBook(RemoveBook cmd) throws
                                                                     CannotRemoveMissingBook {
+        checkNotNull(cmd);
         throw new CannotRemoveMissingBook(cmd.getBookId(), cmd.getLibrarianId(),
                                           cmd.getWhenRemoved());
     }
