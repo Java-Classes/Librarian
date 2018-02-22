@@ -45,49 +45,28 @@ public class BookAggregateRejections {
     /**
      * A rejection when a librarian tries to add an existing book.
      */
-    public static class AddBookRejection {
-
-        private AddBookRejection() {
-        }
-
         public static void throwBookAlreadyExists(AddBook cmd) throws BookAlreadyExists {
-
             throw new BookAlreadyExists(cmd.getBookId(), cmd.getBookDetails()
                                                             .getTitle(), cmd.getLibrarianId(),
                                         getCurrentTime());
-        }
     }
 
     /**
      * A rejection when a librarian tries to update a missing book.
      */
-    public static class UpdateBookRejection {
+    public static void throwCannotUpdateMissingBook(UpdateBook cmd) throws
+                                                                    CannotUpdateMissingBook {
+        throw new CannotUpdateMissingBook(cmd.getBookId(), cmd.getLibrarianId(),
+                                          getCurrentTime());
 
-        private UpdateBookRejection() {
-        }
-
-        public static void throwCannotUpdateMissingBook(UpdateBook cmd) throws
-                                                                        CannotUpdateMissingBook {
-
-            throw new CannotUpdateMissingBook(cmd.getBookId(), cmd.getLibrarianId(),
-                                              getCurrentTime());
-        }
     }
 
     /**
      * A rejection when a librarian tries to remove a missing book.
      */
-    public static class RemoveBookRejection {
-
-        private RemoveBookRejection() {
-        }
-
-        public static void throwCannotRemoveMissingBook(RemoveBook cmd) throws
-                                                                        CannotRemoveMissingBook {
-
-            throw new CannotRemoveMissingBook(cmd.getBookId(), cmd.getLibrarianId(),
-                                              cmd.getWhenRemoved());
-        }
+    public static void throwCannotRemoveMissingBook(RemoveBook cmd) throws
+                                                                    CannotRemoveMissingBook {
+        throw new CannotRemoveMissingBook(cmd.getBookId(), cmd.getLibrarianId(),
+                                          cmd.getWhenRemoved());
     }
-
 }
