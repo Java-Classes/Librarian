@@ -28,12 +28,12 @@ import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
 import javaclasses.exlibris.c.rejection.BookAlreadyBorrowed;
 import javaclasses.exlibris.c.rejection.BookAlreadyReserved;
-import javaclasses.exlibris.c.rejection.CannotBorrowBook;
 import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
 import javaclasses.exlibris.c.rejection.CannotExtendLoanPeriod;
 import javaclasses.exlibris.c.rejection.CannotReturnMissingBook;
 import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
 import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
+import javaclasses.exlibris.c.rejection.NonAvailableBook;
 
 import static io.spine.time.Time.getCurrentTime;
 
@@ -139,10 +139,13 @@ public class InventoryAggregateRejections {
         private BorrowBookRejection() {
         }
 
-        public static void throwCannotBorrowBook(BorrowBook cmd, boolean borrowed,
-                                                 boolean notAvailable) throws CannotBorrowBook {
-            throw new CannotBorrowBook(cmd.getInventoryId(), cmd.getInventoryItemId(),
-                                       cmd.getUserId(), getCurrentTime(), borrowed, notAvailable);
+        public static void throwBookAlreadyBorrowed(BorrowBook cmd) throws BookAlreadyBorrowed {
+            throw new BookAlreadyBorrowed(cmd.getInventoryId(), cmd.getUserId(), getCurrentTime());
+        }
+
+        public static void throwNonAvailableBook(BorrowBook cmd) throws NonAvailableBook {
+            throw new NonAvailableBook(cmd.getInventoryId(), cmd.getInventoryItemId(),
+                                       cmd.getUserId(), getCurrentTime());
         }
     }
 }
