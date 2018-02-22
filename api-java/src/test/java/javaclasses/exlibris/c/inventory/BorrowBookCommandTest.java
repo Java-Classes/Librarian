@@ -27,7 +27,8 @@ import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.ReserveBook;
-import javaclasses.exlibris.c.rejection.CannotBorrowBook;
+import javaclasses.exlibris.c.rejection.BookAlreadyBorrowed;
+import javaclasses.exlibris.c.rejection.NonAvailableBook;
 import javaclasses.exlibris.testdata.InventoryCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -162,7 +163,7 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
                                                                envelopeOf(borrowBook)));
         final Throwable cause = Throwables.getRootCause(t);
 
-        assertThat(cause, instanceOf(CannotBorrowBook.class));
+        assertThat(cause, instanceOf(BookAlreadyBorrowed.class));
     }
 
     @Test
@@ -197,7 +198,7 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
                                                                envelopeOf(borrowBook2)));
         final Throwable cause = Throwables.getRootCause(t);
 
-        assertThat(cause, instanceOf(CannotBorrowBook.class));
+        assertThat(cause, instanceOf(NonAvailableBook.class));
 
     }
 
