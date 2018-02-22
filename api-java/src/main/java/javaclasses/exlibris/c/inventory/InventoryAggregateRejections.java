@@ -26,10 +26,11 @@ import javaclasses.exlibris.c.ExtendLoanPeriod;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.WriteBookOff;
+import javaclasses.exlibris.c.rejection.BookAlreadyBorrowed;
+import javaclasses.exlibris.c.rejection.BookAlreadyReserved;
 import javaclasses.exlibris.c.rejection.CannotBorrowBook;
 import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
 import javaclasses.exlibris.c.rejection.CannotExtendLoanPeriod;
-import javaclasses.exlibris.c.rejection.CannotReserveBook;
 import javaclasses.exlibris.c.rejection.CannotReturnMissingBook;
 import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
 import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
@@ -57,10 +58,12 @@ public class InventoryAggregateRejections {
         private ReserveBookRejection() {
         }
 
-        public static void throwCannotReserveBook(ReserveBook cmd, boolean borrowed,
-                                                  boolean reserved) throws CannotReserveBook {
-            throw new CannotReserveBook(cmd.getInventoryId(), cmd.getUserId(), getCurrentTime(),
-                                        borrowed, reserved);
+        public static void throwBookAlreadyBorrowed(ReserveBook cmd) throws BookAlreadyBorrowed {
+            throw new BookAlreadyBorrowed(cmd.getInventoryId(), cmd.getUserId(), getCurrentTime());
+        }
+
+        public static void throwBookAlreadyReserved(ReserveBook cmd) throws BookAlreadyReserved {
+            throw new BookAlreadyReserved(cmd.getInventoryId(), cmd.getUserId(), getCurrentTime());
         }
     }
 

@@ -28,7 +28,8 @@ import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.ReservationAdded;
 import javaclasses.exlibris.c.ReserveBook;
-import javaclasses.exlibris.c.rejection.CannotReserveBook;
+import javaclasses.exlibris.c.rejection.BookAlreadyBorrowed;
+import javaclasses.exlibris.c.rejection.BookAlreadyReserved;
 import javaclasses.exlibris.testdata.InventoryCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,7 +46,6 @@ import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId2;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -118,17 +118,14 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
                                                                envelopeOf(reserveBook)));
         final Throwable cause = Throwables.getRootCause(t);
 
-        assertThat(cause, instanceOf(CannotReserveBook.class));
+        assertThat(cause, instanceOf(BookAlreadyReserved.class));
 
-        final CannotReserveBook rejection = (CannotReserveBook) cause;
+        final BookAlreadyReserved rejection = (BookAlreadyReserved) cause;
         final BookId actualBookId = rejection.getMessageThrown()
                                              .getInventoryId()
                                              .getBookId();
         assertEquals(reserveBook.getInventoryId()
                                 .getBookId(), actualBookId);
-
-        assertEquals(true, rejection.getMessageThrown()
-                                    .getAlreadyReserved());
     }
 
     @Test
@@ -152,16 +149,13 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
                                                                envelopeOf(reserveBook)));
         final Throwable cause = Throwables.getRootCause(t);
 
-        assertThat(cause, instanceOf(CannotReserveBook.class));
+        assertThat(cause, instanceOf(BookAlreadyBorrowed.class));
 
-        final CannotReserveBook rejection = (CannotReserveBook) cause;
+        final BookAlreadyBorrowed rejection = (BookAlreadyBorrowed) cause;
         final BookId actualBookId = rejection.getMessageThrown()
                                              .getInventoryId()
                                              .getBookId();
         assertEquals(reserveBook.getInventoryId()
                                 .getBookId(), actualBookId);
-        assertFalse(rejection.getMessageThrown()
-                             .getAlreadyReserved());
     }
-
 }

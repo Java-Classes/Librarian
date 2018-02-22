@@ -38,7 +38,12 @@ public class InventoryRejectionsSubscriber extends RejectionSubscriber {
     }
 
     @Subscribe
-    public void on(Rejections.CannotReserveBook rejection) {
+    public void on(Rejections.BookAlreadyBorrowed rejection) {
+        wasCalled = true;
+    }
+
+    @Subscribe
+    public void on(Rejections.BookAlreadyReserved rejection) {
         wasCalled = true;
     }
 
