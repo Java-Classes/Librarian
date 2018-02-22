@@ -117,7 +117,7 @@ message BookAlreadyReserved {
     google.protobuf.Timestamp when_rejected = 3;
 }
 
-//Rejection when a user tries to reserve a book that he borrowed by himself.
+// Rejection when a user tries to reserve a book that he borrowed by himself.
 //
 message BookAlreadyBorrowed {
 
