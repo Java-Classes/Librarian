@@ -57,8 +57,8 @@ public class BookAggregateRejections {
     /**
      * Throw a rejection when a librarian tries to update a missing book.
      */
-    public static void throwCannotUpdateMissingBook(UpdateBook cmd) throws
-                                                                    CannotUpdateMissingBook {
+    public static void throwCannotUpdateMissingBook(UpdateBook cmd)
+            throws CannotUpdateMissingBook {
         checkNotNull(cmd);
         throw new CannotUpdateMissingBook(cmd.getBookId(), cmd.getLibrarianId(),
                                           getCurrentTime());
@@ -67,8 +67,8 @@ public class BookAggregateRejections {
     /**
      * Throw a rejection when a librarian tries to remove a missing book.
      */
-    public static void throwCannotRemoveMissingBook(RemoveBook cmd) throws
-                                                                    CannotRemoveMissingBook {
+    public static void throwCannotRemoveMissingBook(RemoveBook cmd)
+            throws CannotRemoveMissingBook {
         checkNotNull(cmd);
         throw new CannotRemoveMissingBook(cmd.getBookId(), cmd.getLibrarianId(),
                                           cmd.getWhenRemoved());

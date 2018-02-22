@@ -59,10 +59,12 @@ public class InventoryAggregateRejections {
         }
 
         public static void throwBookAlreadyBorrowed(ReserveBook cmd) throws BookAlreadyBorrowed {
+            checkNotNull(cmd);
             throw new BookAlreadyBorrowed(cmd.getInventoryId(), cmd.getUserId(), getCurrentTime());
         }
 
         public static void throwBookAlreadyReserved(ReserveBook cmd) throws BookAlreadyReserved {
+            checkNotNull(cmd);
             throw new BookAlreadyReserved(cmd.getInventoryId(), cmd.getUserId(), getCurrentTime());
         }
     }
@@ -74,8 +76,8 @@ public class InventoryAggregateRejections {
         private CancelReservationRejection() {
         }
 
-        public static void throwCannotCancelMissingReservation(CancelReservation cmd) throws
-                                                                                      CannotCancelMissingReservation {
+        public static void throwCannotCancelMissingReservation(CancelReservation cmd)
+                throws CannotCancelMissingReservation {
             checkNotNull(cmd);
             throw new CannotCancelMissingReservation(cmd.getInventoryId(), cmd.getUserId(),
                                                      getCurrentTime());
@@ -89,8 +91,8 @@ public class InventoryAggregateRejections {
         private WriteBookOffRejection() {
         }
 
-        public static void throwCannotWriteMissingBookOff(WriteBookOff cmd) throws
-                                                                            CannotWriteMissingBookOff {
+        public static void throwCannotWriteMissingBookOff(WriteBookOff cmd)
+                throws CannotWriteMissingBookOff {
             checkNotNull(cmd);
             throw new CannotWriteMissingBookOff(cmd.getInventoryId(), cmd.getLibrarianId(),
                                                 cmd.getInventoryItemId(), getCurrentTime());
@@ -107,15 +109,15 @@ public class InventoryAggregateRejections {
         private ReturnBookRejection() {
         }
 
-        public static void throwCannotReturnNonBorrowedBook(ReturnBook cmd) throws
-                                                                            CannotReturnNonBorrowedBook {
+        public static void throwCannotReturnNonBorrowedBook(ReturnBook cmd)
+                throws CannotReturnNonBorrowedBook {
             checkNotNull(cmd);
             throw new CannotReturnNonBorrowedBook(cmd.getInventoryId(), cmd.getInventoryItemId(),
                                                   cmd.getUserId(), getCurrentTime());
         }
 
-        public static void throwCannotReturnMissingBook(ReturnBook cmd) throws
-                                                                        CannotReturnMissingBook {
+        public static void throwCannotReturnMissingBook(ReturnBook cmd)
+                throws CannotReturnMissingBook {
             checkNotNull(cmd);
             throw new CannotReturnMissingBook(cmd.getInventoryId(), cmd.getInventoryItemId(),
                                               cmd.getUserId(), getCurrentTime());
@@ -126,8 +128,8 @@ public class InventoryAggregateRejections {
         private ExtendLoanPeriodRejection() {
         }
 
-        public static void throwCannotExtendLoanPeriod(ExtendLoanPeriod cmd) throws
-                                                                             CannotExtendLoanPeriod {
+        public static void throwCannotExtendLoanPeriod(ExtendLoanPeriod cmd)
+                throws CannotExtendLoanPeriod {
             checkNotNull(cmd);
             throw new CannotExtendLoanPeriod(cmd.getInventoryId(), cmd.getLoanId(), cmd.getUserId(),
                                              getCurrentTime());
@@ -140,10 +142,12 @@ public class InventoryAggregateRejections {
         }
 
         public static void throwBookAlreadyBorrowed(BorrowBook cmd) throws BookAlreadyBorrowed {
+            checkNotNull(cmd);
             throw new BookAlreadyBorrowed(cmd.getInventoryId(), cmd.getUserId(), getCurrentTime());
         }
 
         public static void throwNonAvailableBook(BorrowBook cmd) throws NonAvailableBook {
+            checkNotNull(cmd);
             throw new NonAvailableBook(cmd.getInventoryId(), cmd.getInventoryItemId(),
                                        cmd.getUserId(), getCurrentTime());
         }
