@@ -297,5 +297,6 @@ public class FlowTest extends InventoryCommandTest<Message> {
         commandBus.post(borrowBook, observer);
         commandBus.post(extendLoanPeriod2, observer);
         assertTrue(inventoryRejectionsSubscriber.wasCalled());
+        InventoryRejectionsSubscriber.clear();
     }
 }
