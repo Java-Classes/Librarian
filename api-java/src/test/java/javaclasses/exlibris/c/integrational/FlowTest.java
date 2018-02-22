@@ -110,6 +110,12 @@ public class FlowTest extends InventoryCommandTest<Message> {
             toMessage(returnBookInstance(InventoryCommandFactory.inventoryId,
                                          InventoryCommandFactory.inventoryItemId,
                                          InventoryCommandFactory.userId2)));
+
+    private final Command returnBook3 = requestFactory.createCommand(
+            toMessage(returnBookInstance(InventoryCommandFactory.inventoryId,
+                                         InventoryCommandFactory.inventoryItemId2,
+                                         InventoryCommandFactory.userId2)));
+
     private final Command writeBookOff = requestFactory.createCommand(
             toMessage(writeBookOffInstance()));
 
@@ -158,7 +164,8 @@ public class FlowTest extends InventoryCommandTest<Message> {
     }
 
     @Test
-    @DisplayName("second simple book lifecycle that doesn't throw a rejection")
+    @DisplayName("librarian adds book, appends inventory. " +
+            "Users borrow books, one user lost the book and the book is written off, another user returns the book.")
     void secondUseCase() {
         final BoundedContext boundedContext = BoundedContexts.create();
         final CommandBus commandBus = boundedContext.getCommandBus();
@@ -194,6 +201,23 @@ public class FlowTest extends InventoryCommandTest<Message> {
         commandBus.post(returnBook, observer);
         assertFalse(InventoryRejectionsSubscriber.wasCalled());
 
+        commandBus.post(borrowBook, observer);
+        assertFalse(InventoryRejectionsSubscriber.wasCalled());
+
+        commandBus.post(writeBookOff, observer);
+        assertFalse(InventoryRejectionsSubscriber.wasCalled());
+
+        commandBus.post(returnBook3, observer);
+        assertFalse(InventoryRejectionsSubscriber.wasCalled());
+
+        commandBus.post(appendInventory, observer);
+        assertFalse(InventoryRejectionsSubscriber.wasCalled());
+
+        commandBus.post(borrowBook, observer);
+        assertFalse(InventoryRejectionsSubscriber.wasCalled());
+
+        commandBus.post(returnBook, observer);
+        assertFalse(InventoryRejectionsSubscriber.wasCalled());
     }
 
     @Test
