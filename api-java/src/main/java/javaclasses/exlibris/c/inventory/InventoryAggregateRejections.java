@@ -35,6 +35,7 @@ import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
 import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
 import javaclasses.exlibris.c.rejection.NonAvailableBook;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.time.Time.getCurrentTime;
 
 /**
@@ -54,7 +55,6 @@ public class InventoryAggregateRejections {
      * A rejection when a user tries to reserve a book that he borrowed by himself or a book that he already reserved.
      */
     public static class ReserveBookRejection {
-
         private ReserveBookRejection() {
         }
 
@@ -71,28 +71,27 @@ public class InventoryAggregateRejections {
      * A rejection when a user tries to cancel a missing reservation.
      */
     public static class CancelReservationRejection {
-
         private CancelReservationRejection() {
         }
 
         public static void throwCannotCancelMissingReservation(CancelReservation cmd) throws
                                                                                       CannotCancelMissingReservation {
+            checkNotNull(cmd);
             throw new CannotCancelMissingReservation(cmd.getInventoryId(), cmd.getUserId(),
                                                      getCurrentTime());
         }
-
     }
 
     /**
      * A rejection when a librarian tries to write a missing book off.
      */
     public static class WriteBookOffRejection {
-
         private WriteBookOffRejection() {
         }
 
         public static void throwCannotWriteMissingBookOff(WriteBookOff cmd) throws
                                                                             CannotWriteMissingBookOff {
+            checkNotNull(cmd);
             throw new CannotWriteMissingBookOff(cmd.getInventoryId(), cmd.getLibrarianId(),
                                                 cmd.getInventoryItemId(), getCurrentTime());
 
@@ -105,30 +104,31 @@ public class InventoryAggregateRejections {
      * 2. a rejection when a user tries to return the missing {@link javaclasses.exlibris.InventoryItem}.
      */
     public static class ReturnBookRejection {
-
         private ReturnBookRejection() {
         }
 
         public static void throwCannotReturnNonBorrowedBook(ReturnBook cmd) throws
                                                                             CannotReturnNonBorrowedBook {
+            checkNotNull(cmd);
             throw new CannotReturnNonBorrowedBook(cmd.getInventoryId(), cmd.getInventoryItemId(),
                                                   cmd.getUserId(), getCurrentTime());
         }
 
         public static void throwCannotReturnMissingBook(ReturnBook cmd) throws
                                                                         CannotReturnMissingBook {
+            checkNotNull(cmd);
             throw new CannotReturnMissingBook(cmd.getInventoryId(), cmd.getInventoryItemId(),
                                               cmd.getUserId(), getCurrentTime());
         }
     }
 
     public static class ExtendLoanPeriodRejection {
-
         private ExtendLoanPeriodRejection() {
         }
 
         public static void throwCannotExtendLoanPeriod(ExtendLoanPeriod cmd) throws
                                                                              CannotExtendLoanPeriod {
+            checkNotNull(cmd);
             throw new CannotExtendLoanPeriod(cmd.getInventoryId(), cmd.getLoanId(), cmd.getUserId(),
                                              getCurrentTime());
         }
@@ -148,4 +148,5 @@ public class InventoryAggregateRejections {
                                        cmd.getUserId(), getCurrentTime());
         }
     }
+
 }
