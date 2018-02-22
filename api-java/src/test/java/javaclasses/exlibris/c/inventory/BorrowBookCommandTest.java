@@ -39,6 +39,8 @@ import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchComma
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryItemId;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryItemId2;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.rfid;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId2;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId3;
@@ -175,7 +177,12 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
 
         dispatchCommand(aggregate, envelopeOf(borrowBook));
 
-        dispatchAppendInventory();
+        final AppendInventory appendInventoryCommand = appendInventoryInstance(inventoryId,
+                                                                               inventoryItemId2,
+                                                                               userId,
+                                                                               rfid);
+        dispatchCommand(aggregate,
+                        envelopeOf(appendInventoryCommand));
 
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance(userId2,
                                                                                     InventoryCommandFactory.inventoryId);
