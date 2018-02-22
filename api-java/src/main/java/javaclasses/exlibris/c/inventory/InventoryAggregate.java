@@ -89,7 +89,7 @@ import static io.spine.time.Time.getCurrentTime;
  * @author Paul Ageyev
  */
 
-@SuppressWarnings({"ClassWithTooManyMethods", /* Task definition cannot be separated and should
+@SuppressWarnings({"ClassWithTooManyMethods", /* Inventory definition cannot be separated and should
                                                  process all commands and events related to it
                                                  according to the domain model.
                                                  The {@code Aggregate} does it with methods
@@ -145,7 +145,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     Pair<InventoryAppended, EitherOfTwo<BookBecameAvailable, BookReadyToPickup>> handle(
             AppendInventory cmd) {
-
         final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final Rfid rfid = cmd.getRfid();
@@ -163,7 +162,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
         final Pair result = Pair.of(inventoryAppended,
                                     becameAvailableOrReadyToPickup(inventoryId, inventoryItemId));
-
         return result;
     }
 
@@ -176,7 +174,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      */
     @Assign
     InventoryDecreased handle(WriteBookOff cmd) throws CannotWriteMissingBookOff {
-
         List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
 
         InventoryDecreased result = null;
