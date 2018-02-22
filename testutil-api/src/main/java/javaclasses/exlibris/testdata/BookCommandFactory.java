@@ -37,6 +37,7 @@ import javaclasses.exlibris.c.RemoveBook;
 import javaclasses.exlibris.c.UpdateBook;
 
 import static io.spine.time.Time.getCurrentTime;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static javaclasses.exlibris.c.RemoveBook.BookRemovalReasonCase.CUSTOM_REASON;
 import static javaclasses.exlibris.c.RemoveBook.BookRemovalReasonCase.OUTDATED;
 
@@ -223,7 +224,8 @@ public class BookCommandFactory {
 
             }
             case BOOKREMOVALREASON_NOT_SET: {
-                throw new IllegalArgumentException("The book cannot be removed without reason.");
+                throw newIllegalArgumentException("The book cannot be removed without reason.",
+                                                  removalReasonCase);
             }
         }
         return result.build();

@@ -40,6 +40,7 @@ import javaclasses.exlibris.c.rejection.CannotRemoveMissingBook;
 import javaclasses.exlibris.c.rejection.CannotUpdateMissingBook;
 
 import static io.spine.time.Time.getCurrentTime;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * The aggregate managing the state of a {@link Book}.
@@ -139,7 +140,8 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
                                                            .setLibrarianId(userId)
                                                            .setWhenRemoved(getCurrentTime());
 
-        switch (cmd.getBookRemovalReasonCase()) {
+        final RemoveBook.BookRemovalReasonCase removalReasonCase = cmd.getBookRemovalReasonCase();
+        switch (removalReasonCase) {
             case OUTDATED: {
                 bookRemoved.setOutdated(true);
                 break;
@@ -149,7 +151,8 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
                 break;
             }
             case BOOKREMOVALREASON_NOT_SET: {
-                throw new IllegalArgumentException("The book cannot be removed without reason.");
+                throw newIllegalArgumentException("The book cannot be removed without reason.",
+                                                  removalReasonCase);
             }
         }
         return bookRemoved.build();
