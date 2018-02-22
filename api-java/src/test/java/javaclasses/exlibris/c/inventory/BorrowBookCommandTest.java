@@ -68,7 +68,6 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     @Test
     @DisplayName("produce BookBorrowed event")
     void produceEvent() {
-
         dispatchAppendInventory();
 
         final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
@@ -86,7 +85,6 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     @Test
     @DisplayName("borrow the book")
     void borrowBook() {
-
         dispatchAppendInventory();
 
         final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
@@ -102,7 +100,6 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     @Test
     @DisplayName("create the loan for the borrowed book and the specific user")
     void createLoan() {
-
         dispatchAppendInventory();
 
         final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
@@ -123,7 +120,6 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     @Test
     @DisplayName("reservation became loan")
     void reservationBecameLoan() {
-
         dispatchAppendInventory();
         dispatchReserveBook();
 
@@ -150,7 +146,6 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     @DisplayName("throw CannotBorrowBook rejection upon " +
             "an attempt to borrow a book that has already borrowed")
     void bookAlreadyBorrowed() {
-
         dispatchAppendInventory();
 
         final BorrowBook borrowBook = borrowBookInstance(InventoryCommandFactory.inventoryId,
@@ -170,7 +165,6 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     @DisplayName("throw CannotBorrowBook rejection upon " +
             "an attempt to borrow a book that isn't available")
     void notAvailableBook() {
-
         dispatchAppendInventory();
 
         final BorrowBook borrowBook = borrowBookInstance(InventoryCommandFactory.inventoryId,

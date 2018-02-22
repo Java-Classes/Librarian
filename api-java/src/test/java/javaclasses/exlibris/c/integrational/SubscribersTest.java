@@ -54,7 +54,7 @@ public class SubscribersTest extends BookCommandTest<AddBook> {
     }
 
     @Test
-    @DisplayName("throw BookAlreadyExists rejection")
+    @DisplayName("subscriber catches BookAlreadyExists rejection")
     void throwMenuNotAvailable() {
 
         final BoundedContext boundedContext = BoundedContexts.create();
@@ -84,7 +84,7 @@ public class SubscribersTest extends BookCommandTest<AddBook> {
     }
 
     @Test
-    @DisplayName("catch event")
+    @DisplayName("subscriber catches events")
     void catchEvent() {
 
         final BoundedContext boundedContext = BoundedContexts.create();

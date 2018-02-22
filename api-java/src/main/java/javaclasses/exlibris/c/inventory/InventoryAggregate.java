@@ -240,8 +240,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      *
      * @param cmd command with the reason of the book writing off.
      * @return the {@code ReservationAdded} event.
-     * @throws BookAlreadyBorrowed if a book already borrowed.
-     * @throws NonAvailableBook    if non-available book.
+     * @throws BookAlreadyBorrowed if a book is already borrowed.
+     * @throws NonAvailableBook    if a book is not available.
      */
     @Assign
     Pair<BookBorrowed, Optional<ReservationBecameLoan>> handle(BorrowBook cmd) throws

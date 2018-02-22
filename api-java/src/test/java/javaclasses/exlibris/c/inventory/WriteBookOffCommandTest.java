@@ -65,7 +65,6 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
     @Test
     @DisplayName("produce InventoryDecreased event")
     void produceEvent() {
-
         appendInventory();
 
         final WriteBookOff writeBookOff = InventoryCommandFactory.writeBookOffInstance();
@@ -96,7 +95,6 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
     @Test
     @DisplayName("decrease inventory")
     void writeOffBook() {
-
         appendInventory();
 
         final Inventory inventoryBefore = aggregate.getState();
@@ -114,7 +112,6 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
     @DisplayName("throw WriteBookOffRejection rejection upon " +
             "an attempt to write off a missing book")
     void notWriteOffBook() {
-
         final WriteBookOff writeBookOff = InventoryCommandFactory.writeBookOffInstance();
 
         final Throwable t = assertThrows(Throwable.class,
@@ -124,6 +121,5 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
         final Throwable cause = Throwables.getRootCause(t);
 
         assertThat(cause, instanceOf(CannotWriteMissingBookOff.class));
-
     }
 }

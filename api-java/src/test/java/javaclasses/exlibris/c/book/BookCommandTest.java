@@ -39,7 +39,6 @@ public abstract class BookCommandTest<C extends Message> extends AggregateComman
     BookId bookId;
 
     private static BookId createBookId() {
-
         return BookId.newBuilder()
                      .setIsbn62(Isbn62.newBuilder()
                                       .setValue("1"))

@@ -61,7 +61,6 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
     @Test
     @DisplayName("remove a book with a outdated reason")
     void removeBookWithOutdatedReason() {
-
         dispatchAddBookCmd();
 
         final RemoveBook removeBook = removeBookInstance(BookCommandFactory.bookId, librarianId,
@@ -80,7 +79,6 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
     @Test
     @DisplayName("remove a book with a custom reason")
     void removeBookWithCustomReason() {
-
         dispatchAddBookCmd();
 
         final RemoveBook removeBook = removeBookInstance(BookCommandFactory.bookId, librarianId,
@@ -99,7 +97,6 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
     @Test
     @DisplayName("remove a book without a reason")
     public void removeBookWithoutReason() {
-
         dispatchAddBookCmd();
         final Throwable exception = assertThrows(IllegalArgumentException.class,
                                                  () -> {
@@ -112,9 +109,7 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
     @Test
     @DisplayName("produce BookRemoved event")
     void produceEvent() {
-
         dispatchAddBookCmd();
-
         final RemoveBook removeBook = removeBookInstance(BookCommandFactory.bookId, librarianId,
                                                          removalOutdatedReason);
 
@@ -131,7 +126,6 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
     @Test
     @DisplayName("has the same removal reason")
     void sameRemovalReason() {
-
         dispatchAddBookCmd();
 
         final RemoveBook removeBook = removeBookInstance(BookCommandFactory.bookId, librarianId,

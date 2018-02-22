@@ -32,6 +32,8 @@ import javaclasses.exlibris.c.BookRemoved;
 import java.util.Set;
 
 /**
+ * Repository for {@link javaclasses.exlibris.Inventory}
+ *
  * @author Alexander Karpets
  * @author Dmytry Dyachenko
  */

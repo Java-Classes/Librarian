@@ -63,7 +63,6 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
     @Test
     @DisplayName("produce ReservationCanceled event")
     void produceEvent() {
-
         reserveBook();
 
         final CancelReservation cancelReservation = InventoryCommandFactory.cancelReservationInstance();
@@ -85,7 +84,6 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
     @Test
     @DisplayName("cancel reservation")
     void cancelReservation() {
-
         reserveBook();
 
         final Inventory inventoryReserved = aggregate.getState();
@@ -103,7 +101,6 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
     @DisplayName("throw CannotCancelMissingReservation rejection upon " +
             "an attempt to cancel missing reservation")
     void notCancelReservation() {
-
         final CancelReservation cancelReservation = InventoryCommandFactory.cancelReservationInstance();
 
         final Throwable t = assertThrows(Throwable.class,
@@ -119,7 +116,6 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
     @Test
     @DisplayName("cannot cancel missing reservation")
     void cancelMissingReservation() {
-
         final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
 
         dispatchCommand(aggregate, envelopeOf(appendInventory));

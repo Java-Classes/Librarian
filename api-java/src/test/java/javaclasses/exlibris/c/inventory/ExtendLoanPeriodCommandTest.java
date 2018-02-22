@@ -59,7 +59,6 @@ public class ExtendLoanPeriodCommandTest extends InventoryCommandTest<ExtendLoan
     @Test
     @DisplayName("extend a loan period")
     void extendLoanPeriod() {
-
         dispatchAppendInventory();
 
         final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
@@ -96,7 +95,6 @@ public class ExtendLoanPeriodCommandTest extends InventoryCommandTest<ExtendLoan
     @DisplayName("throw CannotExtendLoanPeriod rejection upon " +
             "an attempt to extend loan period if the book has already been reserved or borrowed")
     void notExtendLoanPeriod() {
-
         dispatchAppendInventory();
 
         final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
@@ -134,5 +132,4 @@ public class ExtendLoanPeriodCommandTest extends InventoryCommandTest<ExtendLoan
         final AppendInventory appendInventory = appendInventoryInstance();
         dispatchCommand(aggregate, envelopeOf(appendInventory));
     }
-
 }

@@ -57,7 +57,6 @@ public class InventoryRemovedTest extends InventoryCommandTest<AddBook> {
     @Test
     @DisplayName("remove InventoryAggregate")
     void produceEvent() {
-
         final BoundedContext sourceContext = create();
 
         final Event event = bookRemoved();
@@ -88,7 +87,6 @@ public class InventoryRemovedTest extends InventoryCommandTest<AddBook> {
     }
 
     private static Event bookRemoved() {
-
         final TestEventFactory eventFactory = newInstance(pack(BookCommandFactory.bookId),
                                                           BookAggregate.class);
         return eventFactory.createEvent(BookRemoved.newBuilder()

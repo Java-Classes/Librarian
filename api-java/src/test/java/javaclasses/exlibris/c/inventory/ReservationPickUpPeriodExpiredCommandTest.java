@@ -51,7 +51,6 @@ public class ReservationPickUpPeriodExpiredCommandTest extends InventoryCommandT
     @Test
     @DisplayName("produce MarkReservationExpired event")
     void produceEvent() {
-
         dispatchReserveBook();
 
         final MarkReservationExpired reservationExpired = reservationPickUpPeriodInstanceExpired();
@@ -67,7 +66,6 @@ public class ReservationPickUpPeriodExpiredCommandTest extends InventoryCommandT
     @Test
     @DisplayName("mark reservation as expired")
     void reservationPickUpPeriodExpired() {
-
         dispatchReserveBook();
 
         final MarkReservationExpired reservationExpired = reservationPickUpPeriodInstanceExpired();
@@ -82,5 +80,4 @@ public class ReservationPickUpPeriodExpiredCommandTest extends InventoryCommandT
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
         dispatchCommand(aggregate, envelopeOf(reserveBook));
     }
-
 }

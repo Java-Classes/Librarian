@@ -31,8 +31,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.time.Time.getCurrentTime;
 
 /**
- * Generate rejections for {@link BookAggregate}.
- * To throw a rejection it is necessary to call static method.
+ * Rejections generator for {@link BookAggregate}.
+ *
+ * <p>To throw a rejection it is necessary to call static method.
  *
  * @author Paul Ageyev
  * @author Alexander Karpets
@@ -44,7 +45,7 @@ public class BookAggregateRejections {
     }
 
     /**
-     * A rejection when a librarian tries to add an existing book.
+     * Throw a rejection when a librarian tries to add an existing book.
      */
     public static void throwBookAlreadyExists(AddBook cmd) throws BookAlreadyExists {
         checkNotNull(cmd);
@@ -54,7 +55,7 @@ public class BookAggregateRejections {
     }
 
     /**
-     * A rejection when a librarian tries to update a missing book.
+     * Throw a rejection when a librarian tries to update a missing book.
      */
     public static void throwCannotUpdateMissingBook(UpdateBook cmd) throws
                                                                     CannotUpdateMissingBook {
@@ -64,7 +65,7 @@ public class BookAggregateRejections {
     }
 
     /**
-     * A rejection when a librarian tries to remove a missing book.
+     * Throw a rejection when a librarian tries to remove a missing book.
      */
     public static void throwCannotRemoveMissingBook(RemoveBook cmd) throws
                                                                     CannotRemoveMissingBook {

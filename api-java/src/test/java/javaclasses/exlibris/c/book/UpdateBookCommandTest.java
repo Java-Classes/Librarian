@@ -63,7 +63,6 @@ public class UpdateBookCommandTest extends BookCommandTest<UpdateBook> {
     @Test
     @DisplayName("produce BookUpdated event")
     void produceEvent() {
-
         dispatchAddBookCmd();
 
         final BookDetailsChange bookDetailsChange = BookDetailsChange.newBuilder()
@@ -97,7 +96,6 @@ public class UpdateBookCommandTest extends BookCommandTest<UpdateBook> {
     @Test
     @DisplayName("update a book")
     void updateBook() {
-
         dispatchAddBookCmd();
 
         final BookDetailsChange bookDetailsChange = BookDetailsChange.newBuilder()
@@ -126,7 +124,6 @@ public class UpdateBookCommandTest extends BookCommandTest<UpdateBook> {
     @DisplayName("throw CannotUpdateMissingBook rejection upon " +
             "an attempt to update a missing book")
     void notUpdateBook() {
-
         dispatchAddBookCmd();
 
         final BookDetailsChange bookDetailsChange = BookDetailsChange.newBuilder()
