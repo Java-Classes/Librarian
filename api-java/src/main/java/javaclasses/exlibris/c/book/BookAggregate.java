@@ -48,21 +48,9 @@ import static io.spine.time.Time.getCurrentTime;
  * @author Paul Ageyev
  */
 public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
+
     /**
      * Creates a new instance.
-     *
-     * <p>Constructors of derived classes should have package access level
-     * because of the following reasons:
-     * <ol>
-     * <li>These constructors are not public API of an application.
-     * Commands and aggregate IDs are.
-     * <li>These constructors need to be accessible from tests in the same package.
-     * </ol>
-     *
-     * <p>Because of the last reason consider annotating constructors with
-     * {@code @VisibleForTesting}. The package access is needed only for tests.
-     * Otherwise aggregate constructors (that are invoked by {@link BookRepository}
-     * via Reflection) may be left {@code private}.
      *
      * @param id the ID for the new aggregate
      */

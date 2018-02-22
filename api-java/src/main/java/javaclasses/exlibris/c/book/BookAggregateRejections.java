@@ -58,7 +58,6 @@ public class BookAggregateRejections {
                                                                     CannotUpdateMissingBook {
         throw new CannotUpdateMissingBook(cmd.getBookId(), cmd.getLibrarianId(),
                                           getCurrentTime());
-
     }
 
     /**

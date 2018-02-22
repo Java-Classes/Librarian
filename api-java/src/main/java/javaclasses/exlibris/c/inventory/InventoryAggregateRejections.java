@@ -59,7 +59,6 @@ public class InventoryAggregateRejections {
 
         public static void throwCannotReserveBook(ReserveBook cmd, boolean borrowed,
                                                   boolean reserved) throws CannotReserveBook {
-
             throw new CannotReserveBook(cmd.getInventoryId(), cmd.getUserId(), getCurrentTime(),
                                         borrowed, reserved);
         }
@@ -75,7 +74,6 @@ public class InventoryAggregateRejections {
 
         public static void throwCannotCancelMissingReservation(CancelReservation cmd) throws
                                                                                       CannotCancelMissingReservation {
-
             throw new CannotCancelMissingReservation(cmd.getInventoryId(), cmd.getUserId(),
                                                      getCurrentTime());
         }
@@ -92,7 +90,6 @@ public class InventoryAggregateRejections {
 
         public static void throwCannotWriteMissingBookOff(WriteBookOff cmd) throws
                                                                             CannotWriteMissingBookOff {
-
             throw new CannotWriteMissingBookOff(cmd.getInventoryId(), cmd.getLibrarianId(),
                                                 cmd.getInventoryItemId(), getCurrentTime());
 
@@ -144,7 +141,5 @@ public class InventoryAggregateRejections {
             throw new CannotBorrowBook(cmd.getInventoryId(), cmd.getInventoryItemId(),
                                        cmd.getUserId(), getCurrentTime(), borrowed, notAvailable);
         }
-
     }
-
 }

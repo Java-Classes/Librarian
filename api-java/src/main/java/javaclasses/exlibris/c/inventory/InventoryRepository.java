@@ -35,7 +35,6 @@ import javaclasses.exlibris.c.BookRemoved;
 public class InventoryRepository extends AggregateRepository<InventoryId, InventoryAggregate> {
 
     public InventoryRepository() {
-        super();
         getEventRouting().replaceDefault((EventRoute<InventoryId, Message>) (message, context) -> {
             if (message instanceof BookAdded) {
                 final BookAdded bookAdded = (BookAdded) message;
@@ -52,5 +51,4 @@ public class InventoryRepository extends AggregateRepository<InventoryId, Invent
             throw new IllegalArgumentException("Cannot route the unreacted event.");
         });
     }
-
 }
