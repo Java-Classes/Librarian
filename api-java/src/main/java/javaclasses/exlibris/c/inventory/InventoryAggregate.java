@@ -189,7 +189,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             }
         }
         if (result == null) {
-            InventoryAggregateRejections.WriteBookOffRejection.throwCannotWriteMissingBookOff(cmd);
+            InventoryAggregateRejections.throwCannotWriteMissingBookOff(cmd);
         }
         return result;
     }
@@ -298,7 +298,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Checks for the availability of reservations from the user
+     * Checks for the availability of reservations from the user.
      *
      * @param userId the book that a user is going to borrow.
      * @return true if the such reservation exists.
@@ -384,7 +384,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final UserId userId = cmd.getUserId();
 
         if (isBookReserved() || !userHasLoan(userId)) {
-            InventoryAggregateRejections.ExtendLoanPeriodRejection.throwCannotExtendLoanPeriod(cmd);
+            InventoryAggregateRejections.throwCannotExtendLoanPeriod(cmd);
         }
 
         final InventoryId inventoryId = cmd.getInventoryId();
@@ -445,7 +445,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     ReservationCanceled handle(CancelReservation cmd) throws CannotCancelMissingReservation {
         if (!userHasReservation(cmd.getUserId())) {
-            InventoryAggregateRejections.CancelReservationRejection.throwCannotCancelMissingReservation(
+            InventoryAggregateRejections.throwCannotCancelMissingReservation(
                     cmd);
         }
 
@@ -634,7 +634,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     /**
      * A book becomes available for a user.
      *
-     * This method does not change a state of an aggregate but this event is necessary for a read side.
+     * <p>This method does not change a state of an aggregate but this event is necessary for a read side.
      *
      * @param event A book is ready to pickup for a user who is next in a queue.
      */
@@ -966,7 +966,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     /**
      * Checks a book for reservations.
      *
-     * If a book has no reservations then the book {@code becameAvailable},
+     * <p>If a book has no reservations then the book {@code becameAvailable},
      * in other way — {@code readyToPickUp}.
      *
      * @param inventoryId     the identifier of an inventory.

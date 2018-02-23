@@ -40,7 +40,8 @@ import static io.spine.time.Time.getCurrentTime;
 
 /**
  * Generate rejections for {@link InventoryAggregate}.
- * To throw a rejection it is necessary to call static method.
+ *
+ * <p>To throw a rejection it is necessary to call static method.
  *
  * @author Paul Ageyev
  * @author Alexander Karpets

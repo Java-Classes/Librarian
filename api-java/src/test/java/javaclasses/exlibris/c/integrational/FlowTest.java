@@ -160,7 +160,6 @@ public class FlowTest extends InventoryCommandTest<Message> {
         commandBus.post(returnBook2, observer);
         assertFalse(bookRejectionsSubscriber.wasCalled());
         assertFalse(inventoryRejectionsSubscriber.wasCalled());
-
     }
 
     @Test

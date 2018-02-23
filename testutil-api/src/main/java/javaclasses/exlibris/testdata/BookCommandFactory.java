@@ -188,7 +188,6 @@ public class BookCommandFactory {
                                       .setLibrarianId(userId)
                                       .setBookDetails(bookDetails)
                                       .build();
-
         return result;
     }
 
@@ -200,7 +199,6 @@ public class BookCommandFactory {
                                             .setLibrarianId(userId)
                                             .setBookDetails(bookDetails)
                                             .build();
-
         return result;
 
     }
