@@ -41,6 +41,9 @@ import javaclasses.exlibris.c.rejection.CannotUpdateMissingBook;
 
 import static io.spine.time.Time.getCurrentTime;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
+import static javaclasses.exlibris.c.book.BookAggregateRejections.bookAlreadyExists;
+import static javaclasses.exlibris.c.book.BookAggregateRejections.cannotRemoveMissingBook;
+import static javaclasses.exlibris.c.book.BookAggregateRejections.cannotUpdateMissingBook;
 
 /**
  * The aggregate managing the state of a {@link Book}.
@@ -73,7 +76,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
         final BookDetails bookDetails = cmd.getBookDetails();
 
         if (bookDetails.equals(getState().getBookDetails())) {
-            BookAggregateRejections.throwBookAlreadyExists(cmd);
+            throw bookAlreadyExists(cmd);
         }
 
         final BookId bookId = cmd.getBookId();
@@ -102,7 +105,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
         final BookId bookId = cmd.getBookId();
 
         if (!bookId.equals(getState().getBookId())) {
-            BookAggregateRejections.throwCannotUpdateMissingBook(cmd);
+            throw cannotUpdateMissingBook(cmd);
         }
 
         final UserId librarianId = cmd.getLibrarianId();
@@ -126,10 +129,12 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
      * @return a {@code BookRemoved} event.
      * @throws CannotRemoveMissingBook if a book is missing.
      */
+    @SuppressWarnings("all") /*Cause of codacy needs a default switch statement
+                             which will never be called*/
     @Assign
     BookRemoved handle(RemoveBook cmd) throws CannotRemoveMissingBook {
         if (!getState().hasBookDetails()) {
-            BookAggregateRejections.throwCannotRemoveMissingBook(cmd);
+            throw cannotRemoveMissingBook(cmd);
         }
 
         final BookId bookId = cmd.getBookId();

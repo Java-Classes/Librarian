@@ -203,6 +203,8 @@ public class BookCommandFactory {
 
     }
 
+    @SuppressWarnings("all") /*Cause of codacy needs a default switch statement
+                             which will never be called*/
     public static RemoveBook removeBookInstance(BookId bookId, UserId librarianId,
                                                 RemoveBook.BookRemovalReasonCase removalReasonCase) {
 

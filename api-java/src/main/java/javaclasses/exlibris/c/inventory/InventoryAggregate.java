@@ -83,6 +83,14 @@ import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 import static io.spine.time.Time.getCurrentTime;
+import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.BorrowBookRejection.nonAvailableBook;
+import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.ReserveBookRejection.bookAlreadyBorrowed;
+import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.ReserveBookRejection.bookAlreadyReserved;
+import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.ReturnBookRejection.cannotReturnNonBorrowedBook;
+import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.ReturnBookRejection.throwCannotReturnMissingBook;
+import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.cannotCancelMissingReservation;
+import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.cannotExtendLoanPeriod;
+import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.cannotWriteMissingBookOff;
 
 /**
  * The aggregate managing the state of a {@link Inventory}.
@@ -195,7 +203,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             }
         }
         if (result == null) {
-            InventoryAggregateRejections.throwCannotWriteMissingBookOff(cmd);
+            throw cannotWriteMissingBookOff(cmd);
         }
         return result;
     }
@@ -221,14 +229,14 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (InventoryItem inventoryItem : inventoryItems) {
             if (inventoryItem.getUserId()
                              .equals(userId)) {
-                InventoryAggregateRejections.ReserveBookRejection.throwBookAlreadyBorrowed(cmd);
+                throw bookAlreadyBorrowed(cmd);
             }
         }
 
         for (Reservation reservation : reservations) {
             if (reservation.getWhoReserved()
                            .equals(userId)) {
-                InventoryAggregateRejections.ReserveBookRejection.throwBookAlreadyReserved(cmd);
+                throw bookAlreadyReserved(cmd);
             }
         }
 
@@ -266,7 +274,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (InventoryItem inventoryItem : inventoryItems) {
             if (inventoryItem.getUserId()
                              .equals(userId)) {
-                InventoryAggregateRejections.BorrowBookRejection.throwBookAlreadyBorrowed(cmd);
+                throw InventoryAggregateRejections.BorrowBookRejection.bookAlreadyBorrowed(cmd);
             }
         }
 
@@ -274,7 +282,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                       .size() >= inLibraryCount &&
                 !(userHasReservation(userId, inLibraryCount))) {
 
-            InventoryAggregateRejections.BorrowBookRejection.throwNonAvailableBook(cmd);
+            throw nonAvailableBook(cmd);
 
         }
 
@@ -398,7 +406,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final UserId userId = cmd.getUserId();
 
         if (isBookReserved() || !userHasLoan(userId)) {
-            InventoryAggregateRejections.throwCannotExtendLoanPeriod(cmd);
+            throw cannotExtendLoanPeriod(cmd);
         }
 
         final InventoryId inventoryId = cmd.getInventoryId();
@@ -460,8 +468,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     ReservationCanceled handle(CancelReservation cmd) throws CannotCancelMissingReservation {
         if (!userHasReservation(cmd.getUserId())) {
-            InventoryAggregateRejections.throwCannotCancelMissingReservation(
-                    cmd);
+            throw cannotCancelMissingReservation(cmd);
         }
 
         final InventoryId inventoryId = cmd.getInventoryId();
@@ -512,10 +519,10 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             ReturnBook cmd) throws CannotReturnNonBorrowedBook,
                                    CannotReturnMissingBook {
         if (!inventoryItemExists(cmd.getInventoryItemId())) {
-            InventoryAggregateRejections.ReturnBookRejection.throwCannotReturnMissingBook(cmd);
+            throw throwCannotReturnMissingBook(cmd);
         }
         if (!hasUserBorrowedBook(cmd.getUserId())) {
-            InventoryAggregateRejections.ReturnBookRejection.throwCannotReturnNonBorrowedBook(cmd);
+            throw cannotReturnNonBorrowedBook(cmd);
         }
 
         final InventoryId inventoryId = cmd.getInventoryId();

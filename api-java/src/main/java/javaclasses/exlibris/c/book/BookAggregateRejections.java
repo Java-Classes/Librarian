@@ -47,30 +47,28 @@ public class BookAggregateRejections {
     /**
      * Throws a rejection when a librarian tries to add an existing book.
      */
-    public static void throwBookAlreadyExists(AddBook cmd) throws BookAlreadyExists {
+    static BookAlreadyExists bookAlreadyExists(AddBook cmd) {
         checkNotNull(cmd);
-        throw new BookAlreadyExists(cmd.getBookId(), cmd.getBookDetails()
-                                                        .getTitle(), cmd.getLibrarianId(),
-                                    getCurrentTime());
+        return new BookAlreadyExists(cmd.getBookId(), cmd.getBookDetails()
+                                                         .getTitle(), cmd.getLibrarianId(),
+                                     getCurrentTime());
     }
 
     /**
      * Throws a rejection when a librarian tries to update a missing book.
      */
-    public static void throwCannotUpdateMissingBook(UpdateBook cmd)
-            throws CannotUpdateMissingBook {
+    static CannotUpdateMissingBook cannotUpdateMissingBook(UpdateBook cmd) {
         checkNotNull(cmd);
-        throw new CannotUpdateMissingBook(cmd.getBookId(), cmd.getLibrarianId(),
-                                          getCurrentTime());
+        return new CannotUpdateMissingBook(cmd.getBookId(), cmd.getLibrarianId(),
+                                           getCurrentTime());
     }
 
     /**
      * Throws a rejection when a librarian tries to remove a missing book.
      */
-    public static void throwCannotRemoveMissingBook(RemoveBook cmd)
-            throws CannotRemoveMissingBook {
+    static CannotRemoveMissingBook cannotRemoveMissingBook(RemoveBook cmd) {
         checkNotNull(cmd);
-        throw new CannotRemoveMissingBook(cmd.getBookId(), cmd.getLibrarianId(),
-                                          cmd.getWhenRemoved());
+        return new CannotRemoveMissingBook(cmd.getBookId(), cmd.getLibrarianId(),
+                                           cmd.getWhenRemoved());
     }
 }
