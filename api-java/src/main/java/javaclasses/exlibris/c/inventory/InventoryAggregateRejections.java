@@ -40,6 +40,7 @@ import static io.spine.time.Time.getCurrentTime;
 
 /**
  * Generate rejections for {@link InventoryAggregate}.
+ *
  * <p>To throw a rejection it is necessary to call static method.
  *
  * @author Paul Ageyev
@@ -52,17 +53,27 @@ public class InventoryAggregateRejections {
     }
 
     /**
-     * A rejection when a user tries to reserve a book that he borrowed by himself or a book that he already reserved.
+     * Holds 2 rejections:
+     * <ol>
+     * <li> a rejection when a user tries to reserve a book that he borrowed by himself.</li>
+     * <li> a rejection when a user tries to reserve a book that he already reserved.</li>
+     * </ol>
      */
     public static class ReserveBookRejection {
         private ReserveBookRejection() {
         }
 
+        /**
+         * Throws a rejection when a user tries to reserve a book that he borrowed by himself.
+         */
         public static void throwBookAlreadyBorrowed(ReserveBook cmd) throws BookAlreadyBorrowed {
             checkNotNull(cmd);
             throw new BookAlreadyBorrowed(cmd.getInventoryId(), cmd.getUserId(), getCurrentTime());
         }
 
+        /**
+         * Throws a rejection when a user tries to reserve a book that he already reserved.
+         */
         public static void throwBookAlreadyReserved(ReserveBook cmd) throws BookAlreadyReserved {
             checkNotNull(cmd);
             throw new BookAlreadyReserved(cmd.getInventoryId(), cmd.getUserId(), getCurrentTime());
@@ -70,7 +81,7 @@ public class InventoryAggregateRejections {
     }
 
     /**
-     * A rejection when a user tries to cancel a missing reservation.
+     * Throws a rejection when a user tries to cancel a missing reservation.
      */
     public static void throwCannotCancelMissingReservation(CancelReservation cmd)
             throws CannotCancelMissingReservation {
@@ -80,7 +91,7 @@ public class InventoryAggregateRejections {
     }
 
     /**
-     * A rejection when a librarian tries to write a missing book off.
+     * Throws a rejection when a librarian tries to write a missing book off.
      */
     public static void throwCannotWriteMissingBookOff(WriteBookOff cmd)
             throws CannotWriteMissingBookOff {
@@ -100,6 +111,9 @@ public class InventoryAggregateRejections {
         private ReturnBookRejection() {
         }
 
+        /**
+         * Throws a rejection when a user tries to return a non-borrowed book.
+         */
         public static void throwCannotReturnNonBorrowedBook(ReturnBook cmd)
                 throws CannotReturnNonBorrowedBook {
             checkNotNull(cmd);
@@ -107,6 +121,9 @@ public class InventoryAggregateRejections {
                                                   cmd.getUserId(), getCurrentTime());
         }
 
+        /**
+         * Throws a rejection when a user tries to return a missing {@link javaclasses.exlibris.InventoryItem}.
+         */
         public static void throwCannotReturnMissingBook(ReturnBook cmd)
                 throws CannotReturnMissingBook {
             checkNotNull(cmd);
@@ -116,7 +133,7 @@ public class InventoryAggregateRejections {
     }
 
     /**
-     * A rejection when a user tries to extend loan period but another user has already reserved book.
+     * Throws a rejection when a user tries to extend loan period but another user has already reserved book.
      */
     public static void throwCannotExtendLoanPeriod(ExtendLoanPeriod cmd)
             throws CannotExtendLoanPeriod {
@@ -136,11 +153,17 @@ public class InventoryAggregateRejections {
         private BorrowBookRejection() {
         }
 
+        /**
+         * a rejection when a user tries to borrow book that he has already borrowed.
+         */
         public static void throwBookAlreadyBorrowed(BorrowBook cmd) throws BookAlreadyBorrowed {
             checkNotNull(cmd);
             throw new BookAlreadyBorrowed(cmd.getInventoryId(), cmd.getUserId(), getCurrentTime());
         }
 
+        /**
+         * Throws a rejection when a user tries to borrow non available book.
+         */
         public static void throwNonAvailableBook(BorrowBook cmd) throws NonAvailableBook {
             checkNotNull(cmd);
             throw new NonAvailableBook(cmd.getInventoryId(), cmd.getInventoryItemId(),
