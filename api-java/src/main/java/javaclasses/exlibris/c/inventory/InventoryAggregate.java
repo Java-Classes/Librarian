@@ -21,7 +21,6 @@
 package javaclasses.exlibris.c.inventory;
 
 import com.google.protobuf.Empty;
-import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.spine.core.React;
 import io.spine.server.aggregate.Aggregate;
@@ -150,8 +149,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                                      .setLibrarianId(userId)
                                                                      .build();
 
-        final Pair result = Pair.of(inventoryAppended,
-                                    becameAvailableOrReadyToPickup(inventoryId, inventoryItemId));
+        final Pair result = Pair.withEither(inventoryAppended,
+                                            becameAvailableOrReadyToPickup(inventoryId,
+                                                                           inventoryItemId));
         return result;
     }
 
@@ -510,8 +510,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                       .setWhenReturned(getCurrentTime())
                                                       .build();
 
-        final Pair result = Pair.of(bookReturned,
-                                    becameAvailableOrReadyToPickup(inventoryId, inventoryItemId));
+        final Pair result = Pair.withEither(bookReturned,
+                                            becameAvailableOrReadyToPickup(inventoryId,
+                                                                           inventoryItemId));
 
         return result;
     }
@@ -973,8 +974,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * @param inventoryItemId the identifier of a specific item.
      * @return either {@code BookBecameAvailable} or {@code BookReadyToPickup}.
      */
-    private Message becameAvailableOrReadyToPickup(InventoryId inventoryId,
-                                                   InventoryItemId inventoryItemId) {
+    private EitherOfTwo<BookBecameAvailable, BookReadyToPickup> becameAvailableOrReadyToPickup(
+            InventoryId inventoryId,
+            InventoryItemId inventoryItemId) {
         if (!isBookReserved()) {
             final BookBecameAvailable bookBecameAvailable =
                     BookBecameAvailable.newBuilder()
@@ -982,7 +984,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                        .setInventoryItemId(inventoryItemId)
                                        .setWhenBecameAvailable(getCurrentTime())
                                        .build();
-            return bookBecameAvailable;
+            return EitherOfTwo.withA(bookBecameAvailable);
         }
 
         final Timestamp currentTime = getCurrentTime();
@@ -1004,7 +1006,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                  .setWhenBecameReadyToPickup(currentTime)
                                  .setPickUpDeadline(pickUpDeadline)
                                  .build();
-        return bookReadyToPickup;
+        return EitherOfTwo.withB(bookReadyToPickup);
     }
 
     /**
