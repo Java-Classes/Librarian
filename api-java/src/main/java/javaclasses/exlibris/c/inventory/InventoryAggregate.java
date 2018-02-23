@@ -260,7 +260,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                                                NonAvailableBook {
         final List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
 
-        final int inLibraryCount = getInLibraryCount(inventoryItems);
+        final int inLibraryCount = getInLibraryCount();
         final UserId userId = cmd.getUserId();
 
         for (InventoryItem inventoryItem : inventoryItems) {
@@ -326,10 +326,10 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     /**
      * Counts the quantity of books in a library.
      *
-     * @param inventoryItems all existing items.
      * @return the quantity of books in a library.
      */
-    private int getInLibraryCount(List<InventoryItem> inventoryItems) {
+    private int getInLibraryCount() {
+        final List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
         int inLibraryCount = 0;
 
         for (InventoryItem inventoryItem : inventoryItems) {
@@ -404,8 +404,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final InventoryId inventoryId = cmd.getInventoryId();
         final LoanId loanId = cmd.getLoanId();
 
-        final List<Loan> loansList = getState().getLoansList();
-        final int loanPosition = getLoanPosition(loansList, loanId);
+        final int loanPosition = getLoanPosition(loanId);
         final Timestamp previousDueDate = getState().getLoans(loanPosition)
                                                     .getWhenDue();
 
@@ -428,11 +427,11 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     /**
      * Returns a position of a necessary loan.
      *
-     * @param loansList all existing loans.
-     * @param loanId    an identifier of the necessary loan.
+     * @param loanId an identifier of the necessary loan.
      * @return the loan position.
      */
-    private int getLoanPosition(List<Loan> loansList, LoanId loanId) {
+    private int getLoanPosition(LoanId loanId) {
+        final List<Loan> loansList = getState().getLoansList();
         final OptionalInt optionalPosition =
                 IntStream.range(0, loansList.size())
                          .filter(loanPos -> loansList.get(loanPos)
@@ -809,7 +808,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     void loanBecameOverdue(LoanBecameOverdue event) {
         final List<Loan> loans = getBuilder().getLoans();
 
-        final int loanPosition = getLoanPosition(loans, event.getLoanId());
+        final int loanPosition = getLoanPosition(event.getLoanId());
         getBuilder().setLoans(loanPosition, Loan.newBuilder(loans.get(loanPosition))
                                                 .setOverdue(true)
                                                 .build());
@@ -824,10 +823,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      */
     @Apply
     void loanPeriodExtended(LoanPeriodExtended event) {
-        final List<Loan> loans = getBuilder().getLoans();
-
         final LoanId loanId = event.getLoanId();
-        final int loanPosition = getLoanPosition(loans, loanId);
+        final int loanPosition = getLoanPosition(loanId);
 
         final Loan previousLoan = getBuilder().getLoans()
                                               .get(loanPosition);
@@ -849,10 +846,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      */
     @Apply
     void reservationCanceled(ReservationCanceled event) {
-        final List<Reservation> reservations = getBuilder().getReservations();
-
         final UserId whoCanceled = event.getWhoCanceled();
-        final int reservationCancelIndex = getReservationPosition(reservations, whoCanceled);
+        final int reservationCancelIndex = getReservationPosition(whoCanceled);
 
         getBuilder().removeReservations(reservationCancelIndex);
     }
@@ -860,20 +855,18 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     /**
      * Returns a position of a necessary reservation.
      *
-     * @param reservations — all existing reservations.
-     * @param whoCanceled  — an identifier of the necessary user.
+     * @param whoCanceled an identifier of the necessary user.
      * @return a reservation position.
      */
-    private int getReservationPosition(List<Reservation> reservations, UserId whoCanceled) {
-        int reservationCancelIndex = 0;
-        for (int i = 0; i < reservations.size(); i++) {
-            Reservation reservation = reservations.get(i);
-            if (reservation.getWhoReserved()
-                           .equals(whoCanceled)) {
-                reservationCancelIndex = i;
-            }
-        }
-        return reservationCancelIndex;
+    private int getReservationPosition(UserId whoCanceled) {
+        final List<Reservation> reservations = getState().getReservationsList();
+        final int reservationPosition = IntStream.range(0, reservations.size())
+                                                 .filter(pos -> reservations.get(pos)
+                                                                            .getWhoReserved()
+                                                                            .equals(whoCanceled))
+                                                 .findFirst()
+                                                 .getAsInt();
+        return reservationPosition;
     }
 
     /**
@@ -885,10 +878,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      */
     @Apply
     void reservationPickUpPeriodExpired(ReservationPickUpPeriodExpired event) {
-        final List<Reservation> reservations = getBuilder().getReservations();
-
         final UserId userId = event.getUserId();
-        final int reservationPosition = getReservationPosition(reservations, userId);
+        final int reservationPosition = getReservationPosition(userId);
 
         getBuilder().removeReservations(reservationPosition);
     }
@@ -904,7 +895,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     void bookReturned(BookReturned event) {
         final List<InventoryItem> inventoryItems = getBuilder().getInventoryItems();
 
-        final int returnedItemPosition = getReturnedItemPosition(event, inventoryItems);
+        final int returnedItemPosition = getReturnedItemPosition(event.getWhoReturned(),
+                                                                 inventoryItems);
         final InventoryItem newInventoryItem = InventoryItem.newBuilder()
                                                             .setInventoryItemId(
                                                                     event.getInventoryItemId())
@@ -912,46 +904,45 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                             .build();
         getBuilder().setInventoryItems(returnedItemPosition, newInventoryItem);
 
-        final int loanIndex = getLoanIndex(event);
+        final int loanIndex = getLoanIndex(event.getWhoReturned());
         getBuilder().removeLoans(loanIndex);
     }
 
     /**
      * Returns a position of a returned book.
      *
-     * @param event          — {@code BookReturned} event.
-     * @param inventoryItems — an identifier of the necessary item.
+     * @param userId         {@code BookReturned} event.
+     * @param inventoryItems an identifier of the necessary item.
      * @return a item position.
      */
-    private int getReturnedItemPosition(BookReturned event, List<InventoryItem> inventoryItems) {
-        int returnedItemPosition = 0;
-        for (int i = 0; i < inventoryItems.size(); i++) {
-            InventoryItem item = inventoryItems.get(i);
-            if (item.getUserId()
-                    .equals(event.getWhoReturned()
-                    ) && item.getBorrowed()) {
-                returnedItemPosition = i;
-            }
-        }
-        return returnedItemPosition;
+    private int getReturnedItemPosition(UserId userId, List<InventoryItem> inventoryItems) {
+        final int itemPosition = IntStream.range(0, inventoryItems.size())
+                                          .filter(pos -> inventoryItems.get(pos)
+                                                                       .getUserId()
+                                                                       .equals(userId))
+                                          .findFirst()
+                                          .getAsInt();
+
+        return itemPosition;
     }
 
     /**
      * Returns a position of a returned book loan.
      *
-     * @param event {@code BookReturned} event.
+     * @param userId {@code BookReturned} event.
      * @return a loan position.
      */
-    private int getLoanIndex(BookReturned event) {
+    private int getLoanIndex(UserId userId) {
+        final List<Loan> loans = getState().getLoansList();
+
+        final OptionalInt optionalInt = IntStream.range(0, loans.size())
+                                                 .filter(pos -> loans.get(pos)
+                                                                     .getWhoBorrowed()
+                                                                     .equals(userId))
+                                                 .findFirst();
         int loanIndex = 0;
-        List<Loan> loans = getBuilder().getLoans();
-        for (int i = 0; i < loans.size(); i++) {
-            Loan loan = loans.get(i);
-            if (loan.getWhoBorrowed()
-                    .equals(event.getWhoReturned()
-                    )) {
-                loanIndex = i;
-            }
+        if (optionalInt.isPresent()) {
+            loanIndex = optionalInt.getAsInt();
         }
         return loanIndex;
     }
@@ -1018,7 +1009,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * Checks a book for reservations.
      *
      * <p>If a book has no reservations then the book {@code becameAvailable},
-     * in other way — {@code readyToPickUp}.
+     * in other way  {@code readyToPickUp}.
      *
      * @param inventoryId     the identifier of an inventory.
      * @param inventoryItemId the identifier of a specific item.
