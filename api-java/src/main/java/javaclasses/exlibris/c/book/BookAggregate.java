@@ -60,7 +60,9 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
 
     /**
-     * Handles a {@code AddBook} command. For details see {@link AddBook}.
+     * Handles a {@code AddBook} command.
+     *
+     * <p>For details see {@link AddBook}.
      *
      * @param cmd command with book parameters that necessary to add a book.
      * @return a {@code BookAdded} event.
@@ -87,7 +89,9 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
 
     /**
-     * Handles a {@code UpdateBook} command. For details see {@link UpdateBook}.
+     * Handles a {@code UpdateBook} command.
+     *
+     * <p>For details see {@link UpdateBook}.
      *
      * @param cmd command with book details that a librarian is going to change.
      * @return a {@code BookUpdated} event.
@@ -114,7 +118,9 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
 
     /**
-     * Handles a {@code RemoveBook} command. For details see {@link RemoveBook}.
+     * Handles a {@code RemoveBook} command.
+     *
+     * <p>For details see {@link RemoveBook}.
      *
      * @param cmd command with a removal reason.
      * @return a {@code BookRemoved} event.
@@ -154,7 +160,9 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
 
     /**
-     * Handles a {@code BookAdded} event. For details see {@link BookAdded}.
+     * Handles a {@code BookAdded} event.
+     *
+     * <p>For details see {@link BookAdded}.
      *
      * @param event a {@code BookAdded} event message.
      */
@@ -168,7 +176,9 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
 
     /**
-     * Handles a {@code BookUpdated} event. For details see {@link BookUpdated}.
+     * Handles a {@code BookUpdated} event.
+     *
+     * <p>For details see {@link BookUpdated}.
      *
      * @param event a {@code BookUpdated} event message.
      */
@@ -182,7 +192,9 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     }
 
     /**
-     * Handles a {@code BookRemoved} event. For details see {@link BookRemoved}.
+     * Handles a {@code BookRemoved} event.
+     *
+     * <p>For details see {@link BookRemoved}.
      *
      * @param event a {@code BookRemoved} event message.
      */

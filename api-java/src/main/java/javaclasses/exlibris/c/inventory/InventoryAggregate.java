@@ -127,7 +127,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code AppendInventory} command. For details see {@link AppendInventory}.
+     * Handles a {@code AppendInventory} command.
+     *
+     * <p>For details see {@link AppendInventory}.
      *
      * @param cmd command with the identifier of a specific item.
      * @return the {@code InventoryAppended} event in pair with either {@code BookBecameAvailable} or
@@ -158,7 +160,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code WriteBookOff} command. For details see {@link WriteBookOff}.
+     * Handles a {@code WriteBookOff} command.
+     *
+     * <p>For details see {@link WriteBookOff}.
      *
      * @param cmd command with a reason of a book writing off.
      * @return a {@code WriteBookOff} event.
@@ -197,7 +201,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code ReserveBook} command. For details see {@link ReserveBook}.
+     * Handles a {@code ReserveBook} command.
+     *
+     * <p>For details see {@link ReserveBook}.
      *
      * @param cmd command with the reason of the book writing off.
      * @return a {@code ReservationAdded} event.
@@ -235,7 +241,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code BorrowBook} command. For details see {@link BorrowBook}.
+     * Handles a {@code BorrowBook} command.
+     *
+     * <p>For details see {@link BorrowBook}.
      *
      * <p>User can take a book if amount of books in the library is more than amount of reservations, or if
      * as many "next" reservations as books available and among these reservations
@@ -356,7 +364,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code MarkLoanOverdue} command. For details see {@link MarkLoanOverdue}.
+     * Handles a {@code MarkLoanOverdue} command.
+     *
+     * <p>For details see {@link MarkLoanOverdue}.
      *
      * @param cmd command from system that marks the loan as overdue.
      * @return a {@code LoanBecameOverdue} event.
@@ -374,7 +384,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code ExtendLoanPeriod} command. For details see {@link ExtendLoanPeriod}.
+     * Handles a {@code ExtendLoanPeriod} command.
+     *
+     * <p>For details see {@link ExtendLoanPeriod}.
      *
      * @param cmd command with the ID of a loan
      *            that a user is going to extend.
@@ -437,7 +449,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code CancelReservation} command. For details see {@link CancelReservation}.
+     * Handles a {@code CancelReservation} command.
+     *
+     * <p>For details see {@link CancelReservation}.
      *
      * @param cmd command with the ID of a reservation
      *            that a user is going to cancel.
@@ -462,7 +476,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code MarkReservationExpired} command. For details see {@link MarkReservationExpired}.
+     * Handles a {@code MarkReservationExpired} command.
+     *
+     * <p>For details see {@link MarkReservationExpired}.
      *
      * @param cmd system command that contains the identifier of an expired reservation.
      * @return a {@code ReservationPickUpPeriodExpired} event.
@@ -481,7 +497,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code ReturnBook} command. For details see {@link ReturnBook}.
+     * Handles a {@code ReturnBook} command.
+     *
+     * <p>For details see {@link ReturnBook}.
      *
      * @param cmd command with an identifier of the book
      *            that the user is going to return.
@@ -520,7 +538,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code ReportLostBook} command. For details see {@link ReportLostBook}.
+     * Handles a {@code ReportLostBook} command.
+     *
+     * <p>For details see {@link ReportLostBook}.
      *
      * @param cmd command that contains the identifier of a lost book
      *            and a user who lost it.
@@ -560,7 +580,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code InventoryCreated} event. For details see {@link InventoryCreated}.
+     * Handles a {@code InventoryCreated} event.
+     *
+     * <p>For details see {@link InventoryCreated}.
      *
      * @param event a {@code InventoryCreated} event message.
      */
@@ -590,7 +612,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code InventoryRemoved} event. For details see {@link InventoryRemoved}.
+     * Handles a {@code InventoryRemoved} event.
+     *
+     * <p>For details see {@link InventoryRemoved}.
      *
      * @param event the {@code InventoryRemoved} event message.
      */
@@ -601,7 +625,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code InventoryAppended} event. For details see {@link InventoryAppended}.
+     * Handles a {@code InventoryAppended} event.
+     *
+     * <p>For details see {@link InventoryAppended}.
      *
      * @param event a {@code InventoryAppended} event message.
      */
@@ -617,7 +643,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code BookBecameAvailable} event. For details see {@link BookBecameAvailable}.
+     * Handles a {@code BookBecameAvailable} event.
+     *
+     * <p>For details see {@link BookBecameAvailable}.
      *
      * @param event a {@code BookBecameAvailable} event message.
      */
@@ -647,7 +675,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code ReservationBecameLoan} event. For details see {@link ReservationBecameLoan}.
+     * Handles a {@code ReservationBecameLoan} event.
+     *
+     * <p>For details see {@link ReservationBecameLoan}.
      *
      * @param event a {@code ReservationBecameLoan} event message.
      */
@@ -669,7 +699,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code InventoryDecreased} event. For details see {@link InventoryDecreased}.
+     * Handles a {@code InventoryDecreased} event.
+     *
+     * <p>For details see {@link InventoryDecreased}.
      *
      * @param event a {@code InventoryDecreased} event message.
      */
@@ -684,7 +716,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code ReservationAdded} event. For details see {@link ReservationAdded}.
+     * Handles a {@code ReservationAdded} event.
+     *
+     * <p>For details see {@link ReservationAdded}.
      *
      * @param event a {@code ReservationAdded} event message.
      */
@@ -703,7 +737,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code BookBorrowed} event. For details see {@link BookBorrowed}.
+     * Handles a {@code BookBorrowed} event.
+     *
+     * <p>For details see {@link BookBorrowed}.
      *
      * @param event a {@code BookBorrowed} event message.
      */
@@ -763,7 +799,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code LoanBecameOverdue} event. For details see {@link LoanBecameOverdue}.
+     * Handles a {@code LoanBecameOverdue} event.
+     *
+     * <p>For details see {@link LoanBecameOverdue}.
      *
      * @param event a {@code LoanBecameOverdue} event message.
      */
@@ -778,7 +816,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code LoanPeriodExtended} event. For details see {@link LoanPeriodExtended}.
+     * Handles a {@code LoanPeriodExtended} event.
+     *
+     * <p>For details see {@link LoanPeriodExtended}.
      *
      * @param event a {@code LoanPeriodExtended} event message.
      */
@@ -801,7 +841,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code ReservationCanceled} event. For details see {@link ReservationCanceled}.
+     * Handles a {@code ReservationCanceled} event.
+     *
+     * <p>For details see {@link ReservationCanceled}.
      *
      * @param event a {@code ReservationCanceled} event message.
      */
@@ -835,7 +877,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code ReservationPickUpPeriodExpired} event. For details see {@link ReservationPickUpPeriodExpired}.
+     * Handles a {@code ReservationPickUpPeriodExpired} event.
+     *
+     * <p>For details see {@link ReservationPickUpPeriodExpired}.
      *
      * @param event a {@code ReservationPickUpPeriodExpired} event message.
      */
@@ -850,7 +894,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code BookReturned} event. For details see {@link BookReturned}.
+     * Handles a {@code BookReturned} event.
+     *
+     * <p>For details see {@link BookReturned}.
      *
      * @param event a {@code BookReturned} event message.
      */
@@ -911,7 +957,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code BookLost} event. For details see {@link BookLost}.
+     * Handles a {@code BookLost} event.
+     *
+     * <p>For details see {@link BookLost}.
      *
      * @param event a {@code BookLost} event message.
      */
