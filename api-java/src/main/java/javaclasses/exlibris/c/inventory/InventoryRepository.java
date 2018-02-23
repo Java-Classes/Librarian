@@ -72,5 +72,4 @@ public class InventoryRepository extends AggregateRepository<InventoryId, Invent
                                            .build());
         return inventoryIds;
     }
-
 }

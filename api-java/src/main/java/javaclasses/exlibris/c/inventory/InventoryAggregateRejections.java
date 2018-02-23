@@ -40,7 +40,7 @@ import static io.spine.time.Time.getCurrentTime;
 
 /**
  * Generate rejections for {@link InventoryAggregate}.
- * To throw a rejection it is necessary to call static method.
+ * <p>To throw a rejection it is necessary to call static method.
  *
  * @author Paul Ageyev
  * @author Alexander Karpets
@@ -96,14 +96,15 @@ public class InventoryAggregateRejections {
             checkNotNull(cmd);
             throw new CannotWriteMissingBookOff(cmd.getInventoryId(), cmd.getLibrarianId(),
                                                 cmd.getInventoryItemId(), getCurrentTime());
-
         }
     }
 
     /**
      * Holds two rejections:
-     * 1. a rejection when a user tries to return a non-borrowed book.
-     * 2. a rejection when a user tries to return the missing {@link javaclasses.exlibris.InventoryItem}.
+     * <ol>
+     * <li>a rejection when a user tries to return a non-borrowed book.</li>
+     * <li>a rejection when a user tries to return the missing {@link javaclasses.exlibris.InventoryItem}.</li>
+     * </ol>
      */
     public static class ReturnBookRejection {
         private ReturnBookRejection() {
@@ -137,7 +138,6 @@ public class InventoryAggregateRejections {
     }
 
     public static class BorrowBookRejection {
-
         private BorrowBookRejection() {
         }
 
@@ -152,5 +152,4 @@ public class InventoryAggregateRejections {
                                        cmd.getUserId(), getCurrentTime());
         }
     }
-
 }
