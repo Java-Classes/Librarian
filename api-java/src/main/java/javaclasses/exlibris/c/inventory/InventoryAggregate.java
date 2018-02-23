@@ -189,7 +189,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             }
         }
         if (result == null) {
-            InventoryAggregateRejections.WriteBookOffRejection.throwCannotWriteMissingBookOff(cmd);
+            InventoryAggregateRejections.throwCannotWriteMissingBookOff(cmd);
         }
         return result;
     }
@@ -384,7 +384,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final UserId userId = cmd.getUserId();
 
         if (isBookReserved() || !userHasLoan(userId)) {
-            InventoryAggregateRejections.ExtendLoanPeriodRejection.throwCannotExtendLoanPeriod(cmd);
+            InventoryAggregateRejections.throwCannotExtendLoanPeriod(cmd);
         }
 
         final InventoryId inventoryId = cmd.getInventoryId();
@@ -445,7 +445,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     ReservationCanceled handle(CancelReservation cmd) throws CannotCancelMissingReservation {
         if (!userHasReservation(cmd.getUserId())) {
-            InventoryAggregateRejections.CancelReservationRejection.throwCannotCancelMissingReservation(
+            InventoryAggregateRejections.throwCannotCancelMissingReservation(
                     cmd);
         }
 

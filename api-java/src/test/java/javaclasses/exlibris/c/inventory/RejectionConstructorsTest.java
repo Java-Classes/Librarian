@@ -35,29 +35,9 @@ public class RejectionConstructorsTest {
     }
 
     @Test
-    @DisplayName("CancelReservationRejection has a private constructor")
-    void CancelReservationRejectionHasPrivateConstructor() {
-        assertHasPrivateParameterlessCtor(
-                InventoryAggregateRejections.CancelReservationRejection.class);
-    }
-
-    @Test
     @DisplayName("ReserveBookRejection has a private constructor")
     void ReserveBookRejectionHasPrivateConstructor() {
         assertHasPrivateParameterlessCtor(InventoryAggregateRejections.ReserveBookRejection.class);
-    }
-
-    @Test
-    @DisplayName("WriteBookOffRejection has a private constructor")
-    void WriteBookOffRejectionHasPrivateConstructor() {
-        assertHasPrivateParameterlessCtor(InventoryAggregateRejections.WriteBookOffRejection.class);
-    }
-
-    @Test
-    @DisplayName("ExtendLoanPeriodRejection has a private constructor")
-    void ExtendLoanPeriodRejectionHasPrivateConstructor() {
-        assertHasPrivateParameterlessCtor(
-                InventoryAggregateRejections.ExtendLoanPeriodRejection.class);
     }
 
     @Test
