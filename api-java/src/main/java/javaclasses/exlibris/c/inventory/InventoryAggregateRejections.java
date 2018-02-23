@@ -154,7 +154,7 @@ public class InventoryAggregateRejections {
         }
 
         /**
-         * a rejection when a user tries to borrow book that he has already borrowed.
+         * Throws a rejection when a user tries to borrow book that he has already borrowed.
          */
         public static void throwBookAlreadyBorrowed(BorrowBook cmd) throws BookAlreadyBorrowed {
             checkNotNull(cmd);

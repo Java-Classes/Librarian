@@ -45,7 +45,7 @@ public class BookAggregateRejections {
     }
 
     /**
-     * Throw a rejection when a librarian tries to add an existing book.
+     * Throws a rejection when a librarian tries to add an existing book.
      */
     public static void throwBookAlreadyExists(AddBook cmd) throws BookAlreadyExists {
         checkNotNull(cmd);
@@ -55,7 +55,7 @@ public class BookAggregateRejections {
     }
 
     /**
-     * Throw a rejection when a librarian tries to update a missing book.
+     * Throws a rejection when a librarian tries to update a missing book.
      */
     public static void throwCannotUpdateMissingBook(UpdateBook cmd)
             throws CannotUpdateMissingBook {
@@ -65,7 +65,7 @@ public class BookAggregateRejections {
     }
 
     /**
-     * Throw a rejection when a librarian tries to remove a missing book.
+     * Throws a rejection when a librarian tries to remove a missing book.
      */
     public static void throwCannotRemoveMissingBook(RemoveBook cmd)
             throws CannotRemoveMissingBook {

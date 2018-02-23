@@ -105,14 +105,16 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
     /**
      * The loan period time in seconds.
-     * This period is equals two weeks.
+     *
+     * <p>This period equals to two weeks.
      * secondsInMinute * minutesInHour * hoursInDay * daysInTwoWeeks
      */
     private static final int LOAN_PERIOD = 60 * 60 * 24 * 14;
 
     /**
-     * User has two days to borrow the book.
-     * secondsInMinute * minutesInHours * hoursInTwoDays
+     * Borrow period.
+     *
+     * <p>secondsInMinute * minutesInHours * hoursInTwoDays
      */
     private static final int OPEN_FOR_BORROW_PERIOD = 60 * 60 * 48;
 
@@ -235,7 +237,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     /**
      * Handles a {@code BorrowBook} command. For details see {@link BorrowBook}.
      *
-     * <p>You can take a book if amount of books in the library is more than amount of reservations, or if
+     * <p>User can take a book if amount of books in the library is more than amount of reservations, or if
      * as many "next" reservations as books available and among these reservations
      * one belongs to the user.
      *
@@ -462,7 +464,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     /**
      * Handles a {@code MarkReservationExpired} command. For details see {@link MarkReservationExpired}.
      *
-     * @param cmd system command that contains an identifier of the expired reservation.
+     * @param cmd system command that contains the identifier of an expired reservation.
      * @return a {@code ReservationPickUpPeriodExpired} event.
      */
     @Assign

@@ -62,7 +62,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     /**
      * Handles a {@code AddBook} command. For details see {@link AddBook}.
      *
-     * @param cmd command with book parameters that necessary to add the book.
+     * @param cmd command with book parameters that necessary to add a book.
      * @return a {@code BookAdded} event.
      * @throws BookAlreadyExists if a book already exists.
      */
@@ -116,7 +116,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     /**
      * Handles a {@code RemoveBook} command. For details see {@link RemoveBook}.
      *
-     * @param cmd command with the removal reason.
+     * @param cmd command with a removal reason.
      * @return a {@code BookRemoved} event.
      * @throws CannotRemoveMissingBook if a book is missing.
      */
