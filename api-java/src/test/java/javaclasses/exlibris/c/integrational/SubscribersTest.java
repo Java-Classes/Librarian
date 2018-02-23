@@ -26,11 +26,11 @@ import io.spine.server.BoundedContext;
 import io.spine.server.commandbus.CommandBus;
 import io.spine.server.event.EventBus;
 import io.spine.server.rejection.RejectionBus;
+import javaclasses.exlibris.BoundedContexts;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookAdded;
-import javaclasses.exlibris.c.aggregate.BookCommandTest;
+import javaclasses.exlibris.c.book.BookCommandTest;
 import javaclasses.exlibris.c.rejection.Rejections;
-import javaclasses.exlibris.context.BoundedContexts;
 import javaclasses.exlibris.testdata.BookCommandFactory;
 import javaclasses.exlibris.testdata.BookEventSubscriber;
 import javaclasses.exlibris.testdata.BookRejectionsSubscriber;
@@ -54,9 +54,8 @@ public class SubscribersTest extends BookCommandTest<AddBook> {
     }
 
     @Test
-    @DisplayName("throw BookAlreadyExists rejection")
+    @DisplayName("subscriber catches BookAlreadyExists rejection")
     void throwMenuNotAvailable() {
-
         final BoundedContext boundedContext = BoundedContexts.create();
         final CommandBus commandBus = boundedContext.getCommandBus();
         final RejectionBus rejectionBus = boundedContext.getRejectionBus();
@@ -84,9 +83,8 @@ public class SubscribersTest extends BookCommandTest<AddBook> {
     }
 
     @Test
-    @DisplayName("catch event")
+    @DisplayName("subscriber catches events")
     void catchEvent() {
-
         final BoundedContext boundedContext = BoundedContexts.create();
         final CommandBus commandBus = boundedContext.getCommandBus();
         final EventBus eventBus = boundedContext.getEventBus();

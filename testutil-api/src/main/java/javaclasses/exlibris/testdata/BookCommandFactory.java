@@ -37,6 +37,7 @@ import javaclasses.exlibris.c.RemoveBook;
 import javaclasses.exlibris.c.UpdateBook;
 
 import static io.spine.time.Time.getCurrentTime;
+import static io.spine.util.Exceptions.newIllegalArgumentException;
 import static javaclasses.exlibris.c.RemoveBook.BookRemovalReasonCase.CUSTOM_REASON;
 import static javaclasses.exlibris.c.RemoveBook.BookRemovalReasonCase.OUTDATED;
 
@@ -187,7 +188,6 @@ public class BookCommandFactory {
                                       .setLibrarianId(userId)
                                       .setBookDetails(bookDetails)
                                       .build();
-
         return result;
     }
 
@@ -199,11 +199,12 @@ public class BookCommandFactory {
                                             .setLibrarianId(userId)
                                             .setBookDetails(bookDetails)
                                             .build();
-
         return result;
 
     }
 
+    @SuppressWarnings("all") /*Cause of codacy needs a default switch statement
+                             which will never be called*/
     public static RemoveBook removeBookInstance(BookId bookId, UserId librarianId,
                                                 RemoveBook.BookRemovalReasonCase removalReasonCase) {
 
@@ -214,18 +215,17 @@ public class BookCommandFactory {
 
         switch (removalReasonCase) {
             case OUTDATED: {
-                return result
-                        .setOutdated(true)
-                        .build();
+                result.setOutdated(true);
+                break;
             }
             case CUSTOM_REASON: {
-                return result
-                        .setCustomReason(customReason)
-                        .build();
+                result.setCustomReason(customReason);
+                break;
 
             }
             case BOOKREMOVALREASON_NOT_SET: {
-                throw new IllegalArgumentException("The book cannot be removed without reason.");
+                throw newIllegalArgumentException("The book cannot be removed without reason.",
+                                                  removalReasonCase);
             }
         }
         return result.build();

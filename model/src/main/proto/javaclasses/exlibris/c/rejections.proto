@@ -79,10 +79,9 @@ message CannotUpdateMissingBook {
     google.protobuf.Timestamp when_rejected = 3;
 }
 
-// Rejection when a user tries to borrow either a book that he borrowed by himself
-// or there are no available items.
+// Rejection when a user tries to borrow non-available book.
 //
-message CannotBorrowBook {
+message NonAvailableBook {
 
     // The identifier of an inventory.
     InventoryId inventory_id = 1;
@@ -95,32 +94,34 @@ message CannotBorrowBook {
 
     // The time when a user tried to borrow a book.
     google.protobuf.Timestamp when_rejected = 4;
-
-    // The reason why a book cannot be borrowed.
-    oneof cannot_borrow_reason {
-        bool already_borrowed = 5;
-        bool no_available_items = 6;
-    }
 }
 
-// Rejection when a user tries to reserve a book that he borrowed by himself or a book that he already reserved.
+// Rejection when a user tries to reserve a book that he already reserved.
 //
-message CannotReserveBook {
+message BookAlreadyReserved {
 
     // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
-    // Who tried to reserve book.
+    // Who tried to borrow a book.
     UserId user_id = 2;
 
-    // The time when a user tried to reserve a book.
+    // The time when a user tried to borrow a book.
     google.protobuf.Timestamp when_rejected = 3;
+}
 
-    // A reason why a book cannot be reserved.
-    oneof cannot_reserve_reason {
-        bool borrowed = 4;
-        bool already_reserved = 5;
-    }
+// Rejection when a user tries to reserve a book that he borrowed by himself.
+//
+message BookAlreadyBorrowed {
+
+    // The identifier of an inventory.
+    InventoryId inventory_id = 1;
+
+    // Who tried to borrow a book.
+    UserId user_id = 2;
+
+    // The time when a user tried to borrow a book.
+    google.protobuf.Timestamp when_rejected = 3;
 }
 
 // Rejection when a user tries to extend a loan period and a book is already reserved by another user.
