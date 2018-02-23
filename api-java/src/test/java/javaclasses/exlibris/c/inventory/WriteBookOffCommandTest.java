@@ -89,7 +89,6 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
                                               .getLost());
         assertEquals(userEmailAddress1, inventoryDecreased.getLibrarianId()
                                                           .getEmail());
-
     }
 
     @Test

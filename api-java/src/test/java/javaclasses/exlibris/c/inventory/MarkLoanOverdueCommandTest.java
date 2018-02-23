@@ -90,7 +90,6 @@ public class MarkLoanOverdueCommandTest extends InventoryCommandTest<MarkLoanOve
 
         assertTrue(state.getLoans(0)
                         .getOverdue());
-
     }
 
     private void dispatchAppendInventory() {
@@ -105,5 +104,4 @@ public class MarkLoanOverdueCommandTest extends InventoryCommandTest<MarkLoanOve
         final BookBorrowed bookBorrowed = (BookBorrowed) messages.get(0);
         return bookBorrowed.getLoanId();
     }
-
 }

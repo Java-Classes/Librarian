@@ -88,7 +88,6 @@ public class ExtendLoanPeriodCommandTest extends InventoryCommandTest<ExtendLoan
         assertEquals(oldDueDate + secondsInTwoWeeks, state2.getLoans(0)
                                                            .getWhenDue()
                                                            .getSeconds());
-
     }
 
     @Test
@@ -125,7 +124,6 @@ public class ExtendLoanPeriodCommandTest extends InventoryCommandTest<ExtendLoan
         final Throwable cause = Throwables.getRootCause(t);
 
         assertThat(cause, instanceOf(CannotExtendLoanPeriod.class));
-
     }
 
     private void dispatchAppendInventory() {

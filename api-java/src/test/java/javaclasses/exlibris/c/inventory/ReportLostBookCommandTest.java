@@ -78,8 +78,6 @@ public class ReportLostBookCommandTest extends InventoryCommandTest<ReserveBook>
     void reportLostBook() {
         dispatchAppendInventory();
 
-        final Inventory previousInventory = aggregate.getState();
-
         final ReportLostBook reportLostBook = reportLostBookInstance();
         dispatchCommand(aggregate, envelopeOf(reportLostBook));
 

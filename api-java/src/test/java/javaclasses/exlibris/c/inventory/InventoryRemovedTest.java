@@ -83,7 +83,6 @@ public class InventoryRemovedTest extends InventoryCommandTest<AddBook> {
                                 .getState()
                                 .getInventoryItemsList()
                                 .size());
-
     }
 
     private static Event bookRemoved() {

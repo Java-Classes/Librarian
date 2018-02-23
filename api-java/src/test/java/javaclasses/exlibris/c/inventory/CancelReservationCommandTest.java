@@ -110,7 +110,6 @@ public class CancelReservationCommandTest extends InventoryCommandTest<AppendInv
         final Throwable cause = Throwables.getRootCause(t);
 
         assertThat(cause, instanceOf(CannotCancelMissingReservation.class));
-
     }
 
     @Test

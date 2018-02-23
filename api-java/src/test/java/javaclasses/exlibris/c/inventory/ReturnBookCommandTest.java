@@ -85,7 +85,6 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
         final BookReturned bookReturned = (BookReturned) messageList.get(0);
 
         assertEquals(InventoryCommandFactory.inventoryId, bookReturned.getInventoryId());
-
     }
 
     @Test
