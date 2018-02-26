@@ -237,7 +237,7 @@ message BookLost {
 // An event fired when user or system cancel a reservation.
 //
 // Can be canceled for these reasons:
-// 1. User canceled reservation. In this case `whoCanceled` is ID of a user.
+// 1. User canceled reservation. In this case `whoCanceled` is an identifier of a user.
 // 2. System cancel reservation because `Book` is removed. In this case `whoCanceled` is `botId`.
 //
 message ReservationCanceled {

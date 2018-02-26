@@ -56,7 +56,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
     /**
      * Creates a new instance.
      *
-     * @param id the ID for the new aggregate
+     * @param id the identifier for the new aggregate
      */
     public BookAggregate(BookId id) {
         super(id);

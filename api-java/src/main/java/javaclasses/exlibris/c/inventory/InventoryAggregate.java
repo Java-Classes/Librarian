@@ -129,7 +129,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     /**
      * Creates a new instance.
      *
-     * @param id the ID for the new aggregate
+     * @param id the identifier for the new aggregate
      */
     public InventoryAggregate(InventoryId id) {
         super(id);
@@ -387,7 +387,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      *
      * <p>For details see {@link ExtendLoanPeriod}.
      *
-     * @param cmd command with the ID of a loan
+     * @param cmd command with the identifier of a loan
      *            that a user is going to extend.
      * @return a {@code LoanPeriodExtended} event.
      * @throws CannotExtendLoanPeriod if a loan period extension isn’t possible.
@@ -451,7 +451,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      *
      * <p>For details see {@link CancelReservation}.
      *
-     * @param cmd command with the ID of a reservation
+     * @param cmd command with the identifier of a reservation
      *            that a user is going to cancel.
      * @return a {@code ReservationCanceled} event.
      * @throws CannotCancelMissingReservation if a reservation is missing.
