@@ -55,8 +55,8 @@ public class InventoryAggregateRejections {
     /**
      * Holds 2 rejections:
      * <ol>
-     * <li> a rejection when a user tries to reserve a book that he borrowed by himself.</li>
-     * <li> a rejection when a user tries to reserve a book that he already reserved.</li>
+     * <li> {@link BookAlreadyBorrowed} a rejection when a user tries to reserve a book that he borrowed by himself.</li>
+     * <li> {@link BookAlreadyReserved} a rejection when a user tries to reserve a book that he already reserved.</li>
      * </ol>
      */
     static class ReserveBookRejection {
@@ -102,8 +102,8 @@ public class InventoryAggregateRejections {
     /**
      * Holds two rejections:
      * <ol>
-     * <li>a rejection when a user tries to return a non-borrowed book.</li>
-     * <li>a rejection when a user tries to return the missing {@link javaclasses.exlibris.InventoryItem}.</li>
+     * <li>{@link CannotReturnNonBorrowedBook} a rejection when a user tries to return a non-borrowed book.</li>
+     * <li>{@link CannotReturnMissingBook} a rejection when a user tries to return the missing {@link javaclasses.exlibris.InventoryItem}.</li>
      * </ol>
      */
     static class ReturnBookRejection {
@@ -141,8 +141,8 @@ public class InventoryAggregateRejections {
     /**
      * Holds two rejections:
      * <ol>
-     * <li>a rejection when a user tries to borrow book that he has already borrowed.</li>
-     * <li>a rejection when a user tries to borrow non available book.</li>
+     * <li>{@link BookAlreadyBorrowed} a rejection when a user tries to borrow book that he has already borrowed.</li>
+     * <li>{@link NonAvailableBook} a rejection when a user tries to borrow non available book.</li>
      * </ol>
      */
     static class BorrowBookRejection {

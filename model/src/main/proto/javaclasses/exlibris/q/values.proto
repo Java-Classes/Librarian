@@ -134,7 +134,7 @@ message ReservationDetails {
 //
 message InventoryItemRecord {
 
-    // Represented by a book ID and an item number.
+    // Represented by a book identifier and an item number.
     InventoryItemId inventory_item_id = 1;
 
     // Represented by a user's email address.
