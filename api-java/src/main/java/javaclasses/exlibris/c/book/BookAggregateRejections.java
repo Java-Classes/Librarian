@@ -47,28 +47,30 @@ public class BookAggregateRejections {
     /**
      * Throws a rejection when a librarian tries to add an existing book.
      */
-    static BookAlreadyExists bookAlreadyExists(AddBook cmd) {
+    static BookAlreadyExists bookAlreadyExists(AddBook cmd) throws BookAlreadyExists {
         checkNotNull(cmd);
-        return new BookAlreadyExists(cmd.getBookId(), cmd.getBookDetails()
-                                                         .getTitle(), cmd.getLibrarianId(),
-                                     getCurrentTime());
+        throw new BookAlreadyExists(cmd.getBookId(), cmd.getBookDetails()
+                                                        .getTitle(), cmd.getLibrarianId(),
+                                    getCurrentTime());
     }
 
     /**
      * Throws a rejection when a librarian tries to update a missing book.
      */
-    static CannotUpdateMissingBook cannotUpdateMissingBook(UpdateBook cmd) {
+    static CannotUpdateMissingBook cannotUpdateMissingBook(UpdateBook cmd) throws
+                                                                           CannotUpdateMissingBook {
         checkNotNull(cmd);
-        return new CannotUpdateMissingBook(cmd.getBookId(), cmd.getLibrarianId(),
-                                           getCurrentTime());
+        throw new CannotUpdateMissingBook(cmd.getBookId(), cmd.getLibrarianId(),
+                                          getCurrentTime());
     }
 
     /**
      * Throws a rejection when a librarian tries to remove a missing book.
      */
-    static CannotRemoveMissingBook cannotRemoveMissingBook(RemoveBook cmd) {
+    static CannotRemoveMissingBook cannotRemoveMissingBook(RemoveBook cmd) throws
+                                                                           CannotRemoveMissingBook {
         checkNotNull(cmd);
-        return new CannotRemoveMissingBook(cmd.getBookId(), cmd.getLibrarianId(),
-                                           cmd.getWhenRemoved());
+        throw new CannotRemoveMissingBook(cmd.getBookId(), cmd.getLibrarianId(),
+                                          cmd.getWhenRemoved());
     }
 }
