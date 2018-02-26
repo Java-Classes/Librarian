@@ -222,25 +222,18 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     ReservationAdded handle(ReserveBook cmd) throws BookAlreadyBorrowed,
                                                     BookAlreadyReserved {
-        final List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
         final List<Reservation> reservations = getState().getReservationsList();
         final InventoryId inventoryId = cmd.getInventoryId();
         final UserId userId = cmd.getUserId();
 
-        for (InventoryItem inventoryItem : inventoryItems) {
-            if (inventoryItem.getUserId()
-                             .equals(userId)) {
-                throw bookAlreadyBorrowed(cmd);
-            }
+        if (hasUserBorrowedBook(userId)) {
+            throw bookAlreadyBorrowed(cmd);
         }
 
-        for (Reservation reservation : reservations) {
-            if (reservation.getWhoReserved()
-                           .equals(userId)) {
-                throw bookAlreadyReserved(cmd);
-            }
-        }
+        if (userHasReservation(userId)) {
+            throw bookAlreadyReserved(cmd);
 
+        }
         final ReservationAdded result = ReservationAdded.newBuilder()
                                                         .setInventoryId(inventoryId)
                                                         .setForWhomReserved(userId)
@@ -788,8 +781,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * @param inventoryItemId an identifier of the necessary item.
      * @return a item position.
      */
-    private int getItemPosition(List<InventoryItem> inventoryItems,
-                                InventoryItemId inventoryItemId) {
+    private static int getItemPosition(List<InventoryItem> inventoryItems,
+                                       InventoryItemId inventoryItemId) {
         final OptionalInt optionalPosition =
                 IntStream.range(0, inventoryItems.size())
                          .filter(itemPos -> inventoryItems.get(itemPos)
@@ -923,7 +916,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * @param inventoryItems an identifier of the necessary item.
      * @return a item position.
      */
-    private int getReturnedItemPosition(UserId userId, List<InventoryItem> inventoryItems) {
+    private static int getReturnedItemPosition(UserId userId, List<InventoryItem> inventoryItems) {
         final int itemPosition = IntStream.range(0, inventoryItems.size())
                                           .filter(pos -> inventoryItems.get(pos)
                                                                        .getUserId()
@@ -945,8 +938,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
         final OptionalInt optionalInt = IntStream.range(0, loanList.size())
                                                  .filter(pos -> loanList.get(pos)
-                                                                     .getWhoBorrowed()
-                                                                     .equals(userId))
+                                                                        .getWhoBorrowed()
+                                                                        .equals(userId))
                                                  .findFirst();
         int loanIndex = 0;
         if (optionalInt.isPresent()) {
