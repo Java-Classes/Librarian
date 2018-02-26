@@ -222,7 +222,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     ReservationAdded handle(ReserveBook cmd) throws BookAlreadyBorrowed,
                                                     BookAlreadyReserved {
-        final List<Reservation> reservations = getState().getReservationsList();
         final InventoryId inventoryId = cmd.getInventoryId();
         final UserId userId = cmd.getUserId();
 
