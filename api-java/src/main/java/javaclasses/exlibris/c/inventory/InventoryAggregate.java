@@ -152,19 +152,21 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final Rfid rfid = cmd.getRfid();
         final UserId userId = cmd.getLibrarianId();
 
-        final InventoryAppended inventoryAppended = InventoryAppended.newBuilder()
-                                                                     .setInventoryId(inventoryId)
-                                                                     .setInventoryItemId(
-                                                                             inventoryItemId)
-                                                                     .setRfid(rfid)
-                                                                     .setWhenAppended(
-                                                                             getCurrentTime())
-                                                                     .setLibrarianId(userId)
-                                                                     .build();
+        final InventoryAppended inventoryAppended =
+                InventoryAppended.newBuilder()
+                                 .setInventoryId(inventoryId)
+                                 .setInventoryItemId(inventoryItemId)
+                                 .setRfid(rfid)
+                                 .setWhenAppended(getCurrentTime())
+                                 .setLibrarianId(userId)
+                                 .build();
 
-        final Pair result = Pair.withEither(inventoryAppended,
-                                            becameAvailableOrReadyToPickup(inventoryId,
-                                                                           inventoryItemId));
+        final EitherOfTwo<BookBecameAvailable, BookReadyToPickup> availableOrReadyToPickup =
+                becameAvailableOrReadyToPickup(
+                        inventoryId,
+                        inventoryItemId);
+
+        final Pair result = Pair.withEither(inventoryAppended, availableOrReadyToPickup);
         return result;
     }
 
@@ -193,13 +195,10 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                 final WriteOffReason writeOffReason = cmd.getWriteBookOffReason();
                 result = InventoryDecreased.newBuilder()
                                            .setInventoryId(inventoryId)
-                                           .setInventoryItemId(
-                                                   inventoryItemId)
-                                           .setWhenDecreased(
-                                                   getCurrentTime())
+                                           .setInventoryItemId(inventoryItemId)
+                                           .setWhenDecreased(getCurrentTime())
                                            .setLibrarianId(librarianId)
-                                           .setWriteOffReason(
-                                                   writeOffReason)
+                                           .setWriteOffReason(writeOffReason)
                                            .build();
             }
         }
@@ -282,27 +281,25 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
 
+        final LoanId loanId = LoanId.newBuilder()
+                                    .setValue(getCurrentTime().getSeconds())
+                                    .build();
         final BookBorrowed bookBorrowed = BookBorrowed.newBuilder()
                                                       .setInventoryId(inventoryId)
                                                       .setInventoryItemId(inventoryItemId)
                                                       .setWhoBorrowed(userId)
-                                                      .setLoanId(LoanId.newBuilder()
-                                                                       .setValue(
-                                                                               getCurrentTime().getSeconds())
-                                                                       .build())
+                                                      .setLoanId(loanId)
                                                       .setWhenBorrowed(getCurrentTime())
                                                       .build();
         Pair result = Pair.withNullable(bookBorrowed, null);
 
         if (userHasReservation(cmd.getUserId())) {
-            final ReservationBecameLoan reservationBecameLoan = ReservationBecameLoan.newBuilder()
-                                                                                     .setInventoryId(
-                                                                                             inventoryId)
-                                                                                     .setUserId(
-                                                                                             userId)
-                                                                                     .setWhenBecameLoan(
-                                                                                             getCurrentTime())
-                                                                                     .build();
+            final ReservationBecameLoan reservationBecameLoan =
+                    ReservationBecameLoan.newBuilder()
+                                         .setInventoryId(inventoryId)
+                                         .setUserId(userId)
+                                         .setWhenBecameLoan(getCurrentTime())
+                                         .build();
             result = Pair.of(bookBorrowed, reservationBecameLoan);
         }
         return result;
@@ -315,12 +312,13 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * @return true if the such reservation exists.
      */
     private boolean userHasReservation(UserId userId) {
-        final boolean userHasReservation = !getState().getReservationsList()
-                                                      .isEmpty() &&
-                getState().getReservationsList()
-                          .get(0)
-                          .getWhoReserved()
-                          .equals(userId);
+        final boolean userHasReservation =
+                !getState().getReservationsList()
+                           .isEmpty() &&
+                        getState().getReservationsList()
+                                  .get(0)
+                                  .getWhoReserved()
+                                  .equals(userId);
         return userHasReservation;
     }
 
@@ -632,10 +630,10 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      */
     @Apply
     void inventoryAppended(InventoryAppended event) {
+        final InventoryItemId inventoryItemId = event.getInventoryItemId();
         final InventoryItem newInventoryItem = InventoryItem.newBuilder()
                                                             .setInLibrary(true)
-                                                            .setInventoryItemId(
-                                                                    event.getInventoryItemId())
+                                                            .setInventoryItemId(inventoryItemId)
                                                             .setInLibrary(true)
                                                             .build();
         getBuilder().addInventoryItems(newInventoryItem);
@@ -654,11 +652,11 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
         final InventoryItemId inventoryItemId = event.getInventoryItemId();
         final int availableBookIndex = getItemPosition(inventoryItems, inventoryItemId);
-        getBuilder().setInventoryItems(availableBookIndex, InventoryItem.newBuilder()
-                                                                        .setInventoryItemId(
-                                                                                inventoryItemId)
-                                                                        .setInLibrary(true)
-                                                                        .build());
+        final InventoryItem inventoryItem = InventoryItem.newBuilder()
+                                                         .setInventoryItemId(inventoryItemId)
+                                                         .setInLibrary(true)
+                                                         .build();
+        getBuilder().setInventoryItems(availableBookIndex, inventoryItem);
     }
 
     /**
@@ -726,12 +724,14 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final Isbn62 isbn62 = event.getInventoryId()
                                    .getBookId()
                                    .getIsbn62();
-        final Reservation newReservation = Reservation.newBuilder()
-                                                      .setBookId(BookId.newBuilder()
-                                                                       .setIsbn62(isbn62))
-                                                      .setWhenCreated(event.getWhenCreated())
-                                                      .setWhoReserved(event.getForWhomReserved())
-                                                      .build();
+        final BookId.Builder bookId = BookId.newBuilder()
+                                            .setIsbn62(isbn62);
+        final Reservation newReservation =
+                Reservation.newBuilder()
+                           .setBookId(bookId)
+                           .setWhenCreated(event.getWhenCreated())
+                           .setWhoReserved(event.getForWhomReserved())
+                           .build();
         getBuilder().addReservations(newReservation);
     }
 
@@ -895,13 +895,14 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     void bookReturned(BookReturned event) {
         final List<InventoryItem> inventoryItems = getBuilder().getInventoryItems();
 
-        final int returnedItemPosition = getReturnedItemPosition(event.getWhoReturned(),
-                                                                 inventoryItems);
-        final InventoryItem newInventoryItem = InventoryItem.newBuilder()
-                                                            .setInventoryItemId(
-                                                                    event.getInventoryItemId())
-                                                            .setInLibrary(true)
-                                                            .build();
+        final int returnedItemPosition =
+                getReturnedItemPosition(event.getWhoReturned(), inventoryItems);
+
+        final InventoryItem newInventoryItem =
+                InventoryItem.newBuilder()
+                             .setInventoryItemId(event.getInventoryItemId())
+                             .setInLibrary(true)
+                             .build();
         getBuilder().setInventoryItems(returnedItemPosition, newInventoryItem);
 
         final int loanIndex = getLoanIndexByUserId(event.getWhoReturned());
