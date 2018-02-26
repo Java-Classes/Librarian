@@ -83,6 +83,7 @@ import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 import static io.spine.time.Time.getCurrentTime;
+import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.BorrowBookRejection.bookAlreadyBorrowed;
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.BorrowBookRejection.nonAvailableBook;
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.ReserveBookRejection.bookAlreadyBorrowed;
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.ReserveBookRejection.bookAlreadyReserved;
@@ -274,7 +275,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         for (InventoryItem inventoryItem : inventoryItems) {
             if (inventoryItem.getUserId()
                              .equals(userId)) {
-                throw InventoryAggregateRejections.BorrowBookRejection.bookAlreadyBorrowed(cmd);
+                throw bookAlreadyBorrowed(cmd);
             }
         }
 
@@ -412,7 +413,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final InventoryId inventoryId = cmd.getInventoryId();
         final LoanId loanId = cmd.getLoanId();
 
-        final int loanPosition = getLoanPosition(loanId);
+        final int loanPosition = getLoanPositionByLoanId(loanId);
         final Timestamp previousDueDate = getState().getLoans(loanPosition)
                                                     .getWhenDue();
 
@@ -438,12 +439,12 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * @param loanId an identifier of the necessary loan.
      * @return the loan position.
      */
-    private int getLoanPosition(LoanId loanId) {
+    private int getLoanPositionByLoanId(LoanId loanId) {
         final List<Loan> loansList = getState().getLoansList();
         final OptionalInt optionalPosition =
                 IntStream.range(0, loansList.size())
                          .filter(loanPos -> loansList.get(loanPos)
-                                                     .getWhoBorrowed()
+                                                     .getLoanId()
                                                      .equals(loanId))
                          .findFirst();
 
@@ -815,7 +816,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     void loanBecameOverdue(LoanBecameOverdue event) {
         final List<Loan> loans = getBuilder().getLoans();
 
-        final int loanPosition = getLoanPosition(event.getLoanId());
+        final int loanPosition = getLoanPositionByLoanId(event.getLoanId());
         getBuilder().setLoans(loanPosition, Loan.newBuilder(loans.get(loanPosition))
                                                 .setOverdue(true)
                                                 .build());
@@ -831,7 +832,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Apply
     void loanPeriodExtended(LoanPeriodExtended event) {
         final LoanId loanId = event.getLoanId();
-        final int loanPosition = getLoanPosition(loanId);
+        final int loanPosition = getLoanPositionByLoanId(loanId);
 
         final Loan previousLoan = getBuilder().getLoans()
                                               .get(loanPosition);
@@ -911,7 +912,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                             .build();
         getBuilder().setInventoryItems(returnedItemPosition, newInventoryItem);
 
-        final int loanIndex = getLoanIndex(event.getWhoReturned());
+        final int loanIndex = getLoanIndexByUserId(event.getWhoReturned());
         getBuilder().removeLoans(loanIndex);
     }
 
@@ -939,11 +940,11 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * @param userId {@code BookReturned} event.
      * @return a loan position.
      */
-    private int getLoanIndex(UserId userId) {
-        final List<Loan> loans = getState().getLoansList();
+    private int getLoanIndexByUserId(UserId userId) {
+        final List<Loan> loanList = getState().getLoansList();
 
-        final OptionalInt optionalInt = IntStream.range(0, loans.size())
-                                                 .filter(pos -> loans.get(pos)
+        final OptionalInt optionalInt = IntStream.range(0, loanList.size())
+                                                 .filter(pos -> loanList.get(pos)
                                                                      .getWhoBorrowed()
                                                                      .equals(userId))
                                                  .findFirst();
