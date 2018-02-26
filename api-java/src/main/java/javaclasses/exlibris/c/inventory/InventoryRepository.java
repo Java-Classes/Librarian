@@ -31,6 +31,7 @@ import javaclasses.exlibris.c.BookRemoved;
 
 import java.util.Set;
 
+import static com.google.common.collect.ImmutableSet.of;
 import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
@@ -57,9 +58,9 @@ public class InventoryRepository extends AggregateRepository<InventoryId, Invent
         final BookId bookId = message.getBookId();
 
         final ImmutableSet<InventoryId> inventoryIds =
-                ImmutableSet.of(InventoryId.newBuilder()
-                                           .setBookId(bookId)
-                                           .build());
+                of(InventoryId.newBuilder()
+                              .setBookId(bookId)
+                              .build());
         return inventoryIds;
     }
 
@@ -67,9 +68,9 @@ public class InventoryRepository extends AggregateRepository<InventoryId, Invent
         final BookId bookId = message.getBookId();
 
         final ImmutableSet<InventoryId> inventoryIds =
-                ImmutableSet.of(InventoryId.newBuilder()
-                                           .setBookId(bookId)
-                                           .build());
+                of(InventoryId.newBuilder()
+                              .setBookId(bookId)
+                              .build());
         return inventoryIds;
     }
 }
