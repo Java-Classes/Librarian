@@ -1,4 +1,5 @@
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-badge/paper-badge.html">
 
 <dom-module id="menu-item">
     <template>
@@ -9,7 +10,7 @@
 
             .item {
                 cursor: pointer;
-                margin: 10px;
+                margin: 4%;
                 align-items: center;
                 color: var(--menu-item-title-color, black);
                 border-radius: 3px;
@@ -18,17 +19,22 @@
                 --iron-icon-height: 26px;
                 --iron-icon-width: 26px;
                 padding-left: 12px;
-                vertical-align: middle;
             }
 
-            span {
+            .name {
                 padding-left: 12px;
+            }
+
+            .count-badge {
+                position: fixed;
+                right: 10%;
             }
         </style>
 
         <div class="item" on-click="_handleClick">
             <slot name="icon"></slot>
-            <span>[[title]]</span>
+            <span class="name">[[title]]</span>
+            <span class="count-badge">[[count]]</span>
         </div>
 
     </template>
@@ -37,7 +43,7 @@
         /**
          * The single item of menu list.
          * Provides the clickable area with title. Can be customized with
-         * icon.
+         * icon and the count number.
          *
          * The following custom properties are also available for styling:
          *
@@ -71,7 +77,12 @@
                     /**
                      * The element title to display.
                      */
-                    title: String
+                    title: String,
+
+                    /**
+                     * The element count badge to display.
+                     */
+                    count: Number
                 };
             }
 
