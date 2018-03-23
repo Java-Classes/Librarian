@@ -1,8 +1,11 @@
 <link rel="import" href="../../../bower_components/polymer-redux/polymer-redux.html">
+<script src="./../../test_values.js"></script>
+
 
 <script>
-    const initialState = {};
+    const initialState = {allBooks: allTestBooks};
     const reducer = (state = initialState, action) => {
+        return state;
     };
     const store = Redux.createStore(reducer);
     window.ExlibrisApp = {};

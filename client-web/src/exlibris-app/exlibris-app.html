@@ -40,6 +40,7 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 
 <link rel="import" href="menu/menu-item.html">
+<link rel="import" href="./book-grid.html">
 
 <dom-module id="exlibris-app">
     <template>
@@ -162,6 +163,7 @@
                         attr-for-selected="data-name"
                         fallback-selection="view404"
                         role="main">
+                    <book-grid data-name="all-books" books="[[allBooks]]"></book-grid>
                     <div data-name="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
@@ -189,7 +191,12 @@
             }
 
             static get properties() {
-                return {};
+                return {
+                    allBooks: {
+                        type: Array,
+                        statePath: 'allBooks'
+                    }
+                };
             }
 
             static get observers() {
