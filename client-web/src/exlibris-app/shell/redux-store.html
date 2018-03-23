@@ -1,0 +1,11 @@
+<link rel="import" href="../../../bower_components/polymer-redux/polymer-redux.html">
+
+<script>
+    const initialState = {};
+    const reducer = (state = initialState, action) => {
+    };
+    const store = Redux.createStore(reducer);
+    window.ExlibrisApp = {};
+    ExlibrisApp.store = store;
+    window.ReduxMixin = PolymerRedux(ExlibrisApp.store);
+</script>

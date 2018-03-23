@@ -1,7 +1,7 @@
 {
-  "name": "client-web",
-  "short_name": "client-web",
-  "description": "Ui",
+  "name": "exlibris",
+  "short_name": "exlibris",
+  "description": "The library application for TeamDev company.",
   "start_url": "/",
   "display": "standalone"
 }

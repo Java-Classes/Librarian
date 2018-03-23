@@ -1,0 +1,90 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="menu-item">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            .item {
+                cursor: pointer;
+                margin: 10px;
+                align-items: center;
+                color: var(--menu-item-title-color, black);
+                border-radius: 3px;
+                background-color: var(--menu-item-background-color, white);
+                line-height: 40px;
+                --iron-icon-height: 26px;
+                --iron-icon-width: 26px;
+                padding-left: 12px;
+                vertical-align: middle;
+            }
+
+            span {
+                padding-left: 12px;
+            }
+        </style>
+
+        <div class="item" on-click="_handleClick">
+            <slot name="icon"></slot>
+            <span>[[title]]</span>
+        </div>
+
+    </template>
+
+    <script>
+        /**
+         * The single item of menu list.
+         * Provides the clickable area with title. Can be customized with
+         * icon.
+         *
+         * The following custom properties are also available for styling:
+         *
+         * Custom property | Description | Default
+         * ----------------|-------------|----------
+         * `--menu-item-title-color` | Element text color | black
+         * `--menu-item-background-color` | Background color of the element display area | white
+         *
+         * @customElement
+         * @polymer
+         */
+        class MenuItem extends Polymer.Element {
+            static get is() {
+                return 'menu-item';
+            }
+
+            static get properties() {
+                return {
+                    /**
+                     * Fired on `element` display area mouse click event.
+                     *
+                     * @event menu-item-click
+                     * @param {detail} the link to redirect application.
+                     */
+
+                    /**
+                     * The link attached to the `element` click event.
+                     */
+                    link: String,
+
+                    /**
+                     * The element title to display.
+                     */
+                    title: String
+                };
+            }
+
+            /**
+             * Handles user click on item display area.
+             *
+             * @private
+             */
+            _handleClick() {
+                this.dispatchEvent(new CustomEvent('menu-item-click', {detail: this.link}));
+            }
+        }
+
+        window.customElements.define(MenuItem.is, MenuItem);
+    </script>
+</dom-module>
