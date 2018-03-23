@@ -1,0 +1,7 @@
+{
+  "name": "client-web",
+  "short_name": "client-web",
+  "description": "Ui",
+  "start_url": "/",
+  "display": "standalone"
+}

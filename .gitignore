@@ -13,6 +13,10 @@ hs_err_pid*
 .idea/shelf
 .idea/*.xml
 
+# Web client project libraries
+bower_components/
+node_modules/
+
 # Do not ingore Gradle Wrapper runtime
 !/gradle/wrapper/gradle-wrapper.jar
 !/client-android/gradle/wrapper/gradle-wrapper.jar
