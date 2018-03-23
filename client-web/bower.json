@@ -1,6 +1,6 @@
 {
   "name": "exlibris",
-  "description": "The library application for TeamDev company.",
+  "description": "The library application.",
   "main": "index.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
