@@ -38,9 +38,12 @@
 <link rel="import" href="../../bower_components/paper-styles/color.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 
 <link rel="import" href="menu/menu-item.html">
 <link rel="import" href="./book-grid.html">
+<link rel="import" href="./menu/menu-item.html">
+<link rel="import" href="./book-dialog.html">
 
 <dom-module id="exlibris-app">
     <template>
@@ -87,6 +90,7 @@
                 route="{{route}}"
                 pattern="/:page"
                 data="{{routeData}}"></app-route>
+        <book-dialog id="modal"></book-dialog>
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
             <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
@@ -168,6 +172,7 @@
                         fallback-selection="view404"
                         role="main">
                     <div data-name="view404">View404</div>
+                    <paper-button data-name="overdue-books" on-click="_openModal">Open</paper-button>
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
@@ -247,6 +252,10 @@
                     this.set('selectedTitle', selectedMenuItem.title);
                 }
             }
+
+           _openModal(){
+                this.$.modal.open();
+           }
         }
 
         window.customElements.define(ExlibrisApp.is, ExlibrisApp);

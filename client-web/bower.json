@@ -11,9 +11,15 @@
     "iron-pages": "PolymerElements/iron-pages#^2.1.0",
     "iron-icons": "PolymerElements/iron-icons#^2.1.1",
     "paper-badge": "PolymerElements/paper-badge#^2.1.0",
+<<<<<<< HEAD
     "iron-image": "PolymerElements/iron-image#^2.2.0",
     "iron-scroll-threshold": "PolymerElements/iron-scroll-threshold#^2.0.0",
     "iron-list": "PolymerElements/iron-list#^2.0.13"
+=======
+    "paper-dialog": "PolymerElements/paper-dialog#^2.1.1",
+    "paper-button": "PolymerElements/paper-button#^2.1.0",
+    "paper-dialog-behavior": "PolymerElements/paper-dialog-behavior#^2.2.0"
+>>>>>>> dialog_testing
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0",
