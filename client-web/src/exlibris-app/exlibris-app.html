@@ -90,7 +90,9 @@
             <!-- Drawer content -->
             <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
                 <app-toolbar>TeamDev Library</app-toolbar>
-                <iron-selector attr-for-selected="data-name" selected="[[routeData.page]]">
+                <iron-selector attr-for-selected="data-name"
+                               selected="[[routeData.page]]"
+                               on-selected-item-changed="_getSelectedTitle">
 
                     <menu-item data-name="all-books"
                                title="All Books"
@@ -155,6 +157,7 @@
                     <app-toolbar>
                         <paper-icon-button id="number" icon="menu"
                                            drawer-toggle></paper-icon-button>
+                        <span drawer-toggle>[[selectedTitle]]</span>
                     </app-toolbar>
                 </app-header>
 
@@ -190,7 +193,14 @@
             }
 
             static get properties() {
-                return {};
+                return {
+                    /**
+                     * The title of the selected page.
+                     */
+                    selectedTitle: {
+                        type: String,
+                    }
+                };
             }
 
             static get observers() {
@@ -210,12 +220,31 @@
 
             /**
              * Handles menu item click event. Changes application route.
+             * If the page is in the `narrow` state, toggles the drawer.
              *
              * @param e the event of the menu item click. Contains the link to redirect on.
              * @private
              */
             _changeRoute(e) {
                 this.set('route.path', e.detail);
+                if (this.narrow) {
+                    this.$.drawer.toggle();
+                }
+            }
+
+            /**
+             * Handles the selected menu item changed event.
+             * Sets the `selectedTitle` property with the appropriate value.
+             *
+             * @param e the event fired when selection of menu items selector has changed.
+             *          Contains the selected menu item.
+             * @private
+             */
+            _getSelectedTitle(e) {
+                let selectedMenuItem = e.detail.value;
+                if (selectedMenuItem) {
+                    this.set('selectedTitle', selectedMenuItem.title);
+                }
             }
         }
 
