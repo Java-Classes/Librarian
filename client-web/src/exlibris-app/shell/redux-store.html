@@ -3,7 +3,16 @@
 
 
 <script>
-    const initialState = {allBooks: allTestBooks};
+    const bookStatus = {
+        OVERDUE: "overdue",
+        BORROWED: "borrowed",
+        AVAILABLE: "available",
+        EXPECTED: "expected"
+    };
+    const initialState = {
+        libraryBooks: libraryTestBooks,
+
+    };
     const reducer = (state = initialState, action) => {
         return state;
     };

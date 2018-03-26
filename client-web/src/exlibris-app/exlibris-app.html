@@ -163,7 +163,6 @@
                         attr-for-selected="data-name"
                         fallback-selection="view404"
                         role="main">
-                    <book-grid data-name="all-books" books="[[allBooks]]"></book-grid>
                     <div data-name="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
@@ -191,12 +190,6 @@
             }
 
             static get properties() {
-                return {
-                    allBooks: {
-                        type: Array,
-                        statePath: 'allBooks'
-                    }
-                };
             }
 
             static get observers() {
@@ -223,6 +216,7 @@
             _changeRoute(e) {
                 this.set('route.path', e.detail);
             }
+
         }
 
         window.customElements.define(ExlibrisApp.is, ExlibrisApp);
