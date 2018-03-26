@@ -158,7 +158,7 @@
 
             <!-- Main content -->
             <app-header-layout has-scrolling-region>
-                <app-header slot="header" condenses reveals effects="waterfall">
+                <app-header slot="header" fixed>
                     <app-toolbar>
                         <paper-icon-button id="number" icon="menu"
                                            drawer-toggle></paper-icon-button>
@@ -207,40 +207,73 @@
 
             static get properties() {
                 return {
+
                     /**
                      * The title of the selected page.
                      */
                     selectedTitle: {
                         type: String,
                     },
+
+                    /**
+                     * The object with arrays of all books that related to user.
+                     */
                     userBooks: {
                         type: Object,
                         statePath: 'userBooks'
                     },
+
+                    /**
+                     * The array of all books from library.
+                     */
                     libraryBooks: {
                         type: Array,
                         statePath: 'libraryBooks'
                     },
+
+                    /**
+                     * The array of all books from library with `status` and `statusMessage`.
+                     */
                     allBooks: {
                         type: Array,
                         value: () => []
                     },
+
+                    /**
+                     * The array of borrowed  user books with `status` and `statusMessage`.
+                     */
                     borrowedBooks: {
                         type: Array,
                         value: () => []
                     },
+
+                    /**
+                     * The array of reserved user books with `status` and `statusMessage`.
+                     */
                     reservedBooks: {
                         type: Array,
                         value: () => []
                     },
+
+                    /**
+                     * The array of books the user should return soon with `status` and `statusMessage`.
+                     */
                     shouldReturnBooks: {
                         type: Array,
                         value: () => []
                     },
+
+                    /**
+                     * The array of overdue user books with `status` and `statusMessage`.
+                     */
                     overdueBooks: {
                         type: Array,
                         value: () => []
                     },
+
+                    /**
+                     * The array of books that will soon appear in the library.
+                     */
                     expectedSoonBooks: {
                         type: Array,
                         value: () => []
@@ -297,8 +330,20 @@
                 }
             }
 
-            _allLibraryBooksChanged(libraryBooks) {
-                const allBooks = libraryBooks.map(book => {
+            /**
+             * Creates array `allBooks` from the `libraryBooks`.
+             *
+             * Clones next fields from `libraryBooks`:
+             * id, title, author, category, description, image
+             * Adds fields `status` and `statusMessage` values
+             * depending on the `availableCount`.
+             *
+             *
+             * @param books all books from library
+             * @private
+             */
+            _allLibraryBooksChanged(books) {
+                const allBooks = books.map(book => {
                     const newBook = this._cloneMainFields(book);
                     if (book.availableCount !== undefined) {
                         if (book.availableCount > 0) {
@@ -320,12 +365,24 @@
                     }
                 });
 
-                this._deleteSubArrayFromArray(allBooks, this.borrowedBooks);
-                this._deleteSubArrayFromArray(allBooks, this.reservedBooks);
-                this._deleteSubArrayFromArray(allBooks, this.overdueBooks);
+                this._removeSubArrayFromArray(allBooks, this.borrowedBooks);
+                this._removeSubArrayFromArray(allBooks, this.reservedBooks);
+                this._removeSubArrayFromArray(allBooks, this.overdueBooks);
                 this.allBooks = [...this.overdueBooks, ...allBooks];
             }
 
+            /**
+             * Creates array `overdueBooks` from the `overdue` user array.
+             *
+             * Clones next fields from `libraryBooks`:
+             * id, title, author, category, description, image
+             * Adds fields `status` equals `overdue`
+             * and `statusMessage` equals `N DAYS OVERDUE`
+             *
+             *
+             * @param books all `overdue` user books from library
+             * @private
+             */
             _overdueBooksChanged(books) {
                 this.overdueBooks = books.map(book => {
                     const newBook = this._cloneMainFields(book)
@@ -337,6 +394,20 @@
                 });
             }
 
+            /**
+             * Creates array `borrowedBooks` from the `borrowed` user array.
+             *
+             * Clones next fields from `libraryBooks`:
+             * id, title, author, category, description, image
+             * Adds fields `status` equals `borrowed`
+             * and `statusMessage` equals `DUE ON DATE`
+             *
+             * If there are less than 3 days left before the `dueDAte`, the book
+             * will be added to the `shouldReturnBooks` array.
+             *
+             * @param books all `borrowed` user books from library
+             * @private
+             */
             _borrowedBooksChanged(books) {
                 this.borrowedBooks = books.map(book => {
                     const newBook = this._cloneMainFields(book);
@@ -352,6 +423,20 @@
 
             }
 
+            /**
+             * Creates array `reservedBooks` from `readyToPickUp` and `expected` user arrays.
+             *
+             * Clones next fields from `libraryBooks`:
+             * id, title, author, category, description, image
+             * Adds fields `status` equals `reserved`
+             * and next `statusMessage`:
+             *
+             * `READY TO PICK UP` - for books from `readyToPickUp` array
+             * `EXPECTED ON` - for books from `expected` array.
+             *
+             * @param books all `reserved` user books from library
+             * @private
+             */
             _reservedBooksChanged(books) {
                 const readyToPickUpBooks = books.readyToPickUp.map(book => {
                     const newBook = this._cloneMainFields(book);
@@ -371,7 +456,15 @@
 
             }
 
-            _deleteSubArrayFromArray(allBooks, books) {
+
+            /**
+             * Removes all elements of the second array from the first.
+             *
+             * @param array whose elements will be deleted
+             * @param books array with elements for remove
+             * @private
+             */
+            _removeSubArrayFromArray(allBooks, books) {
                 allBooks.forEach((book, index) => {
                     books.forEach(b => {
                         if (b.id === book.id) {
@@ -381,17 +474,25 @@
                 });
             }
 
+            /**
+             * Creates an object by copying the following properties from the argument:
+             * id, title, author, category, description, image
+             * @param book object with main book fields
+             * @returns {{} & {id, title, author, category, description, image}} clone object
+             * @private
+             */
             _cloneMainFields(book) {
                 return Object.assign({}, {
                     id: book.id,
                     title: book.title,
-                    author: book.title,
+                    author: book.author,
                     category: book.category,
                     description: book.description,
                     image: book.image
                 });
             }
         }
+
         window.customElements.define(ExlibrisApp.is, ExlibrisApp);
     </script>
 </dom-module>
