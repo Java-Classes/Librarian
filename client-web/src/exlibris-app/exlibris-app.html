@@ -167,6 +167,8 @@
                         attr-for-selected="data-name"
                         fallback-selection="view404"
                         role="main">
+                    <book-grid data-name="all-books" books="[[allBooks]]"></book-grid>
+                    <book-grid data-name="overdue-books" books="[[overdueBooks]]"></book-grid>
                     <div data-name="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
@@ -198,15 +200,18 @@
                     /**
                      * The title of the selected page.
                      */
-
-
-
                     selectedTitle: {
                         type: String,
                     },
-                    allBooks: {
-                        type: Array
+                    libraryBooks: {
+                        type: Array,
+                        statePath: 'libraryBooks'
                     },
+                    userBooks: {
+                        type: Object,
+                        statePath: 'userBooks'
+                    },
+                    allBooks: Array,
                     borrowedBooks: {
                         type: Array
                     },
@@ -216,9 +221,7 @@
                     shouldReturnSoonBooks: {
                         type: Array
                     },
-                    overdueBooks: {
-                        type: Array
-                    },
+                    overdueBooks: Array,
                     expectedSoonBooks: {
                         type: Array
                     }
@@ -228,6 +231,9 @@
             static get observers() {
                 return [
                     '_routePageChanged(routeData.page)',
+                    '_overdueBooksChanged(userBooks.overdue)',
+                    '_allLibraryBooksChanged(libraryBooks)'
+
                 ];
             }
 
@@ -268,6 +274,54 @@
                     this.set('selectedTitle', selectedMenuItem.title);
                 }
             }
+
+            _allLibraryBooksChanged(libraryBooks, overdueBooks) {
+                this.allBooks = libraryBooks.map(book => {
+                    const newBook = {};
+                    newBook["id"] = book.id;
+                    newBook["title"] = book.title;
+                    newBook["author"] = book.author;
+                    newBook["category"] = book.category;
+                    newBook["description"] = book.description;
+                    newBook["image"] = book.image;
+                    if (book.availableCount !== undefined) {
+                        if (book.availableCount > 0) {
+                            newBook["status"] = bookStatus.AVAILABLE;
+                            newBook["statusMessage"] = book.availableCount + " AVAILABLE";
+                            return newBook;
+                        }
+                        newBook["status"] = bookStatus.EXPECTED;
+                        newBook["statusMessage"] = "EXPECTED";
+                        return newBook;
+                    }
+                    else {
+                        if (book.expectedSoon) {
+                            newBook["status"] = bookStatus.EXPECTED;
+                            newBook["statusMessage"] = "EXPECTED SOON";
+                            return newBook;
+                        }
+                    }
+                });
+            }
+
+            _overdueBooksChanged(books) {
+                this.overdueBooks = books.map(book => {
+                    const newBook = {};
+                    newBook["id"] = book.id;
+                    newBook["title"] = book.title;
+                    newBook["author"] = book.author;
+                    newBook["category"] = book.category;
+                    newBook["description"] = book.description;
+                    newBook["image"] = book.image;
+                    newBook["status"] = bookStatus.OVERDUE;
+                    const oneDay = 1000 * 60 * 60 * 24;
+                    const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / oneDay);
+                    newBook["statusMessage"] = numberOfOverdueDays + " DAYS OVERDUE";
+                    return newBook;
+                });
+                this.allBooks = [...this.overdueBooks, ...this.allBooks];
+            }
+
         }
 
         window.customElements.define(ExlibrisApp.is, ExlibrisApp);

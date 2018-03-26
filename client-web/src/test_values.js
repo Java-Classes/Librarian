@@ -53,7 +53,6 @@ const libraryTestBooks = [
         "\n" +
         "Andy Weir's second novel Artemis is now available",
         availableCount: 0
-
     }, {
 
         id: "8535902772",
@@ -746,7 +745,7 @@ const userTestBooks = {
             "Mastering Lambdas: Java Programming in a Multicore World by Maurice Naftalin\n" +
             "Quick Start Guide to JavaFX by J.F. DiMarzio\n" +
             "Mastering JavaFX 8 Controls: Create Custom JavaFX 8 Controls for Cross-Platform Applications by Hendrik Ebbers",
-            dueDate: new Date(new Date().getTime() - 2 * 172800000)
+            dueDate: new Date(new Date().getTime() - 2 * 1000 * 60 * 60 * 24)
         }]
     }
 ;
