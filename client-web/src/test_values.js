@@ -333,6 +333,7 @@ const libraryTestBooks = [
 
     }, {
         id: "8535902717",
+        id: "8535902717",
         title: "Effective Java: Edition 2",
         image: "https://books.google.com/books/content/images/frontcover/ka2VUBqHiWkC?fife=w200-h300",
         author: "Joshua Bloch",
@@ -699,7 +700,6 @@ const userTestBooks = {
                 "Quick Start Guide to JavaFX by J.F. DiMarzio\n" +
                 "Mastering JavaFX 8 Controls: Create Custom JavaFX 8 Controls for Cross-Platform Applications by Hendrik Ebbers",
                 date: new Date(new Date().getTime() + 21 * 172800000)
-
             }]
         },
         borrowed: [{

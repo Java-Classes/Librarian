@@ -71,6 +71,7 @@
             menu-item {
                 --menu-item-background-color: var(--app-background-color);
                 --menu-item-title-color: var(--app-secondary-color)
+
             }
 
             menu-item.iron-selected {
@@ -115,6 +116,7 @@
 
                     <menu-item data-name="borrowed-books"
                                title="Borrowed Books"
+                               count="[[borrowedBooks.length]]"
                                link="/borrowed-books"
                                on-menu-item-click="_changeRoute">
                         <iron-icon icon="shopping-basket"
@@ -124,6 +126,7 @@
 
                     <menu-item data-name="reserved-books"
                                title="Reserved Books"
+                               count="[[reservedBooks.length]]"
                                link="/reserved-books"
                                on-menu-item-click="_changeRoute">
                         <iron-icon icon="lock"
@@ -133,6 +136,7 @@
 
                     <menu-item data-name="should-return-books"
                                title="Should Retutn Soon"
+                               count="[[shouldReturnBooks.length]]"
                                link="/should-return-books"
                                on-menu-item-click="_changeRoute">
                         <iron-icon icon="query-builder"
@@ -142,7 +146,7 @@
 
                     <menu-item data-name="overdue-books"
                                title="Overdue"
-                               count="1"
+                               count="[[overdueBooks.length]]"
                                link="/overdue-books"
                                on-menu-item-click="_changeRoute">
                         <iron-icon icon="warning"
@@ -169,6 +173,12 @@
                         role="main">
                     <book-grid data-name="all-books" books="[[allBooks]]"></book-grid>
                     <book-grid data-name="overdue-books" books="[[overdueBooks]]"></book-grid>
+                    <book-grid data-name="borrowed-books" books="[[borrowedBooks]]"></book-grid>
+                    <book-grid data-name="reserved-books" books="[[reservedBooks]]"></book-grid>
+                    <book-grid data-name="expected-soon"
+                               books="[[expectedSoonBooks]]"></book-grid>
+                    <book-grid data-name="should-return-books"
+                               books="[[shouldReturnBooks]]"></book-grid>
                     <div data-name="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
@@ -203,28 +213,39 @@
                     selectedTitle: {
                         type: String,
                     },
-                    libraryBooks: {
-                        type: Array,
-                        statePath: 'libraryBooks'
-                    },
                     userBooks: {
                         type: Object,
                         statePath: 'userBooks'
                     },
-                    allBooks: Array,
+                    libraryBooks: {
+                        type: Array,
+                        statePath: 'libraryBooks'
+                    },
+                    allBooks: {
+                        type: Array,
+                        value: () => []
+                    },
                     borrowedBooks: {
-                        type: Array
+                        type: Array,
+                        value: () => []
                     },
                     reservedBooks: {
-                        type: Array
+                        type: Array,
+                        value: () => []
                     },
-                    shouldReturnSoonBooks: {
-                        type: Array
+                    shouldReturnBooks: {
+                        type: Array,
+                        value: () => []
                     },
-                    overdueBooks: Array,
+                    overdueBooks: {
+                        type: Array,
+                        value: () => []
+                    },
                     expectedSoonBooks: {
-                        type: Array
+                        type: Array,
+                        value: () => []
                     }
+
                 };
             }
 
@@ -232,8 +253,9 @@
                 return [
                     '_routePageChanged(routeData.page)',
                     '_overdueBooksChanged(userBooks.overdue)',
-                    '_allLibraryBooksChanged(libraryBooks)'
-
+                    '_allLibraryBooksChanged(libraryBooks)',
+                    '_borrowedBooksChanged(userBooks.borrowed)',
+                    '_reservedBooksChanged(userBooks.reserved)'
                 ];
             }
 
@@ -275,15 +297,9 @@
                 }
             }
 
-            _allLibraryBooksChanged(libraryBooks, overdueBooks) {
-                this.allBooks = libraryBooks.map(book => {
-                    const newBook = {};
-                    newBook["id"] = book.id;
-                    newBook["title"] = book.title;
-                    newBook["author"] = book.author;
-                    newBook["category"] = book.category;
-                    newBook["description"] = book.description;
-                    newBook["image"] = book.image;
+            _allLibraryBooksChanged(libraryBooks) {
+                const allBooks = libraryBooks.map(book => {
+                    const newBook = this._cloneMainFields(book);
                     if (book.availableCount !== undefined) {
                         if (book.availableCount > 0) {
                             newBook["status"] = bookStatus.AVAILABLE;
@@ -298,32 +314,84 @@
                         if (book.expectedSoon) {
                             newBook["status"] = bookStatus.EXPECTED;
                             newBook["statusMessage"] = "EXPECTED SOON";
+                            this.push('expectedSoonBooks', newBook);
                             return newBook;
                         }
                     }
                 });
+
+                this._deleteSubArrayFromArray(allBooks, this.borrowedBooks);
+                this._deleteSubArrayFromArray(allBooks, this.reservedBooks);
+                this._deleteSubArrayFromArray(allBooks, this.overdueBooks);
+                this.allBooks = [...this.overdueBooks, ...allBooks];
             }
 
             _overdueBooksChanged(books) {
                 this.overdueBooks = books.map(book => {
-                    const newBook = {};
-                    newBook["id"] = book.id;
-                    newBook["title"] = book.title;
-                    newBook["author"] = book.author;
-                    newBook["category"] = book.category;
-                    newBook["description"] = book.description;
-                    newBook["image"] = book.image;
+                    const newBook = this._cloneMainFields(book)
                     newBook["status"] = bookStatus.OVERDUE;
                     const oneDay = 1000 * 60 * 60 * 24;
                     const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / oneDay);
                     newBook["statusMessage"] = numberOfOverdueDays + " DAYS OVERDUE";
                     return newBook;
                 });
-                this.allBooks = [...this.overdueBooks, ...this.allBooks];
             }
 
-        }
+            _borrowedBooksChanged(books) {
+                this.borrowedBooks = books.map(book => {
+                    const newBook = this._cloneMainFields(book);
+                    newBook["status"] = bookStatus.BORROWED;
+                    newBook["statusMessage"] = "DUE ON " + book.dueDate.toLocaleDateString();
 
+                    const oneDay = 1000 * 60 * 60 * 24;
+                    if (Math.floor((new Date() - book.dueDate) / oneDay) <= 3) {
+                        this.push('shouldReturnBooks', newBook);
+                    }
+                    return newBook;
+                });
+
+            }
+
+            _reservedBooksChanged(books) {
+                const readyToPickUpBooks = books.readyToPickUp.map(book => {
+                    const newBook = this._cloneMainFields(book);
+                    newBook["status"] = bookStatus.RESERVED;
+                    newBook["statusMessage"] = "READY TO PICK UP";
+                    return newBook;
+                });
+
+                const expectedUserBooks = books.expected.map(book => {
+                        const newBook = this._cloneMainFields(book);
+                        newBook["status"] = bookStatus.RESERVED;
+                        newBook["statusMessage"] = "EXPECTED ON " + book.date.toLocaleDateString();
+                        return newBook;
+                    }
+                );
+                this.reservedBooks = [...readyToPickUpBooks, ...expectedUserBooks];
+
+            }
+
+            _deleteSubArrayFromArray(allBooks, books) {
+                allBooks.forEach((book, index) => {
+                    books.forEach(b => {
+                        if (b.id === book.id) {
+                            allBooks.splice(index, 1);
+                        }
+                    });
+                });
+            }
+
+            _cloneMainFields(book) {
+                return Object.assign({}, {
+                    id: book.id,
+                    title: book.title,
+                    author: book.title,
+                    category: book.category,
+                    description: book.description,
+                    image: book.image
+                });
+            }
+        }
         window.customElements.define(ExlibrisApp.is, ExlibrisApp);
     </script>
 </dom-module>
