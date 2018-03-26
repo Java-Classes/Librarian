@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>book-grid test</title>
+
+    <script src="./../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="./../../bower_components/web-component-tester/browser.js"></script>
+    <script src="./test_variables.js"></script>
+
+    <link rel="import" href="../../src/exlibris-app/book-grid.html">
+</head>
+<body>
+
+<test-fixture id="BasicTestFixture">
+    <template>
+        <book-grid></book-grid>
+    </template>
+</test-fixture>
+
+<script>
+    suite('book-grid', function () {
+
+
+        const SYNOPSIS_SELECTOR = ".bookContent >.synopsis";
+        const TITLE_SELECTOR = ".bookContent >.synopsis>.title";
+        const AUTHOR_SELECTOR = ".bookContent >.synopsis>.author";
+        const IRON_IMAGE_SELECTOR = ".bookContent > iron-image";
+
+
+        let bookGrid;
+        setup(() => {
+            bookGrid = fixture('BasicTestFixture');
+        });
+
+        test('should displays `book` array in the iron list', function (done) {
+            bookGrid.books = [...TEST_BOOKS];
+            flush(function () {
+                const titles = bookGrid.shadowRoot.querySelectorAll(TITLE_SELECTOR);
+                assert.equal(TEST_BOOKS[0].title, titles[0].innerHTML);
+                assert.equal(TEST_BOOKS[1].title, titles[1].innerHTML);
+                const authors = bookGrid.shadowRoot.querySelectorAll(AUTHOR_SELECTOR);
+                assert.equal(TEST_BOOKS[0].author, authors[0].innerHTML);
+                assert.equal(TEST_BOOKS[1].author, authors[1].innerHTML);
+                const firstStatuse = bookGrid.shadowRoot.querySelector(SYNOPSIS_SELECTOR + ">." + TEST_BOOKS[0].status);
+                assert.equal(TEST_BOOKS[0].statusMessage, firstStatuse.innerHTML);
+                const secondStatuse = bookGrid.shadowRoot.querySelector(SYNOPSIS_SELECTOR + ">." + TEST_BOOKS[1].status);
+                assert.equal(TEST_BOOKS[1].statusMessage, secondStatuse.innerHTML);
+                const images = bookGrid.shadowRoot.querySelectorAll(IRON_IMAGE_SELECTOR);
+                const firstImageURL = images[0].shadowRoot.querySelector("img").getAttribute("src");
+                assert.equal(TEST_BOOKS[0].image, firstImageURL);
+                const secondImageURL = images[1].shadowRoot.querySelector("img").getAttribute("src");
+                assert.equal(TEST_BOOKS[1].image, secondImageURL);
+                done();
+            });
+        });
+
+
+    });
+</script>
+</body>
+</html>

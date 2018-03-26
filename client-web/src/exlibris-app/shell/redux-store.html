@@ -7,10 +7,12 @@
         OVERDUE: "overdue",
         BORROWED: "borrowed",
         AVAILABLE: "available",
+        RESERVED: "reserved",
         EXPECTED: "expected"
     };
     const initialState = {
         libraryBooks: libraryTestBooks,
+        userBooks: userTestBooks
 
     };
     const reducer = (state = initialState, action) => {
