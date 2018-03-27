@@ -126,7 +126,7 @@
         <iron-list items="[[books]]" as="book" scroll-target="document" grid>
             <template>
                 <div class="bookContainer">
-                    <div class="bookContent" tabindex$="[[tabIndex]]">
+                    <div class="bookContent" tabindex$="[[tabIndex]]" on-click="_handleBookClick">
                         <iron-image sizing="cover"
                                     src="[[book.image]]">
                         </iron-image>
@@ -172,6 +172,11 @@
 
             _onLowerThreshold() {
                 console.log('Add more books');
+            }
+
+            _handleBookClick(e) {
+                const book = e.model.__data.book;
+                this.dispatchEvent(new CustomEvent('book-tile-click', {detail: book}));
             }
         }
         window.customElements.define(BookGrid.is, BookGrid);

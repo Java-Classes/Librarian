@@ -172,14 +172,20 @@
                         attr-for-selected="data-name"
                         fallback-selection="view404"
                         role="main">
-                    <book-grid data-name="all-books" books="[[allBooks]]"></book-grid>
-                    <book-grid data-name="overdue-books" books="[[overdueBooks]]"></book-grid>
-                    <book-grid data-name="borrowed-books" books="[[borrowedBooks]]"></book-grid>
-                    <book-grid data-name="reserved-books" books="[[reservedBooks]]"></book-grid>
+                    <book-grid data-name="all-books" books="[[allBooks]]"
+                               on-book-tile-click="_handleBookClick"></book-grid>
+                    <book-grid data-name="overdue-books" books="[[overdueBooks]]"
+                               on-book-tile-click="_handleBookClick"></book-grid>
+                    <book-grid data-name="borrowed-books" books="[[borrowedBooks]]"
+                               on-book-tile-click="_handleBookClick"></book-grid>
+                    <book-grid data-name="reserved-books" books="[[reservedBooks]]"
+                               on-book-tile-click="_handleBookClick"></book-grid>
                     <book-grid data-name="expected-soon"
-                               books="[[expectedSoonBooks]]"></book-grid>
+                               books="[[expectedSoonBooks]]"
+                               on-book-tile-click="_handleBookClick"></book-grid>
                     <book-grid data-name="should-return-books"
-                               books="[[shouldReturnBooks]]"></book-grid>
+                               books="[[shouldReturnBooks]]"
+                               on-book-tile-click="_handleBookClick"></book-grid>
                     <div data-name="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
@@ -492,25 +498,17 @@
                 });
             }
 
-           _openModal(){
+            _openModal(book) {
                 const bookDialog = this.$.modal;
-                bookDialog.book = {
-                    title: "Прежде Чем Он Согрешит ",
-                    image: "https://books.google.com/books/content/images/frontcover/uVVMDwAAQBAJ?fife=w200-h300",
-                    author: "Блейк Пирс",
-                    category: "Fiction ",
-                    description: "Блейк Пирс, автор бестселлера «КОГДА ОНА УШЛА» (бестселлера #1 с более чем 900 отзывов с высшей оценкой), представляет книгу #7 в увлекательной серии детективных романов о Макензи Уайт.\n" +
-                    "В «ПРЕЖДЕ ЧЕМ ОН СОГРЕШИТ» (Загадки Макензи Уайт—Книга 7) по всему Вашингтону полиция находит тела священников, распятые перед входом в храмы. Что это, акт возмездия? Искать ли преступника среди служителей церкви? Или это серийный убийца, открывший охоту на священников и движимый более зловещими мотивами?\n" +
-                    "\n" +
-                    "ФБР передаёт это дело специальному агенту Макензи Уайт, потому что оно перекликается с религиозными убийствами, которые она расследовала, когда охотилась на преступника по прозвищу «Страшила» в своём первом деле. Погрузившись в мир, в котором живут священники, Макензи пытается лучше понять смысл ритуалов, древних религиозных текстов и даже разум самого убийцы. При этом она также занята поиском убийцы отца, твёрдо решив, что на этот раз не даст ему уйти. Убийца священников намного более жесток, чем другие преступники, и в смертельной игре в кошки-мышки он подводит Макензи к черте, за которой начинается безумие.\n" +
-                    "\n" +
-                    "Мрачный психологический триллер с увлекательным сюжетом «ПРЕЖДЕ ЧЕМ ОН СОГРЕШИТ» – это книга #7 в захватывающей серии детективных романов, рассказывающих о любимой героине. От книги просто невозможно оторваться.\n" +
-                    "\n" +
-                    "Также не пропустите роман Блейка Пирса «КОГДА ОНА УШЛА» (Загадки Райли Пейдж—Книга #1), бестселлер #1 с более чем 900 отзывов с высшей оценкой. Роман доступен для бесплатного скачивания!",
-                    availableCount: 3
-                };
+                bookDialog.book = book;
                 bookDialog.open();
-           }
+            }
+
+            _handleBookClick(e) {
+                this._openModal(e.detail);
+                e.stopPropagation();
+                e.preventDefault();
+            }
         }
 
         window.customElements.define(ExlibrisApp.is, ExlibrisApp);

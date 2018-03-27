@@ -47,18 +47,22 @@
 
             .head-region {
                 display: flex;
-                /*flex-wrap: wrap;*/
+                flex-wrap: wrap;
+                flex-direction: inherit;
                 justify-content: flex-start;
                 align-items: flex-start;
                 height: 50%;
             }
 
             .head-region > iron-image {
+                width: 30%;
+                min-width: fit-content;
                 height:100%;
                 --iron-image-height: 100%;
             }
 
             .head-info {
+                width: 60%;
                 padding-left: 30px;
                 flex-direction: column;
             }
