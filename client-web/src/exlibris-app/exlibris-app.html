@@ -190,7 +190,7 @@
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
-        <book-dialog id="modal" narrow="[[narrow]]"></book-dialog>
+        <book-dialog id="dialog" narrow="[[narrow]]"></book-dialog>
     </template>
 
     <script>
@@ -519,7 +519,7 @@
                 e.stopPropagation();
                 e.preventDefault();
 
-                const bookDialog = this.$.modal;
+                const bookDialog = this.$.dialog;
                 bookDialog.book = book;
                 bookDialog.open();
             }

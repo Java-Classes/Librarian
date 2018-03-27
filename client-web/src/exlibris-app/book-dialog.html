@@ -49,13 +49,14 @@
             .head-region {
                 display: flex;
                 flex-wrap: wrap;
-                flex-direction: inherit;
+                flex-direction: row;
+                justify-content: space-between;
                 align-items: flex-start;
                 height: 50%;
             }
 
             .head-region > iron-image {
-                width: 30%;
+                max-width: 30%;
                 min-width: fit-content;
                 height: 100%;
                 --iron-image-height: 100%;
@@ -165,18 +166,28 @@
 
             static get properties() {
                 return {
-                    book: {
-                        type: Object,
-                        reflectToAttribute: true
-                    },
-                    narrow: Boolean,
+                    /**
+                     * The book object to display.
+                     */
+                    book: Object,
                 };
             }
 
+            /**
+             * Opens the modal dialog.
+             */
             open() {
                 this.$.dialog.open();
             }
 
+            /**
+             * Reflects to the window width change.
+             * If the `narrow` value is true, extends dialog
+             * for full screen width.
+             *
+             * @param narrow
+             * @private
+             */
             _narrowChanged(narrow) {
                 if (this.narrow) {
                     this.$.dialog.updateStyles({
@@ -188,7 +199,7 @@
                     this.$.dialog.updateStyles({
                         'height': '60%',
                         'width': '40%',
-                        'min-width': '500px'
+                        'min-width': '550px'
                     });
                 }
             }
