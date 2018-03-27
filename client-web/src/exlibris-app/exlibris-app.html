@@ -355,16 +355,19 @@
                         if (book.availableCount > 0) {
                             newBook["status"] = bookStatus.AVAILABLE;
                             newBook["statusMessage"] = book.availableCount + " AVAILABLE";
+                            newBook["fullStatusMessage"] = book.availableCount + ' available.' + '\n' + 'Scan QR code to borrow.';
                             return newBook;
                         }
                         newBook["status"] = bookStatus.EXPECTED;
-                        newBook["statusMessage"] = "EXPECTED";
+                        newBook["statusMessage"] = "NOT AVAILABLE";
+                        newBook["fullStatusMessage"] = "Not available.";
                         return newBook;
                     }
                     else {
                         if (book.expectedSoon) {
                             newBook["status"] = bookStatus.EXPECTED;
                             newBook["statusMessage"] = "EXPECTED SOON";
+                            newBook["fullStatusMessage"] = "Arriving to library shortly.";
                             this.push('expectedSoonBooks', newBook);
                             return newBook;
                         }
@@ -391,11 +394,12 @@
              */
             _overdueBooksChanged(books) {
                 this.overdueBooks = books.map(book => {
-                    const newBook = this._cloneMainFields(book)
+                    const newBook = this._cloneMainFields(book);
                     newBook["status"] = bookStatus.OVERDUE;
                     const oneDay = 1000 * 60 * 60 * 24;
                     const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / oneDay);
                     newBook["statusMessage"] = numberOfOverdueDays + " DAYS OVERDUE";
+                    newBook["fullStatusMessage"] = numberOfOverdueDays + " days overdue.";
                     return newBook;
                 });
             }
@@ -419,6 +423,7 @@
                     const newBook = this._cloneMainFields(book);
                     newBook["status"] = bookStatus.BORROWED;
                     newBook["statusMessage"] = "DUE ON " + book.dueDate.toLocaleDateString();
+                    newBook["fullStatusMessage"] = "Borrowed by you.\nReturn before " + book.dueDate.toLocaleDateString() + '.';
 
                     const oneDay = 1000 * 60 * 60 * 24;
                     if (Math.floor((new Date() - book.dueDate) / oneDay) <= 3) {
@@ -448,6 +453,7 @@
                     const newBook = this._cloneMainFields(book);
                     newBook["status"] = bookStatus.RESERVED;
                     newBook["statusMessage"] = "READY TO PICK UP";
+                    newBook["fullStatusMessage"] = "Reserved for you.\nReady to pick up.";
                     return newBook;
                 });
 
@@ -455,6 +461,8 @@
                         const newBook = this._cloneMainFields(book);
                         newBook["status"] = bookStatus.RESERVED;
                         newBook["statusMessage"] = "EXPECTED ON " + book.date.toLocaleDateString();
+                        newBook["fullStatusMessage"] = "Reserved for you.\nExpected on " +
+                            book.date.toLocaleDateString() + '.';
                         return newBook;
                     }
                 );

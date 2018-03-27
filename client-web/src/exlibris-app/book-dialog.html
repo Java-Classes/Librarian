@@ -47,7 +47,6 @@
                 display: flex;
                 flex-wrap: wrap;
                 flex-direction: inherit;
-                /*justify-content: flex-start;*/
                 align-items: flex-start;
                 height: 50%;
             }
@@ -59,22 +58,41 @@
                 --iron-image-height: 100%;
             }
 
-            .head-info {
+            .head-region > .head-info {
+                display: flex;
                 width: 50%;
+                height: 100%;
                 padding-left: 30px;
                 flex-direction: column;
+                justify-content: space-between;
             }
 
-            .head-info > h1 {
-                font-size: 30px;
-                line-height: 35px;
-                margin: 25px 0 10px 0;
+            .head-region > .head-info > .head-text {
+                flex-direction: column;
+                justify-content: flex-start;
+            }
+
+            .head-region > .head-info > .head-text > h1 {
+                font-size: 25px;
+                line-height: 30px;
+                margin: 10px 0 10px 0;
                 text-align: left;
             }
 
-            .head-info > h2 {
+            .head-region > .head-info > .head-text > h3 {
+                font-size: 12px;
+                font-weight: lighter;
+                margin: 5px 0 5px 0;
+            }
+
+            .head-region > .head-info > .head-text > h2 {
+                white-space: pre;
                 font-size: 15px;
-                font-weight: normal;
+                font-weight: bold;
+                margin: 5px 0 5px 0;
+            }
+
+            .head-region > .head-info > .head-button > paper-button{
             }
 
             section {
@@ -95,8 +113,14 @@
             <div class="head-region">
                 <iron-image src="[[book.image]]"></iron-image>
                 <div class="head-info">
-                    <h1>[[book.title]]</h1>
-                    <h2>[[book.author]]</h2>
+                    <div class="head-text">
+                        <h1>[[book.title]]</h1>
+                        <h3>[[book.author]]</h3>
+                        <h2>[[book.fullStatusMessage]]</h2>
+                    </div>
+                    <div class="head-button">
+                        <paper-button raised="">Button</paper-button>
+                    </div>
                 </div>
             </div>
 
@@ -152,6 +176,7 @@
                 }
             }
         }
+
         window.customElements.define(BookDialog.is, BookDialog);
     </script>
 </dom-module>
