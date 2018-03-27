@@ -182,6 +182,7 @@ const libraryTestBooks = [
         title: "Node.js в действии. 2-е издание",
         image: "https://books.google.com/books/content/images/frontcover/s9VMDwAAQBAJ?fife=w200-h300",
         author: "Кантелон МайкХартер МаркГоловайчук TJРайлих Натан",
+        category: "Web Design",
         description: "Реактивное программирование - совершенно новая и многообещающая парадигма, позволяющая эффективно решать задачи, связанные с созданием распределенных систем и программированием для JVM. Эта книга расскажет, как организовать поток задач, наладить обмен сообщениями между элементами программы, обеспечить параллельную и конкурентную обработку и создавать надежные, отказоустойчивые и гибкие приложения. Перед вами - основополагающая работа по шаблонам проектирования (design patterns) этой парадигмы. Книга проиллюстрирована многочисленными примерами и ориентирована на опытных Java- и Scala-разработчиков",
         availableCount: 11
     }, {
@@ -190,6 +191,7 @@ const libraryTestBooks = [
         title: "React.js. Быстрый старт",
         image: "https://books.google.com/books/content/images/frontcover/g79TDgAAQBAJ?fife=w200-h300",
         author: "Стоян Стефанов",
+        category: "Web Design",
         description: "Незаменимая вводная книга по технологии React для взыскательных JavaScript-разработчиков. Все самое интересное о сверхпопулярном инструменте от компании Facebook. В книге рассмотрены основные концепции высокопроизводительного программирования при помощи React, реальные примеры кода и доступные блок-схемы. Прочитав ее, вы научитесь: • Создавать и использовать собственные компоненты React наряду с универсальными компонентами DOM • Писать компоненты для таблиц данных, позволяющие редактировать, сортировать таблицу, выполнять в ней поиск и экспортировать ее содержимое • Использовать дополнительный синтаксис JSX в качестве альтернативы для вызовов функций • Запускать низкоуровневый гибкий процесс сборки, который освободит вам время и поможет сосредоточиться на работе с React • Работать с инструментами ESLint, Flow и Jest, позволяющими проверять и тестировать код по мере разработки приложения • Обеспечивать коммуникацию между компонентами при помощи Flux В итоге у вас получится полноценное веб-приложение, позволяющее сохранять данные на стороне клиента.",
         availableCount: 0
     }, {
@@ -316,7 +318,7 @@ const libraryTestBooks = [
         title: "The Martian",
         image: "https://books.google.com/books/content/images/frontcover/gdxlAQAAQBAJ?fife=w200-h300",
         author: "Andy Weir",
-        category: "Fiction ",
+        category: "Fiction",
         description: "The Sunday Times Bestseller behind the major new film from Ridley Scott starring Matt Damon and Jessica Chastain.\n" +
         "I’m stranded on Mars.\n" +
         "\n" +
@@ -653,7 +655,7 @@ const libraryTestBooks = [
         title: "Elements of Programming Interviews: The Insiders' Guide",
         image: "https://books.google.com/books/content/images/frontcover/y6FLBQAAQBAJ?fife=w200-h300",
         author: "Adnan AzizTsung-Hsien LeeAmit Prakash",
-        category: "Business ",
+        category: "Business",
         description: "The core of EPI is a collection of over 300 problems with detailed solutions, including 100 figures, 250 tested programs, and 150 variants. The problems are representative of questions asked at the leading software companies.\n" +
         "\n" +
         "The book begins with a summary of the nontechnical aspects of interviewing, such as common mistakes, strategies for a great interview, perspectives from the other side of the table, tips on negotiating the best offer, and a guide to the best ways to use EPI.\n" +
@@ -748,4 +750,6 @@ const userTestBooks = {
         }]
     }
 ;
+
+const testCategories = ["Java Programming", "Web Design", "Business", "JavaScript", "Programming", "Biography", "Fiction", "C++"].sort();
 

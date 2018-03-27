@@ -1,6 +1,5 @@
 <link rel="import" href="../../../bower_components/polymer-redux/polymer-redux.html">
-<script src="./../../test_values.js"></script>
-
+<link rel="import" href="../reducers/exlibris-reducer.html">
 
 <script>
     const bookStatus = {
@@ -9,14 +8,6 @@
         AVAILABLE: "available",
         RESERVED: "reserved",
         EXPECTED: "expected"
-    };
-    const initialState = {
-        libraryBooks: libraryTestBooks,
-        userBooks: userTestBooks
-
-    };
-    const reducer = (state = initialState, action) => {
-        return state;
     };
     const store = Redux.createStore(reducer);
     window.ExlibrisApp = {};

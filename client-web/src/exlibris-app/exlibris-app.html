@@ -38,6 +38,10 @@
 <link rel="import" href="../../bower_components/paper-styles/color.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/neon-animation/web-animations.html">
 
 <link rel="import" href="menu/menu-item.html">
 <link rel="import" href="./book-grid.html">
@@ -79,6 +83,32 @@
                 --menu-item-title-color: black;
                 font-weight: bold;
             }
+
+            paper-dropdown-menu.custom {
+
+                --paper-input-container-focus-color: var(--app-primary-color);
+
+                --paper-input-container-label: {
+                    color: var(--app-secondary-color);
+                };
+                --paper-input-container-input: {
+                    color: var(--app-secondary-color);
+
+                };
+            }
+
+            @media only screen and (max-width: 600px) {
+
+                .category {
+                    display: flex;
+                }
+
+                .custom {
+                    margin: 0 auto;
+                }
+
+            }
+
         </style>
 
         <app-location route="{{route}}"
@@ -165,6 +195,18 @@
                         <span drawer-toggle>[[selectedTitle]]</span>
                     </app-toolbar>
                 </app-header>
+
+                <div class="category">
+                    <paper-dropdown-menu class="custom" label="Category" vertical-offset="60">
+                        <paper-listbox slot="dropdown-content" class="dropdown-content"
+                                       on-selected-changed="_changeCategory">
+                            <template is="dom-repeat" items="[[categories]]">
+                                <paper-item>[[item]]</paper-item>
+                            </template>
+                        </paper-listbox>
+                    </paper-dropdown-menu>
+                </div>
+
 
                 <iron-pages
                         selected="[[routeData.page]]"
@@ -277,8 +319,27 @@
                     expectedSoonBooks: {
                         type: Array,
                         value: () => []
+                    },
+
+                    /**
+                     * The array of categories.
+                     */
+                    categories: {
+                        type: Array,
+                        statePath: 'categories'
                     }
 
+                };
+            }
+
+            static get actions() {
+                return {
+                    sortByCategory(category) {
+                        return {
+                            type: ExlibrisActions.SORT_BY_CATEGORY,
+                            category: category
+                        };
+                    }
                 };
             }
 
@@ -490,6 +551,16 @@
                     description: book.description,
                     image: book.image
                 });
+            }
+
+            /**
+             * Creates the 'SORT_BY_CATEGORY' redux action after  appearing of
+             * "selected-changed" event from paper-dropdown-menu'.
+             *
+             * @private
+             */
+            _changeCategory(e) {
+                this.dispatch('sortByCategory', e.detail.value);
             }
         }
 
