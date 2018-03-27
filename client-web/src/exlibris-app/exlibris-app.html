@@ -41,6 +41,7 @@
 
 <link rel="import" href="menu/menu-item.html">
 <link rel="import" href="./book-grid.html">
+<link rel="import" href="./book_values.html">
 <link rel="import" href="./book-dialog.html">
 
 <dom-module id="exlibris-app">
@@ -191,6 +192,7 @@
             </app-header-layout>
         </app-drawer-layout>
     </template>
+
     <script>
 
         /**
@@ -292,9 +294,9 @@
                 return [
                     '_routePageChanged(routeData.page)',
                     '_overdueBooksChanged(userBooks.overdue)',
-                    '_allLibraryBooksChanged(libraryBooks)',
                     '_borrowedBooksChanged(userBooks.borrowed)',
-                    '_reservedBooksChanged(userBooks.reserved)'
+                    '_reservedBooksChanged(userBooks.reserved)',
+                    '_allLibraryBooksChanged(libraryBooks)'
                 ];
             }
 
@@ -419,7 +421,7 @@
              * @private
              */
             _borrowedBooksChanged(books) {
-                this.borrowedBooks = books.map(book => {
+                const borrowedBooks = books.map(book => {
                     const newBook = this._cloneMainFields(book);
                     newBook["status"] = bookStatus.BORROWED;
                     newBook["statusMessage"] = "DUE ON " + book.dueDate.toLocaleDateString();
@@ -431,7 +433,7 @@
                     }
                     return newBook;
                 });
-
+                this.borrowedBooks = [...this.overdueBooks, ...borrowedBooks];
             }
 
             /**
