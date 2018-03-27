@@ -35,21 +35,19 @@
         <style include="paper-dialog-shared-styles">
             :host {
                 display: block;
+                position: center;
             }
 
             paper-dialog {
                 display: flex;
                 flex-direction: column;
-                position: center;
-                width: 40%;
-                height: 60%;
             }
 
             .head-region {
                 display: flex;
                 flex-wrap: wrap;
                 flex-direction: inherit;
-                justify-content: flex-start;
+                /*justify-content: flex-start;*/
                 align-items: flex-start;
                 height: 50%;
             }
@@ -57,12 +55,12 @@
             .head-region > iron-image {
                 width: 30%;
                 min-width: fit-content;
-                height:100%;
+                height: 100%;
                 --iron-image-height: 100%;
             }
 
             .head-info {
-                width: 60%;
+                width: 50%;
                 padding-left: 30px;
                 flex-direction: column;
             }
@@ -92,10 +90,10 @@
                 };
             }
         </style>
-        <paper-dialog id="dialog" with-backdrop>
+        <paper-dialog id="dialog" with-backdrop dynamic-align>
 
             <div class="head-region">
-                <iron-image  src="[[book.image]]"></iron-image>
+                <iron-image src="[[book.image]]"></iron-image>
                 <div class="head-info">
                     <h1>[[book.title]]</h1>
                     <h2>[[book.author]]</h2>
@@ -117,17 +115,43 @@
                 return 'book-dialog';
             }
 
+            static get observers() {
+                return [
+                    '_narrowChanged(narrow)'
+                ];
+            }
+
             static get properties() {
                 return {
-                    book: Object
+                    book: Object,
+                    narrow: Boolean,
+                    some: {
+                        type: Boolean,
+                        value: false
+                    }
                 };
             }
 
             open() {
                 this.$.dialog.open();
             }
-        }
 
+            _narrowChanged(narrow) {
+                if (this.narrow) {
+                    this.$.dialog.updateStyles({
+                        'height': '100%',
+                        'width': '100%',
+                        'min-width': ''
+                    });
+                } else {
+                    this.$.dialog.updateStyles({
+                        'height': '60%',
+                        'width': '40%',
+                        'min-width': '500px'
+                    });
+                }
+            }
+        }
         window.customElements.define(BookDialog.is, BookDialog);
     </script>
 </dom-module>
