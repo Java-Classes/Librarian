@@ -1,0 +1,54 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<script src="./../../test_values.js"></script>
+<link rel="import" href="../actions/exlibris-actions.html">
+
+
+<script>
+
+    const initialState = {
+        libraryBooks: libraryTestBooks,
+        userBooks: userTestBooks,
+        categories: testCategories
+    };
+
+    const reducer = (state = initialState, action) => {
+        switch (action.type) {
+            case ExlibrisActions.SORT_BY_CATEGORY:
+                //TODO:2018-51-27:yurii.haidamaka Delete after adding requests to the server
+                console.log("New sorted data from the server should be received.");
+                /**
+                 * Sort the list of all library books.
+                 */
+                const category = action.category;
+                const libraryBooks = state.libraryBooks;
+                const newBooks = []
+                libraryBooks.forEach(b => {
+                    if (b.category === state.categories[category]) {
+                        newBooks.push(b);
+                    }
+                });
+                return Object.assign({}, state, {libraryBooks: newBooks});
+            default :
+                return state;
+        }
+    };
+</script>
