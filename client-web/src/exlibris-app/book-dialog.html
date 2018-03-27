@@ -19,6 +19,7 @@
   -->
 
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
@@ -29,6 +30,8 @@
 <link rel="import"
       href="../../bower_components/paper-dialog-behavior/paper-dialog-shared-styles.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<link rel="import" href="./book_values.html">
 
 <dom-module id="book-dialog">
     <template>
@@ -72,27 +75,29 @@
                 justify-content: flex-start;
             }
 
-            .head-region > .head-info > .head-text > h1 {
+            h1 {
                 font-size: 25px;
                 line-height: 30px;
                 margin: 10px 0 10px 0;
                 text-align: left;
             }
 
-            .head-region > .head-info > .head-text > h3 {
+            h3 {
                 font-size: 12px;
                 font-weight: lighter;
                 margin: 5px 0 5px 0;
             }
 
-            .head-region > .head-info > .head-text > h2 {
+            h2 {
                 white-space: pre;
                 font-size: 15px;
                 font-weight: bold;
                 margin: 5px 0 5px 0;
             }
 
-            .head-region > .head-info > .head-button > paper-button{
+            paper-button {
+                background-color: var(--app-primary-color);
+                color: white;
             }
 
             section {
@@ -119,7 +124,19 @@
                         <h2>[[book.fullStatusMessage]]</h2>
                     </div>
                     <div class="head-button">
-                        <paper-button raised="">Button</paper-button>
+                        <template is="dom-if" if="[[_isReserved(book.status)]]">
+                            <paper-button raised>CANCEL RESERVATION</paper-button>
+                        </template>
+                        <template is="dom-if" if="[[_isExpected(book.status)]]">
+                            <paper-button raised>RESERVE</paper-button>
+                        </template>
+                        <template is="dom-if" if="[[_isBorrowedAndCanBeExtended(book)]]">
+                            <paper-button raised>EXTEND FOR TWO WEEKS
+                            </paper-button>
+                        </template>
+                        <template is="dom-if" if="[[_isBorrowedAndCannotBeExtended(book)]]">
+                            <h3>RESERVED BY ANOTHER READER</h3>
+                        </template>
                     </div>
                 </div>
             </div>
@@ -147,12 +164,11 @@
 
             static get properties() {
                 return {
-                    book: Object,
+                    book: {
+                        type: Object,
+                        reflectToAttribute: true
+                    },
                     narrow: Boolean,
-                    some: {
-                        type: Boolean,
-                        value: false
-                    }
                 };
             }
 
@@ -174,6 +190,27 @@
                         'min-width': '500px'
                     });
                 }
+            }
+
+            _isReserved(status) {
+                return status === bookStatus.RESERVED;
+            }
+
+            _isExpected(status) {
+                return status === bookStatus.EXPECTED;
+            }
+
+            _isBorrowedAndCanBeExtended(book) {
+                return (book.status === bookStatus.SHOULD_RETURN_SOON
+                    || book.status === bookStatus.OVERDUE)
+                    && book.isAllowedLoanExtension;
+            }
+
+            _isBorrowedAndCannotBeExtended(book) {
+                return (book.status === bookStatus.SHOULD_RETURN_SOON
+                    || book.status === bookStatus.OVERDUE
+                    || book.status === bookStatus.BORROWED)
+                    && !book.isAllowedLoanExtension;
             }
         }
 
