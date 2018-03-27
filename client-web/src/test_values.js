@@ -333,7 +333,6 @@ const libraryTestBooks = [
 
     }, {
         id: "8535902717",
-        id: "8535902717",
         title: "Effective Java: Edition 2",
         image: "https://books.google.com/books/content/images/frontcover/ka2VUBqHiWkC?fife=w200-h300",
         author: "Joshua Bloch",
