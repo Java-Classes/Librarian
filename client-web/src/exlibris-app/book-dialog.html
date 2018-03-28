@@ -23,6 +23,8 @@
 <link rel="import" href="../../bower_components/paper-styles/color.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/paper-dialog-behavior/paper-dialog-behavior.html">
 <link rel="import"
       href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
@@ -50,7 +52,7 @@
                 display: flex;
                 flex-wrap: wrap;
                 flex-direction: row;
-                justify-content: space-between;
+                justify-content: flex-start;
                 align-items: flex-start;
                 height: 50%;
             }
@@ -114,9 +116,23 @@
                     padding: 0 24px 0 0;
                 };
             }
+            paper-icon-button {
+                color: var(--app-secondary-color);
+
+            }
+
+            .close-button {
+                position: absolute;
+                right: 4px;
+                top: 4px;
+                padding: 0;
+                margin: 0;
+            }
         </style>
         <paper-dialog id="dialog" with-backdrop dynamic-align>
-
+        <div class="close-button">
+        <paper-icon-button icon="close" on-tap="close"></paper-icon-button>
+        </div>
             <div class="head-region">
                 <iron-image src="[[book.image]]"></iron-image>
                 <div class="head-info">
@@ -183,6 +199,13 @@
              */
             open() {
                 this.$.dialog.open();
+            }
+
+            /**
+             * Closes the modal dialog.
+             */
+            close() {
+                this.$.dialog.close();
             }
 
             /**
