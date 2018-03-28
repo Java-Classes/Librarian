@@ -43,10 +43,11 @@
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/neon-animation/web-animations.html">
 
+
+<link rel="import" href="./custom-search.html">
 <link rel="import" href="./book-grid.html">
 <link rel="import" href="./menu/menu-item.html">
 <link rel="import" href="./book_values.html">
-
 
 <dom-module id="exlibris-app">
     <template>
@@ -109,6 +110,12 @@
                 .custom {
                     margin: 0 auto;
                 }
+            }
+
+            custom-search {
+                --custom-search-background-color: var(--paper-blue-500);
+                width: 50%;
+                margin: 0 auto;
             }
 
         </style>
@@ -195,6 +202,7 @@
                         <paper-icon-button id="number" icon="menu"
                                            drawer-toggle></paper-icon-button>
                         <span drawer-toggle>[[selectedTitle]]</span>
+                        <custom-search></custom-search>
                     </app-toolbar>
                 </app-header>
 
