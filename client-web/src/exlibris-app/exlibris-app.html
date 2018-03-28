@@ -21,7 +21,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="./../exlibris-app/shell/redux-store.html">
-
 <link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import"
       href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
@@ -97,7 +96,7 @@
         <app-route
                 route="{{subrouteTail}}"
                 pattern="/:id"
-                data="{{tailData}}"></app-route>
+                data="{{pathBookId}}"></app-route>
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
             <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
@@ -282,7 +281,9 @@
                         statePath: 'expectedSoonBooks'
                     },
 
-                    previousPage: String
+                    previousPage: String,
+
+                    pathBookId: String
                 };
             }
 
@@ -300,16 +301,16 @@
                     this.set('route.path', '/all-books');
                 }
 
-                if (this.routeData.page === 'book-details' && this.tailData.id) {
+                if (this.routeData.page === 'book-details' && this.pathBookId.id) {
                     Polymer.RenderStatus.afterNextRender(this, function () {
-                        const book = this._findBookById(this.tailData.id);
+                        const book = this._findBookById(this.pathBookId.id);
                         const bookDialog = this.$.dialog;
                         bookDialog.book = book;
                         bookDialog.open();
                     });
 
-                    if(!this.previousPage) {
-                        // this.$.pages.selected = 'all-books';
+                    if (!this.previousPage) {
+                        this.$.pages.selected = 'all-books';
                     } else {
                         this.$.pages.selected = this.previousPage;
                     }
@@ -346,6 +347,7 @@
                     this.set('selectedTitle', selectedMenuItem.title);
                 }
             }
+
             /**
              * Handles the book tile click event.
              * Opens modal dialog for specified book.
@@ -363,13 +365,15 @@
 
             _findBookById(id) {
                 const book = this.allBooks.find(x => x.id === id)
+                    || this.expectedSoonBooks.find(x => x.id === id)
+                    || this.overdueBooks.find(x => x.id === id)
+                    || this.shouldReturnBooks.find(x => x.id === id)
                     || this.borrowedBooks.find(x => x.id === id)
-                    || this.reservedBooks.find(x => x.id === id)
-                    || this.expectedSoonBooks.find(x => x.id === id);
+                    || this.reservedBooks.find(x => x.id === id);
                 return book;
             }
 
-            _handleDialogClose(e){
+            _handleDialogClose(e) {
                 if (this.previousPage) {
                     this.set('route.path', '/' + this.previousPage);
                 }
