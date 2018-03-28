@@ -19,6 +19,7 @@
   -->
 <script src="../test_values.js"></script>
 <link rel="import" href="../book_values.html">
+<link rel="import" href="../actions/exlibris_actions.html">
 
 <script>
     const reducer = (state, action) => {
@@ -34,16 +35,25 @@
             removeSubArrayFromArray(allBooks, overdueBooks);
             removeSubArrayFromArray(allBooks, expectedSoonBooks);
             allBooks = [...overdueBooks, ...allBooks];
+            const categories = testCategories;
             return {
                 overdueBooks: overdueBooks,
                 borrowedBooks: borrowedBooks,
                 shouldReturnBooks: shouldReturnBooks,
                 reservedBooks: reservedBooks,
                 allBooks: allBooks,
-                expectedSoonBooks: expectedSoonBooks
+                expectedSoonBooks: expectedSoonBooks,
+                categories: categories
             };
         }
-        return state;
+        switch (action.type) {
+            case ExlibrisActions.SORT_BY_CATEGORY:
+                //TODO:2018-51-27:yurii.haidamaka Delete after adding requests to the server
+                console.log("New sorted data from the server should be received.");
+                return state;
+            default :
+                return state;
+        }
     };
 
     /**
