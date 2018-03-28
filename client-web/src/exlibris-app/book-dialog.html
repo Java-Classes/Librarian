@@ -37,7 +37,7 @@
 
 <dom-module id="book-dialog">
     <template>
-        <style include="paper-dialog-shared-styles">
+        <style>
             :host {
                 display: block;
                 position: center;
@@ -46,11 +46,13 @@
             paper-dialog {
                 display: flex;
                 flex-direction: column;
+                height: 60%;
+                width: 40%;
+                min-width: 550px;
             }
 
             .head-region {
                 display: flex;
-                flex-wrap: wrap;
                 flex-direction: row;
                 justify-content: flex-start;
                 align-items: flex-start;
@@ -118,7 +120,6 @@
             }
             paper-icon-button {
                 color: var(--app-secondary-color);
-
             }
 
             .close-button {
@@ -129,7 +130,8 @@
                 margin: 0;
             }
         </style>
-        <paper-dialog id="dialog" with-backdrop dynamic-align>
+
+        <paper-dialog id="dialog" with-backdrop on-opened-changed="_handleOpenedChange">
         <div class="close-button">
         <paper-icon-button icon="close" on-tap="close"></paper-icon-button>
         </div>
@@ -158,7 +160,6 @@
                     </div>
                 </div>
             </div>
-
             <section>
                 <paper-dialog-scrollable>
                     [[book.description]]
@@ -174,23 +175,12 @@
                 return 'book-dialog';
             }
 
-            static get observers() {
-                return [
-                    '_narrowChanged(narrow)'
-                ];
-            }
-
             static get properties() {
                 return {
                     /**
                      * The book object to display.
                      */
                     book: Object,
-
-                    /**
-                     * Sets the element styling for narrow screen.
-                     */
-                    narrow: Boolean
                 };
             }
 
@@ -206,30 +196,6 @@
              */
             close() {
                 this.$.dialog.close();
-            }
-
-            /**
-             * Reflects to the window width change.
-             * If the `narrow` value is true, extends dialog
-             * for full screen width.
-             *
-             * @param narrow
-             * @private
-             */
-            _narrowChanged(narrow) {
-                if (this.narrow) {
-                    this.$.dialog.updateStyles({
-                        'height': '100%',
-                        'width': '100%',
-                        'min-width': ''
-                    });
-                } else {
-                    this.$.dialog.updateStyles({
-                        'height': '60%',
-                        'width': '40%',
-                        'min-width': '550px'
-                    });
-                }
             }
 
             _isReserved(status) {
@@ -251,6 +217,12 @@
                     || book.status === bookStatus.OVERDUE
                     || book.status === bookStatus.BORROWED)
                     && !book.isAllowedLoanExtension;
+            }
+
+            _handleOpenedChange(){
+                if(!this.$.dialog.opened) {
+                    this.dispatchEvent(new CustomEvent('dialog-closed'));
+                }
             }
         }
 

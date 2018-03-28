@@ -88,7 +88,16 @@
         <app-route
                 route="{{route}}"
                 pattern="/:page"
-                data="{{routeData}}"></app-route>
+                data="{{routeData}}"
+                tail="{{subroute}}"></app-route>
+        <app-route
+                route="{{subroute}}"
+                pattern="/:title"
+                tail="{{subrouteTail}}"></app-route>
+        <app-route
+                route="{{subrouteTail}}"
+                pattern="/:id"
+                data="{{tailData}}"></app-route>
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
             <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
@@ -168,6 +177,7 @@
                 </app-header>
 
                 <iron-pages
+                        id="pages"
                         selected="[[routeData.page]]"
                         attr-for-selected="data-name"
                         fallback-selection="view404"
@@ -186,11 +196,12 @@
                     <book-grid data-name="should-return-books"
                                books="[[shouldReturnBooks]]"
                                on-book-tile-click="_handleBookClick"></book-grid>
+                    <div data-name="book-details"></div>
                     <div data-name="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
-        <book-dialog id="dialog" narrow="[[narrow]]"></book-dialog>
+        <book-dialog id="dialog" on-dialog-closed="_handleDialogClose"></book-dialog>
     </template>
 
     <script>
@@ -285,7 +296,9 @@
                     expectedSoonBooks: {
                         type: Array,
                         value: () => []
-                    }
+                    },
+
+                    previousPage: String
                 };
             }
 
@@ -306,6 +319,23 @@
                 if (!this.route.path) {
                     this.set('route.path', '/all-books');
                 }
+
+                if (this.routeData.page === 'book-details' && this.tailData.id) {
+                    Polymer.RenderStatus.afterNextRender(this, function () {
+                        const book = this._findBookById(this.tailData.id);
+                        const bookDialog = this.$.dialog;
+                        bookDialog.book = book;
+                        bookDialog.open();
+                    });
+
+                    if(!this.previousPage) {
+                        // this.$.pages.selected = 'all-books';
+                    } else {
+                        this.$.pages.selected = this.previousPage;
+                    }
+                }
+
+                this.previousPage = this.$.pages.selected;
             }
 
             /**
@@ -518,10 +548,21 @@
                 const book = e.detail;
                 e.stopPropagation();
                 e.preventDefault();
+                this.set('route.path', '/book-details/' + book.title.replace(/\s/g, '_') + '/' + book.id);
+            }
 
-                const bookDialog = this.$.dialog;
-                bookDialog.book = book;
-                bookDialog.open();
+            _findBookById(id) {
+                const book = this.allBooks.find(x => x.id === id)
+                    || this.borrowedBooks.find(x => x.id === id)
+                    || this.reservedBooks.find(x => x.id === id)
+                    || this.expectedSoonBooks.find(x => x.id === id);
+                return book;
+            }
+
+            _handleDialogClose(e){
+                if (this.previousPage) {
+                    this.set('route.path', '/' + this.previousPage);
+                }
             }
         }
 
