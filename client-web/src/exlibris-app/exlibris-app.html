@@ -21,7 +21,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="./../exlibris-app/shell/redux-store.html">
-
 <link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import"
       href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
@@ -48,6 +47,7 @@
 <link rel="import" href="./book-grid.html">
 <link rel="import" href="./menu/menu-item.html">
 <link rel="import" href="./book_values.html">
+<link rel="import" href="./book-dialog.html">
 
 <dom-module id="exlibris-app">
     <template>
@@ -78,7 +78,6 @@
             menu-item {
                 --menu-item-background-color: var(--app-background-color);
                 --menu-item-title-color: var(--app-secondary-color)
-
             }
 
             menu-item.iron-selected {
@@ -126,7 +125,16 @@
         <app-route
                 route="{{route}}"
                 pattern="/:page"
-                data="{{routeData}}"></app-route>
+                data="{{routeData}}"
+                tail="{{subroute}}"></app-route>
+        <app-route
+                route="{{subroute}}"
+                pattern="/:title"
+                tail="{{subrouteTail}}"></app-route>
+        <app-route
+                route="{{subrouteTail}}"
+                pattern="/:id"
+                data="{{pathBookId}}"></app-route>
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
             <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
@@ -218,22 +226,31 @@
                 </div>
 
                 <iron-pages
+                        id="pages"
                         selected="[[routeData.page]]"
                         attr-for-selected="data-name"
                         fallback-selection="view404"
                         role="main">
-                    <book-grid data-name="all-books" books="[[allBooks]]"></book-grid>
-                    <book-grid data-name="overdue-books" books="[[overdueBooks]]"></book-grid>
-                    <book-grid data-name="borrowed-books" books="[[borrowedBooks]]"></book-grid>
-                    <book-grid data-name="reserved-books" books="[[reservedBooks]]"></book-grid>
+                    <book-grid data-name="all-books" books="[[allBooks]]"
+                               on-book-tile-click="_handleBookClick"></book-grid>
+                    <book-grid data-name="overdue-books" books="[[overdueBooks]]"
+                               on-book-tile-click="_handleBookClick"></book-grid>
+                    <book-grid data-name="borrowed-books" books="[[borrowedBooks]]"
+                               on-book-tile-click="_handleBookClick"></book-grid>
+                    <book-grid data-name="reserved-books" books="[[reservedBooks]]"
+                               on-book-tile-click="_handleBookClick"></book-grid>
                     <book-grid data-name="expected-soon"
-                               books="[[expectedSoonBooks]]"></book-grid>
+                               books="[[expectedSoonBooks]]"
+                               on-book-tile-click="_handleBookClick"></book-grid>
                     <book-grid data-name="should-return-books"
-                               books="[[shouldReturnBooks]]"></book-grid>
+                               books="[[shouldReturnBooks]]"
+                               on-book-tile-click="_handleBookClick"></book-grid>
+                    <div data-name="book-details"></div>
                     <div data-name="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
+        <book-dialog id="dialog" on-dialog-closed="_handleDialogClose"></book-dialog>
     </template>
 
     <script>
@@ -314,6 +331,10 @@
                         statePath: 'expectedSoonBooks'
                     },
 
+                    previousPage: String,
+
+                    pathBookId: String,
+
                     /**
                      * The array of categories.
                      */
@@ -349,6 +370,23 @@
                 if (!this.route.path) {
                     this.set('route.path', '/all-books');
                 }
+
+                if (this.routeData.page === 'book-details' && this.pathBookId.id) {
+                    Polymer.RenderStatus.afterNextRender(this, function () {
+                        const book = this._findBookById(this.pathBookId.id);
+                        const bookDialog = this.$.dialog;
+                        bookDialog.book = book;
+                        bookDialog.open();
+                    });
+
+                    if (!this.previousPage) {
+                        this.$.pages.selected = 'all-books';
+                    } else {
+                        this.$.pages.selected = this.previousPage;
+                    }
+                }
+
+                this.previousPage = this.$.pages.selected;
             }
 
             /**
@@ -379,169 +417,6 @@
                     this.set('selectedTitle', selectedMenuItem.title);
                 }
             }
-
-            /**
-             * Creates array `allBooks` from the `libraryBooks`.
-             *
-             * Clones next fields from `libraryBooks`:
-             * id, title, author, category, description, image
-             * Adds fields `status` and `statusMessage` values
-             * depending on the `availableCount`.
-             *
-             *
-             * @param books all books from library
-             * @private
-             */
-            _allLibraryBooksChanged(books) {
-                const allBooks = books.map(book => {
-                    const newBook = this._cloneMainFields(book);
-                    if (book.availableCount !== undefined) {
-                        if (book.availableCount > 0) {
-                            newBook["status"] = bookStatus.AVAILABLE;
-                            newBook["statusMessage"] = book.availableCount + " AVAILABLE";
-                            return newBook;
-                        }
-                        newBook["status"] = bookStatus.EXPECTED;
-                        newBook["statusMessage"] = "EXPECTED";
-                        return newBook;
-                    }
-                    else {
-                        if (book.expectedSoon) {
-                            newBook["status"] = bookStatus.EXPECTED;
-                            newBook["statusMessage"] = "EXPECTED SOON";
-                            this.push('expectedSoonBooks', newBook);
-                            return newBook;
-                        }
-                    }
-                });
-
-                this._removeSubArrayFromArray(allBooks, this.borrowedBooks);
-                this._removeSubArrayFromArray(allBooks, this.reservedBooks);
-                this._removeSubArrayFromArray(allBooks, this.overdueBooks);
-                this.allBooks = [...this.overdueBooks, ...allBooks];
-            }
-
-            /**
-             * Creates array `overdueBooks` from the `overdue` user array.
-             *
-             * Clones next fields from `libraryBooks`:
-             * id, title, author, category, description, image
-             * Adds fields `status` equals `overdue`
-             * and `statusMessage` equals `N DAYS OVERDUE`
-             *
-             *
-             * @param books all `overdue` user books from library
-             * @private
-             */
-            _overdueBooksChanged(books) {
-                this.overdueBooks = books.map(book => {
-                    const newBook = this._cloneMainFields(book)
-                    newBook["status"] = bookStatus.OVERDUE;
-                    const oneDay = 1000 * 60 * 60 * 24;
-                    const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / oneDay);
-                    newBook["statusMessage"] = numberOfOverdueDays + " DAYS OVERDUE";
-                    return newBook;
-                });
-            }
-
-            /**
-             * Creates array `borrowedBooks` from the `borrowed` user array.
-             *
-             * Clones next fields from `libraryBooks`:
-             * id, title, author, category, description, image
-             * Adds fields `status` equals `borrowed`
-             * and `statusMessage` equals `DUE ON DATE`
-             *
-             * If there are less than 3 days left before the `dueDAte`, the book
-             * will be added to the `shouldReturnBooks` array.
-             *
-             * @param books all `borrowed` user books from library
-             * @private
-             */
-            _borrowedBooksChanged(books) {
-                const borrowedBooks = books.map(book => {
-                    const newBook = this._cloneMainFields(book);
-                    newBook["status"] = bookStatus.BORROWED;
-                    newBook["statusMessage"] = "DUE ON " + book.dueDate.toLocaleDateString();
-
-                    const oneDay = 1000 * 60 * 60 * 24;
-                    if (Math.floor((new Date() - book.dueDate) / oneDay) <= 3) {
-                        this.push('shouldReturnBooks', newBook);
-                    }
-                    return newBook;
-                });
-                this.borrowedBooks = [...this.overdueBooks, ...borrowedBooks];
-            }
-
-            /**
-             * Creates array `reservedBooks` from `readyToPickUp` and `expected` user arrays.
-             *
-             * Clones next fields from `libraryBooks`:
-             * id, title, author, category, description, image
-             * Adds fields `status` equals `reserved`
-             * and next `statusMessage`:
-             *
-             * `READY TO PICK UP` - for books from `readyToPickUp` array
-             * `EXPECTED ON` - for books from `expected` array.
-             *
-             * @param books all `reserved` user books from library
-             * @private
-             */
-            _reservedBooksChanged(books) {
-                const readyToPickUpBooks = books.readyToPickUp.map(book => {
-                    const newBook = this._cloneMainFields(book);
-                    newBook["status"] = bookStatus.RESERVED;
-                    newBook["statusMessage"] = "READY TO PICK UP";
-                    return newBook;
-                });
-
-                const expectedUserBooks = books.expected.map(book => {
-                        const newBook = this._cloneMainFields(book);
-                        newBook["status"] = bookStatus.RESERVED;
-                        newBook["statusMessage"] = "EXPECTED ON " + book.date.toLocaleDateString();
-                        return newBook;
-                    }
-                );
-                this.reservedBooks = [...readyToPickUpBooks, ...expectedUserBooks];
-
-            }
-
-
-            /**
-             * Removes all elements of the second array from the first.
-             *
-             * @param array whose elements will be deleted
-             * @param books array with elements for remove
-             * @private
-             */
-            _removeSubArrayFromArray(allBooks, books) {
-                allBooks.forEach((book, index) => {
-                    books.forEach(b => {
-                        if (b.id === book.id) {
-                            allBooks.splice(index, 1);
-                        }
-                    });
-                });
-            }
-
-            /**
-             * Creates an object by copying the following properties from the argument:
-             * id, title, author, category, description, image
-             * @param book object with main book fields
-             * @returns {{} & {id, title, author, category, description, image}} clone object
-             * @private
-             */
-            _cloneMainFields(book) {
-                return Object.assign({}, {
-                    id: book.id,
-                    title: book.title,
-                    author: book.author,
-                    category: book.category,
-                    description: book.description,
-                    image: book.image
-                });
-            }
-
             /**
              * Creates the 'SORT_BY_CATEGORY' redux action after  appearing of
              * "selected-changed" event from paper-dropdown-menu'.
@@ -550,6 +425,37 @@
              */
             _changeCategory(e) {
                 this.dispatch('sortByCategory', e.detail.value);
+            }
+
+            /**
+             * Handles the book tile click event.
+             * Opens modal dialog for specified book.
+             *
+             * @param e the book tile click event.
+             *        `e.detail` contains the book value.
+             * @private
+             */
+            _handleBookClick(e) {
+                const book = e.detail;
+                e.stopPropagation();
+                e.preventDefault();
+                this.set('route.path', '/book-details/' + book.title.replace(/\s/g, '_') + '/' + book.id);
+            }
+
+            _findBookById(id) {
+                const book = this.allBooks.find(x => x.id === id)
+                    || this.expectedSoonBooks.find(x => x.id === id)
+                    || this.overdueBooks.find(x => x.id === id)
+                    || this.shouldReturnBooks.find(x => x.id === id)
+                    || this.borrowedBooks.find(x => x.id === id)
+                    || this.reservedBooks.find(x => x.id === id);
+                return book;
+            }
+
+            _handleDialogClose(e) {
+                if (this.previousPage) {
+                    this.set('route.path', '/' + this.previousPage);
+                }
             }
         }
 

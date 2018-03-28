@@ -732,7 +732,8 @@ const userTestBooks = {
             "\n" +
             "Style and approach\n" +
             "This is your guide to designing custom web components, and the concepts are explained in a conversational and easy-to-follow style. Each topic is explained through examples, with detailed explanations wherever required.",
-            dueDate: new Date(new Date().getTime() + 14 * 172800000)
+            dueDate: new Date(new Date().getTime() + 14 * 172800000),
+            isAllowedLoanExtension: true
         }],
         overdue: [{
             id: "8535902722",
@@ -746,7 +747,8 @@ const userTestBooks = {
             "Mastering Lambdas: Java Programming in a Multicore World by Maurice Naftalin\n" +
             "Quick Start Guide to JavaFX by J.F. DiMarzio\n" +
             "Mastering JavaFX 8 Controls: Create Custom JavaFX 8 Controls for Cross-Platform Applications by Hendrik Ebbers",
-            dueDate: new Date(new Date().getTime() - 2 * 1000 * 60 * 60 * 24)
+            dueDate: new Date(new Date().getTime() - 2 * 1000 * 60 * 60 * 24),
+            isAllowedLoanExtension: false
         }]
     }
 ;
