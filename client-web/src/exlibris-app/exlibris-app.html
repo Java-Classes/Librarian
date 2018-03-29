@@ -251,7 +251,11 @@
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
-        <book-dialog id="dialog" on-dialog-closed="_handleDialogClose"></book-dialog>
+        <book-dialog id="dialog"
+                     on-book-dialog-closed="_handleDialogClose"
+                     on-book-dialog-cancel-reservation="_cancelBookReservation"
+                     on-book-dialog-reserve-book="_reserveBook"
+                     on-book-dialog-extend-loan="_extendBookLoanPeriod"></book-dialog>
     </template>
 
     <script>
@@ -372,6 +376,10 @@
 
             /**
              * Checks for an empty route passed to redirect user to the default app view.
+             *
+             * If the route matches the `book-dialog` route, searches for the book by
+             * the id from URL, opens modal dialog with specified book,
+             * selects the appropriate page to show in the dialog background.
              */
             _routePageChanged() {
                 if (!this.route.path) {
@@ -450,6 +458,9 @@
                 this.set('route.path', '/book-details/' + book.title.replace(/\s/g, '_') + '/' + book.id);
             }
 
+            /**
+             * Searches the book in the related book arrays by id.
+             */
             _findBookById(id) {
                 const book = this.allBooks.find(x => x.id === id)
                     || this.expectedSoonBooks.find(x => x.id === id)
@@ -460,12 +471,55 @@
                 return book;
             }
 
+            /**
+             * Handles the book dialog close action.
+             * Sets the route path to the previous value.
+             */
             _handleDialogClose(e) {
                 if (this.previousPage) {
                     this.set('route.path', '/' + this.previousPage);
                 }
             }
 
+            /**
+             * Handles the request to cancel book reservation.
+             *
+             * @param e the dialog button click event.
+             * @private
+             */
+            _cancelBookReservation(e) {
+                const bookId = e.detail.bookId;
+                console.log('Cancel book reservation ' + bookId);
+            }
+
+            /**
+             * Handles the request to reserve book.
+             *
+             * @param e the dialog button click event.
+             * @private
+             */
+            _reserveBook(e) {
+                const bookId = e.detail.bookId;
+                console.log('Reserve book ' + bookId);
+            }
+
+            /**
+             * Handles the request to extend book loan period.
+             *
+             * @param e the dialog button click event.
+             * @private
+             */
+            _extendBookLoanPeriod(e) {
+                const bookId = e.detail.bookId;
+                console.log('Extend loan ' + bookId);
+            }
+
+            /**
+             * Handles the book-search-search event.
+             *
+             * @param e
+             * @private
+             */
             _handleSearch(e) {
                 this.dispatch('searchByQuery', e.detail.query);
                 e.stopPropagation();

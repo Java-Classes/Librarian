@@ -32,7 +32,6 @@
 <link rel="import"
       href="../../bower_components/paper-dialog-behavior/paper-dialog-shared-styles.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
-
 <link rel="import" href="./book_values.html">
 
 <dom-module id="book-dialog">
@@ -118,6 +117,7 @@
                     padding: 0 24px 0 0;
                 };
             }
+
             paper-icon-button {
                 color: var(--app-secondary-color);
             }
@@ -132,9 +132,9 @@
         </style>
 
         <paper-dialog id="dialog" with-backdrop on-opened-changed="_handleOpenedChange">
-        <div class="close-button">
-        <paper-icon-button icon="close" on-tap="close"></paper-icon-button>
-        </div>
+            <div class="close-button">
+                <paper-icon-button icon="close" on-tap="close"></paper-icon-button>
+            </div>
             <div class="head-region">
                 <iron-image src="[[book.image]]"></iron-image>
                 <div class="head-info">
@@ -145,13 +145,17 @@
                     </div>
                     <div class="head-button">
                         <template is="dom-if" if="[[_isReserved(book.status)]]">
-                            <paper-button raised>CANCEL RESERVATION</paper-button>
+                            <paper-button raised on-click="_requestCancelReservation">CANCEL
+                                RESERVATION
+                            </paper-button>
                         </template>
                         <template is="dom-if" if="[[_isExpected(book.status)]]">
-                            <paper-button raised>RESERVE</paper-button>
+                            <paper-button raised on-click="_requestReservation">RESERVE
+                            </paper-button>
                         </template>
                         <template is="dom-if" if="[[_isBorrowedAndCanBeExtended(book)]]">
-                            <paper-button raised>EXTEND FOR TWO WEEKS
+                            <paper-button raised on-click="_requestLoanExtension">EXTEND FOR TWO
+                                WEEKS
                             </paper-button>
                         </template>
                         <template is="dom-if" if="[[_isBorrowedAndCannotBeExtended(book)]]">
@@ -177,6 +181,33 @@
 
             static get properties() {
                 return {
+                    /**
+                     * Fired on `element` modal dialog close.
+                     *
+                     * @event book-dialog-closed
+                     */
+
+                    /**
+                     * Fired on the `CANCEL RESERVATION` button click.
+                     *
+                     * @event book-dialog-cancel-reservation
+                     * @param {detail.bookId} the id of a book the reservation of which must be canceled.
+                     */
+
+                    /**
+                     * Fired on the `RESERVE` button click.
+                     *
+                     * @event book-dialog-reserve-book
+                     * @param {detail.bookId} the id of a book to reserve.
+                     */
+
+                    /**
+                     * Fired on the `EXTEND FOR TWO WEEKS` button click.
+                     *
+                     * @event book-dialog-extend-loan
+                     * @param {detail.bookId} the id of a book the loan period of which must be extended.
+                     */
+
                     /**
                      * The book object to display.
                      */
@@ -219,10 +250,43 @@
                     && !book.isAllowedLoanExtension;
             }
 
-            _handleOpenedChange(){
-                if(!this.$.dialog.opened) {
-                    this.dispatchEvent(new CustomEvent('dialog-closed'));
+            /**
+             * Handles the dialog `opened` state changes.
+             * If the dialog was closed, fires `book-dialog-closed` event.
+             *
+             * @private
+             */
+            _handleOpenedChange() {
+                if (!this.$.dialog.opened) {
+                    this.dispatchEvent(new CustomEvent('book-dialog-closed'));
                 }
+            }
+
+            /**
+             * Handles the `CANCEL RESERVATION` button click.
+             *
+             * @private
+             */
+            _requestCancelReservation() {
+                this.dispatchEvent(new CustomEvent('book-dialog-cancel-reservation', {detail: {bookId: this.book.id}}));
+            }
+
+            /**
+             * Handles the `RESERVE` button click.
+             *
+             * @private
+             */
+            _requestReservation() {
+                this.dispatchEvent(new CustomEvent('book-dialog-reserve-book', {detail: {bookId: this.book.id}}));
+            }
+
+            /**
+             * Handles the `EXTEND FOR TWO WEEKS` button click.
+             *
+             * @private
+             */
+            _requestLoanExtension() {
+                this.dispatchEvent(new CustomEvent('book-dialog-extend-loan', {detail: {bookId: this.book.id}}));
             }
         }
 
