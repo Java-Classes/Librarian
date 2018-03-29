@@ -32,7 +32,6 @@
 <link rel="import"
       href="../../bower_components/paper-dialog-behavior/paper-dialog-shared-styles.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
-
 <link rel="import" href="./book_values.html">
 
 <dom-module id="book-dialog">
@@ -118,6 +117,7 @@
                     padding: 0 24px 0 0;
                 };
             }
+
             paper-icon-button {
                 color: var(--app-secondary-color);
             }
@@ -132,9 +132,9 @@
         </style>
 
         <paper-dialog id="dialog" with-backdrop on-opened-changed="_handleOpenedChange">
-        <div class="close-button">
-        <paper-icon-button icon="close" on-tap="close"></paper-icon-button>
-        </div>
+            <div class="close-button">
+                <paper-icon-button icon="close" on-tap="close"></paper-icon-button>
+            </div>
             <div class="head-region">
                 <iron-image src="[[book.image]]"></iron-image>
                 <div class="head-info">
@@ -178,6 +178,12 @@
             static get properties() {
                 return {
                     /**
+                     * Fired on `element` modal dialog close.
+                     *
+                     * @event dialog-closed
+                     */
+
+                    /**
                      * The book object to display.
                      */
                     book: Object,
@@ -219,8 +225,14 @@
                     && !book.isAllowedLoanExtension;
             }
 
-            _handleOpenedChange(){
-                if(!this.$.dialog.opened) {
+            /**
+             * Handles the dialog `opened` state changes.
+             * If the dialog was closed, fires `dialog-closed` event.
+             *
+             * @private
+             */
+            _handleOpenedChange() {
+                if (!this.$.dialog.opened) {
                     this.dispatchEvent(new CustomEvent('dialog-closed'));
                 }
             }
