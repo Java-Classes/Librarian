@@ -349,9 +349,9 @@
 
             static get actions() {
                 return {
-                    sortByCategory(category) {
+                    searchByCategory(category) {
                         return {
-                            type: ExlibrisActions.SORT_BY_CATEGORY,
+                            type: ExlibrisActions.SEARCH_BY_CATEGORY,
                             category: category
                         };
                     },
@@ -426,13 +426,13 @@
             }
 
             /**
-             * Creates the 'SORT_BY_CATEGORY' redux action after  appearing of
+             * Creates the 'SEARCH_BY_CATEGORY' redux action after  appearing of
              * "selected-changed" event from paper-dropdown-menu'.
              *
              * @private
              */
             _changeCategory(e) {
-                this.dispatch('sortByCategory', e.detail.value);
+                this.dispatch('searchByCategory', e.detail.value);
             }
 
             /**
@@ -467,7 +467,6 @@
             }
 
             _handleSearch(e) {
-                console.log(e);
                 this.dispatch('searchByQuery', e.detail.query);
                 e.stopPropagation();
             }
