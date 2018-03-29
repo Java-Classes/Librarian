@@ -31,7 +31,7 @@
 
             .search {
                 @apply --layout-horizontal;
-                background-color: var(--custom-search-background-color, black);
+                background-color: var(--book-search-background-color, black);
                 border-radius: 3px;
                 height: 40px;
             }
@@ -43,19 +43,19 @@
                 padding: 12px;
                 cursor: text;
                 background: transparent;
-                color: var(--custom-search-text-color, white);
+                color: var(--book-search-text-color, white);
                 font-size: 15px;
                 border: 0;
                 outline: 0;
             }
 
             ::placeholder {
-                color: var(--custom-search-placeholder-color, white);
+                color: var(--book-search-placeholder-color, white);
             }
 
             .search-icon {
                 margin: auto 0 auto 12px;
-                color: var(--custom-search-icon-color, white);
+                color: var(--book-search-icon-color, white);
             }
 
             iron-input {
@@ -78,10 +78,18 @@
 
     <script>
         /**
-         * `<custom-search>` components it is input with search behaviour.
+         * `<book-search>` components it is input with search behaviour.
+         *
+         *  Custom property | Description | Default
+         * ----------------|-------------|----------
+         * `--book-search-background-color` | Background color of the component | black
+         * `--book-search-text-color` | Text color in search | white
+         * `--book-search-placeholder-color` | Placeholder color in search | white
+         * `--book-search-icon-color` | Icon color | white
          *
          * @customElement
          * @polymer
+         * @appliesMixin IronA11yKeysBehavior
          */
         class BookSearch extends Polymer.mixinBehaviors([
             Polymer.IronA11yKeysBehavior,], Polymer.Element) {
@@ -89,7 +97,18 @@
                 return 'book-search';
             }
 
+
             static get properties() {
+                /**
+                 * Fired when the user requests to search for a query
+                 *
+                 * @event book-search-search
+                 * @param {query} the query to search.
+                 */
+
+                /**
+                 * The query from the input.
+                 */
                 return {
                     query: String,
                 };
@@ -101,6 +120,11 @@
                 };
             }
 
+            /**
+             * Handles click on the enter button.
+             *
+             * @private
+             */
             _onSearch() {
                 this.dispatchEvent(new CustomEvent('book-search-search', {
                     detail: {
