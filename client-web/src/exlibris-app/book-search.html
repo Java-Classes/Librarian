@@ -22,7 +22,7 @@
 <link rel="import" href="../../bower_components/iron-input/iron-input.html">
 
 
-<dom-module id="custom-search">
+<dom-module id="book-search">
     <template>
         <style>
             :host {
@@ -33,7 +33,7 @@
                 @apply --layout-horizontal;
                 background-color: var(--custom-search-background-color, black);
                 border-radius: 3px;
-                height:40px;
+                height: 40px;
             }
 
             #input {
@@ -52,6 +52,7 @@
             ::placeholder {
                 color: var(--custom-search-placeholder-color, white);
             }
+
             .search-icon {
                 margin: auto 0 auto 12px;
                 color: var(--custom-search-icon-color, white);
@@ -82,17 +83,30 @@
          * @customElement
          * @polymer
          */
-        class CustomSearch extends Polymer.Element {
+        class BookSearch extends Polymer.mixinBehaviors([
+            Polymer.IronA11yKeysBehavior,], Polymer.Element) {
             static get is() {
-                return 'custom-search';
+                return 'book-search';
             }
 
             static get properties() {
-                return {};
+                return {
+                    query: String,
+                };
             }
 
+            get keyBindings() {
+                return {
+                    'enter': '_onSearch',
+                };
+            }
+
+            _onSearch() {
+                console.log("search: " + this.query);
+                this.dispatchEvent(new CustomEvent('custom-search-search'));
+            }
         }
 
-        window.customElements.define(CustomSearch.is, CustomSearch);
+        window.customElements.define(BookSearch.is, BookSearch);
     </script>
 </dom-module>
