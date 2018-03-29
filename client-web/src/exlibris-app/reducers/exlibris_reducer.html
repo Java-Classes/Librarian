@@ -24,7 +24,7 @@
     const reducer = (state, action) => {
         if (!state) {
             const overdueBooks = createOverdueBooks(userTestBooks.overdue);
-            let allBooks = createAllBooks(libraryTestBooks, overdueBooks);
+            let allBooks = createAllBooks(libraryTestBooks);
             const borrowedBooks = createBorrowBooks(userTestBooks.borrowed, overdueBooks);
             const shouldReturnBooks = createShouldReturnBooks(userTestBooks.borrowed);
             const reservedBooks = createReservedBooks(userTestBooks.reserved, overdueBooks);
