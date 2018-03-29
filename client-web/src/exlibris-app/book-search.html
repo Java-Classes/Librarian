@@ -102,8 +102,11 @@
             }
 
             _onSearch() {
-                console.log("search: " + this.query);
-                this.dispatchEvent(new CustomEvent('custom-search-search'));
+                this.dispatchEvent(new CustomEvent('book-search-search', {
+                    detail: {
+                        query: this.query
+                    }
+                }));
             }
         }
 

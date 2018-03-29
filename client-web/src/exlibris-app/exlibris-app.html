@@ -211,7 +211,7 @@
                         <paper-icon-button id="number" icon="menu"
                                            drawer-toggle></paper-icon-button>
                         <span drawer-toggle>[[selectedTitle]]</span>
-                        <book-search></book-search>
+                        <book-search on-book-search-search="_handleSearch"></book-search>
                     </app-toolbar>
                 </app-header>
 
@@ -354,6 +354,12 @@
                             type: ExlibrisActions.SORT_BY_CATEGORY,
                             category: category
                         };
+                    },
+                    searchByQuery(query) {
+                        return {
+                            type: ExlibrisActions.SEARCH_BY_QUERY,
+                            query: query
+                        };
                     }
                 };
             }
@@ -458,6 +464,12 @@
                 if (this.previousPage) {
                     this.set('route.path', '/' + this.previousPage);
                 }
+            }
+
+            _handleSearch(e) {
+                console.log(e);
+                this.dispatch('searchByQuery', e.detail.query);
+                e.stopPropagation();
             }
         }
 
