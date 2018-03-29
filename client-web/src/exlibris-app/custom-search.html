@@ -33,13 +33,14 @@
                 @apply --layout-horizontal;
                 background-color: var(--custom-search-background-color, black);
                 border-radius: 3px;
+                height:40px;
             }
 
             #input {
                 margin-right: 10px;
                 border-radius: 0 3px 3px 0;
                 width: 98%;
-                padding: 16px;
+                padding: 12px;
                 cursor: text;
                 background: transparent;
                 color: var(--custom-search-text-color, white);
@@ -48,13 +49,12 @@
                 outline: 0;
             }
 
+            ::placeholder {
+                color: var(--custom-search-placeholder-color, white);
+            }
             .search-icon {
                 margin: auto 0 auto 12px;
                 color: var(--custom-search-icon-color, white);
-            }
-
-            ::placeholder {
-                color: var(--custom-search-placeholder-color, white);
             }
 
             iron-input {
