@@ -184,27 +184,27 @@
                     /**
                      * Fired on `element` modal dialog close.
                      *
-                     * @event dialog-closed
+                     * @event book-dialog-closed
                      */
 
                     /**
                      * Fired on the `CANCEL RESERVATION` button click.
                      *
-                     * @event cancel-reservation-requested
+                     * @event book-dialog-cancel-reservation
                      * @param {detail.bookId} the id of a book the reservation of which must be canceled.
                      */
 
                     /**
                      * Fired on the `RESERVE` button click.
                      *
-                     * @event reservation-requested
+                     * @event book-dialog-reserve-book
                      * @param {detail.bookId} the id of a book to reserve.
                      */
 
                     /**
                      * Fired on the `EXTEND FOR TWO WEEKS` button click.
                      *
-                     * @event loan-extension-requested
+                     * @event book-dialog-extend-loan
                      * @param {detail.bookId} the id of a book the loan period of which must be extended.
                      */
 
@@ -252,13 +252,13 @@
 
             /**
              * Handles the dialog `opened` state changes.
-             * If the dialog was closed, fires `dialog-closed` event.
+             * If the dialog was closed, fires `book-dialog-closed` event.
              *
              * @private
              */
             _handleOpenedChange() {
                 if (!this.$.dialog.opened) {
-                    this.dispatchEvent(new CustomEvent('dialog-closed'));
+                    this.dispatchEvent(new CustomEvent('book-dialog-closed'));
                 }
             }
 
@@ -268,7 +268,7 @@
              * @private
              */
             _requestCancelReservation() {
-                this.dispatchEvent(new CustomEvent('cancel-reservation-requested', {detail: {bookId: this.book.id}}));
+                this.dispatchEvent(new CustomEvent('book-dialog-cancel-reservation', {detail: {bookId: this.book.id}}));
             }
 
             /**
@@ -277,7 +277,7 @@
              * @private
              */
             _requestReservation() {
-                this.dispatchEvent(new CustomEvent('reservation-requested', {detail: {bookId: this.book.id}}));
+                this.dispatchEvent(new CustomEvent('book-dialog-reserve-book', {detail: {bookId: this.book.id}}));
             }
 
             /**
@@ -286,7 +286,7 @@
              * @private
              */
             _requestLoanExtension() {
-                this.dispatchEvent(new CustomEvent('loan-extension-requested', {detail: {bookId: this.book.id}}));
+                this.dispatchEvent(new CustomEvent('book-dialog-extend-loan', {detail: {bookId: this.book.id}}));
             }
         }
 

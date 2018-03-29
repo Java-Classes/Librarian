@@ -201,10 +201,10 @@
             </app-header-layout>
         </app-drawer-layout>
         <book-dialog id="dialog"
-                     on-dialog-closed="_handleDialogClose"
-                     on-cancel-reservation-requested="_cancelBookReservation"
-                     on-reservation-requested="_reserveBook"
-                     on-loan-extension-requested="_extendBookLoanPeriod"></book-dialog>
+                     on-book-dialog-closed="_handleDialogClose"
+                     on-book-dialog-cancel-reservation="_cancelBookReservation"
+                     on-book-dialog-reserve-book="_reserveBook"
+                     on-book-dialog-extend-loan="_extendBookLoanPeriod"></book-dialog>
     </template>
 
     <script>
