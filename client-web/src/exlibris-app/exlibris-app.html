@@ -432,7 +432,7 @@
              * @private
              */
             _changeCategory(e) {
-                this.dispatch('searchByCategory', e.detail.value);
+                this.dispatch('searchByCategory', this.categories[e.detail.value]);
             }
 
             /**
