@@ -54,6 +54,8 @@
         const RESERVE_CANCEL_BUTTON_SELECTOR = '.head-region > .head-info > .head-button > #book-dialog-cancel-button';
         const RESERVE_BUTTON_SELECTOR = '.head-region > .head-info > .head-button > #book-dialog-reserve-button';
         const EXTEND_BUTTON_SELECTOR = '.head-region > .head-info > .head-button > #book-dialog-extend-button';
+        const RESERVED_BY_ANOTHER_SELECTOR = '.head-region > .head-info > .head-button > h3';
+        const CLOSE_BUTTON_SELECTOR = '.close-button > paper-icon-button';
 
         let bookDialog;
         setup(() => {
@@ -70,6 +72,21 @@
             assert.isFalse(modal.opened);
             bookDialog.open();
             assert.isTrue(modal.opened);
+        });
+
+        test('should close on close button click called. Tan fire close event.', function (done) {
+            bookDialog.addEventListener('book-dialog-closed', function () {
+                done();
+            });
+            const dialogShadowRoot = bookDialog.shadowRoot;
+            const modal = bookDialog.$.dialog;
+            assert.isFalse(modal.opened);
+            bookDialog.open();
+            assert.isTrue(modal.opened);
+
+            const closeButton = dialogShadowRoot.querySelector(CLOSE_BUTTON_SELECTOR);
+            closeButton.click();
+            assert.isFalse(modal.opened);
         });
 
         test('should display book image, title, author and description.', function () {
@@ -105,6 +122,126 @@
                 assert.isNotNull(reserveButton, 'Button is not displayed');
                 assert.equal(reserveButton.innerHTML.trim(), 'RESERVE');
                 reserveButton.click();
+            });
+        });
+
+        test('should display `CANCEL RESERVATION` button when book status is `RESERVED` and fire event on click.', function (done) {
+            const expectedBook = Object.assign(TEST_BOOK, {status: bookStatus.RESERVED});
+            bookDialog.set('book', expectedBook);
+            bookDialog.addEventListener('book-dialog-cancel-reservation', function (e) {
+                const bookId = e.detail.bookId;
+                assert.equal(bookId, expectedBook.id);
+                done();
+            });
+
+            bookDialog.open();
+            const dialogShadowRoot = bookDialog.shadowRoot;
+            flush(function () {
+                const cancelButton = dialogShadowRoot.querySelector(RESERVE_CANCEL_BUTTON_SELECTOR);
+                assert.isNotNull(cancelButton, 'Button is not displayed');
+                assert.equal(cancelButton.innerHTML.trim(), 'CANCEL RESERVATION');
+                cancelButton.click();
+            });
+        });
+
+        test('should display `EXTEND FOR TWO WEEKS` button when book status is `SHOULD_RETURN_SOON`' +
+            ' and available for extension. Than fire event on click.', function (done) {
+            const bookAllowedToExtend = Object.assign(TEST_BOOK, {
+                status: bookStatus.SHOULD_RETURN_SOON,
+                isAllowedLoanExtension: true
+            });
+            bookDialog.set('book', bookAllowedToExtend);
+            bookDialog.addEventListener('book-dialog-extend-loan', function (e) {
+                const bookId = e.detail.bookId;
+                assert.equal(bookId, bookAllowedToExtend.id);
+                done();
+            });
+
+            bookDialog.open();
+            const dialogShadowRoot = bookDialog.shadowRoot;
+            flush(function () {
+                const extendButton = dialogShadowRoot.querySelector(EXTEND_BUTTON_SELECTOR);
+                assert.isNotNull(extendButton, 'Button is not displayed');
+                assert.equal(extendButton.innerHTML.trim(), 'EXTEND FOR TWO WEEKS');
+                extendButton.click();
+            });
+        });
+
+        test('should display `EXTEND FOR TWO WEEKS` button when book status is `OVERDUE`' +
+            ' and available for extension. Than fire event on click.', function (done) {
+            const bookAllowedToExtend = Object.assign(TEST_BOOK, {
+                status: bookStatus.OVERDUE,
+                isAllowedLoanExtension: true
+            });
+            bookDialog.set('book', bookAllowedToExtend);
+            bookDialog.addEventListener('book-dialog-extend-loan', function (e) {
+                const bookId = e.detail.bookId;
+                assert.equal(bookId, bookAllowedToExtend.id);
+                done();
+            });
+
+            bookDialog.open();
+            const dialogShadowRoot = bookDialog.shadowRoot;
+            flush(function () {
+                const extendButton = dialogShadowRoot.querySelector(EXTEND_BUTTON_SELECTOR);
+                assert.isNotNull(extendButton, 'Button is not displayed');
+                assert.equal(extendButton.innerHTML.trim(), 'EXTEND FOR TWO WEEKS');
+                extendButton.click();
+            });
+        });
+
+
+        test('should display `RESERVED BY ANOTHER READER` when book status is `BORROWED`' +
+            ' and extension not allowed.', function (done) {
+            const bookNotAllowedToExtend = Object.assign(TEST_BOOK, {
+                status: bookStatus.BORROWED,
+                isAllowedLoanExtension: false
+            });
+            bookDialog.set('book', bookNotAllowedToExtend);
+            bookDialog.open();
+
+            const dialogShadowRoot = bookDialog.shadowRoot;
+            flush(function () {
+                const reservedByAnother = dialogShadowRoot.querySelector(RESERVED_BY_ANOTHER_SELECTOR);
+                assert.isNotNull(reservedByAnother, 'Row is not displayed');
+                assert.equal(reservedByAnother.innerHTML.trim(), 'RESERVED BY ANOTHER READER');
+                done();
+            });
+        });
+
+        test('should display `RESERVED BY ANOTHER READER` when book status is `OVERDUE`' +
+            ' and extension not allowed.', function (done) {
+            const bookNotAllowedToExtend = Object.assign(TEST_BOOK, {
+                status: bookStatus.OVERDUE,
+                isAllowedLoanExtension: false
+            });
+            bookDialog.set('book', bookNotAllowedToExtend);
+            bookDialog.open();
+
+            const dialogShadowRoot = bookDialog.shadowRoot;
+            flush(function () {
+                const reservedByAnother = dialogShadowRoot.querySelector(RESERVED_BY_ANOTHER_SELECTOR);
+                assert.isNotNull(reservedByAnother, 'Row is not displayed');
+                assert.equal(reservedByAnother.innerHTML.trim(), 'RESERVED BY ANOTHER READER');
+                done();
+            });
+        });
+
+        test('should display `RESERVED BY ANOTHER READER` when book status is `SHOULD_RETURN_SOON`' +
+            ' and extension not allowed.', function (done) {
+            const bookNotAllowedToExtend = Object.assign(TEST_BOOK, {
+                status: bookStatus.SHOULD_RETURN_SOON,
+                isAllowedLoanExtension: false
+            });
+            bookDialog.set('book', bookNotAllowedToExtend);
+            bookDialog.open();
+
+            const dialogShadowRoot = bookDialog.shadowRoot;
+            flush(function () {
+                const reservedByAnother = dialogShadowRoot.querySelector(RESERVED_BY_ANOTHER_SELECTOR);
+                assert.isNotNull(reservedByAnother, 'Row is not displayed');
+                assert.equal(reservedByAnother.innerHTML.trim(), 'RESERVED BY ANOTHER READER');
+                done();
             });
         });
 
