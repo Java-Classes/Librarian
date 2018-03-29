@@ -145,13 +145,17 @@
                     </div>
                     <div class="head-button">
                         <template is="dom-if" if="[[_isReserved(book.status)]]">
-                            <paper-button raised>CANCEL RESERVATION</paper-button>
+                            <paper-button raised on-click="_requestCancelReservation">CANCEL
+                                RESERVATION
+                            </paper-button>
                         </template>
                         <template is="dom-if" if="[[_isExpected(book.status)]]">
-                            <paper-button raised>RESERVE</paper-button>
+                            <paper-button raised on-click="_requestReservation">RESERVE
+                            </paper-button>
                         </template>
                         <template is="dom-if" if="[[_isBorrowedAndCanBeExtended(book)]]">
-                            <paper-button raised>EXTEND FOR TWO WEEKS
+                            <paper-button raised on-click="_requestLoanExtension">EXTEND FOR TWO
+                                WEEKS
                             </paper-button>
                         </template>
                         <template is="dom-if" if="[[_isBorrowedAndCannotBeExtended(book)]]">
@@ -181,6 +185,27 @@
                      * Fired on `element` modal dialog close.
                      *
                      * @event dialog-closed
+                     */
+
+                    /**
+                     * Fired on the `CANCEL RESERVATION` button click.
+                     *
+                     * @event cancel-reservation-requested
+                     * @param {detail.bookId} the id of a book the reservation of which must be canceled.
+                     */
+
+                    /**
+                     * Fired on the `RESERVE` button click.
+                     *
+                     * @event reservation-requested
+                     * @param {detail.bookId} the id of a book to reserve.
+                     */
+
+                    /**
+                     * Fired on the `EXTEND FOR TWO WEEKS` button click.
+                     *
+                     * @event loan-extension-requested
+                     * @param {detail.bookId} the id of a book the loan period of which must be extended.
                      */
 
                     /**
@@ -235,6 +260,33 @@
                 if (!this.$.dialog.opened) {
                     this.dispatchEvent(new CustomEvent('dialog-closed'));
                 }
+            }
+
+            /**
+             * Handles the `CANCEL RESERVATION` button click.
+             *
+             * @private
+             */
+            _requestCancelReservation() {
+                this.dispatchEvent(new CustomEvent('cancel-reservation-requested', {detail: {bookId: this.book.id}}));
+            }
+
+            /**
+             * Handles the `RESERVE` button click.
+             *
+             * @private
+             */
+            _requestReservation() {
+                this.dispatchEvent(new CustomEvent('reservation-requested', {detail: {bookId: this.book.id}}));
+            }
+
+            /**
+             * Handles the `EXTEND FOR TWO WEEKS` button click.
+             *
+             * @private
+             */
+            _requestLoanExtension() {
+                this.dispatchEvent(new CustomEvent('loan-extension-requested', {detail: {bookId: this.book.id}}));
             }
         }
 
