@@ -32,6 +32,8 @@
     <script src="./test_variables.js"></script>
 
     <link rel="import" href="../../src/exlibris-app/book-dialog.html">
+    <link rel="import" href="./test_variables.js">
+    <link rel="import" href="../../src/exlibris-app/book_values.html">
 </head>
 <body>
 
@@ -43,7 +45,15 @@
 
 <script>
     suite('book-dialog', function () {
-        const SYNOPSIS_SELECTOR = ".bookContent >.synopsis";
+        const TEST_BOOK = TEST_BOOKS[0];
+        const IMAGE_SELECTOR = 'iron-image';
+        const BOOK_TITLE_SELECTOR = '.head-region > .head-info > .head-text > h1';
+        const BOOK_AUTHOR_SELECTOR = '.head-region > .head-info > .head-text > h3';
+        const BOOK_FULL_STATUS_MESSAGE_SELECTOR = '.head-region > .head-info > .head-text > h2';
+        const BOOK_DESCRIPTION = '.book-description';
+        const RESERVE_CANCEL_BUTTON_SELECTOR = '.head-region > .head-info > .head-button > #book-dialog-cancel-button';
+        const RESERVE_BUTTON_SELECTOR = '.head-region > .head-info > .head-button > #book-dialog-reserve-button';
+        const EXTEND_BUTTON_SELECTOR = '.head-region > .head-info > .head-button > #book-dialog-extend-button';
 
         let bookDialog;
         setup(() => {
@@ -51,8 +61,53 @@
         });
 
         test('should not display without open() call.', function () {
-            console.log(bookDialog.$.dialog);
+            const modal = bookDialog.$.dialog;
+            assert.isFalse(modal.opened);
         });
+
+        test('should display when open() called.', function () {
+            const modal = bookDialog.$.dialog;
+            assert.isFalse(modal.opened);
+            bookDialog.open();
+            assert.isTrue(modal.opened);
+        });
+
+        test('should display book image, title, author and description.', function () {
+            bookDialog.set('book', TEST_BOOK);
+            bookDialog.open();
+            const dialogShadowRoot = bookDialog.shadowRoot;
+            const bookCover = dialogShadowRoot.querySelector(IMAGE_SELECTOR);
+            const bookTitle = dialogShadowRoot.querySelector(BOOK_TITLE_SELECTOR);
+            const bookAuthor = dialogShadowRoot.querySelector(BOOK_AUTHOR_SELECTOR);
+            const bookFullStatusMessage = dialogShadowRoot.querySelector(BOOK_FULL_STATUS_MESSAGE_SELECTOR);
+            const bookDescription = dialogShadowRoot.querySelector(BOOK_DESCRIPTION);
+
+            assert.equal(bookCover.src, TEST_BOOK.image);
+            assert.equal(bookTitle.innerHTML, TEST_BOOK.title);
+            assert.equal(bookAuthor.innerHTML, TEST_BOOK.author);
+            assert.equal(bookFullStatusMessage.innerHTML, TEST_BOOK.fullStatusMessage);
+            assert.equal(bookDescription.innerHTML, TEST_BOOK.description);
+        });
+
+        test('should display `RESERVE` button when book status is `EXPECTED` and fire event on click.', function (done) {
+            const expectedBook = Object.assign(TEST_BOOK, {status: bookStatus.EXPECTED});
+            bookDialog.set('book', expectedBook);
+            bookDialog.addEventListener('book-dialog-reserve-book', function (e) {
+                const bookId = e.detail.bookId;
+                assert.equal(bookId, expectedBook.id);
+                done();
+            });
+
+            bookDialog.open();
+            const dialogShadowRoot = bookDialog.shadowRoot;
+            flush(function () {
+                const reserveButton = dialogShadowRoot.querySelector(RESERVE_BUTTON_SELECTOR);
+                assert.isNotNull(reserveButton, 'Button is not displayed');
+                assert.equal(reserveButton.innerHTML.trim(), 'RESERVE');
+                reserveButton.click();
+            });
+        });
+
     });
 </script>
 </body>
