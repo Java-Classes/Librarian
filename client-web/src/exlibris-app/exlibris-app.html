@@ -91,12 +91,10 @@
                 tail="{{subroute}}"></app-route>
         <app-route
                 route="{{subroute}}"
-                pattern="/:title"
-                tail="{{subrouteTail}}"></app-route>
-        <app-route
-                route="{{subrouteTail}}"
-                pattern="/:id"
-                data="{{pathBookId}}"></app-route>
+                pattern="/:title/:id"
+                data="{{subrouteData}}"
+                active="{{subrouteActive}}"></app-route>
+
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
             <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
@@ -195,7 +193,6 @@
                     <book-grid data-name="should-return-books"
                                books="[[shouldReturnBooks]]"
                                on-book-tile-click="_handleBookClick"></book-grid>
-                    <div data-name="book-details"></div>
                     <div data-name="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
@@ -285,15 +282,16 @@
                         statePath: 'expectedSoonBooks'
                     },
 
+                    /**
+                     * The page to show in the book dialog backdrop.
+                     */
                     previousPage: String,
-
-                    pathBookId: String
                 };
             }
 
             static get observers() {
                 return [
-                    '_routePageChanged(routeData.page)'
+                    '_routePageChanged(routeData.page, subrouteData.id, subrouteActive)'
                 ];
             }
 
@@ -304,24 +302,21 @@
              * the id from URL, opens modal dialog with specified book,
              * selects the appropriate page to show in the dialog background.
              */
-            _routePageChanged() {
+            _routePageChanged(page, bookId, subrouteActive) {
                 if (!this.route.path) {
                     this.set('route.path', '/all-books');
                 }
 
-                if (this.routeData.page === 'book-details' && this.pathBookId.id) {
+                if (page === 'book-details' && subrouteActive) {
                     Polymer.RenderStatus.afterNextRender(this, function () {
-                        const book = this._findBookById(this.pathBookId.id);
+                        const book = this._findBookById(bookId);
                         const bookDialog = this.$.dialog;
-                        bookDialog.book = book;
+                        bookDialog.book = book ? book : {title: 'Book not found.'};
                         bookDialog.open();
                     });
 
-                    if (!this.previousPage) {
-                        this.$.pages.selected = 'all-books';
-                    } else {
-                        this.$.pages.selected = this.previousPage;
-                    }
+                    // To display the proper content under the dialog backdrop.
+                    this.$.pages.selected = this.previousPage ? this.previousPage : 'all-books';
                 }
 
                 this.previousPage = this.$.pages.selected;
