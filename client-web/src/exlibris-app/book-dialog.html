@@ -65,6 +65,10 @@
                 --iron-image-height: 100%;
             }
 
+            .head-region > iron-image.hidden {
+                display: none;
+            }
+
             .head-region > .head-info {
                 display: flex;
                 width: 50%;
@@ -136,7 +140,8 @@
                 <paper-icon-button icon="close" on-tap="close"></paper-icon-button>
             </div>
             <div class="head-region">
-                <iron-image src="[[book.image]]"></iron-image>
+                <iron-image class$="[[_isImageLoaded(loaded)]]" src="src/exlibris-app/images/cover-placeholder.png"></iron-image>
+                <iron-image preload loaded="{{loaded}}" src="[[book.image]]"></iron-image>
                 <div class="head-info">
                     <div class="head-text">
                         <h1>[[book.title]]</h1>
@@ -222,6 +227,13 @@
                 };
             }
 
+            /**
+             * Used to set custom style for the placeholder image
+             * when the original image is loaded.
+             */
+            _isImageLoaded(loaded) {
+                return loaded ? 'hidden' : '';
+            }
             /**
              * Opens the modal dialog.
              */
