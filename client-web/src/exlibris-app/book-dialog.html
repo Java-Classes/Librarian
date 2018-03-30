@@ -100,7 +100,7 @@
             }
 
             paper-button {
-                background-color: var(--app-primary-color);
+                background-color: var(--app-primary-color, blue);
                 color: white;
                 width: 200px;
             }
@@ -119,7 +119,7 @@
             }
 
             paper-icon-button {
-                color: var(--app-secondary-color);
+                color: var(--app-secondary-color, black);
             }
 
             .close-button {
@@ -145,17 +145,24 @@
                     </div>
                     <div class="head-button">
                         <template is="dom-if" if="[[_isReserved(book.status)]]">
-                            <paper-button raised on-click="_requestCancelReservation">CANCEL
-                                RESERVATION
+                            <paper-button id="book-dialog-cancel-button"
+                                          raised
+                                          on-click="_requestCancelReservation">
+                                CANCEL RESERVATION
                             </paper-button>
                         </template>
                         <template is="dom-if" if="[[_isExpected(book.status)]]">
-                            <paper-button raised on-click="_requestReservation">RESERVE
+                            <paper-button id="book-dialog-reserve-button"
+                                          raised
+                                          on-click="_requestReservation">
+                                RESERVE
                             </paper-button>
                         </template>
                         <template is="dom-if" if="[[_isBorrowedAndCanBeExtended(book)]]">
-                            <paper-button raised on-click="_requestLoanExtension">EXTEND FOR TWO
-                                WEEKS
+                            <paper-button id="book-dialog-extend-button"
+                                          raised
+                                          on-click="_requestLoanExtension">
+                                EXTEND FOR TWO WEEKS
                             </paper-button>
                         </template>
                         <template is="dom-if" if="[[_isBorrowedAndCannotBeExtended(book)]]">
@@ -166,7 +173,7 @@
             </div>
             <section>
                 <paper-dialog-scrollable>
-                    [[book.description]]
+                    <div class="book-description">[[book.description]]</div>
                 </paper-dialog-scrollable>
             </section>
         </paper-dialog>
