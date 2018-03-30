@@ -127,15 +127,13 @@
                 route="{{route}}"
                 pattern="/:page"
                 data="{{routeData}}"
-                tail="{{subroute}}"></app-route>
+                tail="{{subRoute}}"></app-route>
         <app-route
-                route="{{subroute}}"
-                pattern="/:title"
-                tail="{{subrouteTail}}"></app-route>
-        <app-route
-                route="{{subrouteTail}}"
-                pattern="/:id"
-                data="{{pathBookId}}"></app-route>
+                route="{{subRoute}}"
+                pattern="/:title/:id"
+                data="{{subRouteData}}"
+                active="{{subRouteActive}}"></app-route>
+
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
             <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
@@ -246,7 +244,6 @@
                     <book-grid data-name="should-return-books"
                                books="[[shouldReturnBooks]]"
                                on-book-tile-click="_handleBookClick"></book-grid>
-                    <div data-name="book-details"></div>
                     <div data-name="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
@@ -336,10 +333,20 @@
                         statePath: 'expectedSoonBooks'
                     },
 
+                    /**
+                     * The page to show in the book dialog backdrop.
+                     */
                     previousPage: String,
 
-                    pathBookId: String,
+                    /**
+                     * The subRoute parameters.
+                     */
+                    subRouteData: Object,
 
+                    /**
+                     * Indicates that the `subRoute` matches the `pattern`.
+                     */
+                    subRouteActive: Boolean,
                     /**
                      * The array of categories.
                      */
@@ -347,7 +354,6 @@
                         type: Array,
                         statePath: 'categories'
                     }
-
                 };
             }
 
@@ -370,7 +376,7 @@
 
             static get observers() {
                 return [
-                    '_routePageChanged(routeData.page)'
+                    '_routePageChanged(routeData.page, subRouteActive)'
                 ];
             }
 
@@ -386,19 +392,21 @@
                     this.set('route.path', '/all-books');
                 }
 
-                if (this.routeData.page === 'book-details' && this.pathBookId.id) {
+                if (this.routeData.page === 'book-details' && this.subRouteActive) {
                     Polymer.RenderStatus.afterNextRender(this, function () {
-                        const book = this._findBookById(this.pathBookId.id);
-                        const bookDialog = this.$.dialog;
-                        bookDialog.book = book;
-                        bookDialog.open();
+                        const bookId = this.subRouteData.id;
+                        const book = this._findBookById(bookId);
+                        if (book) {
+                            const bookDialog = this.$.dialog;
+                            bookDialog.book = book;
+                            bookDialog.open();
+                        } else {
+                            this.set('route.path', '/view404');
+                        }
                     });
 
-                    if (!this.previousPage) {
-                        this.$.pages.selected = 'all-books';
-                    } else {
-                        this.$.pages.selected = this.previousPage;
-                    }
+                    // To display the proper content under the dialog backdrop.
+                    this.$.pages.selected = this.previousPage ? this.previousPage : 'all-books';
                 }
 
                 this.previousPage = this.$.pages.selected;
