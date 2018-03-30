@@ -49,7 +49,7 @@
             bookSearch = fixture('BasicTestFixture');
         });
 
-        test('should dispatch book-search-search event after click on the enter button in search', function (done) {
+        test('should dispatch book-search-search event after press enter on the input', function (done) {
             const input = bookSearch.shadowRoot.querySelector("#input");
             bookSearch.addEventListener('book-search-search', function () {
                 done();
