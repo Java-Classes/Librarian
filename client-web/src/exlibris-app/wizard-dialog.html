@@ -1,0 +1,239 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-dialog-behavior/paper-dialog-behavior.html">
+<link rel="import"
+      href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-icons/av-icons.html">
+<link rel="import"
+      href="../../bower_components/paper-dialog-behavior/paper-dialog-shared-styles.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="./book_values.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+
+<dom-module id="wizard-dialog">
+    <template>
+        <style>
+            :host {
+                display: block;
+                position: center;
+            }
+
+            #dialog {
+                @apply --layout-vertical;;
+                height: 550px;
+                width: 800px;
+            }
+
+            #content {
+                @apply --layout-horizontal;
+                height: 90%;
+                margin-top: 0;
+                padding: 0;
+            }
+
+            #navigator {
+                @apply --layout-horizontal;
+                background-color: var(--app-primary-color);
+                height: 10%;
+                margin-top: 0;
+                margin-bottom: 0;
+                padding: 0;
+            }
+
+            #drawer {
+                @apply --layout-vertical;
+                width: 25%;
+            }
+
+            #toolbar {
+                height: 20%;
+                border-bottom: 1px solid var(--paper-grey-300);
+            }
+
+            #title {
+                margin-top: 40px;
+                margin-left: 35px;
+                font-size: 17px;
+            }
+
+            #menu {
+                height: 80%;
+
+            }
+
+            #page {
+                width: 75%;
+                border-left: 1px solid var(--paper-grey-300);
+            }
+
+            #cancel-button {
+                color: white;
+                margin: auto 20px;
+                cursor: pointer;
+            }
+
+            #close-button {
+                position: absolute;
+                right: 4px;
+                top: 4px;
+                padding: 0;
+                margin: 0;
+            }
+
+            .next-button {
+                color: white;
+            }
+
+        </style>
+
+        <paper-dialog id="dialog">
+
+            <div id="content">
+
+                <div id="close-button">
+                    <paper-icon-button icon="close" on-tap="close"
+                                       style="color:var(--app-secondary-color)"></paper-icon-button>
+                </div>
+
+                <div id="drawer">
+                    <div id="toolbar">
+                        <div id="title">Edit Book</div>
+                    </div>
+                    <div id="menu">
+                        <iron-selector attr-for-selected="data-name"
+                                       selected="{{page}}"
+                                       on-selected-item-changed="_getSelectedTitle">
+
+                            <menu-item data-name="details"
+                                       title="Details"
+                                       link="/details"
+                                       on-menu-item-click="_changeRoute">
+                                <iron-icon icon="radio-button-unchecked"
+                                           slot="icon"
+                                           style="--iron-icon-fill-color: var(--app-secondary-color)"></iron-icon>
+                            </menu-item>
+
+                            <menu-item data-name="inventory"
+                                       title="Inventory"
+                                       link="/inventory"
+                                       on-menu-item-click="_changeRoute">
+                                <iron-icon icon="av:library-books"
+                                           slot="icon"
+                                           style="--iron-icon-fill-color: var(--app-secondary-color)"></iron-icon>
+                            </menu-item>
+                        </iron-selector>
+                    </div>
+                </div>
+                <div id="page">
+
+                    <iron-pages
+                            selected="[[page]]"
+                            attr-for-selected="data-name">
+                        <item-adder id="add-name-page"
+                                    data-name="add-name"
+                                    input-value="{{newName}}"
+                                    on-input-submit="_handleNameSubmit"
+                                    on-input-value-changed="_handleNameInputValueChanged"
+                                    input-error="[[nameInputError]]"></item-adder>
+                        <item-removable-list id="name-list-page" data-name="name-list"
+                                             array="[[names]]"
+                                             on-item-removed="_handleNameRemovedEvent"></item-removable-list>
+
+                        <div data-name="details">
+                            Details
+                        </div>
+                        <div data-name="inventory">
+                            Inventory
+                        </div>
+                    </iron-pages>
+
+                </div>
+            </div>
+            <div id="navigator">
+
+                <div id="cancel-button" on-tap="close">CANCEL</div>
+                <div id="next" on-tap="close">
+                    <div>Next</div>
+                    <template class="next-button" is="dom-if" if="[[_isDetails(page)]]">
+                        INVENTORY
+                    </template>
+                    <template class="next-button" is="dom-if" if="[[!_isDetails(page)]]">
+                        FINISH
+                    </template>
+                    <iron-icon icon="arrow-forward"
+                               slot="icon"
+                               style="--iron-icon-fill-color: white"></iron-icon>
+                </div>
+
+            </div>
+        </paper-dialog>
+
+    </template>
+
+    <script>
+
+        class WizardDialog extends Polymer.Element {
+            static get is() {
+                return 'wizard-dialog';
+            }
+
+            static get properties() {
+                return {
+                    page: String,
+                };
+            }
+
+            /**
+             * Opens the modal dialog.
+             */
+            open() {
+                this.$.dialog.open();
+                console.log(12);
+            }
+
+            /**
+             * Closes the modal dialog.
+             */
+            close() {
+                this.$.dialog.close();
+            }
+
+            _isDetails() {
+                if (this.page === 'details') {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        window.customElements.define(WizardDialog.is, WizardDialog);
+    </script>
+</dom-module>

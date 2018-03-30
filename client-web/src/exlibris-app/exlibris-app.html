@@ -36,6 +36,7 @@
 <link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
@@ -48,6 +49,7 @@
 <link rel="import" href="./menu/menu-item.html">
 <link rel="import" href="./book_values.html">
 <link rel="import" href="./book-dialog.html">
+<link rel="import" href="./wizard-dialog.html">
 
 <dom-module id="exlibris-app">
     <template>
@@ -117,6 +119,10 @@
                 margin: 0 auto;
             }
 
+            paper-button {
+                background-color: var(--app-primary-color);
+                color: white;
+            }
 
         </style>
 
@@ -222,6 +228,7 @@
                             </template>
                         </paper-listbox>
                     </paper-dropdown-menu>
+                    <paper-button on-tap="addBookHandle">Add book</paper-button>
                 </div>
 
                 <iron-pages
@@ -248,6 +255,7 @@
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
+        <wizard-dialog id="wizard"></wizard-dialog>
         <book-dialog id="dialog"
                      on-book-dialog-closed="_handleDialogClose"
                      on-book-dialog-cancel-reservation="_cancelBookReservation"
@@ -522,16 +530,10 @@
                 console.log('Extend loan ' + bookId);
             }
 
-            /**
-             * Handles the book-search-search event.
-             *
-             * @param e
-             * @private
-             */
-            _handleSearch(e) {
-                this.dispatch('searchByQuery', e.detail.query);
-                e.stopPropagation();
+            addBookHandle() {
+                this.$.wizard.open();
             }
+
         }
 
         window.customElements.define(ExlibrisApp.is, ExlibrisApp);
