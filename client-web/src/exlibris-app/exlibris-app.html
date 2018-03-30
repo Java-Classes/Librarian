@@ -88,12 +88,12 @@
                 route="{{route}}"
                 pattern="/:page"
                 data="{{routeData}}"
-                tail="{{subroute}}"></app-route>
+                tail="{{subRoute}}"></app-route>
         <app-route
-                route="{{subroute}}"
+                route="{{subRoute}}"
                 pattern="/:title/:id"
-                data="{{subrouteData}}"
-                active="{{subrouteActive}}"></app-route>
+                data="{{subRouteData}}"
+                active="{{subRouteActive}}"></app-route>
 
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
@@ -286,12 +286,22 @@
                      * The page to show in the book dialog backdrop.
                      */
                     previousPage: String,
+
+                    /**
+                     * The subRoute parameters.
+                     */
+                    subRouteData: Object,
+
+                    /**
+                     * Indicates that the `subRoute` matches the `pattern`.
+                     */
+                    subRouteActive: Boolean
                 };
             }
 
             static get observers() {
                 return [
-                    '_routePageChanged(routeData.page, subrouteData.id, subrouteActive)'
+                    '_routePageChanged(routeData.page, subRouteActive)'
                 ];
             }
 
@@ -302,17 +312,22 @@
              * the id from URL, opens modal dialog with specified book,
              * selects the appropriate page to show in the dialog background.
              */
-            _routePageChanged(page, bookId, subrouteActive) {
+            _routePageChanged() {
                 if (!this.route.path) {
                     this.set('route.path', '/all-books');
                 }
 
-                if (page === 'book-details' && subrouteActive) {
+                if (this.routeData.page === 'book-details' && this.subRouteActive) {
                     Polymer.RenderStatus.afterNextRender(this, function () {
+                        const bookId = this.subRouteData.id;
                         const book = this._findBookById(bookId);
-                        const bookDialog = this.$.dialog;
-                        bookDialog.book = book ? book : {title: 'Book not found.'};
-                        bookDialog.open();
+                        if (book) {
+                            const bookDialog = this.$.dialog;
+                            bookDialog.book = book;
+                            bookDialog.open();
+                        } else {
+                            this.set('route.path', '/view404');
+                        }
                     });
 
                     // To display the proper content under the dialog backdrop.
