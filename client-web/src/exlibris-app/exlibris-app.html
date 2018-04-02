@@ -77,6 +77,22 @@
                 --menu-item-title-color: black;
                 font-weight: bold;
             }
+
+            menu-item iron-icon {
+                --iron-icon-fill-color: var(--paper-grey-600)
+            }
+
+            menu-item iron-icon.overdue {
+                --iron-icon-fill-color: var(--paper-red-600)
+            }
+
+            menu-item iron-icon.green {
+                --iron-icon-fill-color: var(--paper-green-600)
+            }
+
+            menu-item iron-icon.app-color {
+                --iron-icon-fill-color: var(--app-primary-color)
+            }
         </style>
 
         <app-location route="{{route}}"
@@ -100,7 +116,7 @@
                                on-menu-item-click="_changeRoute">
                         <iron-icon icon="book"
                                    slot="icon"
-                                   style="--iron-icon-fill-color: var(--app-primary-color)"></iron-icon>
+                                   class="app-color"></iron-icon>
                     </menu-item>
 
                     <menu-item data-name="expected-soon"
@@ -109,7 +125,7 @@
                                on-menu-item-click="_changeRoute">
                         <iron-icon icon="update"
                                    slot="icon"
-                                   style="--iron-icon-fill-color: var(--paper-green-600)"></iron-icon>
+                                   class="green"></iron-icon>
                     </menu-item>
 
                     <menu-item data-name="borrowed-books"
@@ -117,8 +133,7 @@
                                link="/borrowed-books"
                                on-menu-item-click="_changeRoute">
                         <iron-icon icon="shopping-basket"
-                                   slot="icon"
-                                   style="--iron-icon-fill-color: var(--paper-grey-600)"></iron-icon>
+                                   slot="icon"></iron-icon>
                     </menu-item>
 
                     <menu-item data-name="reserved-books"
@@ -126,17 +141,15 @@
                                link="/reserved-books"
                                on-menu-item-click="_changeRoute">
                         <iron-icon icon="lock"
-                                   slot="icon"
-                                   style="--iron-icon-fill-color: var(--paper-grey-600)"></iron-icon>
+                                   slot="icon"></iron-icon>
                     </menu-item>
 
                     <menu-item data-name="should-return-books"
-                               title="Should Retutn Soon"
+                               title="Should Return Soon"
                                link="/should-return-books"
                                on-menu-item-click="_changeRoute">
                         <iron-icon icon="query-builder"
-                                   slot="icon"
-                                   style="--iron-icon-fill-color: var(--paper-grey-600)"></iron-icon>
+                                   slot="icon"></iron-icon>
                     </menu-item>
 
                     <menu-item data-name="overdue-books"
@@ -146,7 +159,7 @@
                                on-menu-item-click="_changeRoute">
                         <iron-icon icon="warning"
                                    slot="icon"
-                                   style="--iron-icon-fill-color: var(--paper-red-600)"></iron-icon>
+                                   class="overdue"></iron-icon>
                     </menu-item>
                 </iron-selector>
             </app-drawer>
@@ -241,7 +254,7 @@
              * @private
              */
             _getSelectedTitle(e) {
-                let selectedMenuItem = e.detail.value;
+                const selectedMenuItem = e.detail.value;
                 if (selectedMenuItem) {
                     this.set('selectedTitle', selectedMenuItem.title);
                 }
