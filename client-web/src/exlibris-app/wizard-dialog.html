@@ -86,7 +86,6 @@
 
             #menu {
                 height: 80%;
-
             }
 
             #page {
@@ -98,6 +97,7 @@
                 color: white;
                 margin: auto 20px;
                 cursor: pointer;
+                font-size: 12px;
             }
 
             #close-button {
@@ -108,9 +108,40 @@
                 margin: 0;
             }
 
-            .next-button {
-                color: white;
+            #next-button {
+                font-size: 12px;
+                margin-left: 48%;
+                margin-top: 5px;
             }
+
+            #previous-button {
+                margin-left: 20%;
+                width: 65.14px;
+                margin-top: 5px;
+            }
+
+            .next-text {
+                color: white;
+                font-size: 12px;
+            }
+
+            .arrow-icon {
+                --iron-icon-fill-color: white;
+                --iron-icon-width: 16px;
+                --iron-icon-height: 16px;
+            }
+
+            #previous-label {
+                font-size: 10px;
+                margin-left: 19px;
+                margin-bottom: -6px;
+            }
+
+            #next-label {
+                font-size: 10px;
+                margin-bottom: -6px;
+            }
+
 
         </style>
 
@@ -157,16 +188,6 @@
                     <iron-pages
                             selected="[[page]]"
                             attr-for-selected="data-name">
-                        <item-adder id="add-name-page"
-                                    data-name="add-name"
-                                    input-value="{{newName}}"
-                                    on-input-submit="_handleNameSubmit"
-                                    on-input-value-changed="_handleNameInputValueChanged"
-                                    input-error="[[nameInputError]]"></item-adder>
-                        <item-removable-list id="name-list-page" data-name="name-list"
-                                             array="[[names]]"
-                                             on-item-removed="_handleNameRemovedEvent"></item-removable-list>
-
                         <div data-name="details">
                             Details
                         </div>
@@ -180,17 +201,25 @@
             <div id="navigator">
 
                 <div id="cancel-button" on-tap="close">CANCEL</div>
-                <div id="next" on-tap="close">
-                    <div>Next</div>
-                    <template class="next-button" is="dom-if" if="[[_isDetails(page)]]">
-                        INVENTORY
+                <div id="previous-button">
+
+                    <template is="dom-if" if="[[!_isDetails(page)]]">
+                        <div id="previous-label">PREVIOUS</div>
+                        <iron-icon class="arrow-icon" icon="arrow-back"
+                                   slot="icon"></iron-icon>
+                        <span class="next-text">DETAIL</span>
                     </template>
-                    <template class="next-button" is="dom-if" if="[[!_isDetails(page)]]">
-                        FINISH
+                </div>
+                <div id="next-button" on-tap="close">
+                    <div id="next-label">NEXT</div>
+                    <template is="dom-if" if="[[_isDetails(page)]]">
+                        <span class="next-text">INVENTORY</span>
                     </template>
-                    <iron-icon icon="arrow-forward"
-                               slot="icon"
-                               style="--iron-icon-fill-color: white"></iron-icon>
+                    <template is="dom-if" if="[[!_isDetails(page)]]">
+                        <span class="next-text"> FINISH</span>
+                    </template>
+                    <iron-icon class="arrow-icon" icon="arrow-forward"
+                               slot="icon"></iron-icon>
                 </div>
 
             </div>
@@ -207,7 +236,10 @@
 
             static get properties() {
                 return {
-                    page: String,
+                    page: {
+                        type: String,
+                        value: 'details'
+                    },
                 };
             }
 
