@@ -30,14 +30,49 @@
         <style>
             :host {
                 display: block;
+                @apply --layout-horizontal;
             }
 
             paper-dropdown-menu {
                 width: 100px;
+                min-width: 100px;
             }
 
-            paper-icon-button {
-                color: var(--app-primary-color)
+            #add-icon {
+                margin-top: 20px;
+                color: var(--app-primary-color);
+                width: 40px;
+                min-width: 40px;
+            }
+
+            #tag-line {
+                margin-top: 15px;
+                @apply --layout-horizontal;
+                height: 20px;
+                min-width: 20px;
+                /*margin: auto 0;*/
+            }
+
+            #delete-icon {
+                color: var(--app-secondary-color);
+                width: 20px;
+                height: 20px;
+                min-width: 20px;
+                min-height: 20px;
+                padding: 0;
+                margin: auto 0;
+            }
+
+            #tag {
+                @apply --layout-horizontal;
+                height: 40px;
+                background-color: #dddddd;
+                border-radius: 2px;
+                margin: 5px;
+            }
+
+            #tag-name {
+                margin: auto 3px auto 10px;
             }
         </style>
         <paper-dropdown-menu id="dropdown" label="Category" vertical-offset="60">
@@ -47,13 +82,15 @@
                 </template>
             </paper-listbox>
         </paper-dropdown-menu>
-        <paper-icon-button icon="add-circle" on-tap="_addCategory"></paper-icon-button>
+        <paper-icon-button id="add-icon" icon="add-circle"
+                           on-tap="_addCategory"></paper-icon-button>
 
-        <div>
+        <div id="tag-line">
             <template is="dom-repeat" items="[[selectedCategories]]">
-                <div class="tag">
-                    <span>[[item]]</span>
-                    <paper-button raised on-click="_handleDeleteClick">Delete</paper-button>
+                <div id="tag">
+                    <div id="tag-name">[[item]]</div>
+                    <paper-icon-button id="delete-icon" icon="clear"
+                                       on-tap="_deleteCategory"></paper-icon-button>
                 </div>
             </template>
         </div>
@@ -92,6 +129,11 @@
             _addCategory() {
                 console.log(2);
                 this.push('selectedCategories', this.selectedCategory);
+            }
+
+            _deleteCategory(e) {
+                const index = e.model.index;
+                this.splice('selectedCategories', index, 1);
             }
         }
 
