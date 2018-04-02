@@ -1,0 +1,100 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/neon-animation/web-animations.html">
+
+<dom-module id="book-category-selector">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            paper-dropdown-menu {
+                width: 100px;
+            }
+
+            paper-icon-button {
+                color: var(--app-primary-color)
+            }
+        </style>
+        <paper-dropdown-menu id="dropdown" label="Category" vertical-offset="60">
+            <paper-listbox slot="dropdown-content" on-selected-changed="_changeSelectedCategory">
+                <template is="dom-repeat" items="[[values]]">
+                    <paper-item>[[item]]</paper-item>
+                </template>
+            </paper-listbox>
+        </paper-dropdown-menu>
+        <paper-icon-button icon="add-circle" on-tap="_addCategory"></paper-icon-button>
+
+        <div>
+            <template is="dom-repeat" items="[[selectedCategories]]">
+                <div class="tag">
+                    <span>[[item]]</span>
+                    <paper-button raised on-click="_handleDeleteClick">Delete</paper-button>
+                </div>
+            </template>
+        </div>
+
+    </template>
+
+    <script>
+
+        class BookCategorySelector extends Polymer.Element {
+            static get is() {
+                return 'book-category-selector';
+            }
+
+            static get properties() {
+                return {
+                    values: {
+                        type: Array,
+                        value: ["Java Programming", "Web Design", "Business", "JavaScript", "Programming", "Biography", "Fiction", "C++"]
+                    },
+                    selectedCategories: {
+                        type: Array,
+                        value: []
+                    },
+                    selectedCategory: {
+                        type: String,
+                        notify: true
+                    }
+                };
+            }
+
+            _changeSelectedCategory(e) {
+                console.log(1);
+                this.selectedCategory = this.values[e.detail.value];
+            }
+
+            _addCategory() {
+                console.log(2);
+                this.push('selectedCategories', this.selectedCategory);
+            }
+        }
+
+        window.customElements.define(BookCategorySelector.is, BookCategorySelector);
+    </script>
+</dom-module>
