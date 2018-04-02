@@ -27,6 +27,7 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/paper-dialog-behavior/paper-dialog-behavior.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import"
       href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
@@ -35,7 +36,7 @@
       href="../../bower_components/paper-dialog-behavior/paper-dialog-shared-styles.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="./book_values.html">
-<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="./book-details-form.html">
 
 
 <dom-module id="wizard-dialog">
@@ -48,8 +49,8 @@
 
             #dialog {
                 @apply --layout-vertical;;
-                height: 550px;
-                width: 800px;
+                height: 650px;
+                width: 950px;
             }
 
             #content {
@@ -156,7 +157,7 @@
 
                 <div id="drawer">
                     <div id="toolbar">
-                        <div id="title">Edit Book</div>
+                        <div id="title">Add Book</div>
                     </div>
                     <div id="menu">
                         <iron-selector attr-for-selected="data-name"
@@ -189,7 +190,7 @@
                             selected="[[page]]"
                             attr-for-selected="data-name">
                         <div data-name="details">
-                            Details
+                            <book-details-form></book-details-form>
                         </div>
                         <div data-name="inventory">
                             Inventory
