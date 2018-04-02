@@ -32,7 +32,7 @@
                 display: block;
             }
 
-            .bookContent {
+            .book-content {
                 @apply --layout-vertical;
                 border-radius: 3px;
                 box-shadow: 4px 4px 10px #888888;
@@ -43,16 +43,16 @@
                 margin: 20px;
             }
 
-            .bookContent > iron-image {
+            .book-content > iron-image {
                 border-radius: 3px 3px 0 0;
                 height: 75%;
             }
 
-            .bookContent > iron-image:hover {
+            .book-content > iron-image:hover {
                 opacity: 0.5;
             }
 
-            .bookContent > .synopsis {
+            .book-content > .synopsis {
                 @apply --layout-vertical;
                 height: 25%;
                 bottom: 0;
@@ -61,7 +61,7 @@
                 background: white;
             }
 
-            .bookContent > .synopsis > .title {
+            .book-content > .synopsis > .title {
                 text-overflow: ellipsis;
                 overflow: hidden;
                 width: 145px;
@@ -73,7 +73,7 @@
 
             }
 
-            .bookContent > .synopsis > .author {
+            .book-content > .synopsis > .author {
                 text-overflow: ellipsis;
                 overflow: hidden;
                 width: 150px;
@@ -83,7 +83,7 @@
                 padding-left: 9px;
             }
 
-            .bookContent > .synopsis > .overdue {
+            .book-content > .synopsis > .overdue {
                 background: var(--paper-red-400);
                 color: white;
                 font-size: 12px;
@@ -91,7 +91,7 @@
                 margin-top: 5px;
             }
 
-            .bookContent > .synopsis > .available {
+            .book-content > .synopsis > .available {
                 background: var(--app-primary-color);
                 color: white;
                 font-size: 12px;
@@ -99,7 +99,7 @@
                 margin-top: 5px;
             }
 
-            .bookContent > .synopsis > .expected {
+            .book-content > .synopsis > .expected {
                 background: var(--app-primary-color);
                 color: white;
                 font-size: 12px;
@@ -107,7 +107,7 @@
                 margin-top: 5px;
             }
 
-            .bookContent > .synopsis > .borrowed {
+            .book-content > .synopsis > .borrowed {
                 background: var(--paper-green-400);
                 color: white;
                 font-size: 12px;
@@ -115,7 +115,7 @@
                 margin-top: 5px;
             }
 
-            .bookContent > .synopsis > .should-return-soon {
+            .book-content > .synopsis > .should-return-soon {
                 background: var(--paper-green-400);
                 color: white;
                 font-size: 12px;
@@ -123,7 +123,7 @@
                 margin-top: 5px;
             }
 
-            .bookContent > .synopsis > .reserved {
+            .book-content > .synopsis > .reserved {
                 background: var(--app-primary-color);
                 color: white;
                 font-size: 12px;
@@ -134,8 +134,8 @@
 
         <iron-list items="[[books]]" as="book" scroll-target="document" grid>
             <template>
-                <div class="bookContainer">
-                    <div class="bookContent" tabindex$="[[tabIndex]]">
+                <div class="book-container">
+                    <div class="book-content" tabindex$="[[tabIndex]]">
                         <iron-image sizing="cover"
                                     src="[[book.image]]">
                         </iron-image>
@@ -173,7 +173,9 @@
             static get properties() {
                 return {
                     /**
-                     * The array of books to display.
+                     * The array of  {{title: string, authors: string, status: string, statusMessage:string}} objects to display.
+                     * status must have one of the following values: "overdue", "borrowed", "should-return-soon",
+                     * "available", "reserved", "expected"
                      */
                     books: Array
                 };
@@ -183,6 +185,7 @@
                 console.log('Add more books');
             }
         }
+
         window.customElements.define(BookGrid.is, BookGrid);
     </script>
 </dom-module>
