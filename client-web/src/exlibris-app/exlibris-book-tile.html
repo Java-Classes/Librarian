@@ -83,70 +83,24 @@
                 padding-left: 9px;
             }
 
+            .book-content > .synopsis > .status-message {
+                color: white;
+                font-size: 12px;
+                text-align: center;
+                margin-top: 5px;
+            }
+
             .book-content > .synopsis > .overdue {
                 background: var(--paper-red-400);
-                color: white;
-                font-size: 12px;
-                text-align: center;
-                margin-top: 5px;
             }
 
-            .book-content > .synopsis > .available {
+            .book-content > .synopsis > .available, .expected, .reserved, .ready-to-pick-up, .expected-soon {
                 background: var(--app-primary-color);
-                color: white;
-                font-size: 12px;
-                text-align: center;
-                margin-top: 5px;
             }
 
-            .book-content > .synopsis > .expected {
-                background: var(--app-primary-color);
-                color: white;
-                font-size: 12px;
-                text-align: center;
-                margin-top: 5px;
-            }
-
-            .book-content > .synopsis > .borrowed {
+            .book-content > .synopsis > .borrowed, .should-return-soon {
                 background: var(--paper-green-400);
-                color: white;
-                font-size: 12px;
-                text-align: center;
-                margin-top: 5px;
             }
-
-            .book-content > .synopsis > .should-return-soon {
-                background: var(--paper-green-400);
-                color: white;
-                font-size: 12px;
-                text-align: center;
-                margin-top: 5px;
-            }
-
-            .book-content > .synopsis > .reserved {
-                background: var(--app-primary-color);
-                color: white;
-                font-size: 12px;
-                text-align: center;
-                margin-top: 5px;
-            }
-
-            .book-content > .synopsis > .ready-to-pick-up {
-                background: var(--app-primary-color);
-                color: white;
-                font-size: 12px;
-                text-align: center;
-                margin-top: 5px;
-            }
-
-            .book-content > .synopsis > .expected-soon {
-                background: var(--app-primary-color);
-                color: white;
-                font-size: 12px;
-                text-align: center;
-                margin-top: 5px;
-            }
-
         </style>
 
         <template is="dom-if" if="[[book]]">
@@ -157,7 +111,7 @@
                 <div class="synopsis">
                     <div class="title" title="[[book.title]]">[[book.title]]</div>
                     <div class="author" title="[[book.author]]">[[book.author]]</div>
-                    <div class$="[[book.status]]">[[book.statusMessage]]</div>
+                    <div class$="[[book.status]] status-message">[[book.statusMessage]]</div>
                 </div>
             </div>
         </template>
@@ -173,6 +127,19 @@
         class ExlibrisBookTile extends Polymer.Element {
             static get is() {
                 return 'exlibris-book-tile';
+            }
+            static get properties() {
+                return {
+                    /**
+                     * The next objects:
+                     *  @typedef {Object} Book
+                     * @property {string} title the title of a book
+                     * @property {string} authors string with authors of the book
+                     * @property {string} status  one of the following values: "overdue", "borrowed", "should-return-soon",
+                     * "available", "reserved", "expected","ready-to-pick-up"
+                     */
+                    book: Object
+                };
             }
         }
 
