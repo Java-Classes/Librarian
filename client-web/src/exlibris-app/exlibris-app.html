@@ -37,10 +37,10 @@
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 
-<link rel="import" href="menu/exlibris-menu-drawer.html">
+<link rel="import" href="./menu/exlibris-menu-drawer.html">
 <link rel="import" href="./book-grid.html">
 <link rel="import" href="./book_values.html">
-<link rel="import" href="./book-dialog.html">
+<link rel="import" href="./exlibris-book-details.html">
 
 <dom-module id="exlibris-app">
     <template>
@@ -77,11 +77,6 @@
                 pattern="/:page"
                 data="{{routeData}}"
                 tail="{{subRoute}}"></app-route>
-        <app-route
-                route="{{subRoute}}"
-                pattern="/:title/:id"
-                data="{{subRouteData}}"
-                active="{{subRouteActive}}"></app-route>
 
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
@@ -121,15 +116,11 @@
                     <book-grid data-name="should-return-books"
                                books="[[shouldReturnBooks]]"
                                on-book-tile-click="_handleBookClick"></book-grid>
+                    <exlibris-book-details data-name="book-details"></exlibris-book-details>
                     <div data-name="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
-        <book-dialog id="dialog"
-                     on-book-dialog-closed="_handleDialogClose"
-                     on-book-dialog-cancel-reservation="_cancelBookReservation"
-                     on-book-dialog-reserve-book="_reserveBook"
-                     on-book-dialog-extend-loan="_extendBookLoanPeriod"></book-dialog>
     </template>
 
     <script>
@@ -154,6 +145,18 @@
 
             static get properties() {
                 return {
+                    /**
+                     * Defines count badges of the menu items.
+                     */
+                    countBadges: {
+                        type: Object,
+                        value: {
+                            overdue: 1,
+                            shouldReturnSoon: 1,
+                            reserved: 1,
+                            borrowed: 1
+                        }
+                    },
 
                     /**
                      * The array of all books from library.
@@ -202,42 +205,12 @@
                         type: Array,
                         statePath: 'expectedSoonBooks'
                     },
-
-                    /**
-                     * The page to show in the book dialog backdrop.
-                     */
-                    previousPage: String,
-
-                    /**
-                     * The subRoute parameters.
-                     */
-                    subRouteData: Object,
-
-                    /**
-                     * Indicates that the `subRoute` matches the `pattern`.
-                     */
-                    subRouteActive: Boolean
-                };
-                return {
-
-                    /**
-                     * Defines count badges of the menu items.
-                     */
-                    countBadges: {
-                        type: Object,
-                        value: {
-                            overdue: 1,
-                            shouldReturnSoon: 1,
-                            reserved: 1,
-                            borrowed: 1
-                        }
-                    }
                 };
             }
 
             static get observers() {
                 return [
-                    '_routePageChanged(routeData.page, subRouteActive)'
+                    '_routePageChanged(routeData.page)'
                 ];
             }
 
@@ -252,25 +225,6 @@
                 if (!this.route.path) {
                     this.set('route.path', '/all-books');
                 }
-
-                if (this.routeData.page === 'book-details' && this.subRouteActive) {
-                    Polymer.RenderStatus.afterNextRender(this, function () {
-                        const bookId = this.subRouteData.id;
-                        const book = this._findBookById(bookId);
-                        if (book) {
-                            const bookDialog = this.$.dialog;
-                            bookDialog.book = book;
-                            bookDialog.open();
-                        } else {
-                            this.set('route.path', '/view404');
-                        }
-                    });
-
-                    // To display the proper content under the dialog backdrop.
-                    this.$.pages.selected = this.previousPage ? this.previousPage : 'all-books';
-                }
-
-                this.previousPage = this.$.pages.selected;
             }
 
             /**
