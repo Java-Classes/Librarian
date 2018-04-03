@@ -134,15 +134,18 @@
                      *  @typedef {Object} Book
                      * @property {string} title the title of a book
                      * @property {string} authors string with authors of the book
+                     * @property {string} statusMessage full information about status
                      * @property {string} status  one of the following values: "overdue", "borrowed", "should-return-soon",
                      * "available", "reserved", "expected","ready-to-pick-up"
                      */
-                    book: Object,
+                    book: {
+                        type: Object,
+                        observer: '_bookChanged'
+                    },
                     statusClass: {
                         value: String,
                         computed: "_computeClassForStatusMessage(book.status)"
                     }
-
                 };
             }
 
@@ -159,6 +162,47 @@
                 }
                 else if (status === BOOK_STATUS.BORROWED || status === BOOK_STATUS.SHOULD_RETURN_SOON) {
                     return "active";
+                }
+            }
+
+            /**
+             * Creates statusMessage depending on the status
+             *
+             * @param book the book object
+             * @private
+             */
+            _bookChanged(book) {
+                switch (book.status) {
+                    case BOOK_STATUS.OVERDUE: {
+                        const oneDay = 1000 * 60 * 60 * 24;
+                        const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / oneDay);
+                        book.statusMessage = numberOfOverdueDays + " DAYS OVERDUE";
+                        break;
+                    }
+                    case BOOK_STATUS.BORROWED: {
+                        book.statusMessage = "DUE ON " + book.dueDate.toLocaleDateString();
+                        break;
+                    }
+                    case BOOK_STATUS.READY_TO_PICK_UP: {
+                        book.statusMessage = "READY TO PICK UP";
+                        break;
+                    }
+                    case BOOK_STATUS.RESERVED: {
+                        book.statusMessage = "EXPECTED ON " + book.date.toLocaleDateString();
+                        break;
+                    }
+                    case BOOK_STATUS.EXPECTED_SOON: {
+                        book.statusMessage = "EXPECTED SOON";
+                        break;
+                    }
+                    case BOOK_STATUS.AVAILABLE: {
+                        book.statusMessage = book.availableCount + " AVAILABLE";
+                        break;
+                    }
+                    case BOOK_STATUS.EXPECTED: {
+                        book.statusMessage = "EXPECTED";
+                        break;
+                    }
                 }
             }
         }
