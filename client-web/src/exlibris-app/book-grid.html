@@ -130,6 +130,20 @@
                 text-align: center;
                 margin-top: 5px;
             }
+            .book-content > .synopsis > .ready-to-pick-up {
+                background: var(--app-primary-color);
+                color: white;
+                font-size: 12px;
+                text-align: center;
+                margin-top: 5px;
+            }.book-content > .synopsis > .expected-soon {
+                background: var(--app-primary-color);
+                color: white;
+                font-size: 12px;
+                text-align: center;
+                margin-top: 5px;
+            }
+
         </style>
 
         <iron-list items="[[books]]" as="book" scroll-target="document" grid>
@@ -180,10 +194,50 @@
                      * @property {string} status  one of the following values: "overdue", "borrowed", "should-return-soon",
                      * "available", "reserved", "expected"
                      */
-                    books: Array
+                    books: {
+                        Array,
+                        observer: '_booksChanged'
+                    }
                 };
             }
 
+
+            _booksChanged(books) {
+                books.forEach(b => {
+                    switch (b.status) {
+                        case BOOK_STATUS.OVERDUE: {
+                            const oneDay = 1000 * 60 * 60 * 24;
+                            const numberOfOverdueDays = Math.floor((new Date() - b.dueDate) / oneDay);
+                            b.statusMessage = numberOfOverdueDays + " DAYS OVERDUE";
+                            break;
+                        }
+                        case BOOK_STATUS.BORROWED: {
+                            b.statusMessage = "DUE ON " + b.dueDate.toLocaleDateString();
+                            break;
+                        }
+                        case BOOK_STATUS.READY_TO_PICK_UP: {
+                            b.statusMessage = "READY TO PICK UP";
+                            break;
+                        }
+                        case BOOK_STATUS.RESERVED: {
+                            b.statusMessage = "EXPECTED ON " + b.date.toLocaleDateString();
+                            break;
+                        }
+                        case BOOK_STATUS.EXPECTED_SOON: {
+                            b.statusMessage = "EXPECTED SOON";
+                            break;
+                        }
+                        case BOOK_STATUS.AVAILABLE: {
+                            b.statusMessage = b.availableCount + " AVAILABLE";
+                            break;
+                        }
+                        case BOOK_STATUS.EXPECTED: {
+                            b.statusMessage = "EXPECTED";
+                            break;
+                        }
+                    }
+                });
+            }
             _onLowerThreshold() {
                 console.log('Add more books');
             }
