@@ -44,16 +44,16 @@
                 margin: 20px;
             }
 
-            .book-content > iron-image {
+            iron-image {
                 border-radius: 3px 3px 0 0;
                 height: 75%;
             }
 
-            .book-content > iron-image:hover {
+            iron-image:hover {
                 opacity: 0.5;
             }
 
-            .book-content > .synopsis {
+            #synopsis {
                 @apply --layout-vertical;
                 height: 25%;
                 bottom: 0;
@@ -62,7 +62,7 @@
                 background: white;
             }
 
-            .book-content > .synopsis > .title {
+            #title {
                 text-overflow: ellipsis;
                 overflow: hidden;
                 width: 145px;
@@ -74,7 +74,7 @@
 
             }
 
-            .book-content > .synopsis > .author {
+            #author {
                 text-overflow: ellipsis;
                 overflow: hidden;
                 width: 150px;
@@ -84,7 +84,7 @@
                 padding-left: 9px;
             }
 
-            .book-content > .synopsis > #status-text {
+            #status-text {
                 background: var(--exlibris-app-primary-color);
                 color: white;
                 font-size: 12px;
@@ -92,11 +92,11 @@
                 margin-top: 5px;
             }
 
-            .book-content > .synopsis > #status-text.warn {
+            #status-text.warn {
                 background: var(--paper-red-400);
             }
 
-            .book-content > .synopsis > #status-text.active {
+            #status-text.active {
                 background: var(--paper-green-400);
             }
         </style>
@@ -106,9 +106,9 @@
                 <iron-image sizing="cover"
                             src="[[book.image]]">
                 </iron-image>
-                <div class="synopsis">
-                    <div class="title" title="[[book.title]]">[[book.title]]</div>
-                    <div class="author" title="[[book.author]]">[[book.author]]</div>
+                <div id="synopsis">
+                    <div id="title" title="[[book.title]]">[[book.title]]</div>
+                    <div id="author" title="[[book.author]]">[[book.author]]</div>
                     <div id="status-text" class$="[[statusClass]]">[[book.statusMessage]]</div>
                 </div>
             </div>
@@ -157,10 +157,10 @@
              * @private
              */
             _computeClassForStatusMessage(status) {
-                if (status === BOOK_STATUS.OVERDUE) {
+                if (status === BookStatus.OVERDUE) {
                     return "warn";
                 }
-                else if (status === BOOK_STATUS.BORROWED || status === BOOK_STATUS.SHOULD_RETURN_SOON) {
+                if (status === BookStatus.BORROWED || status === BookStatus.SHOULD_RETURN_SOON) {
                     return "active";
                 }
             }
@@ -173,33 +173,33 @@
              */
             _bookChanged(book) {
                 switch (book.status) {
-                    case BOOK_STATUS.OVERDUE: {
+                    case BookStatus.OVERDUE: {
                         const oneDay = 1000 * 60 * 60 * 24;
                         const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / oneDay);
                         book.statusMessage = numberOfOverdueDays + " DAYS OVERDUE";
                         break;
                     }
-                    case BOOK_STATUS.BORROWED: {
+                    case BookStatus.BORROWED: {
                         book.statusMessage = "DUE ON " + book.dueDate.toLocaleDateString();
                         break;
                     }
-                    case BOOK_STATUS.READY_TO_PICK_UP: {
+                    case BookStatus.READY_TO_PICK_UP: {
                         book.statusMessage = "READY TO PICK UP";
                         break;
                     }
-                    case BOOK_STATUS.RESERVED: {
+                    case BookStatus.RESERVED: {
                         book.statusMessage = "EXPECTED ON " + book.date.toLocaleDateString();
                         break;
                     }
-                    case BOOK_STATUS.EXPECTED_SOON: {
+                    case BookStatus.EXPECTED_SOON: {
                         book.statusMessage = "EXPECTED SOON";
                         break;
                     }
-                    case BOOK_STATUS.AVAILABLE: {
+                    case BookStatus.AVAILABLE: {
                         book.statusMessage = book.availableCount + " AVAILABLE";
                         break;
                     }
-                    case BOOK_STATUS.EXPECTED: {
+                    case BookStatus.EXPECTED: {
                         book.statusMessage = "EXPECTED";
                         break;
                     }
