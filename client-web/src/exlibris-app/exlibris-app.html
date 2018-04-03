@@ -86,7 +86,9 @@
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
             <app-drawer id="drawer" swipe-open="[[narrow]]" slot="drawer" on-click="_toggleDrawer">
-                <exlibris-menu-drawer selected="[[routeData.page]]" selected-title="{{title}}"></exlibris-menu-drawer>
+                <exlibris-menu-drawer selected="[[routeData.page]]"
+                                      selected-title="{{title}}"
+                                      count-badges="[[countBadges]]"></exlibris-menu-drawer>
             </app-drawer>
 
             <!-- Main content -->
@@ -216,6 +218,21 @@
                      */
                     subRouteActive: Boolean
                 };
+                return {
+
+                    /**
+                     * Defines count badges of the menu items.
+                     */
+                    countBadges: {
+                        type: Object,
+                        value: {
+                            overdue: 1,
+                            shouldReturnSoon: 1,
+                            reserved: 1,
+                            borrowed: 1
+                        }
+                    }
+                };
             }
 
             static get observers() {
@@ -263,21 +280,6 @@
             _toggleDrawer() {
                 if (this.narrow) {
                     this.$.drawer.toggle();
-                }
-            }
-
-            /**
-             * Handles the selected menu item changed event.
-             * Sets the `selectedTitle` property with the appropriate value.
-             *
-             * @param e the event fired when selection of menu items selector has changed.
-             *          Contains the selected menu item.
-             * @private
-             */
-            _getSelectedTitle(e) {
-                let selectedMenuItem = e.detail.value;
-                if (selectedMenuItem) {
-                    this.set('selectedTitle', selectedMenuItem.title);
                 }
             }
 
