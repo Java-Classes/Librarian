@@ -1,7 +1,5 @@
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/paper-styles/color.html">
-<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 
 <dom-module id="exlibris-menu-item">
     <template>
@@ -14,9 +12,9 @@
                 cursor: pointer;
                 margin: 4%;
                 align-items: center;
-                color: var(--menu-item-title-color, black);
-                border-radius: 3px;
-                background-color: var(--menu-item-background-color, white);
+                color: var(--exlibris-menu-item-title-color, black);
+                border-radius: var(--exlibris-menu-item-border-radius, 3px);
+                background-color: var(--exlibris-menu-item-background-color, white);
                 line-height: 40px;
                 --iron-icon-height: 26px;
                 --iron-icon-width: 26px;
@@ -44,7 +42,7 @@
 
     <script>
         /**
-         * The single item of menu list.
+         * The single item of the exlibris menu drawer.
          * Can be customized with an icon and a count number.
          *
          * The following custom properties are also available for styling:
@@ -53,6 +51,7 @@
          * ----------------|-------------|----------
          * `--menu-item-title-color` | Element text color | black
          * `--menu-item-background-color` | Background color of the element display area | white
+         * `--exlibris-menu-item-border-radius` | Item border radius | 3px
          *
          * @customElement
          * @polymer
