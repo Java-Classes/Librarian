@@ -34,11 +34,8 @@
             }
         </style>
 
-        <div id="menu-item-body" class="item" on-click="_handleClick">
-            <slot name="icon">
-                <iron-icon icon="book"
-                           style="--iron-icon-fill-color: var(--google-grey-700)"></iron-icon>
-            </slot>
+        <div id="menu-item-body" class="item">
+            <slot name="icon"></slot>
             <span id="menu-item-title" class="name">[[title]]</span>
             <span id="menu-item-badge" class="count-badge">[[count]]</span>
         </div>
@@ -48,8 +45,7 @@
     <script>
         /**
          * The single item of menu list.
-         * Provides the clickable area with title. Can be customized with
-         * icon and the count number.
+         * Can be customized with an icon and a count number.
          *
          * The following custom properties are also available for styling:
          *
@@ -68,17 +64,6 @@
 
             static get properties() {
                 return {
-                    /**
-                     * Fired on `element` display area mouse click event.
-                     *
-                     * @event menu-item-click
-                     * @param {detail} the link to redirect application.
-                     */
-
-                    /**
-                     * The link attached to the `element` click event.
-                     */
-                    link: String,
 
                     /**
                      * The element title to display.
@@ -90,15 +75,6 @@
                      */
                     count: Number
                 };
-            }
-
-            /**
-             * Handles user click on item display area.
-             *
-             * @private
-             */
-            _handleClick() {
-                this.dispatchEvent(new CustomEvent('menu-item-click', {detail: this.link}));
             }
         }
 

@@ -67,12 +67,12 @@
                 }
             }
 
-            menu-item {
+            a menu-item {
                 --menu-item-background-color: var(--app-background-color);
                 --menu-item-title-color: var(--app-secondary-color)
             }
 
-            menu-item.iron-selected {
+            a.iron-selected menu-item {
                 --menu-item-background-color: var(--google-grey-300);
                 --menu-item-title-color: black;
                 font-weight: bold;
@@ -104,63 +104,57 @@
                 data="{{routeData}}"></app-route>
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
-            <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
+            <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]" on-click="_toggleDrawer">
                 <app-toolbar>TeamDev Library</app-toolbar>
                 <iron-selector attr-for-selected="data-name"
                                selected="[[routeData.page]]"
                                on-selected-item-changed="_getSelectedTitle">
 
-                    <menu-item data-name="all-books"
-                               title="All Books"
-                               link="/all-books"
-                               on-menu-item-click="_changeRoute">
-                        <iron-icon icon="book"
-                                   slot="icon"
-                                   class="app-color"></iron-icon>
-                    </menu-item>
+                    <a href="#/all-books" data-name="all-books">
+                        <menu-item title="All Books">
+                            <iron-icon icon="book"
+                                       slot="icon"
+                                       class="app-color"></iron-icon>
+                        </menu-item>
+                    </a>
 
-                    <menu-item data-name="expected-soon"
-                               title="Expected Soon"
-                               link="/expected-soon"
-                               on-menu-item-click="_changeRoute">
-                        <iron-icon icon="update"
-                                   slot="icon"
-                                   class="green"></iron-icon>
-                    </menu-item>
+                    <a href="#/expected-soon" data-name="expected-soon">
+                        <menu-item title="Expected Soon">
+                            <iron-icon icon="update"
+                                       slot="icon"
+                                       class="green"></iron-icon>
+                        </menu-item>
+                    </a>
 
-                    <menu-item data-name="borrowed-books"
-                               title="Borrowed Books"
-                               link="/borrowed-books"
-                               on-menu-item-click="_changeRoute">
-                        <iron-icon icon="shopping-basket"
-                                   slot="icon"></iron-icon>
-                    </menu-item>
+                    <a href="#/borrowed-books" data-name="borrowed-books">
+                        <menu-item title="Borrowed Books">
+                            <iron-icon icon="shopping-basket"
+                                       slot="icon"></iron-icon>
+                        </menu-item>
+                    </a>
 
-                    <menu-item data-name="reserved-books"
-                               title="Reserved Books"
-                               link="/reserved-books"
-                               on-menu-item-click="_changeRoute">
-                        <iron-icon icon="lock"
-                                   slot="icon"></iron-icon>
-                    </menu-item>
+                    <a href="#/reserved-books" data-name="reserved-books">
+                        <menu-item title="Reserved Books">
+                            <iron-icon icon="lock"
+                                       slot="icon"></iron-icon>
+                        </menu-item>
+                    </a>
 
-                    <menu-item data-name="should-return-books"
-                               title="Should Return Soon"
-                               link="/should-return-books"
-                               on-menu-item-click="_changeRoute">
-                        <iron-icon icon="query-builder"
-                                   slot="icon"></iron-icon>
-                    </menu-item>
+                    <a href="#/should-return-books" data-name="should-return-books">
+                        <menu-item title="Should Return Soon">
+                            <iron-icon icon="query-builder"
+                                       slot="icon"></iron-icon>
+                        </menu-item>
+                    </a>
 
-                    <menu-item data-name="overdue-books"
-                               title="Overdue"
-                               count="1"
-                               link="/overdue-books"
-                               on-menu-item-click="_changeRoute">
-                        <iron-icon icon="warning"
-                                   slot="icon"
-                                   class="overdue"></iron-icon>
-                    </menu-item>
+                    <a href="#/overdue-books" data-name="overdue-books">
+                        <menu-item title="Overdue"
+                                   count="1">
+                            <iron-icon icon="warning"
+                                       slot="icon"
+                                       class="overdue"></iron-icon>
+                        </menu-item>
+                    </a>
                 </iron-selector>
             </app-drawer>
 
@@ -229,17 +223,10 @@
                 if (!this.route.path) {
                     this.set('route.path', '/all-books');
                 }
+
             }
 
-            /**
-             * Handles menu item click event. Changes application route.
-             * If the page is in the `narrow` state, toggles the drawer.
-             *
-             * @param e the event of the menu item click. Contains the link to redirect on.
-             * @private
-             */
-            _changeRoute(e) {
-                this.set('route.path', e.detail);
+            _toggleDrawer() {
                 if (this.narrow) {
                     this.$.drawer.toggle();
                 }
@@ -254,9 +241,10 @@
              * @private
              */
             _getSelectedTitle(e) {
-                const selectedMenuItem = e.detail.value;
-                if (selectedMenuItem) {
-                    this.set('selectedTitle', selectedMenuItem.title);
+                const selectedLink = e.detail.value;
+                if (selectedLink) {
+                    const title = selectedLink.querySelector('menu-item').title;
+                    this.set('selectedTitle', title);
                 }
             }
         }
