@@ -137,16 +137,15 @@
 
             static get properties() {
                 return {
+
                     /**
                      * Defines count badges of the menu items.
                      */
-                    /* value: {
-                            overdue: 1,
-                            shouldReturnSoon: 1,
-                            reserved: 1,
-                            borrowed: 1
-                        }*/
-                    countBadges: Object,
+                    countBadges: {
+                        type: Object,
+                        computed: '_computeCountBadges(overdueBooks.length, shouldReturnBooks.length, reservedBooks.length, borrowedBooks.length)'
+                    },
+
                     /**
                      * The array of all books from library.
                      */
@@ -199,13 +198,12 @@
 
             static get observers() {
                 return [
-                    '_routePageChanged(routeData.page)',
-                    '_userArraysChanged(overdueBooks.length, shouldReturnBooks.length, reservedBooks.length, borrowedBooks.length)'
+                    '_routePageChanged(routeData.page)'
                 ];
             }
 
-            _userArraysChanged(overdueCount, shouldReturnCount, reservedCount, borrowedCount) {
-                this.countBadges = {
+            _computeCountBadges(overdueCount, shouldReturnCount, reservedCount, borrowedCount) {
+                return {
                     overdue: overdueCount,
                     shouldReturnSoon: shouldReturnCount,
                     reserved: reservedCount,
