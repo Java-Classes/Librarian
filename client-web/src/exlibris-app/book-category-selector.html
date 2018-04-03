@@ -55,24 +55,28 @@
 
             #delete-icon {
                 color: var(--app-secondary-color);
-                width: 20px;
-                height: 20px;
-                min-width: 20px;
-                min-height: 20px;
+                width: 15px;
+                height: 15px;
+                min-width: 15px;
+                min-height: 15px;
                 padding: 0;
-                margin: auto 0;
+                margin: auto 4px auto 0;
             }
 
             #tag {
                 @apply --layout-horizontal;
-                height: 40px;
-                background-color: #dddddd;
-                border-radius: 2px;
+                height: 35px;
+                background-color: #f3f3f3;
+                border-radius: 4px;
                 margin: 5px;
+                border: 1px solid #c7c7c7;
             }
 
             #tag-name {
+                color: var(--app-secondary-color);
                 margin: auto 3px auto 10px;
+                font-size: 12px;
+                white-space: nowrap;
             }
         </style>
         <paper-dropdown-menu id="dropdown" label="Category" vertical-offset="60">
@@ -122,15 +126,16 @@
             }
 
             _changeSelectedCategory(e) {
-                console.log(1);
                 this.selectedCategory = this.values[e.detail.value];
             }
 
             _addCategory() {
-                console.log(2);
-                this.push('selectedCategories', this.selectedCategory);
+                if (this.selectedCategories.length < 3) {
+                    if (!this.selectedCategories.includes(this.selectedCategory)) {
+                        this.push('selectedCategories', this.selectedCategory);
+                    }
+                }
             }
-
             _deleteCategory(e) {
                 const index = e.model.index;
                 this.splice('selectedCategories', index, 1);
