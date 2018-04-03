@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>exlibris-book-tile test</title>
+
+    <script src="./../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="./../../bower_components/web-component-tester/browser.js"></script>
+    <script src="./test_variables.js"></script>
+
+    <link rel="import" href="../../src/exlibris-app/exlibris-book-tile.html">
+</head>
+<body>
+
+<test-fixture id="BasicTestFixture">
+    <template>
+        <exlibris-book-tile></exlibris-book-tile>
+    </template>
+</test-fixture>
+
+<script>
+    suite('book-tile', function () {
+
+        const BOOK_GRID_SELECTORS = {
+            SYNOPSIS_SELECTOR: ".book-content >.synopsis",
+            TITLE_SELECTOR: ".book-content >.synopsis>.title",
+            AUTHOR_SELECTOR: ".book-content >.synopsis>.author",
+            IRON_IMAGE_SELECTOR: ".book-content > iron-image"
+        }
+
+        let bookGrid;
+        setup(() => {
+            bookGrid = fixture('BasicTestFixture');
+        });
+
+        test('should display `book` from property', function (done) {
+            bookGrid.book = TEST_BOOKS[0];
+            flush(function () {
+                const titles = bookGrid.shadowRoot.querySelectorAll(BOOK_GRID_SELECTORS.TITLE_SELECTOR);
+                assert.equal(TEST_BOOKS[0].title, titles[0].innerHTML);
+                const authors = bookGrid.shadowRoot.querySelectorAll(BOOK_GRID_SELECTORS.AUTHOR_SELECTOR);
+                assert.equal(TEST_BOOKS[0].author, authors[0].innerHTML);
+                const images = bookGrid.shadowRoot.querySelectorAll(BOOK_GRID_SELECTORS.IRON_IMAGE_SELECTOR);
+                const imageURL = images[0].shadowRoot.querySelector("img").getAttribute("src");
+                assert.equal(TEST_BOOKS[0].image, imageURL);
+                done();
+            });
+        });
+    });
+</script>
+</body>
+</html>
