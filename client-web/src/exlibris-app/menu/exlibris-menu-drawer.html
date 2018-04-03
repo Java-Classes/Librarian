@@ -91,21 +91,24 @@
             </a>
 
             <a href="#/borrowed-books" data-name="borrowed-books">
-                <exlibris-menu-item title="Borrowed Books">
+                <exlibris-menu-item title="Borrowed Books"
+                                    count="[[countBadges.borrowed]]">
                     <iron-icon icon="shopping-basket"
                                slot="icon"></iron-icon>
                 </exlibris-menu-item>
             </a>
 
             <a href="#/reserved-books" data-name="reserved-books">
-                <exlibris-menu-item title="Reserved Books">
+                <exlibris-menu-item title="Reserved Books"
+                                    count="[[countBadges.reserved]]">
                     <iron-icon icon="lock"
                                slot="icon"></iron-icon>
                 </exlibris-menu-item>
             </a>
 
             <a href="#/should-return-books" data-name="should-return-books">
-                <exlibris-menu-item title="Should Return Soon">
+                <exlibris-menu-item title="Should Return Soon"
+                                    count="[[countBadges.shouldReturnSoon]]">
                     <iron-icon icon="query-builder"
                                slot="icon"></iron-icon>
                 </exlibris-menu-item>
@@ -113,7 +116,7 @@
 
             <a href="#/overdue-books" data-name="overdue-books">
                 <exlibris-menu-item title="Overdue"
-                                    count="1">
+                                    count="[[countBadges.overdue]]">
                     <iron-icon icon="warning"
                                slot="icon"
                                class="overdue"></iron-icon>
@@ -151,6 +154,19 @@
                      * The selected menu item.
                      */
                     selected: String,
+
+                    /**
+                     * The state of the menu items count badges.
+                     */
+                    countBadges: {
+                        type: Object,
+                        value: {
+                            overdue: '',
+                            shouldReturnSoon: '',
+                            reserved: '',
+                            borrowed: ''
+                        }
+                    },
 
                     /**
                      * The title of the selected menu item.

@@ -78,9 +78,10 @@
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
             <app-drawer id="drawer" swipe-open="[[narrow]]" slot="drawer" on-click="_toggleDrawer">
-                <exlibris-menu-drawer selected="[[routeData.page]]" selected-title="{{title}}"></exlibris-menu-drawer>
+                <exlibris-menu-drawer selected="[[routeData.page]]"
+                                      selected-title="{{title}}"
+                                      count-badges="[[countBadges]]"></exlibris-menu-drawer>
             </app-drawer>
-
             <!-- Main content -->
             <app-header-layout has-scrolling-region>
                 <app-header slot="header" condenses reveals effects="waterfall">
@@ -123,7 +124,21 @@
             }
 
             static get properties() {
-                return {};
+                return {
+
+                    /**
+                     * Defines count badges of the menu items.
+                     */
+                    countBadges: {
+                        type: Object,
+                        value: {
+                            overdue: 1,
+                            shouldReturnSoon: 1,
+                            reserved: 1,
+                            borrowed: 1
+                        }
+                    }
+                };
             }
 
             static get observers() {
