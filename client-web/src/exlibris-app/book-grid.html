@@ -173,8 +173,11 @@
             static get properties() {
                 return {
                     /**
-                     * The array of  {{title: string, authors: string, status: string, statusMessage:string}} objects to display.
-                     * status must have one of the following values: "overdue", "borrowed", "should-return-soon",
+                     * The array of  the next objects:
+                     *  @typedef {Object} Book
+                     * @property {string} title the title of a book
+                     * @property {string} authors string with authors of the book
+                     * @property {string} status  one of the following values: "overdue", "borrowed", "should-return-soon",
                      * "available", "reserved", "expected"
                      */
                     books: Array
