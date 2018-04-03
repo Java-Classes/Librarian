@@ -1,0 +1,181 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
+
+<dom-module id="exlibris-book-tile">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            .book-content {
+                @apply --layout-vertical;
+                border-radius: 3px;
+                box-shadow: 4px 4px 10px #888888;
+                cursor: pointer;
+                background-color: black;
+                width: 160px;
+                height: 300px;
+                margin: 20px;
+            }
+
+            .book-content > iron-image {
+                border-radius: 3px 3px 0 0;
+                height: 75%;
+            }
+
+            .book-content > iron-image:hover {
+                opacity: 0.5;
+            }
+
+            .book-content > .synopsis {
+                @apply --layout-vertical;
+                height: 25%;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: white;
+            }
+
+            .book-content > .synopsis > .title {
+                text-overflow: ellipsis;
+                overflow: hidden;
+                width: 145px;
+                white-space: nowrap;
+                color: #212121;
+                font-size: 14px;
+                padding-left: 9px;
+                margin-top: 3px;
+
+            }
+
+            .book-content > .synopsis > .author {
+                text-overflow: ellipsis;
+                overflow: hidden;
+                width: 150px;
+                white-space: nowrap;
+                color: #616161;
+                font-size: 12px;
+                padding-left: 9px;
+            }
+
+            .book-content > .synopsis > .overdue {
+                background: var(--paper-red-400);
+                color: white;
+                font-size: 12px;
+                text-align: center;
+                margin-top: 5px;
+            }
+
+            .book-content > .synopsis > .available {
+                background: var(--app-primary-color);
+                color: white;
+                font-size: 12px;
+                text-align: center;
+                margin-top: 5px;
+            }
+
+            .book-content > .synopsis > .expected {
+                background: var(--app-primary-color);
+                color: white;
+                font-size: 12px;
+                text-align: center;
+                margin-top: 5px;
+            }
+
+            .book-content > .synopsis > .borrowed {
+                background: var(--paper-green-400);
+                color: white;
+                font-size: 12px;
+                text-align: center;
+                margin-top: 5px;
+            }
+
+            .book-content > .synopsis > .should-return-soon {
+                background: var(--paper-green-400);
+                color: white;
+                font-size: 12px;
+                text-align: center;
+                margin-top: 5px;
+            }
+
+            .book-content > .synopsis > .reserved {
+                background: var(--app-primary-color);
+                color: white;
+                font-size: 12px;
+                text-align: center;
+                margin-top: 5px;
+            }
+
+            .book-content > .synopsis > .ready-to-pick-up {
+                background: var(--app-primary-color);
+                color: white;
+                font-size: 12px;
+                text-align: center;
+                margin-top: 5px;
+            }
+
+            .book-content > .synopsis > .expected-soon {
+                background: var(--app-primary-color);
+                color: white;
+                font-size: 12px;
+                text-align: center;
+                margin-top: 5px;
+            }
+
+        </style>
+
+        <template is="dom-if" if="[[book]]">
+            <div class="book-content">
+                <iron-image sizing="cover"
+                            src="[[book.image]]">
+                </iron-image>
+                <div class="synopsis">
+                    <div class="title" title="[[book.title]]">[[book.title]]</div>
+                    <div class="author" title="[[book.author]]">[[book.author]]</div>
+                    <div class$="[[book.status]]">[[book.statusMessage]]</div>
+                </div>
+            </div>
+        </template>
+    </template>
+
+    <script>
+        /**
+         * `<exlibris-book-tile>` components displays short information about book: picture, synopsis and status.
+         *
+         * @customElement
+         * @polymer
+         */
+        class ExlibrisBookTile extends Polymer.Element {
+            static get is() {
+                return 'exlibris-book-tile';
+            }
+        }
+
+        window.customElements.define(ExlibrisBookTile.is, ExlibrisBookTile);
+    </script>
+</dom-module>

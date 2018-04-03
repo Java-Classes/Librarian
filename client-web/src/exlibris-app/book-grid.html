@@ -19,11 +19,9 @@
   -->
 
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../exlibris-app/exlibris-book-tile.html">
 
-<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../../bower_components/iron-image/iron-image.html">
-<link rel="import" href="../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
-<link rel="import" href="../../bower_components/iron-list/iron-list.html">
 
 <dom-module id="book-grid">
     <template>
@@ -32,139 +30,16 @@
                 display: block;
             }
 
-            .book-content {
-                @apply --layout-vertical;
-                border-radius: 3px;
-                box-shadow: 4px 4px 10px #888888;
-                cursor: pointer;
-                background-color: black;
-                width: 160px;
-                height: 300px;
-                margin: 20px;
-            }
-
-            .book-content > iron-image {
-                border-radius: 3px 3px 0 0;
-                height: 75%;
-            }
-
-            .book-content > iron-image:hover {
-                opacity: 0.5;
-            }
-
-            .book-content > .synopsis {
-                @apply --layout-vertical;
-                height: 25%;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: white;
-            }
-
-            .book-content > .synopsis > .title {
-                text-overflow: ellipsis;
-                overflow: hidden;
-                width: 145px;
-                white-space: nowrap;
-                color: #212121;
-                font-size: 14px;
-                padding-left: 9px;
-                margin-top: 3px;
-
-            }
-
-            .book-content > .synopsis > .author {
-                text-overflow: ellipsis;
-                overflow: hidden;
-                width: 150px;
-                white-space: nowrap;
-                color: #616161;
-                font-size: 12px;
-                padding-left: 9px;
-            }
-
-            .book-content > .synopsis > .overdue {
-                background: var(--paper-red-400);
-                color: white;
-                font-size: 12px;
-                text-align: center;
-                margin-top: 5px;
-            }
-
-            .book-content > .synopsis > .available {
-                background: var(--app-primary-color);
-                color: white;
-                font-size: 12px;
-                text-align: center;
-                margin-top: 5px;
-            }
-
-            .book-content > .synopsis > .expected {
-                background: var(--app-primary-color);
-                color: white;
-                font-size: 12px;
-                text-align: center;
-                margin-top: 5px;
-            }
-
-            .book-content > .synopsis > .borrowed {
-                background: var(--paper-green-400);
-                color: white;
-                font-size: 12px;
-                text-align: center;
-                margin-top: 5px;
-            }
-
-            .book-content > .synopsis > .should-return-soon {
-                background: var(--paper-green-400);
-                color: white;
-                font-size: 12px;
-                text-align: center;
-                margin-top: 5px;
-            }
-
-            .book-content > .synopsis > .reserved {
-                background: var(--app-primary-color);
-                color: white;
-                font-size: 12px;
-                text-align: center;
-                margin-top: 5px;
-            }
-            .book-content > .synopsis > .ready-to-pick-up {
-                background: var(--app-primary-color);
-                color: white;
-                font-size: 12px;
-                text-align: center;
-                margin-top: 5px;
-            }.book-content > .synopsis > .expected-soon {
-                background: var(--app-primary-color);
-                color: white;
-                font-size: 12px;
-                text-align: center;
-                margin-top: 5px;
-            }
-
         </style>
 
         <iron-list items="[[books]]" as="book" scroll-target="document" grid>
             <template>
-                <div class="book-container">
-                    <div class="book-content" tabindex$="[[tabIndex]]">
-                        <iron-image sizing="cover"
-                                    src="[[book.image]]">
-                        </iron-image>
-                        <div class="synopsis">
-                            <div class="title" title="[[book.title]]">[[book.title]]</div>
-                            <div class="author" title="[[book.author]]">[[book.author]]</div>
-                            <div class$="[[book.status]]">[[book.statusMessage]]</div>
-                        </div>
-                    </div>
-                </div>
+                <exlibris-book-tile book="[[book]]"></exlibris-book-tile>
             </template>
         </iron-list>
 
         <!-- this element loads more books when the user scrolls down and reached the lower threshold -->
-        <iron-scroll-threshold id="scrollTheshold"
+        <iron-scroll-threshold id="scrollThreshold"
                                lower-threshold="5"
                                on-lower-threshold="_onLowerThreshold"
                                scroll-target="document">
@@ -238,6 +113,7 @@
                     }
                 });
             }
+
             _onLowerThreshold() {
                 console.log('Add more books');
             }
