@@ -44,6 +44,7 @@
 <script>
     suite('exlibris-menu-drawer', function () {
         const SELECTED = 'all-books';
+        const SELECTED_LINK = '#/' + SELECTED;
         let element;
 
         setup(() => {
@@ -55,9 +56,13 @@
 
             const elementShadowRoot = element.shadowRoot;
             const selector = elementShadowRoot.querySelector('#menu-selector');
+            selector.forceSynchronousItemUpdate();
+
             const selectedDataName = selector.selected;
+            const selectedItemLink = selector.selectedItem.link;
 
             assert.equal(selectedDataName, SELECTED);
+            assert.equal(selectedItemLink, SELECTED_LINK);
         });
     });
 </script>

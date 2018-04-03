@@ -8,10 +8,10 @@
         const store = Redux.createStore(reducer);
         ReduxMixin = PolymerRedux(store);
 
-        window.ExlibrisApp = {};
-        ExlibrisApp.store = store;
-        ExlibrisApp.reducer = reducer;
-        ExlibrisApp.initialState = initialState;
-        ExlibrisApp.ReduxMixin = ReduxMixin;
+        window.ExlibrisApplication = {};
+        ExlibrisApplication.store = store;
+        ExlibrisApplication.reducer = reducer;
+        ExlibrisApplication.initialState = initialState;
+        ExlibrisApplication.ReduxMixin = ReduxMixin;
     }
 </script>
