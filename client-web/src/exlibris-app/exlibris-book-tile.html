@@ -83,22 +83,19 @@
                 padding-left: 9px;
             }
 
-            .book-content > .synopsis > .status-message {
+            .book-content > .synopsis > #status-text {
+                background: var(--exlibris-app-primary-color);
                 color: white;
                 font-size: 12px;
                 text-align: center;
                 margin-top: 5px;
             }
 
-            .book-content > .synopsis > .overdue {
+            .book-content > .synopsis > #status-text.warn {
                 background: var(--paper-red-400);
             }
 
-            .book-content > .synopsis > .available, .expected, .reserved, .ready-to-pick-up, .expected-soon {
-                background: var(--exlibris-app-primary-color);
-            }
-
-            .book-content > .synopsis > .borrowed, .should-return-soon {
+            .book-content > .synopsis > #status-text.active {
                 background: var(--paper-green-400);
             }
         </style>
@@ -111,7 +108,7 @@
                 <div class="synopsis">
                     <div class="title" title="[[book.title]]">[[book.title]]</div>
                     <div class="author" title="[[book.author]]">[[book.author]]</div>
-                    <div class$="[[book.status]] status-message">[[book.statusMessage]]</div>
+                    <div id="status-text" class$="[[statusClass]]">[[book.statusMessage]]</div>
                 </div>
             </div>
         </template>
@@ -128,6 +125,7 @@
             static get is() {
                 return 'exlibris-book-tile';
             }
+
             static get properties() {
                 return {
                     /**
@@ -138,8 +136,29 @@
                      * @property {string} status  one of the following values: "overdue", "borrowed", "should-return-soon",
                      * "available", "reserved", "expected","ready-to-pick-up"
                      */
-                    book: Object
+                    book: Object,
+                    statusClass: {
+                        value: String,
+                        computed: "_computeClassForStatusMessage(book.status)"
+                    }
+
                 };
+            }
+
+            /**
+             * Creates statusClass property depending on book.status.
+             *
+             * @param status status of the book.
+             * @returns {string} class for status message.
+             * @private
+             */
+            _computeClassForStatusMessage(status) {
+                if (status === BOOK_STATUS.OVERDUE) {
+                    return "warn";
+                }
+                else if (status === BOOK_STATUS.BORROWED || status === BOOK_STATUS.SHOULD_RETURN_SOON) {
+                    return "active";
+                }
             }
         }
 
