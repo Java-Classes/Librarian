@@ -39,7 +39,7 @@
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 
-<link rel="import" href="./book-grid.html">
+<link rel="import" href="exlibris-book-grid.html">
 <link rel="import" href="./menu/menu-item.html">
 <link rel="import" href="./book_values.html">
 
@@ -173,14 +173,18 @@
                         attr-for-selected="data-name"
                         fallback-selection="view404"
                         role="main">
-                    <book-grid data-name="all-books" books="[[allBooks]]"></book-grid>
-                    <book-grid data-name="overdue-books" books="[[overdueBooks]]"></book-grid>
-                    <book-grid data-name="borrowed-books" books="[[borrowedBooks]]"></book-grid>
-                    <book-grid data-name="reserved-books" books="[[reservedBooks]]"></book-grid>
-                    <book-grid data-name="expected-soon"
-                               books="[[expectedSoonBooks]]"></book-grid>
-                    <book-grid data-name="should-return-books"
-                               books="[[shouldReturnBooks]]"></book-grid>
+                    <exlibris-book-grid data-name="all-books"
+                                        books="[[allBooks]]"></exlibris-book-grid>
+                    <exlibris-book-grid data-name="overdue-books"
+                                        books="[[overdueBooks]]"></exlibris-book-grid>
+                    <exlibris-book-grid data-name="borrowed-books"
+                                        books="[[borrowedBooks]]"></exlibris-book-grid>
+                    <exlibris-book-grid data-name="reserved-books"
+                                        books="[[reservedBooks]]"></exlibris-book-grid>
+                    <exlibris-book-grid data-name="expected-soon"
+                                        books="[[expectedSoonBooks]]"></exlibris-book-grid>
+                    <exlibris-book-grid data-name="should-return-books"
+                                        books="[[shouldReturnBooks]]"></exlibris-book-grid>
                     <div data-name="view404">View404</div>
                 </iron-pages>
             </app-header-layout>

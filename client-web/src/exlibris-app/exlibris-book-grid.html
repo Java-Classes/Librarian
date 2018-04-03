@@ -23,7 +23,7 @@
 <link rel="import" href="../exlibris-app/exlibris-book-tile.html">
 
 
-<dom-module id="book-grid">
+<dom-module id="exlibris-book-grid">
     <template>
         <style>
             :host {
@@ -40,7 +40,7 @@
 
         <!-- this element loads more books when the user scrolls down and reached the lower threshold -->
         <iron-scroll-threshold id="scrollThreshold"
-                               lower-threshold="5"
+                               lower-threshold="30"
                                on-lower-threshold="_onLowerThreshold"
                                scroll-target="document">
         </iron-scroll-threshold>
@@ -54,9 +54,9 @@
          * @customElement
          * @polymer
          */
-        class BookGrid extends Polymer.Element {
+        class ExlibrisBookGrid extends Polymer.Element {
             static get is() {
-                return 'book-grid';
+                return 'exlibris-book-grid';
             }
 
             static get properties() {
@@ -67,7 +67,7 @@
                      * @property {string} title the title of a book
                      * @property {string} authors string with authors of the book
                      * @property {string} status  one of the following values: "overdue", "borrowed", "should-return-soon",
-                     * "available", "reserved", "expected"
+                     * "available", "reserved", "expected","ready-to-pick-up"
                      */
                     books: {
                         Array,
@@ -76,7 +76,12 @@
                 };
             }
 
-
+            /**
+             * Creates statusMessage depending on the status
+             *
+             * @param books the array of books
+             * @private
+             */
             _booksChanged(books) {
                 books.forEach(b => {
                     switch (b.status) {
@@ -119,6 +124,6 @@
             }
         }
 
-        window.customElements.define(BookGrid.is, BookGrid);
+        window.customElements.define(ExlibrisBookGrid.is, ExlibrisBookGrid);
     </script>
 </dom-module>
