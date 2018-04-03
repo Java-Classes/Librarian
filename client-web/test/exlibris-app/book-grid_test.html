@@ -24,7 +24,7 @@
 <script>
     suite('book-grid', function () {
 
-        const BookGridSelectors = {
+        const BOOK_GRID_SELECTORS = {
             SYNOPSIS_SELECTOR: ".bookContent >.synopsis",
             TITLE_SELECTOR: ".bookContent >.synopsis>.title",
             AUTHOR_SELECTOR: ".bookContent >.synopsis>.author",
@@ -39,17 +39,17 @@
         test('should display `book` array in the iron list', function (done) {
             bookGrid.books = [...TEST_BOOKS];
             flush(function () {
-                const titles = bookGrid.shadowRoot.querySelectorAll(BookGridSelectors.TITLE_SELECTOR);
+                const titles = bookGrid.shadowRoot.querySelectorAll(BOOK_GRID_SELECTORS.TITLE_SELECTOR);
                 assert.equal(TEST_BOOKS[0].title, titles[0].innerHTML);
                 assert.equal(TEST_BOOKS[1].title, titles[1].innerHTML);
-                const authors = bookGrid.shadowRoot.querySelectorAll(BookGridSelectors.AUTHOR_SELECTOR);
+                const authors = bookGrid.shadowRoot.querySelectorAll(BOOK_GRID_SELECTORS.AUTHOR_SELECTOR);
                 assert.equal(TEST_BOOKS[0].author, authors[0].innerHTML);
                 assert.equal(TEST_BOOKS[1].author, authors[1].innerHTML);
-                const firstStatus = bookGrid.shadowRoot.querySelector(BookGridSelectors.SYNOPSIS_SELECTOR + ">." + TEST_BOOKS[0].status);
+                const firstStatus = bookGrid.shadowRoot.querySelector(BOOK_GRID_SELECTORS.SYNOPSIS_SELECTOR + ">." + TEST_BOOKS[0].status);
                 assert.equal(TEST_BOOKS[0].statusMessage, firstStatus.innerHTML);
-                const secondStatus = bookGrid.shadowRoot.querySelector(BookGridSelectors.SYNOPSIS_SELECTOR + ">." + TEST_BOOKS[1].status);
+                const secondStatus = bookGrid.shadowRoot.querySelector(BOOK_GRID_SELECTORS.SYNOPSIS_SELECTOR + ">." + TEST_BOOKS[1].status);
                 assert.equal(TEST_BOOKS[1].statusMessage, secondStatus.innerHTML);
-                const images = bookGrid.shadowRoot.querySelectorAll(BookGridSelectors.IRON_IMAGE_SELECTOR);
+                const images = bookGrid.shadowRoot.querySelectorAll(BOOK_GRID_SELECTORS.IRON_IMAGE_SELECTOR);
                 const firstImageURL = images[0].shadowRoot.querySelector("img").getAttribute("src");
                 assert.equal(TEST_BOOKS[0].image, firstImageURL);
                 const secondImageURL = images[1].shadowRoot.querySelector("img").getAttribute("src");

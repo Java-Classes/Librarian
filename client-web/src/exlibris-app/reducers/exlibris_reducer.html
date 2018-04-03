@@ -81,7 +81,7 @@
     function createBorrowBooks(books, overdue, shouldReturn) {
         const borrowedBooks = books.map(book => {
             const newBook = this.cloneMainFields(book);
-            newBook["status"] = BookStatus.BORROWED;
+            newBook["status"] = BOOK_STATUS.BORROWED;
             newBook["statusMessage"] = "DUE ON " + book.dueDate.toLocaleDateString();
             newBook["fullStatusMessage"] = "Borrowed by you.\nReturn before " + book.dueDate.toLocaleDateString() + '.';
             return newBook;
@@ -106,7 +106,7 @@
             const oneDay = 1000 * 60 * 60 * 24;
             if (Math.floor((new Date() - book.dueDate) / oneDay) <= 3) {
                 const newBook = this.cloneMainFields(book);
-                newBook["status"] = BookStatus.SHOULD_RETURN_SOON;
+                newBook["status"] = BOOK_STATUS.SHOULD_RETURN_SOON;
                 newBook["statusMessage"] = "DUE ON " + book.dueDate.toLocaleDateString();
                 newBook["fullStatusMessage"] = "Borrowed by you.\nReturn before " + book.dueDate.toLocaleDateString() + '.';
                 return newBook;
@@ -129,7 +129,7 @@
     function createOverdueBooks(books) {
         const overdueBooks = books.map(book => {
             const newBook = cloneMainFields(book);
-            newBook["status"] = BookStatus.OVERDUE;
+            newBook["status"] = BOOK_STATUS.OVERDUE;
             const oneDay = 1000 * 60 * 60 * 24;
             const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / oneDay);
             newBook["statusMessage"] = numberOfOverdueDays + " DAYS OVERDUE";
@@ -156,7 +156,7 @@
     function createReservedBooks(books) {
         const readyToPickUpBooks = books.readyToPickUp.map(book => {
             const newBook = cloneMainFields(book);
-            newBook["status"] = BookStatus.RESERVED;
+            newBook["status"] = BOOK_STATUS.RESERVED;
             newBook["statusMessage"] = "READY TO PICK UP";
             newBook["fullStatusMessage"] = "Reserved for you.\nReady to pick up.";
             return newBook;
@@ -164,7 +164,7 @@
 
         const expectedUserBooks = books.expected.map(book => {
                 const newBook = cloneMainFields(book);
-                newBook["status"] = BookStatus.RESERVED;
+                newBook["status"] = BOOK_STATUS.RESERVED;
                 newBook["statusMessage"] = "EXPECTED ON " + book.date.toLocaleDateString();
                 newBook["fullStatusMessage"] = "Reserved for you.\nExpected on " +
                     book.date.toLocaleDateString() + '.';
@@ -190,12 +190,12 @@
             const newBook = cloneMainFields(book);
             if (book.availableCount !== undefined) {
                 if (book.availableCount > 0) {
-                    newBook["status"] = BookStatus.AVAILABLE;
+                    newBook["status"] = BOOK_STATUS.AVAILABLE;
                     newBook["statusMessage"] = book.availableCount + " AVAILABLE";
                     newBook["fullStatusMessage"] = book.availableCount + ' available.' + '\n' + 'Scan QR code to borrow.';
                     return newBook;
                 }
-                newBook["status"] = BookStatus.EXPECTED;
+                newBook["status"] = BOOK_STATUS.EXPECTED;
                 newBook["statusMessage"] = "EXPECTED";
                 newBook["fullStatusMessage"] = "Not available.";
                 return newBook;
@@ -222,7 +222,7 @@
         books.forEach(book => {
             if (book.expectedSoon) {
                 const newBook = cloneMainFields(book);
-                newBook["status"] = BookStatus.EXPECTED;
+                newBook["status"] = BOOK_STATUS.EXPECTED;
                 newBook["statusMessage"] = "EXPECTED SOON";
                 expectedSoonBooks.push(newBook);
             }
