@@ -25,37 +25,37 @@
     <meta name="viewport"
           content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>item-adder test</title>
+    <title>exlibris-menu-item test</title>
 
     <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../../bower_components/web-component-tester/browser.js"></script>
 
     <link rel="import" href="../../../src/exlibris-app/menu/exlibris-menu-item.html">
+    <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+    <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 
 </head>
 <body>
 
 <test-fixture id="BasicTestFixture">
     <template>
-        <menu-item></menu-item>
+        <exlibris-menu-item></exlibris-menu-item>
     </template>
 </test-fixture>
 
 <test-fixture id="TestFixtureWithParams">
     <template>
-        <menu-item title="All Books"
-                   link="/all-books">
+        <exlibris-menu-item title="All Books">
             <iron-icon icon="menu"
                        slot="icon"></iron-icon>
-        </menu-item>
+        </exlibris-menu-item>
     </template>
 </test-fixture>
 
 <script>
-    suite('menu-item', function () {
+    suite('exlibris-menu-item', function () {
         const TITLE = 'title';
         const COUNT = 2;
-        const LINK = '/someLink';
 
         test('should display title and count badge.', function () {
             const element = fixture('BasicTestFixture');
@@ -77,20 +77,6 @@
 
             element.set('count', COUNT);
             assert.equal(badge.innerHTML, COUNT);
-        });
-
-        test('should fire `menu-item-click` event on click with specified link.', function (done) {
-            const element = fixture('BasicTestFixture');
-            const elementShadowRoot = element.shadowRoot;
-            const body = elementShadowRoot.querySelector('#menu-item-body');
-
-            element.addEventListener('menu-item-click', function (e) {
-                assert.equal(e.detail, LINK);
-                done();
-            });
-
-            element.set('link', LINK);
-            body.click();
         });
     });
 </script>
