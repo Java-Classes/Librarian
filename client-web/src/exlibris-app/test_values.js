@@ -34,7 +34,7 @@ const libraryTestBooks = [
         "\n" +
         "Также не пропустите роман Блейка Пирса «КОГДА ОНА УШЛА» (Загадки Райли Пейдж—Книга #1), бестселлер #1 с более чем 900 отзывов с высшей оценкой. Роман доступен для бесплатного скачивания!",
         availableCount: 3,
-        status: "available"
+        status: "AVAILABLE"
     }, {
         id: "8535902771",
         title: "The Martian",
@@ -54,7 +54,7 @@ const libraryTestBooks = [
         "\n" +
         "Andy Weir's second novel Artemis is now available",
         availableCount: 0,
-        status: "expected"
+        status: "EXPECTED"
     }, {
 
         id: "8535902772",
@@ -79,7 +79,7 @@ const libraryTestBooks = [
         "How to unit test and practice test-driven development\n" +
         "This book is a must for any developer, software engineer, project manager, team lead, or systems analyst with an interest in producing better code.",
         availableCount: 4,
-        status: "available"
+        status: "AVAILABLE"
     }, {
         id: "8535902773",
         title: "Java Generics and Collections: Speed Up the Java Development Process",
@@ -102,7 +102,7 @@ const libraryTestBooks = [
         "Performance implications of different collections\n" +
         "Generics and the new collection libraries they inspired take Java to anew level. If you want to take your software development practice toa new level, this book is essential reading.",
         availableCount: 0,
-        status: "expected"
+        status: "EXPECTED"
     }, {
 
         id: "8535902774",
@@ -131,7 +131,7 @@ const libraryTestBooks = [
         "\n" +
         "This book features an enhanced, layflat binding, which allows the book to stay open more easily when placed on a flat surface. This special binding method—noticeable by a small space inside the spine—also increases durability.",
         availableCount: 6,
-        status: "available"
+        status: "AVAILABLE"
     }, {
         id: "8535902776",
         title: "Elon Musk: How the Billionaire CEO of SpaceX and Tesla is Shaping our Future",
@@ -162,7 +162,7 @@ const libraryTestBooks = [
         "Style and approach\n" +
         "This is your guide to designing custom web components, and the concepts are explained in a conversational and easy-to-follow style. Each topic is explained through examples, with detailed explanations wherever required.",
         availableCount: 8,
-        status: "available"
+        status: "AVAILABLE"
     }, {
 
         id: "8535902777",
@@ -180,7 +180,7 @@ const libraryTestBooks = [
         "“After reading it over a couple of hours and putting its ideas to work for the past five years, I can say it has done more to improve my abilities as a Web designer than any other book.”\n" +
         "–Jeffrey Zeldman, author of Designing with Web Standards",
         availableCount: 10,
-        status: "available"
+        status: "AVAILABLE"
     }, {
         id: "8535902778",
         title: "Node.js в действии. 2-е издание",
@@ -197,7 +197,7 @@ const libraryTestBooks = [
         author: "Стоян Стефанов",
         description: "Незаменимая вводная книга по технологии React для взыскательных JavaScript-разработчиков. Все самое интересное о сверхпопулярном инструменте от компании Facebook. В книге рассмотрены основные концепции высокопроизводительного программирования при помощи React, реальные примеры кода и доступные блок-схемы. Прочитав ее, вы научитесь: • Создавать и использовать собственные компоненты React наряду с универсальными компонентами DOM • Писать компоненты для таблиц данных, позволяющие редактировать, сортировать таблицу, выполнять в ней поиск и экспортировать ее содержимое • Использовать дополнительный синтаксис JSX в качестве альтернативы для вызовов функций • Запускать низкоуровневый гибкий процесс сборки, который освободит вам время и поможет сосредоточиться на работе с React • Работать с инструментами ESLint, Flow и Jest, позволяющими проверять и тестировать код по мере разработки приложения • Обеспечивать коммуникацию между компонентами при помощи Flux В итоге у вас получится полноценное веб-приложение, позволяющее сохранять данные на стороне клиента.",
         availableCount: 0,
-        status: "expected"
+        status: "EXPECTED"
     }, {
 
         id: "8535902710",
@@ -230,7 +230,7 @@ const libraryTestBooks = [
         "This is an easy-to-follow, example-based, comprehensive introduction to all the major features in Qt. The content of each chapter is explained and organized around one or multiple simple game examples to learn Qt in a fun way.\n" +
         "\n",
         availableCount: 13,
-        status: "available"
+        status: "AVAILABLE"
     }, {
 
         id: "8535902711",
@@ -240,7 +240,7 @@ const libraryTestBooks = [
         category: "Java Programming",
         description: "",
         availableCount: 286,
-        status: "available"
+        status: "AVAILABLE"
     }, {
         id: "8535902712",
         title: "JavaScript: The Good Parts: The Good Parts",
@@ -265,7 +265,7 @@ const libraryTestBooks = [
         "\n" +
         "With JavaScript: The Good Parts, you'll discover a beautiful, elegant, lightweight and highly expressive language that lets you create effective code, whether you're managing object libraries or just trying to get Ajax to run fast. If you develop sites or applications for the Web, this book is an absolute must.",
         availableCount: 15,
-        status: "available"
+        status: "AVAILABLE"
     }, {
         id: "8535902713",
         title: "Java in a Nutshell: A Desktop Quick Reference, Edition 6",
@@ -285,7 +285,7 @@ const libraryTestBooks = [
         "Use Nashorn to execute JavaScript on the Java Virtual Machine\n" +
         "Become familiar with development tools in OpenJDK",
         availableCount: 5,
-        status: "available"
+        status: "AVAILABLE"
     }, {
         id: "8535902714",
         title: "You Don't Know JS: ES6 & Beyond",
@@ -305,7 +305,7 @@ const libraryTestBooks = [
         "Extend your program’s capabilities through meta programming\n" +
         "Preview features likely coming to JS beyond ES6",
         availableCount: 1,
-        status: "available"
+        status: "AVAILABLE"
     }, {
         id: "8535902715",
         title: "Прежде Чем Он Согрешит ",
@@ -321,7 +321,7 @@ const libraryTestBooks = [
         "\n" +
         "Также не пропустите роман Блейка Пирса «КОГДА ОНА УШЛА» (Загадки Райли Пейдж—Книга #1), бестселлер #1 с более чем 900 отзывов с высшей оценкой. Роман доступен для бесплатного скачивания!",
         availableCount: 3,
-        status: "available"
+        status: "AVAILABLE"
     }, {
         id: "8535902716",
         title: "The Martian",
@@ -341,7 +341,7 @@ const libraryTestBooks = [
         "\n" +
         "Andy Weir's second novel Artemis is now available",
         availableCount: 2,
-        status: "available"
+        status: "AVAILABLE"
     },{
         id: "8535902718",
         title: "Clean Code: A Handbook of Agile Software Craftsmanship",
@@ -365,7 +365,7 @@ const libraryTestBooks = [
         "How to unit test and practice test-driven development\n" +
         "This book is a must for any developer, software engineer, project manager, team lead, or systems analyst with an interest in producing better code.",
         availableCount: 1,
-        status: "available"
+        status: "AVAILABLE"
     }, {
         id: "8535902720",
         title: "Java Generics and Collections: Speed Up the Java Development Process",
@@ -388,7 +388,7 @@ const libraryTestBooks = [
         "Performance implications of different collections\n" +
         "Generics and the new collection libraries they inspired take Java to anew level. If you want to take your software development practice toa new level, this book is essential reading.",
         availableCount: 226,
-        status: "available"
+        status: "AVAILABLE"
     }, {
         id: "8535902721",
         title: "The C++ Programming Language: Edition 4",
@@ -416,7 +416,7 @@ const libraryTestBooks = [
         "\n" +
         "This book features an enhanced, layflat binding, which allows the book to stay open more easily when placed on a flat surface. This special binding method—noticeable by a small space inside the spine—also increases durability.",
         availableCount: 20,
-        status: "available"
+        status: "AVAILABLE"
     }, {
         id: "8535902723",
         title: "Elon Musk: How the Billionaire CEO of SpaceX and Tesla is Shaping our Future",
@@ -430,7 +430,7 @@ const libraryTestBooks = [
         "\n" +
         "Elon Musk is the Steve Jobs of the present and the future, and for the past twelve months, he has been shadowed by tech reporter, Ashlee Vance. Elon Musk: How the Billionaire CEO of Spacex and Tesla is Shaping our Future is an important, exciting and intelligent account of the real-life Iron Man.",
         availableCount: 26,
-        status: "available"
+        status: "AVAILABLE"
     },  {
         id: "8535902725",
         title: "Don't Make Me Think, Revisited: A Common Sense Approach to Web Usability, Edition 3",
@@ -447,7 +447,7 @@ const libraryTestBooks = [
         "“After reading it over a couple of hours and putting its ideas to work for the past five years, I can say it has done more to improve my abilities as a Web designer than any other book.”\n" +
         "–Jeffrey Zeldman, author of Designing with Web Standards",
         availableCount: 6,
-        status: "available"
+        status: "AVAILABLE"
     }, {
         id: "8535902726",
         title: "Node.js в действии. 2-е издание",
@@ -456,7 +456,7 @@ const libraryTestBooks = [
         category: "JavaScript",
         description: "Реактивное программирование - совершенно новая и многообещающая парадигма, позволяющая эффективно решать задачи, связанные с созданием распределенных систем и программированием для JVM. Эта книга расскажет, как организовать поток задач, наладить обмен сообщениями между элементами программы, обеспечить параллельную и конкурентную обработку и создавать надежные, отказоустойчивые и гибкие приложения. Перед вами - основополагающая работа по шаблонам проектирования (design patterns) этой парадигмы. Книга проиллюстрирована многочисленными примерами и ориентирована на опытных Java- и Scala-разработчиков",
         availableCount: 14,
-        status: "available"
+        status: "AVAILABLE"
     }, {
         id: "8535902727",
         title: "React.js. Быстрый старт",
@@ -465,7 +465,7 @@ const libraryTestBooks = [
         category: "JavaScript",
         description: "Незаменимая вводная книга по технологии React для взыскательных JavaScript-разработчиков. Все самое интересное о сверхпопулярном инструменте от компании Facebook. В книге рассмотрены основные концепции высокопроизводительного программирования при помощи React, реальные примеры кода и доступные блок-схемы. Прочитав ее, вы научитесь: • Создавать и использовать собственные компоненты React наряду с универсальными компонентами DOM • Писать компоненты для таблиц данных, позволяющие редактировать, сортировать таблицу, выполнять в ней поиск и экспортировать ее содержимое • Использовать дополнительный синтаксис JSX в качестве альтернативы для вызовов функций • Запускать низкоуровневый гибкий процесс сборки, который освободит вам время и поможет сосредоточиться на работе с React • Работать с инструментами ESLint, Flow и Jest, позволяющими проверять и тестировать код по мере разработки приложения • Обеспечивать коммуникацию между компонентами при помощи Flux В итоге у вас получится полноценное веб-приложение, позволяющее сохранять данные на стороне клиента.",
         availableCount: 4,
-        status: "available"
+        status: "AVAILABLE"
     }, {
         id: "8535902728",
         title: "Game Programming Using Qt: Beginner's Guide",
@@ -497,7 +497,7 @@ const libraryTestBooks = [
         "This is an easy-to-follow, example-based, comprehensive introduction to all the major features in Qt. The content of each chapter is explained and organized around one or multiple simple game examples to learn Qt in a fun way.\n" +
         "\n",
         availableCount: 13,
-        status: "available"
+        status: "AVAILABLE"
     }, {
         id: "8535902729",
         title: "Pro Spring 5: An In-Depth Guide to the Spring Framework and Its Tools, Edition 5",
@@ -523,7 +523,7 @@ const libraryTestBooks = [
         "\n" +
         "Experienced Java and enterprise Java developers and programmers. Some experience with Spring highly recommended.",
         availableCount: 286,
-        status: "available"
+        status: "AVAILABLE"
     }, {
         id: "853590277530",
         title: "JavaScript: The Good Parts: The Good Parts",
@@ -548,7 +548,7 @@ const libraryTestBooks = [
         "\n" +
         "With JavaScript: The Good Parts, you'll discover a beautiful, elegant, lightweight and highly expressive language that lets you create effective code, whether you're managing object libraries or just trying to get Ajax to run fast. If you develop sites or applications for the Web, this book is an absolute must.",
         availableCount: 15,
-        status: "available"
+        status: "AVAILABLE"
     }, {
         id: "8535902731",
         title: "Java in a Nutshell: A Desktop Quick Reference, Edition 6",
@@ -568,7 +568,7 @@ const libraryTestBooks = [
         "Use Nashorn to execute JavaScript on the Java Virtual Machine\n" +
         "Become familiar with development tools in OpenJDK",
         availableCount: 5,
-        status: "available"
+        status: "AVAILABLE"
     }, {
         id: "8535902732",
         title: "You Don't Know JS: ES6 & Beyond",
@@ -588,7 +588,7 @@ const libraryTestBooks = [
         "Extend your program’s capabilities through meta programming\n" +
         "Preview features likely coming to JS beyond ES6",
         availableCount: 1,
-        status: "available"
+        status: "AVAILABLE"
     }
 ];
 
@@ -603,7 +603,7 @@ const expectedSoonLibraryBooks = [{
     "The book begins with a summary of the nontechnical aspects of interviewing, such as common mistakes, strategies for a great interview, perspectives from the other side of the table, tips on negotiating the best offer, and a guide to the best ways to use EPI.\n" +
     "\n" +
     "The technical core of EPI is a sequence of chapters on basic and advanced data structures, searching, sorting, broad algorithmic principles, concurrency, and system design. Each chapter consists of a brief review, followed by a broad and thought-provoking series of problems. We include a summary of data structure, algorithm, and problem solving patterns.",
-    status: "expected-soon"
+    status: "EXPECTED_SOON"
 }];
 const userTestBooks = {
         reserved: [{
@@ -625,7 +625,7 @@ const userTestBooks = {
             "Focus on the language and its most fundamental libraries: java.lang, java.util, and, to a lesser extent, java.util.concurrent and java.io\n" +
             "Simply put, Effective Java™, Second Edition, presents the most practical, authoritative guidelines available for writing efficient, well-designed programs.",
             date: new Date(new Date().getTime() + 3 * 172800000),
-            status: "ready-to-pick-up"
+            status: "READY_TO_PICK_UP"
         }, {
 
             id: "8535902719",
@@ -640,7 +640,7 @@ const userTestBooks = {
             "Quick Start Guide to JavaFX by J.F. DiMarzio\n" +
             "Mastering JavaFX 8 Controls: Create Custom JavaFX 8 Controls for Cross-Platform Applications by Hendrik Ebbers",
             date: new Date(new Date().getTime() + 21 * 172800000),
-            status: "reserved"
+            status: "RESERVED"
         }
         ],
         borrowed: [{
@@ -673,7 +673,7 @@ const userTestBooks = {
             "Style and approach\n" +
             "This is your guide to designing custom web components, and the concepts are explained in a conversational and easy-to-follow style. Each topic is explained through examples, with detailed explanations wherever required.",
             dueDate: new Date(new Date().getTime() + 14 * 172800000),
-            status: "borrowed"
+            status: "BORROWED"
         }],
         overdue: [{
             id: "8535902722",
@@ -688,7 +688,7 @@ const userTestBooks = {
             "Quick Start Guide to JavaFX by J.F. DiMarzio\n" +
             "Mastering JavaFX 8 Controls: Create Custom JavaFX 8 Controls for Cross-Platform Applications by Hendrik Ebbers",
             dueDate: new Date(new Date().getTime() - 2 * 1000 * 60 * 60 * 24),
-            status: "overdue"
+            status: "OVERDUE"
         }],
         shouldReturnSoon: [{
             id: "8535902724",
@@ -720,7 +720,7 @@ const userTestBooks = {
             "Style and approach\n" +
             "This is your guide to designing custom web components, and the concepts are explained in a conversational and easy-to-follow style. Each topic is explained through examples, with detailed explanations wherever required.",
             dueDate: new Date(new Date().getTime() + 14 * 172800000),
-            status: "borrowed"
+            status: "BORROWED"
         }]
     }
 ;
