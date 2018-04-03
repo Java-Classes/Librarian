@@ -1,9 +1,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/paper-styles/color.html">
-<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 
-<dom-module id="menu-item">
+<dom-module id="exlibris-menu-item">
     <template>
         <style>
             :host {
@@ -14,9 +12,9 @@
                 cursor: pointer;
                 margin: 4%;
                 align-items: center;
-                color: var(--menu-item-title-color, black);
-                border-radius: 3px;
-                background-color: var(--menu-item-background-color, white);
+                color: var(--exlibris-menu-item-title-color, black);
+                border-radius: var(--exlibris-menu-item-border-radius, 3px);
+                background-color: var(--exlibris-menu-item-background-color, white);
                 line-height: 40px;
                 --iron-icon-height: 26px;
                 --iron-icon-width: 26px;
@@ -34,11 +32,8 @@
             }
         </style>
 
-        <div id="menu-item-body" class="item" on-click="_handleClick">
-            <slot name="icon">
-                <iron-icon icon="book"
-                           style="--iron-icon-fill-color: var(--google-grey-700)"></iron-icon>
-            </slot>
+        <div id="menu-item-body" class="item">
+            <slot name="icon"></slot>
             <span id="menu-item-title" class="name">[[title]]</span>
             <span id="menu-item-badge" class="count-badge">[[count]]</span>
         </div>
@@ -47,9 +42,8 @@
 
     <script>
         /**
-         * The single item of menu list.
-         * Provides the clickable area with title. Can be customized with
-         * icon and the count number.
+         * The single item of the exlibris menu drawer.
+         * Can be customized with an icon and a count number.
          *
          * The following custom properties are also available for styling:
          *
@@ -57,28 +51,18 @@
          * ----------------|-------------|----------
          * `--menu-item-title-color` | Element text color | black
          * `--menu-item-background-color` | Background color of the element display area | white
+         * `--exlibris-menu-item-border-radius` | Item border radius | 3px
          *
          * @customElement
          * @polymer
          */
-        class MenuItem extends Polymer.Element {
+        class ExlibrisMenuItem extends Polymer.Element {
             static get is() {
-                return 'menu-item';
+                return 'exlibris-menu-item';
             }
 
             static get properties() {
                 return {
-                    /**
-                     * Fired on `element` display area mouse click event.
-                     *
-                     * @event menu-item-click
-                     * @param {detail} the link to redirect application.
-                     */
-
-                    /**
-                     * The link attached to the `element` click event.
-                     */
-                    link: String,
 
                     /**
                      * The element title to display.
@@ -91,17 +75,8 @@
                     count: Number
                 };
             }
-
-            /**
-             * Handles user click on item display area.
-             *
-             * @private
-             */
-            _handleClick() {
-                this.dispatchEvent(new CustomEvent('menu-item-click', {detail: this.link}));
-            }
         }
 
-        window.customElements.define(MenuItem.is, MenuItem);
+        window.customElements.define(ExlibrisMenuItem.is, ExlibrisMenuItem);
     </script>
 </dom-module>
