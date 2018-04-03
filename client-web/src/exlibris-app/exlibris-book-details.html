@@ -34,65 +34,103 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="./book_values.html">
 
-<dom-module id="book-dialog">
+<dom-module id="exlibris-book-details">
     <template>
         <style>
+
             :host {
-                display: block;
-                position: center;
+                display: flex;
+                justify-content: center;
             }
 
-            .head-region {
+            .book-card {
+                @apply --layout-vertical;
+                border-radius: 3px;
+                box-shadow: 4px 4px 10px #888888;
+                background-color: white;
+                max-width: 800px;
+                margin: 10px;
+            }
+
+            .book-card > .content {
+                margin: 10px;
+            }
+
+            .book-card .content > .head-region {
                 display: flex;
                 flex-direction: row;
                 justify-content: flex-start;
                 align-items: flex-start;
-                height: 50%;
+                width: 100%;
             }
 
-            .head-region > iron-image {
-                max-width: 30%;
-                min-width: fit-content;
-                height: 100%;
-                --iron-image-height: 100%;
+            .book-card > .content > .head-region > iron-image {
+                width: 40%;
+                --iron-image-width: 100%;
+                overflow: inherit;
             }
 
-            .head-region > iron-image.hidden {
+            .book-card > .content > .head-region > iron-image.hidden {
                 display: none;
             }
 
-            .head-region > .head-info {
+            .book-card > .content > .head-region > .head-info {
                 display: flex;
-                width: 50%;
+                width: 70%;
                 height: 100%;
                 padding-left: 30px;
                 flex-direction: column;
                 justify-content: space-between;
             }
 
-            .head-region > .head-info > .head-text {
+            .book-card > .content > .head-region > .head-info > .head-text {
                 flex-direction: column;
                 justify-content: flex-start;
             }
 
-            h1 {
+            .book-card > .content > .description {
+                margin: 10px;
+            }
+
+            .book-card > .content > .head-region > .head-info > .head-text > .title {
                 font-size: 25px;
                 line-height: 30px;
                 margin: 10px 0 10px 0;
                 text-align: left;
+                font-weight: normal;
             }
 
-            h3 {
+            .book-card > .content > .head-region > .head-info > .head-text > .author {
                 font-size: 12px;
                 font-weight: lighter;
                 margin: 5px 0 5px 0;
             }
 
-            h2 {
+            .book-card > .content > .head-region > .head-info > .head-text > .plain-text {
                 white-space: pre;
                 font-size: 15px;
                 font-weight: bold;
                 margin: 5px 0 5px 0;
+            }
+
+            @media only screen and (max-width: 400px) {
+                .book-card {
+                    @apply --layout-vertical;
+                    border-radius: 0px;
+                    box-shadow: unset;
+                    background-color: initial;
+                    margin: 0;
+                }
+
+                .book-card > .content > .head-region > .head-info > .head-text > .title {
+                    font-size: 16px;
+                    line-height: 15px;
+                    margin: 5px 0 5px 0;
+                }
+
+                .book-card > .content > .head-region > .head-info {
+                    padding-left: 10px;
+                }
             }
 
             paper-button {
@@ -101,103 +139,115 @@
                 width: 200px;
             }
 
-            section {
-                display: flex;
-                height: 50%;
-                @apply --layout-vertical;
-            }
-
-            section paper-dialog-scrollable {
-                @apply --layout-flex;
-                --paper-dialog-scrollable: {
-                    padding: 0 24px 0 0;
-                };
-            }
-
             paper-icon-button {
                 color: var(--app-secondary-color, black);
             }
 
         </style>
-            <div class="head-region">
-                <iron-image class$="[[_isImageLoaded(loaded)]]" src="src/exlibris-app/images/cover-placeholder.png"></iron-image>
-                <iron-image preload loaded="{{loaded}}" src="[[book.image]]"></iron-image>
-                <div class="head-info">
-                    <div class="head-text">
-                        <h1>[[book.title]]</h1>
-                        <h3>[[book.author]]</h3>
-                        <h2>[[book.fullStatusMessage]]</h2>
-                    </div>
-                    <div class="head-button">
-                        <template is="dom-if" if="[[_isReserved(book.status)]]">
-                            <paper-button id="book-dialog-cancel-button"
-                                          raised
-                                          on-click="_requestCancelReservation">
-                                CANCEL RESERVATION
-                            </paper-button>
-                        </template>
-                        <template is="dom-if" if="[[_isExpected(book.status)]]">
-                            <paper-button id="book-dialog-reserve-button"
-                                          raised
-                                          on-click="_requestReservation">
-                                RESERVE
-                            </paper-button>
-                        </template>
-                        <template is="dom-if" if="[[_isBorrowedAndCanBeExtended(book)]]">
-                            <paper-button id="book-dialog-extend-button"
-                                          raised
-                                          on-click="_requestLoanExtension">
-                                EXTEND FOR TWO WEEKS
-                            </paper-button>
-                        </template>
-                        <template is="dom-if" if="[[_isBorrowedAndCannotBeExtended(book)]]">
-                            <h3>RESERVED BY ANOTHER READER</h3>
-                        </template>
+        <div class="book-card">
+            <div class="content">
+                <div class="head-region">
+                    <iron-image class$="[[_isImageLoaded(loaded)]]"
+                                src="src/exlibris-app/images/cover-placeholder.png"></iron-image>
+                    <iron-image preload loaded="{{loaded}}" src="[[book.image]]"></iron-image>
+                    <div class="head-info">
+                        <div class="head-text">
+                            <div class="title">[[book.title]]</div>
+                            <div class="author">[[book.author]]</div>
+                            <div class="plain-text">[[book.fullStatusMessage]]</div>
+                        </div>
+                        <div class="head-button">
+                            <template is="dom-if" if="[[_isReserved(book.status)]]">
+                                <paper-button id="book-details-cancel-button"
+                                              raised
+                                              on-click="_requestCancelReservation">
+                                    CANCEL RESERVATION
+                                </paper-button>
+                            </template>
+                            <template is="dom-if" if="[[_isExpected(book.status)]]">
+                                <paper-button id="book-details-reserve-button"
+                                              raised
+                                              on-click="_requestReservation">
+                                    RESERVE
+                                </paper-button>
+                            </template>
+                            <template is="dom-if" if="[[_isBorrowedAndCanBeExtended(book)]]">
+                                <paper-button id="book-details-extend-button"
+                                              raised
+                                              on-click="_requestLoanExtension">
+                                    EXTEND FOR TWO WEEKS
+                                </paper-button>
+                            </template>
+                            <template is="dom-if" if="[[_isBorrowedAndCannotBeExtended(book)]]">
+                                <h3>RESERVED BY ANOTHER READER</h3>
+                            </template>
+                        </div>
                     </div>
                 </div>
+                <div class="description">
+                    <div class="plain-text">[[book.description]]</div>
+                </div>
             </div>
+        </div>
     </template>
 
     <script>
 
-        class BookDialog extends Polymer.Element {
+        class ExlibrisBookDetails extends Polymer.Element {
             static get is() {
-                return 'book-dialog';
+                return 'exlibris-book-details';
             }
 
             static get properties() {
                 return {
-                    /**
-                     * Fired on `element` modal dialog close.
-                     *
-                     * @event book-dialog-closed
-                     */
 
                     /**
                      * Fired on the `CANCEL RESERVATION` button click.
                      *
-                     * @event book-dialog-cancel-reservation
+                     * @event book-details-cancel-reservation
                      * @param {detail.bookId} the id of a book the reservation of which must be canceled.
                      */
 
                     /**
                      * Fired on the `RESERVE` button click.
                      *
-                     * @event book-dialog-reserve-book
+                     * @event book-details-reserve-book
                      * @param {detail.bookId} the id of a book to reserve.
                      */
 
                     /**
                      * Fired on the `EXTEND FOR TWO WEEKS` button click.
                      *
-                     * @event book-dialog-extend-loan
+                     * @event book-details-extend-loan
                      * @param {detail.bookId} the id of a book the loan period of which must be extended.
                      */
 
                     /**
                      * The book object to display.
                      */
-                    book: Object,
+                    book: {
+                        type: Object,
+                        value: {
+                            id: "8535902731",
+                            title: "Java in a Nutshell: A Desktop Quick Reference, Edition 6",
+                            image: "https://books.google.com/books/content/images/frontcover/trDXBAAAQBAJ?fife=w200-h300",
+                            author: "Benjamin J EvansDavid Flanagan",
+                            category: "Java Programming",
+                            description: "The latest edition of Java in a Nutshell is designed to help experienced Java programmers get the most out of Java 7 and 8, but it’s also a learning path for new developers. Chock full of examples that demonstrate how to take complete advantage of modern Java APIs and development best practices, the first section of this thoroughly updated book provides a fast-paced, no-fluff introduction to the Java programming language and the core runtime aspects of the Java platform.\n" +
+                            "The second section is a reference to core concepts and APIs that shows you how to perform real programming work in the Java environment.\n" +
+                            "\n" +
+                            "Get up to speed on language details, including Java 8 changes\n" +
+                            "Learn object-oriented programming, using basic Java syntax\n" +
+                            "Explore generics, enumerations, annotations, and lambda expressions\n" +
+                            "Understand basic techniques used in object-oriented design\n" +
+                            "Examine concurrency and memory, and how they’re intertwined\n" +
+                            "Work with Java collections and handle common data formats\n" +
+                            "Delve into Java’s latest I/O APIs, including asynchronous channels\n" +
+                            "Use Nashorn to execute JavaScript on the Java Virtual Machine\n" +
+                            "Become familiar with development tools in OpenJDK",
+                            availableCount: 5
+                        }
+                    }
                 };
             }
 
@@ -231,24 +281,12 @@
             }
 
             /**
-             * Handles the dialog `opened` state changes.
-             * If the dialog was closed, fires `book-dialog-closed` event.
-             *
-             * @private
-             */
-            _handleOpenedChange() {
-                if (!this.$.dialog.opened) {
-                    this.dispatchEvent(new CustomEvent('book-dialog-closed'));
-                }
-            }
-
-            /**
              * Handles the `CANCEL RESERVATION` button click.
              *
              * @private
              */
             _requestCancelReservation() {
-                this.dispatchEvent(new CustomEvent('book-dialog-cancel-reservation', {detail: {bookId: this.book.id}}));
+                this.dispatchEvent(new CustomEvent('book-details-cancel-reservation', {detail: {bookId: this.book.id}}));
             }
 
             /**
@@ -257,7 +295,7 @@
              * @private
              */
             _requestReservation() {
-                this.dispatchEvent(new CustomEvent('book-dialog-reserve-book', {detail: {bookId: this.book.id}}));
+                this.dispatchEvent(new CustomEvent('book-details-reserve-book', {detail: {bookId: this.book.id}}));
             }
 
             /**
@@ -266,10 +304,10 @@
              * @private
              */
             _requestLoanExtension() {
-                this.dispatchEvent(new CustomEvent('book-dialog-extend-loan', {detail: {bookId: this.book.id}}));
+                this.dispatchEvent(new CustomEvent('book-details-extend-loan', {detail: {bookId: this.book.id}}));
             }
         }
 
-        window.customElements.define(BookDialog.is, BookDialog);
+        window.customElements.define(ExlibrisBookDetails.is, ExlibrisBookDetails);
     </script>
 </dom-module>
