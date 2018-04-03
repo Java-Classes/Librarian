@@ -3,7 +3,7 @@
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 
-<dom-module id="menu-item">
+<dom-module id="exlibris-menu-item">
     <template>
         <style>
             :host {
@@ -57,9 +57,9 @@
          * @customElement
          * @polymer
          */
-        class MenuItem extends Polymer.Element {
+        class ExlibrisMenuItem extends Polymer.Element {
             static get is() {
-                return 'menu-item';
+                return 'exlibris-menu-item';
             }
 
             static get properties() {
@@ -78,6 +78,6 @@
             }
         }
 
-        window.customElements.define(MenuItem.is, MenuItem);
+        window.customElements.define(ExlibrisMenuItem.is, ExlibrisMenuItem);
     </script>
 </dom-module>
