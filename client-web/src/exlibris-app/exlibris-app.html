@@ -43,7 +43,7 @@
 <link rel="import" href="exlibris-category-dropdown.html">
 
 
-<link rel="import" href="book-search.html">
+<link rel="import" href="exlibris-book-search.html">
 <link rel="import" href="./book-grid.html">
 <link rel="import" href="./menu/menu-item.html">
 <link rel="import" href="./book_values.html">
@@ -100,8 +100,8 @@
                 }
             }
 
-            book-search {
-                --book-search-background-color: #5897f5;
+            exlibris-book-search {
+                --exlibris-book-search-background-color: #5897f5;
                 width: 40%;
                 margin: 0 auto;
             }
@@ -198,7 +198,7 @@
                         <paper-icon-button id="number" icon="menu"
                                            drawer-toggle></paper-icon-button>
                         <span drawer-toggle>[[selectedTitle]]</span>
-                        <book-search on-book-search-search="_handleSearch"></book-search>
+                        <exlibris-book-search on-exlibris-book-search-search="_handleSearch"></exlibris-book-search>
                     </app-toolbar>
                 </app-header>
 
@@ -508,7 +508,7 @@
             }
 
             /**
-             * Handles the book-search-search event.
+             * Handles the exlibris-book-search-search event.
              *
              * @param e
              * @private
