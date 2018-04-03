@@ -70,11 +70,11 @@
 
         <app-toolbar>TeamDev Library</app-toolbar>
         <iron-selector id="menu-selector"
-                       attr-for-selected="data-name"
+                       attr-for-selected="data-tab"
                        selected="[[selected]]"
                        on-selected-item-changed="_getSelectedTitle">
 
-            <a href="#/all-books" data-name="all-books">
+            <a href="#/all-books" data-tab="all-books">
                 <exlibris-menu-item title="All Books">
                     <iron-icon icon="book"
                                slot="icon"
@@ -82,7 +82,7 @@
                 </exlibris-menu-item>
             </a>
 
-            <a href="#/expected-soon" data-name="expected-soon">
+            <a href="#/expected-soon" data-tab="expected-soon">
                 <exlibris-menu-item title="Expected Soon">
                     <iron-icon icon="update"
                                slot="icon"
@@ -90,7 +90,7 @@
                 </exlibris-menu-item>
             </a>
 
-            <a href="#/borrowed-books" data-name="borrowed-books">
+            <a href="#/borrowed-books" data-tab="borrowed-books">
                 <exlibris-menu-item title="Borrowed Books"
                                     count="[[countBadges.borrowed]]">
                     <iron-icon icon="shopping-basket"
@@ -98,7 +98,7 @@
                 </exlibris-menu-item>
             </a>
 
-            <a href="#/reserved-books" data-name="reserved-books">
+            <a href="#/reserved-books" data-tab="reserved-books">
                 <exlibris-menu-item title="Reserved Books"
                                     count="[[countBadges.reserved]]">
                     <iron-icon icon="lock"
@@ -106,7 +106,7 @@
                 </exlibris-menu-item>
             </a>
 
-            <a href="#/should-return-books" data-name="should-return-books">
+            <a href="#/should-return-books" data-tab="should-return-books">
                 <exlibris-menu-item title="Should Return Soon"
                                     count="[[countBadges.shouldReturnSoon]]">
                     <iron-icon icon="query-builder"
@@ -114,7 +114,7 @@
                 </exlibris-menu-item>
             </a>
 
-            <a href="#/overdue-books" data-name="overdue-books">
+            <a href="#/overdue-books" data-tab="overdue-books">
                 <exlibris-menu-item title="Overdue"
                                     count="[[countBadges.overdue]]">
                     <iron-icon icon="warning"
