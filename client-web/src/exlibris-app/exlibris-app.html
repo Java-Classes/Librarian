@@ -40,7 +40,7 @@
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="exlibris-category-dropdown.html">
 
 
 <link rel="import" href="book-search.html">
@@ -86,19 +86,8 @@
                 font-weight: bold;
             }
 
-            paper-dropdown-menu.custom {
-
+            exlibris-category-dropdown {
                 margin-left: 48px;
-
-                --paper-input-container-focus-color: var(--app-primary-color);
-
-                --paper-input-container-label: {
-                    color: var(--app-secondary-color);
-                };
-                --paper-input-container-input: {
-                    color: var(--app-secondary-color);
-
-                };
             }
 
             @media only screen and (max-width: 600px) {
@@ -214,14 +203,9 @@
                 </app-header>
 
                 <div class="category">
-                    <paper-dropdown-menu class="custom" label="Category" vertical-offset="60">
-                        <paper-listbox slot="dropdown-content" class="dropdown-content"
-                                       on-selected-changed="_changeCategory">
-                            <template is="dom-repeat" items="[[categories]]">
-                                <paper-item>[[item]]</paper-item>
-                            </template>
-                        </paper-listbox>
-                    </paper-dropdown-menu>
+                    <exlibris-category-dropdown class="custom"
+                                                categories="[[categories]]"
+                                                on-category-chaged="_changeCategory"></exlibris-category-dropdown>
                 </div>
 
                 <iron-pages
@@ -347,6 +331,7 @@
                      * Indicates that the `subRoute` matches the `pattern`.
                      */
                     subRouteActive: Boolean,
+
                     /**
                      * The array of categories.
                      */
@@ -448,7 +433,7 @@
              * @private
              */
             _changeCategory(e) {
-                this.dispatch('searchByCategory', this.categories[e.detail.value]);
+                this.dispatch('searchByCategory', this.categories[e.detail]);
             }
 
             /**
