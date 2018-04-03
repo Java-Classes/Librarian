@@ -71,8 +71,7 @@
         <app-toolbar>TeamDev Library</app-toolbar>
         <iron-selector id="menu-selector"
                        attr-for-selected="data-tab"
-                       selected="[[selected]]"
-                       on-selected-item-changed="_getSelectedTitle">
+                       selected="[[selected]]">
 
             <a href="#/all-books" data-tab="all-books">
                 <exlibris-menu-item title="All Books">
@@ -138,7 +137,6 @@
          *   <exlibris-app></exlibris-app>
          * </app-drawer>
          * To make the selected menu item change style, bind the `selected` property.
-         * To get the selected menu item title, bind the `selectedTitle` property.
          *
          * @customElement
          * @polymer
@@ -166,32 +164,8 @@
                             reserved: '',
                             borrowed: ''
                         }
-                    },
-
-                    /**
-                     * The title of the selected menu item.
-                     */
-                    selectedTitle: {
-                        type: String,
-                        notify: true
                     }
                 };
-            }
-
-            /**
-             * Handles the selected menu item changed event.
-             * Sets the `selectedTitle` property with the appropriate value.
-             *
-             * @param e the event fired when selection of menu items selector has changed.
-             *          Contains the selected menu item.
-             * @private
-             */
-            _getSelectedTitle(e) {
-                const selectedLink = e.detail.value;
-                if (selectedLink) {
-                    const title = selectedLink.querySelector('exlibris-menu-item').title;
-                    this.set('selectedTitle', title);
-                }
             }
         }
 
