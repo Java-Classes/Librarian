@@ -41,13 +41,16 @@
     </template>
 </test-fixture>
 
-
 <script>
     suite('exlibris-menu-drawer', function () {
         const SELECTED = 'all-books';
+        let element;
+
+        setup(() => {
+            element = fixture('BasicTestFixture');
+        });
 
         test('should set the selected item according to the passed value.', function () {
-            const element = fixture('BasicTestFixture');
             element.set('selected', SELECTED);
 
             const elementShadowRoot = element.shadowRoot;
