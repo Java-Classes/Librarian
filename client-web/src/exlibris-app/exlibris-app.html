@@ -283,52 +283,6 @@
                 }
                 this.set('route.path', '/view404');
             }
-
-            /**
-             * Searches the book in the related book arrays by id.
-             */
-            _findBookById(id) {
-                const book = this.allBooks.find(x => x.id === id)
-                    || this.expectedSoonBooks.find(x => x.id === id)
-                    || this.overdueBooks.find(x => x.id === id)
-                    || this.shouldReturnBooks.find(x => x.id === id)
-                    || this.borrowedBooks.find(x => x.id === id)
-                    || this.reservedBooks.find(x => x.id === id);
-                return book;
-            }
-
-            /**
-             * Handles the request to cancel book reservation.
-             *
-             * @param e the dialog button click event.
-             * @private
-             */
-            _cancelBookReservation(e) {
-                const bookId = e.detail.bookId;
-                console.log('Cancel book reservation ' + bookId);
-            }
-
-            /**
-             * Handles the request to reserve book.
-             *
-             * @param e the dialog button click event.
-             * @private
-             */
-            _reserveBook(e) {
-                const bookId = e.detail.bookId;
-                console.log('Reserve book ' + bookId);
-            }
-
-            /**
-             * Handles the request to extend book loan period.
-             *
-             * @param e the dialog button click event.
-             * @private
-             */
-            _extendBookLoanPeriod(e) {
-                const bookId = e.detail.bookId;
-                console.log('Extend loan ' + bookId);
-            }
         }
 
         window.customElements.define(ExlibrisApp.is, ExlibrisApp);
