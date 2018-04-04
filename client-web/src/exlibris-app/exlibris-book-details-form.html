@@ -24,7 +24,6 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 
 
-
 <link rel="import" href="exlibris-category-selector.html">
 <link rel="import" href="./exlibris-file-uploader.html">
 <link rel="import" href="./exlibris-description-area.html">
@@ -76,13 +75,13 @@
             <div id="synopsis">
                 <div id="title">Details</div>
                 <paper-input id="isbn-input" label="ISBN"
-                             value="{{isbn}}"></paper-input>
+                             value="{{book.isbn}}"></paper-input>
                 <paper-input id="title-input" label="Title"
-                             value="{{title}}"></paper-input>
+                             value="{{book.title}}"></paper-input>
                 <paper-input id="authors-input" label="Authors"
-                             value="{{authors}}"></paper-input>
+                             value="{{book.authors}}"></paper-input>
                 <paper-input id="year-input" label="Year"
-                             value="{{year}}"></paper-input>
+                             value="{{book.year}}"></paper-input>
                 <exlibris-category-selector></exlibris-category-selector>
             </div>
             <div id="cover">
@@ -90,19 +89,37 @@
             </div>
         </div>
         <div id="description">
-            <exlibris-description-area></exlibris-description-area>
+            <exlibris-description-area text="{{book.description}}"></exlibris-description-area>
         </div>
     </template>
 
     <script>
 
+        /**
+         * <exlibris-book-details-form> allows input all information about book.
+         *
+         */
         class ExlibrisBookDetailsForm extends Polymer.Element {
             static get is() {
                 return 'exlibris-book-details-form';
             }
 
             static get properties() {
-                return {};
+                return {
+                    /**
+                     * The next object:
+                     *  @typedef {Object} Book
+                     * @property {string} title the title of a book
+                     * @property {string} authors string with authors of the book
+                     * @property {number} isbn the international standard book number
+                     * @property {number} year the year of publishing
+                     * @property {Array} categories array with book categories
+                     * @property {string} description the description of a book
+                     */
+                    book: {
+                        type: Object,
+                    }
+                };
             }
         }
 
