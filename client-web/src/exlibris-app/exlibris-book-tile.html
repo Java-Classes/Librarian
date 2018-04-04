@@ -1,0 +1,212 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="./book_values.html">
+
+<dom-module id="exlibris-book-tile">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            .book-content {
+                @apply --layout-vertical;
+                border-radius: 3px;
+                box-shadow: 4px 4px 10px #888888;
+                cursor: pointer;
+                background-color: black;
+                width: 160px;
+                height: 300px;
+                margin: 20px;
+            }
+
+            iron-image {
+                border-radius: 3px 3px 0 0;
+                height: 75%;
+            }
+
+            iron-image:hover {
+                opacity: 0.5;
+            }
+
+            #synopsis {
+                @apply --layout-vertical;
+                height: 25%;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: white;
+            }
+
+            #title {
+                text-overflow: ellipsis;
+                overflow: hidden;
+                width: 145px;
+                white-space: nowrap;
+                color: #212121;
+                font-size: 14px;
+                padding-left: 9px;
+                margin-top: 3px;
+
+            }
+
+            #author {
+                text-overflow: ellipsis;
+                overflow: hidden;
+                width: 150px;
+                white-space: nowrap;
+                color: #616161;
+                font-size: 12px;
+                padding-left: 9px;
+            }
+
+            #status-text {
+                background: var(--exlibris-app-primary-color);
+                color: white;
+                font-size: 12px;
+                text-align: center;
+                margin-top: 5px;
+            }
+
+            #status-text.warn {
+                background: var(--paper-red-400);
+            }
+
+            #status-text.active {
+                background: var(--paper-green-400);
+            }
+        </style>
+
+        <template is="dom-if" if="[[book]]">
+            <div class="book-content">
+                <iron-image sizing="cover"
+                            src="[[book.image]]">
+                </iron-image>
+                <div id="synopsis">
+                    <div id="title" title="[[book.title]]">[[book.title]]</div>
+                    <div id="author" title="[[book.author]]">[[book.author]]</div>
+                    <div id="status-text" class$="[[statusClass]]">[[book.statusMessage]]</div>
+                </div>
+            </div>
+        </template>
+    </template>
+
+    <script>
+        /**
+         * `<exlibris-book-tile>` components displays short information about book: picture, synopsis and status.
+         *
+         * @customElement
+         * @polymer
+         */
+        class ExlibrisBookTile extends Polymer.Element {
+            static get is() {
+                return 'exlibris-book-tile';
+            }
+
+            static get properties() {
+                return {
+                    /**
+                     * The next objects:
+                     *  @typedef {Object} Book
+                     * @property {string} title the title of a book
+                     * @property {string} authors string with authors of the book
+                     * @property {string} statusMessage full information about status
+                     * @property {string} status  one of the following values: "overdue", "borrowed", "should-return-soon",
+                     * "available", "reserved", "expected","ready-to-pick-up"
+                     */
+                    book: {
+                        type: Object,
+                        observer: '_bookChanged'
+                    },
+                    statusClass: {
+                        value: String,
+                        computed: "_computeClassForStatusMessage(book.status)"
+                    }
+                };
+            }
+
+            /**
+             * Creates statusClass property depending on book.status.
+             *
+             * @param status status of the book.
+             * @returns {string} class for status message.
+             * @private
+             */
+            _computeClassForStatusMessage(status) {
+                if (status === BookStatus.OVERDUE) {
+                    return "warn";
+                }
+                if (status === BookStatus.BORROWED || status === BookStatus.SHOULD_RETURN_SOON) {
+                    return "active";
+                }
+            }
+
+            /**
+             * Creates statusMessage depending on the status
+             *
+             * @param book the book object
+             * @private
+             */
+            _bookChanged(book) {
+                switch (book.status) {
+                    case BookStatus.OVERDUE: {
+                        const oneDay = 1000 * 60 * 60 * 24;
+                        const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / oneDay);
+                        book.statusMessage = numberOfOverdueDays + " DAYS OVERDUE";
+                        break;
+                    }
+                    case BookStatus.BORROWED: {
+                        book.statusMessage = "DUE ON " + book.dueDate.toLocaleDateString();
+                        break;
+                    }
+                    case BookStatus.READY_TO_PICK_UP: {
+                        book.statusMessage = "READY TO PICK UP";
+                        break;
+                    }
+                    case BookStatus.RESERVED: {
+                        book.statusMessage = "EXPECTED ON " + book.date.toLocaleDateString();
+                        break;
+                    }
+                    case BookStatus.EXPECTED_SOON: {
+                        book.statusMessage = "EXPECTED SOON";
+                        break;
+                    }
+                    case BookStatus.AVAILABLE: {
+                        book.statusMessage = book.availableCount + " AVAILABLE";
+                        break;
+                    }
+                    case BookStatus.EXPECTED: {
+                        book.statusMessage = "EXPECTED";
+                        break;
+                    }
+                }
+            }
+        }
+
+        window.customElements.define(ExlibrisBookTile.is, ExlibrisBookTile);
+    </script>
+</dom-module>

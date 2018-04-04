@@ -43,8 +43,20 @@
 
 <script>
     suite('exlibris-menu-drawer', function () {
-        const SELECTED = 'all-books';
         let element;
+        const SELECTED = 'all-books';
+        const SELECTED_LINK = '#/' + SELECTED;
+
+        const MENU_LIST_SELECTOR = '#menu-selector';
+        const MENU_ITEM_SELECTOR = 'exlibris-menu-item';
+        const MENU_ITEM_LINK_SELECTOR = 'a';
+        const MENU_REFERENCES = [
+            '#/all-books',
+            '#/expected-soon',
+            '#/borrowed-books',
+            '#/reserved-books',
+            '#/should-return-books',
+            '#/overdue-books'];
 
         setup(() => {
             element = fixture('BasicTestFixture');
@@ -52,12 +64,29 @@
 
         test('should set the selected item according to the passed value.', function () {
             element.set('selected', SELECTED);
-
             const elementShadowRoot = element.shadowRoot;
-            const selector = elementShadowRoot.querySelector('#menu-selector');
+            const selector = elementShadowRoot.querySelector(MENU_LIST_SELECTOR);
+            selector.forceSynchronousItemUpdate();
+
             const selectedDataName = selector.selected;
+            const selectedItemLink = selector.selectedItem.link;
 
             assert.equal(selectedDataName, SELECTED);
+            assert.equal(selectedItemLink, SELECTED_LINK);
+        });
+
+        test('should contain the list of menu items with correct references.', function () {
+            const elementShadowRoot = element.shadowRoot;
+            const selector = elementShadowRoot.querySelector(MENU_LIST_SELECTOR);
+            const menuItems = selector.querySelectorAll(MENU_ITEM_SELECTOR);
+
+            assert.equal(menuItems.length, MENU_REFERENCES.length);
+            menuItems.forEach(function (item, index) {
+                const actualRef = item.shadowRoot.querySelectorAll(MENU_ITEM_LINK_SELECTOR)[0].href;
+                const expectedRef = MENU_REFERENCES[index];
+                assert.isTrue(actualRef.endsWith(expectedRef),
+                    'actual: ' + actualRef + ', expected to end with: ' + expectedRef);
+            });
         });
     });
 </script>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>exlibris-book-tile test</title>
+
+    <script src="./../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="./../../bower_components/web-component-tester/browser.js"></script>
+    <script src="./test_variables.js"></script>
+
+    <link rel="import" href="../../src/exlibris-app/exlibris-book-tile.html">
+</head>
+<body>
+
+<test-fixture id="BasicTestFixture">
+    <template>
+        <exlibris-book-tile></exlibris-book-tile>
+    </template>
+</test-fixture>
+
+<script>
+    suite('exlibris-book-tile', function () {
+
+        const BookGridSelector = {
+            STATUS_MESSAGE_SELECTOR: "#status-text",
+            TITLE_SELECTOR: "#title",
+            AUTHOR_SELECTOR: "#author",
+            IRON_IMAGE_SELECTOR: "iron-image"
+        };
+
+        let bookGrid;
+        setup(() => {
+            bookGrid = fixture('BasicTestFixture');
+        });
+
+        test('should display `book` from property', function (done) {
+            bookGrid.book = TEST_BOOKS[0];
+            flush(function () {
+                const title = bookGrid.shadowRoot.querySelector(BookGridSelector.TITLE_SELECTOR);
+                assert.equal(TEST_BOOKS[0].title, title.innerHTML);
+                const author = bookGrid.shadowRoot.querySelector(BookGridSelector.AUTHOR_SELECTOR);
+                assert.equal(TEST_BOOKS[0].author, author.innerHTML);
+                const statusMessage = bookGrid.shadowRoot.querySelector(BookGridSelector.STATUS_MESSAGE_SELECTOR);
+                assert.equal(TEST_BOOKS[0].statusMessage, statusMessage.innerHTML);
+                const image = bookGrid.shadowRoot.querySelector(BookGridSelector.IRON_IMAGE_SELECTOR);
+                const imageURL = image.shadowRoot.querySelector("img").getAttribute("src");
+                assert.equal(TEST_BOOKS[0].image, imageURL);
+                done();
+            });
+        });
+    });
+</script>
+</body>
+</html>

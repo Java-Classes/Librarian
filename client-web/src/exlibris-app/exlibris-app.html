@@ -21,6 +21,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="./../exlibris-app/shell/redux-store.html">
+
 <link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import"
       href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
@@ -37,11 +38,9 @@
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 
-<link rel="import" href="./menu/exlibris-menu-drawer.html">
-<link rel="import" href="./book-grid.html">
-<link rel="import" href="./book_values.html">
 <link rel="import" href="./exlibris-book-details.html">
-
+<link rel="import" href="./menu/exlibris-menu-drawer.html">
+<link rel="import" href="./exlibris-book-grid.html">
 <dom-module id="exlibris-app">
     <template>
         <style>
@@ -82,7 +81,6 @@
             <!-- Drawer content -->
             <app-drawer id="drawer" swipe-open="[[narrow]]" slot="drawer" on-click="_toggleDrawer">
                 <exlibris-menu-drawer selected="[[routeData.page]]"
-                                      selected-title="{{title}}"
                                       count-badges="[[countBadges]]"></exlibris-menu-drawer>
             </app-drawer>
 
@@ -92,32 +90,29 @@
                     <app-toolbar>
                         <paper-icon-button id="number" icon="menu"
                                            drawer-toggle></paper-icon-button>
-                        <span drawer-toggle>[[title]]</span>
+                        <span drawer-toggle>[[appHeaderTitle]]</span>
                     </app-toolbar>
                 </app-header>
 
                 <iron-pages
                         id="pages"
                         selected="[[routeData.page]]"
-                        attr-for-selected="data-name"
+                        attr-for-selected="data-page"
                         fallback-selection="view404"
                         role="main">
-                    <book-grid data-name="all-books" books="[[allBooks]]"
-                               on-book-tile-click="_handleBookClick"></book-grid>
-                    <book-grid data-name="overdue-books" books="[[overdueBooks]]"
-                               on-book-tile-click="_handleBookClick"></book-grid>
-                    <book-grid data-name="borrowed-books" books="[[borrowedBooks]]"
-                               on-book-tile-click="_handleBookClick"></book-grid>
-                    <book-grid data-name="reserved-books" books="[[reservedBooks]]"
-                               on-book-tile-click="_handleBookClick"></book-grid>
-                    <book-grid data-name="expected-soon"
-                               books="[[expectedSoonBooks]]"
-                               on-book-tile-click="_handleBookClick"></book-grid>
-                    <book-grid data-name="should-return-books"
-                               books="[[shouldReturnBooks]]"
-                               on-book-tile-click="_handleBookClick"></book-grid>
-                    <exlibris-book-details data-name="book-details"></exlibris-book-details>
-                    <div data-name="view404">View404</div>
+                    <exlibris-book-grid data-page="all-books"
+                                        books="[[allBooks]]"></exlibris-book-grid>
+                    <exlibris-book-grid data-page="overdue-books"
+                                        books="[[overdueBooks]]"></exlibris-book-grid>
+                    <exlibris-book-grid data-page="borrowed-books"
+                                        books="[[borrowedBooks]]"></exlibris-book-grid>
+                    <exlibris-book-grid data-page="reserved-books"
+                                        books="[[reservedBooks]]"></exlibris-book-grid>
+                    <exlibris-book-grid data-page="expected-soon"
+                                        books="[[expectedSoonBooks]]"></exlibris-book-grid>
+                    <exlibris-book-grid data-page="should-return-books"
+                                        books="[[shouldReturnBooks]]"></exlibris-book-grid>
+                    <div data-page="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
@@ -138,24 +133,20 @@
          * @polymer
          * @appliesMixin ReduxMixin
          */
-        class ExlibrisApp extends ReduxMixin(Polymer.Element) {
+        class ExlibrisApp extends window.ExlibrisApplication.ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'exlibris-app';
             }
 
             static get properties() {
                 return {
+
                     /**
                      * Defines count badges of the menu items.
                      */
                     countBadges: {
                         type: Object,
-                        value: {
-                            overdue: 1,
-                            shouldReturnSoon: 1,
-                            reserved: 1,
-                            borrowed: 1
-                        }
+                        computed: '_computeCountBadges(overdueBooks.length, shouldReturnBooks.length, reservedBooks.length, borrowedBooks.length)'
                     },
 
                     /**
@@ -205,6 +196,15 @@
                         type: Array,
                         statePath: 'expectedSoonBooks'
                     },
+
+                    /**
+                     * The title of the app header.
+                     * Computed from `routeData.page` value.
+                     */
+                    appHeaderTitle: {
+                        type: String,
+                        computed: '_getTitle(routeData.page)'
+                    }
                 };
             }
 
@@ -214,6 +214,15 @@
                 ];
             }
 
+            _computeCountBadges(overdueCount, shouldReturnCount, reservedCount, borrowedCount) {
+                return {
+                    overdue: overdueCount,
+                    shouldReturnSoon: shouldReturnCount,
+                    reserved: reservedCount,
+                    borrowed: borrowedCount
+                }
+            }
+
             /**
              * Checks for an empty route passed to redirect user to the default app view.
              */
@@ -221,6 +230,26 @@
                 if (!this.route.path) {
                     this.set('route.path', '/all-books');
                 }
+            }
+
+            /**
+             * Computes the title of the app header.
+             * Removes dashes from the `routeData.page` value and
+             * capitalizes each word first letter.
+             *
+             * @param page the current page.
+             * @returns {string} capitalized page value without dashes.
+             * @private
+             */
+            _getTitle(page) {
+                let title;
+                if (page) {
+                    const unDashedString = page.replace(/-/g, ' ');
+                    title = unDashedString.replace(/\w\S*/g, function (txt) {
+                        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                    });
+                }
+                return title ? title : 'All Books';
             }
 
             /**
