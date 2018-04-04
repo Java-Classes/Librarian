@@ -61,6 +61,8 @@
                 --iron-image-width: 100%;
                 overflow: inherit;
                 box-shadow: 0 0 4px #8d8d8d;
+                margin-left: 25px;
+                margin-top: 25px;
             }
 
             .book-card .head-region iron-image.hidden {
@@ -80,24 +82,27 @@
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
+                /*color: var(--exlibris-app-secondary-color);*/
             }
 
             .book-card .head-region .head-info .wide-screen {
                 display: block;
-                width: fit-content;
+                width: 100%;
                 margin: 0;
             }
 
             .book-card .narrow-screen {
                 display: none;
                 width: fit-content;
-                margin: 12px 0 0 0;
+                margin: 15px 0 0 15px;
             }
 
             paper-button {
                 margin: 0;
                 background-color: var(--exlibris-app-primary-color, blue);
                 color: white;
+                height: 36px;
+                font-size: 15px;
             }
 
             paper-button.small {
@@ -107,13 +112,15 @@
             .book-card .description {
                 margin-top: 30px;
                 margin-bottom: 30px;
-                padding: 0 50px 0 50px;
+                padding: 0 25px 0 25px;
+                text-align: justify;
+                color: var(--exlibris-app-secondary-color);
             }
 
             .book-card .head-region .head-info .head-text .title {
                 font-size: 25px;
                 line-height: 30px;
-                margin: 10px 0 10px 0;
+                margin: 40px 0 10px 0;
                 text-align: left;
                 font-weight: normal;
             }
@@ -128,15 +135,20 @@
                 white-space: pre;
                 font-size: 15px;
                 font-weight: bold;
-                margin: 5px 0 5px 0;
+                margin: 20px 0 5px 0;
             }
 
-            @media only screen and (max-width: 400px) {
+            @media only screen and (max-width: 640px) {
                 .book-card {
-                    border-radius: 0px;
+                    border-radius: 0;
                     box-shadow: unset;
                     background-color: initial;
                     margin: 0;
+                }
+
+                .book-card .head-region iron-image {
+                    margin-left: 15px;
+                    margin-top: 15px;
                 }
 
                 .book-card .head-region .head-info .wide-screen {
@@ -147,13 +159,18 @@
                     display: block;
                 }
 
-                .book-card > .content > .head-region > .head-info > .head-text > .title {
-                    font-size: 16px;
-                    line-height: 15px;
-                    margin: 5px 0 5px 0;
+                .book-card .description {
+                    margin-top: 8px;
+                    padding: 0 15px 0 15px;
                 }
 
-                .book-card > .content > .head-region > .head-info {
+                .book-card .head-region .head-info .head-text .title {
+                    font-size: 16px;
+                    line-height: 15px;
+                    margin: 20px 0 5px 0;
+                }
+
+                .book-card .head-region .head-info {
                     padding-left: 10px;
                 }
             }
@@ -179,15 +196,15 @@
                         <div class="plain-text">[[_getMessage()]]</div>
                     </div>
                     <div class="wide-screen">
-                    <paper-button>[[buttonTitle]]</paper-button>
+                        <paper-button>[[buttonTitle]]</paper-button>
                     </div>
                 </div>
             </div>
             <div class="narrow-screen">
-            <paper-button class="small">[[buttonTitle]]</paper-button>
+                <paper-button class="small">[[buttonTitle]]</paper-button>
             </div>
             <div class="description">
-                <div class="plain-text">[[book.description]]</div>
+                [[book.description]]
             </div>
         </div>
     </template>

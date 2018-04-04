@@ -18,7 +18,7 @@
                 align-items: center;
                 color: var(--exlibris-menu-item-title-color, black);
                 border-radius: var(--exlibris-menu-item-border-radius, 3px);
-                background-color: var(--exlibris-menu-item-background-color, white);
+                background-color: var(--exlibris-menu-item-background-color);
                 line-height: 40px;
                 --iron-icon-height: 26px;
                 --iron-icon-width: 26px;
@@ -26,6 +26,9 @@
                 font-size: 15px;
             }
 
+            .item:hover {
+                background-color: var(--google-grey-300);
+            }
             .name {
                 padding-left: 12px;
             }
