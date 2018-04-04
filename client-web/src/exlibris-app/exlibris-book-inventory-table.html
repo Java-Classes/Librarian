@@ -1,0 +1,213 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+
+
+<dom-module id="exlibris-book-inventory-table">
+    <template>
+        <style>
+            :host {
+                display: block;
+                @apply --layout-vertical;
+            }
+
+            #title {
+                font-size: 17px;
+                padding-left: 35px;
+                padding-top: 40px;
+            }
+
+            #add {
+                margin-left: 35px;
+                margin-top: 15px;
+
+            }
+
+            paper-button {
+                background-color: var(--app-primary-color);
+                color: white;
+                width: 80px;
+                height: 30px;
+            }
+
+            #print {
+                margin-top: 15px;
+                margin-left: 593px;
+            }
+
+            #table {
+                height: 400px;
+                width: 635px;
+                margin-left: 35px;
+                margin-top: 15px;
+                border: 1px solid #c7c7c7;
+                overflow-y: scroll;
+            }
+
+            #header {
+                @apply --layout-horizontal;
+                margin-left: 10px;
+                margin-top: 10px;
+                height: 25px;
+                width: 605px;
+                background-color: var(--app-primary-color);
+            }
+
+            .checkbox-column {
+                width: 25px;
+            }
+
+            .id-column {
+                width: 195px;
+                text-align: center;
+                border-left: 1px solid white;
+            }
+
+            .rfid-column {
+                width: 380px;
+                text-align: center;
+                border-left: 1px solid white;
+            }
+
+            .row {
+                @apply --layout-horizontal;
+                margin-left: 10px;
+                height: 25px;
+                width: 605px;
+                background-color: #eeeeee;
+                border-top: 1px solid white;
+            }
+
+            paper-checkbox {
+                margin-left: 3px;
+                margin-top: 3px;
+                --paper-checkbox-unchecked-color: #bcbcbc;
+                --paper-checkbox-unchecked-background-color: white;
+                --paper-checkbox-checked-color: var(--app-primary-color);
+            }
+
+        </style>
+
+        <div id="title">Inventory</div>
+        <paper-button id="add">ADD</paper-button>
+        <div id="table">
+            <div id="header">
+                <div id="checkbox-head" class="checkbox-column"></div>
+                <div id="id-head" class="id-column">ID</div>
+                <div id="rfid-head" class="rfid-column">RFID</div>
+            </div>
+            <template is="dom-repeat" items="[[identifiers]]">
+                <div class="row">
+                    <div class="checkbox-column">
+                        <paper-checkbox></paper-checkbox>
+                    </div>
+                    <div class="id-column">[[item.id]]</div>
+                    <div class="rfid-column">[[item.rfid]]</div>
+                </div>
+            </template>
+        </div>
+        <paper-button id="print">PRINT</paper-button>
+    </template>
+
+    <script>
+
+        class ExlibrisBookInventoryTable extends Polymer.Element {
+            static get is() {
+                return 'exlibris-book-inventory-table';
+            }
+
+            static get properties() {
+                return {
+                    identifiers: {
+                        type: Array,
+                        value: [{
+                            id: "17853",
+                            rfid: "1218954971455"
+                        }, {
+                            id: "18941",
+                            rfid: "1478954977981"
+                        },{
+                            id: "17853",
+                            rfid: "1218954971455"
+                        }, {
+                            id: "18941",
+                            rfid: "1478954977981"
+                        },{
+                            id: "17853",
+                            rfid: "1218954971455"
+                        }, {
+                            id: "18941",
+                            rfid: "1478954977981"
+                        },{
+                            id: "17853",
+                            rfid: "1218954971455"
+                        }, {
+                            id: "18941",
+                            rfid: "1478954977981"
+                        },{
+                            id: "17853",
+                            rfid: "1218954971455"
+                        }, {
+                            id: "18941",
+                            rfid: "1478954977981"
+                        },{
+                            id: "17853",
+                            rfid: "1218954971455"
+                        }, {
+                            id: "18941",
+                            rfid: "1478954977981"
+                        },{
+                            id: "17853",
+                            rfid: "1218954971455"
+                        }, {
+                            id: "18941",
+                            rfid: "1478954977981"
+                        },{
+                            id: "17853",
+                            rfid: "1218954971455"
+                        }, {
+                            id: "18941",
+                            rfid: "1478954977981"
+                        },{
+                            id: "17853",
+                            rfid: "1218954971455"
+                        }, {
+                            id: "18941",
+                            rfid: "1478954977981"
+                        },{
+                            id: "17853",
+                            rfid: "1218954971455"
+                        }, {
+                            id: "18941",
+                            rfid: "1478954977981"
+                        }]
+                    }
+                };
+            }
+        }
+
+        window.customElements.define(ExlibrisBookInventoryTable.is, ExlibrisBookInventoryTable);
+    </script>
+</dom-module>

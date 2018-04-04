@@ -131,7 +131,7 @@
 
             _addCategory() {
                 console.log(this.selectedCategory);
-                if (this.selectedCategories.length <= 4 && this.selectedCategory) {
+                if (this.selectedCategories.length < 4 && this.selectedCategory) {
                     if (!this.selectedCategories.includes(this.selectedCategory)) {
                         this.push('selectedCategories', this.selectedCategory);
                     }

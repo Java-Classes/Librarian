@@ -37,6 +37,7 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="./book_values.html">
 <link rel="import" href="exlibris-book-details-form.html">
+<link rel="import" href="exlibris-book-inventory-table.html">
 
 
 <dom-module id="exlibris-wizard-dialog">
@@ -191,11 +192,10 @@
                     <iron-pages
                             selected="[[page]]"
                             attr-for-selected="data-name">
-                        <div data-name="details">
-                            <exlibris-book-details-form></exlibris-book-details-form>
-                        </div>
+                        <exlibris-book-details-form
+                                data-name="details"></exlibris-book-details-form>
                         <div data-name="inventory">
-                            Inventory
+                            <exlibris-book-inventory-table></exlibris-book-inventory-table>
                         </div>
                     </iron-pages>
 
