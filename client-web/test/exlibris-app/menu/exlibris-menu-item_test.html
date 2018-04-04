@@ -43,15 +43,6 @@
     </template>
 </test-fixture>
 
-<test-fixture id="TestFixtureWithParams">
-    <template>
-        <exlibris-menu-item title="All Books">
-            <iron-icon icon="menu"
-                       slot="icon"></iron-icon>
-        </exlibris-menu-item>
-    </template>
-</test-fixture>
-
 <script>
     suite('exlibris-menu-item', function () {
         const TITLE = 'title';
@@ -73,9 +64,12 @@
             const element = fixture('BasicTestFixture');
             const elementShadowRoot = element.shadowRoot;
             const badge = elementShadowRoot.querySelector('#menu-item-badge');
+            assert.isUndefined(element.count);
             assert.equal(badge.innerHTML, ' ');
 
             element.set('count', COUNT);
+
+            assert.equal(element.count, COUNT);
             assert.equal(badge.innerHTML, COUNT);
         });
     });

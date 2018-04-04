@@ -8,9 +8,13 @@
                 display: block;
             }
 
+            a {
+                text-decoration: none;
+            }
+
             .item {
                 cursor: pointer;
-                margin: 4%;
+                margin: 10px;
                 align-items: center;
                 color: var(--exlibris-menu-item-title-color, black);
                 border-radius: var(--exlibris-menu-item-border-radius, 3px);
@@ -31,12 +35,14 @@
                 right: 10%;
             }
         </style>
-
+        <a href="[[link]]">
         <div id="menu-item-body" class="item">
             <slot name="icon"></slot>
             <span id="menu-item-title" class="name">[[title]]</span>
             <span id="menu-item-badge" class="count-badge">[[count]]</span>
         </div>
+        </a>
+
 
     </template>
 
@@ -63,6 +69,10 @@
 
             static get properties() {
                 return {
+                    /**
+                     * The link to follow on item click.
+                     */
+                    link : String,
 
                     /**
                      * The element title to display.
@@ -70,7 +80,7 @@
                     title: String,
 
                     /**
-                     * The element count badge to display.
+                     * The element count badge value to display.
                      */
                     count: Number
                 };

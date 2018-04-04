@@ -2,8 +2,11 @@
 <link rel="import" href="../reducers/exlibris_reducer.html">
 
 <script>
-    const store = Redux.createStore(reducer);
-    window.ExlibrisApplication = {};
-    ExlibrisApplication.store = store;
-    window.ReduxMixin = PolymerRedux(ExlibrisApplication.store);
+  {
+        const store = Redux.createStore(reducer);
+        ReduxMixin = PolymerRedux(store);
+        window.ExlibrisApplication = {};
+        ExlibrisApplication.store = store;
+        ExlibrisApplication.ReduxMixin = ReduxMixin;
+    }
 </script>

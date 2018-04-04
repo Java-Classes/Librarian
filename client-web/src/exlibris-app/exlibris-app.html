@@ -79,7 +79,6 @@
             <!-- Drawer content -->
             <app-drawer id="drawer" swipe-open="[[narrow]]" slot="drawer" on-click="_toggleDrawer">
                 <exlibris-menu-drawer selected="[[routeData.page]]"
-                                      selected-title="{{title}}"
                                       count-badges="[[countBadges]]"></exlibris-menu-drawer>
             </app-drawer>
             <!-- Main content -->
@@ -88,28 +87,28 @@
                     <app-toolbar>
                         <paper-icon-button id="number" icon="menu"
                                            drawer-toggle></paper-icon-button>
-                        <span drawer-toggle>[[title]]</span>
+                        <span drawer-toggle>[[appHeaderTitle]]</span>
                     </app-toolbar>
                 </app-header>
 
                 <iron-pages
                         selected="[[routeData.page]]"
-                        attr-for-selected="data-name"
+                        attr-for-selected="data-page"
                         fallback-selection="view404"
                         role="main">
-                    <exlibris-book-grid data-name="all-books"
+                    <exlibris-book-grid data-page="all-books"
                                         books="[[allBooks]]"></exlibris-book-grid>
-                    <exlibris-book-grid data-name="overdue-books"
+                    <exlibris-book-grid data-page="overdue-books"
                                         books="[[overdueBooks]]"></exlibris-book-grid>
-                    <exlibris-book-grid data-name="borrowed-books"
+                    <exlibris-book-grid data-page="borrowed-books"
                                         books="[[borrowedBooks]]"></exlibris-book-grid>
-                    <exlibris-book-grid data-name="reserved-books"
+                    <exlibris-book-grid data-page="reserved-books"
                                         books="[[reservedBooks]]"></exlibris-book-grid>
-                    <exlibris-book-grid data-name="expected-soon"
+                    <exlibris-book-grid data-page="expected-soon"
                                         books="[[expectedSoonBooks]]"></exlibris-book-grid>
-                    <exlibris-book-grid data-name="should-return-books"
+                    <exlibris-book-grid data-page="should-return-books"
                                         books="[[shouldReturnBooks]]"></exlibris-book-grid>
-                    <div data-name="view404">View404</div>
+                    <div data-page="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
@@ -130,7 +129,7 @@
          * @polymer
          * @appliesMixin ReduxMixin
          */
-        class ExlibrisApp extends ReduxMixin(Polymer.Element) {
+        class ExlibrisApp extends window.ExlibrisApplication.ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'exlibris-app';
             }
@@ -192,6 +191,14 @@
                     expectedSoonBooks: {
                         type: Array,
                         statePath: 'expectedSoonBooks'
+                    },
+                    /**
+                     * The title of the app header.
+                     * Computed from `routeData.page` value.
+                     */
+                    appHeaderTitle: {
+                        type: String,
+                        computed: '_getTitle(routeData.page)'
                     }
                 };
             }
@@ -218,6 +225,26 @@
                 if (!this.route.path) {
                     this.set('route.path', '/all-books');
                 }
+            }
+
+            /**
+             * Computes the title of the app header.
+             * Removes dashes from the `routeData.page` value and
+             * capitalizes each word first letter.
+             *
+             * @param page the current page.
+             * @returns {string} capitalized page value without dashes.
+             * @private
+             */
+            _getTitle(page) {
+                let title;
+                if (page) {
+                    const unDashedString = page.replace(/-/g, ' ');
+                    title = unDashedString.replace(/\w\S*/g, function (txt) {
+                        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                    });
+                }
+                return title ? title : 'All Books';
             }
 
             /**
