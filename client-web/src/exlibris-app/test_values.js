@@ -24,6 +24,7 @@ const threeDays = 3;
 const twoDays = 2;
 const millisecondsInOneDay = 86400000;
 
+/* exported global_var */
 const libraryTestBooks = [
     {
         id: "8535902775",
