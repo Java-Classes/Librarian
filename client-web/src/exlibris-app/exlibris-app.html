@@ -112,6 +112,7 @@
                                         books="[[expectedSoonBooks]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="should-return-books"
                                         books="[[shouldReturnBooks]]"></exlibris-book-grid>
+                    <exlibris-book-details data-page="book-details"></exlibris-book-details>
                     <div data-page="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
@@ -288,16 +289,6 @@
                     || this.borrowedBooks.find(x => x.id === id)
                     || this.reservedBooks.find(x => x.id === id);
                 return book;
-            }
-
-            /**
-             * Handles the book dialog close action.
-             * Sets the route path to the previous value.
-             */
-            _handleDialogClose(e) {
-                if (this.previousPage) {
-                    this.set('route.path', '/' + this.previousPage);
-                }
             }
 
             /**
