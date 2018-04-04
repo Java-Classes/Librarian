@@ -94,7 +94,7 @@
                 <div id="tag">
                     <div id="tag-name">[[item]]</div>
                     <paper-icon-button id="delete-icon" icon="clear"
-                                       on-tap="_deleteCategory"></paper-icon-button>
+                                       on-tap="_removeCategory"></paper-icon-button>
                 </div>
             </template>
         </div>
@@ -103,6 +103,13 @@
 
     <script>
 
+        /**
+         * <exlibris-category-selector> shows dropdown menu with categories
+         * and allows to add 4 categories.
+         *
+         * @customElement
+         * @polymer
+         */
         class ExlibrisCategorySelector extends Polymer.Element {
             static get is() {
                 return 'exlibris-category-selector';
@@ -110,14 +117,26 @@
 
             static get properties() {
                 return {
+
+                    /**
+                     * All book categories
+                     */
                     values: {
                         type: Array,
-                        value: ["Java Programming", "Web Design", "Business", "JavaScript", "Programming", "Biography", "Fiction", "C++"]
+                        value: []
                     },
+
+                    /**
+                     * The list of selected categories
+                     */
                     selectedCategories: {
                         type: Array,
                         value: []
                     },
+
+                    /**
+                     * Current selected categories
+                     */
                     selectedCategory: {
                         type: String,
                         notify: true
@@ -125,10 +144,20 @@
                 };
             }
 
+            /**
+             * Changes selected categories after click on the paper-item.
+             *
+             * @param e event
+             * @private
+             */
             _changeSelectedCategory(e) {
                 this.selectedCategory = this.values[e.detail.value];
             }
 
+            /**
+             * Adds selected category in the selectedCategories array.
+             * @private
+             */
             _addCategory() {
                 console.log(this.selectedCategory);
                 if (this.selectedCategories.length < 4 && this.selectedCategory) {
@@ -138,7 +167,13 @@
                 }
             }
 
-            _deleteCategory(e) {
+            /**
+             * Removes selected category from the selectedCategories array.
+             *
+             * @param e
+             * @private
+             */
+            _removeCategory(e) {
                 const index = e.model.index;
                 this.splice('selectedCategories', index, 1);
             }

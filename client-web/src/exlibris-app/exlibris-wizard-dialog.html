@@ -100,6 +100,7 @@
                 margin: auto 20px;
                 cursor: pointer;
                 font-size: 12px;
+                cursor: pointer;
             }
 
             #close-button {
@@ -114,12 +115,14 @@
                 font-size: 12px;
                 margin-left: 48%;
                 margin-top: 5px;
+                cursor: pointer;
             }
 
             #previous-button {
                 margin-left: 20%;
                 width: 65.14px;
                 margin-top: 5px;
+                cursor: pointer;
             }
 
             .next-text {
@@ -207,19 +210,19 @@
                 <div id="previous-button">
 
                     <template is="dom-if" if="[[!_isDetails(page)]]">
-                        <div id="previous-label">PREVIOUS</div>
+                        <div id="previous-label" on-tap="_changePage">PREVIOUS</div>
                         <iron-icon class="arrow-icon" icon="arrow-back"
                                    slot="icon"></iron-icon>
                         <span class="next-text">DETAIL</span>
                     </template>
                 </div>
-                <div id="next-button" on-tap="close">
+                <div id="next-button" on-tap="_changePage">
                     <div id="next-label">NEXT</div>
                     <template is="dom-if" if="[[_isDetails(page)]]">
                         <span class="next-text">INVENTORY</span>
                     </template>
                     <template is="dom-if" if="[[!_isDetails(page)]]">
-                        <span class="next-text"> FINISH</span>
+                        <span class="next-text" on-tap="_handleFinish"> FINISH</span>
                     </template>
                     <iron-icon class="arrow-icon" icon="arrow-forward"
                                slot="icon"></iron-icon>
@@ -266,6 +269,19 @@
                     return true;
                 }
                 return false;
+            }
+
+            _changePage() {
+                if (this.page === "details") {
+                    this.page = "inventory";
+                    return;
+                }
+                this.page = "details";
+            }
+
+
+            _handleFinish() {
+                this.dispatchEvent(new CustomEvent("input-finished"));
             }
         }
 
