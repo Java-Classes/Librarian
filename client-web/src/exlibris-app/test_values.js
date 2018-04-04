@@ -18,6 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+const twoWeeks = 14;
+const threeWeeks = 21;
+const threeDays = 3;
+const twoDays = 2;
+const millisecondsInOneDay = 86400000;
+
 const libraryTestBooks = [
     {
         id: "8535902775",
@@ -342,7 +348,7 @@ const libraryTestBooks = [
         "Andy Weir's second novel Artemis is now available",
         availableCount: 2,
         status: "AVAILABLE"
-    },{
+    }, {
         id: "8535902718",
         title: "Clean Code: A Handbook of Agile Software Craftsmanship",
         image: "https://books.google.com/books/content/images/frontcover/_i6bDeoCQzsC?fife=w200-h300",
@@ -431,7 +437,7 @@ const libraryTestBooks = [
         "Elon Musk is the Steve Jobs of the present and the future, and for the past twelve months, he has been shadowed by tech reporter, Ashlee Vance. Elon Musk: How the Billionaire CEO of Spacex and Tesla is Shaping our Future is an important, exciting and intelligent account of the real-life Iron Man.",
         availableCount: 26,
         status: "AVAILABLE"
-    },  {
+    }, {
         id: "8535902725",
         title: "Don't Make Me Think, Revisited: A Common Sense Approach to Web Usability, Edition 3",
         image: "https://books.google.com/books/content/images/frontcover/QlduAgAAQBAJ?fife=w200-h300",
@@ -624,7 +630,7 @@ const userTestBooks = {
             "How to avoid the traps and pitfalls of commonly misunderstood subtleties of the language\n" +
             "Focus on the language and its most fundamental libraries: java.lang, java.util, and, to a lesser extent, java.util.concurrent and java.io\n" +
             "Simply put, Effective Java™, Second Edition, presents the most practical, authoritative guidelines available for writing efficient, well-designed programs.",
-            date: new Date(new Date().getTime() + 3 * 172800000),
+            date: new Date(new Date().getTime() + threeDays * millisecondsInOneDay),
             status: "READY_TO_PICK_UP"
         }, {
 
@@ -639,7 +645,7 @@ const userTestBooks = {
             "Mastering Lambdas: Java Programming in a Multicore World by Maurice Naftalin\n" +
             "Quick Start Guide to JavaFX by J.F. DiMarzio\n" +
             "Mastering JavaFX 8 Controls: Create Custom JavaFX 8 Controls for Cross-Platform Applications by Hendrik Ebbers",
-            date: new Date(new Date().getTime() + 21 * 172800000),
+            date: new Date(new Date().getTime() + threeWeeks * millisecondsInOneDay),
             status: "RESERVED"
         }
         ],
@@ -672,7 +678,7 @@ const userTestBooks = {
             "\n" +
             "Style and approach\n" +
             "This is your guide to designing custom web components, and the concepts are explained in a conversational and easy-to-follow style. Each topic is explained through examples, with detailed explanations wherever required.",
-            dueDate: new Date(new Date().getTime() + 14 * 172800000),
+            dueDate: new Date(new Date().getTime() + twoWeeks * millisecondsInOneDay),
             status: "BORROWED"
         }],
         overdue: [{
@@ -687,7 +693,7 @@ const userTestBooks = {
             "Mastering Lambdas: Java Programming in a Multicore World by Maurice Naftalin\n" +
             "Quick Start Guide to JavaFX by J.F. DiMarzio\n" +
             "Mastering JavaFX 8 Controls: Create Custom JavaFX 8 Controls for Cross-Platform Applications by Hendrik Ebbers",
-            dueDate: new Date(new Date().getTime() - 2 * 1000 * 60 * 60 * 24),
+            dueDate: new Date(new Date().getTime() - twoDays * millisecondsInOneDay),
             status: "OVERDUE"
         }],
         shouldReturnSoon: [{
@@ -719,7 +725,7 @@ const userTestBooks = {
             "\n" +
             "Style and approach\n" +
             "This is your guide to designing custom web components, and the concepts are explained in a conversational and easy-to-follow style. Each topic is explained through examples, with detailed explanations wherever required.",
-            dueDate: new Date(new Date().getTime() + 14 * 172800000),
+            dueDate: new Date(new Date().getTime() + threeDays * millisecondsInOneDay),
             status: "BORROWED"
         }]
     }
