@@ -20,17 +20,12 @@
 
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
-<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../bower_components/paper-dialog-behavior/paper-dialog-behavior.html">
-<link rel="import"
-      href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
-<link rel="import"
-      href="../../bower_components/paper-dialog-behavior/paper-dialog-shared-styles.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="./book_values.html">
 
@@ -134,13 +129,8 @@
             }
 
             paper-button {
-                background-color: var(--app-primary-color, blue);
+                background-color: var(--exlibris-app-primary-color, blue);
                 color: white;
-                width: 200px;
-            }
-
-            paper-icon-button {
-                color: var(--app-secondary-color, black);
             }
 
         </style>
@@ -227,24 +217,20 @@
             }
 
             _isReserved(status) {
-                return status === BookStatus.RESERVED;
+                return [BookStatus.READY_TO_PICK_UP, BookStatus.RESERVED].includes(status);
             }
 
             _isExpected(status) {
-                return status === BookStatus.EXPECTED
-                    || status === BookStatus.EXPECTED_SOON;
+                return [BookStatus.EXPECTED, BookStatus.EXPECTED_SOON].includes(status);
             }
 
             _isBorrowedAndCanBeExtended(book) {
-                return (book.status === BookStatus.SHOULD_RETURN_SOON
-                    || book.status === BookStatus.OVERDUE)
+                return [BookStatus.OVERDUE, BookStatus.SHOULD_RETURN_SOON].includes(status)
                     && book.isAllowedLoanExtension;
             }
 
             _isBorrowedAndCannotBeExtended(book) {
-                return (book.status === BookStatus.SHOULD_RETURN_SOON
-                    || book.status === BookStatus.OVERDUE
-                    || book.status === BookStatus.BORROWED)
+                return [BookStatus.SHOULD_RETURN_SOON, BookStatus.OVERDUE, BookStatus.BORROWED].includes(book.status)
                     && !book.isAllowedLoanExtension;
             }
 
