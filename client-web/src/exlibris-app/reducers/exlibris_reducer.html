@@ -28,7 +28,8 @@
             shouldReturnBooks: userTestBooks.shouldReturnSoon,
             reservedBooks: userTestBooks.reserved,
             allBooks: [...userTestBooks.overdue, ...libraryTestBooks],
-            expectedSoonBooks: expectedSoonLibraryBooks
+            expectedSoonBooks: expectedSoonLibraryBooks,
+            selectedBook: expectedSoonLibraryBooks[0]
         };
 
         const reducer = (state = initialState, action) => {

@@ -144,6 +144,13 @@
             }
 
         </style>
+
+        <app-route
+                route="{{route}}"
+                pattern="/:title/:id"
+                data="{{routeData}}"
+                ></app-route>
+
         <div class="book-card">
             <div class="content">
                 <div class="head-region">
@@ -193,7 +200,7 @@
 
     <script>
 
-        class ExlibrisBookDetails extends Polymer.Element {
+        class ExlibrisBookDetails extends window.ExlibrisApplication.ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'exlibris-book-details';
             }
@@ -227,27 +234,7 @@
                      */
                     book: {
                         type: Object,
-                        value: {
-                            id: "8535902731",
-                            title: "Java in a Nutshell: A Desktop Quick Reference, Edition 6",
-                            image: "https://books.google.com/books/content/images/frontcover/trDXBAAAQBAJ?fife=w200-h300",
-                            author: "Benjamin J EvansDavid Flanagan",
-                            category: "Java Programming",
-                            description: "The latest edition of Java in a Nutshell is designed to help experienced Java programmers get the most out of Java 7 and 8, but it’s also a learning path for new developers. Chock full of examples that demonstrate how to take complete advantage of modern Java APIs and development best practices, the first section of this thoroughly updated book provides a fast-paced, no-fluff introduction to the Java programming language and the core runtime aspects of the Java platform.\n" +
-                            "The second section is a reference to core concepts and APIs that shows you how to perform real programming work in the Java environment.\n" +
-                            "\n" +
-                            "Get up to speed on language details, including Java 8 changes\n" +
-                            "Learn object-oriented programming, using basic Java syntax\n" +
-                            "Explore generics, enumerations, annotations, and lambda expressions\n" +
-                            "Understand basic techniques used in object-oriented design\n" +
-                            "Examine concurrency and memory, and how they’re intertwined\n" +
-                            "Work with Java collections and handle common data formats\n" +
-                            "Delve into Java’s latest I/O APIs, including asynchronous channels\n" +
-                            "Use Nashorn to execute JavaScript on the Java Virtual Machine\n" +
-                            "Become familiar with development tools in OpenJDK",
-                            availableCount: 5,
-                            status: 'AVAILABLE'
-                        }
+                        statePath: 'selectedBook'
                     }
                 };
             }

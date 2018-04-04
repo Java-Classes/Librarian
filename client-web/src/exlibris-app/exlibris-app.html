@@ -99,7 +99,8 @@
                         selected="[[routeData.page]]"
                         attr-for-selected="data-page"
                         fallback-selection="view404"
-                        role="main">
+                        role="main"
+                        on-exlibris-book-tile-click="_handleBookClick">
                     <exlibris-book-grid data-page="all-books"
                                         books="[[allBooks]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="overdue-books"
@@ -112,7 +113,8 @@
                                         books="[[expectedSoonBooks]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="should-return-books"
                                         books="[[shouldReturnBooks]]"></exlibris-book-grid>
-                    <exlibris-book-details data-page="book-details"></exlibris-book-details>
+                    <exlibris-book-details data-page="book-details"
+                                           route="[[subRoute]]"></exlibris-book-details>
                     <div data-page="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
@@ -265,17 +267,21 @@
 
             /**
              * Handles the book tile click event.
-             * Opens modal dialog for specified book.
+             * Sets the route path for the specified book using the book title and the Id.
              *
              * @param e the book tile click event.
-             *        `e.detail` contains the book value.
+             *        `e.detail` contains the book Id and the book title.
              * @private
              */
             _handleBookClick(e) {
-                const book = e.detail;
+                const bookId = e.detail.bookId;
+                const bookTitle = e.detail.bookTitle;
                 e.stopPropagation();
                 e.preventDefault();
-                this.set('route.path', '/book-details/' + book.title.replace(/\s/g, '_') + '/' + book.id);
+                if (bookId && bookTitle) {
+                    return this.set('route.path', '/book-details/' + bookTitle.replace(/\s/g, '_') + '/' + bookId);
+                }
+                this.set('route.path', '/view404');
             }
 
             /**

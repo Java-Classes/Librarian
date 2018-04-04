@@ -212,7 +212,14 @@
             }
 
             _handleClick() {
-                console.log('Book click' + this.book.id);
+                this.dispatchEvent(new CustomEvent('exlibris-book-tile-click', {
+                    detail: {
+                        bookId: this.book.id,
+                        bookTitle: this.book.title
+                    },
+                    composed: true,
+                    bubbles: true
+                }));
             }
         }
 
