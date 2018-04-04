@@ -18,6 +18,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+const threeWeeks = 21;
+const millisecondsInOneDay = 86400000;
+
 const TEST_BOOKS = [{
     id: "123456789",
     title: "Стив Джобс",
@@ -36,6 +39,6 @@ const TEST_BOOKS = [{
     category: "Biography",
     description: "Уолтер Айзексон, автор знаменитой биографии Стивена Джобса, написал книгу об одном из самых известных ученых XX века, Альберте Эйнштейне. Он не только подробно и доступно изложил суть научных концепций и открытий автора теории относительности, но и увлекательно рассказал об Эйнштейне-человеке. В книге приводится множество документальных материалов – письма, воспоминания, дневниковые записи. Перед нами встает образ удивительно талантливого человека, мечтателя и бунтаря, гуманиста и мыслителя.",
     status: "reserved",
-    date: new Date(new Date().getTime() + 21 * 172800000)
+    date: new Date(new Date().getTime() + threeWeeks * millisecondsInOneDay)
 }];
 
