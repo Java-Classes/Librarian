@@ -111,7 +111,7 @@
         </style>
 
         <div id="title">Inventory</div>
-        <paper-button id="add">ADD</paper-button>
+        <paper-button id="add" on-tap="_handleAddButton">ADD</paper-button>
         <div id="table">
             <div id="header">
                 <div id="checkbox-head" class="checkbox-column"></div>
@@ -121,18 +121,25 @@
             <template is="dom-repeat" items="[[identifiers]]">
                 <div class="row">
                     <div class="checkbox-column">
-                        <paper-checkbox></paper-checkbox>
+                        <paper-checkbox on-change="_handleCheckBoxChange"></paper-checkbox>
                     </div>
                     <div class="id-column">[[item.id]]</div>
                     <div class="rfid-column">[[item.rfid]]</div>
                 </div>
             </template>
         </div>
-        <paper-button id="print">PRINT</paper-button>
+        <paper-button id="print" on-tap="_handlePrintButton">PRINT</paper-button>
     </template>
 
     <script>
 
+        /**
+         * <exlibris-book-inventory-table> shows table of inventory identifiers
+         * with the ability to add or remove items.
+         *
+         * @customElement
+         * @polymer
+         */
         class ExlibrisBookInventoryTable extends Polymer.Element {
             static get is() {
                 return 'exlibris-book-inventory-table';
@@ -140,71 +147,77 @@
 
             static get properties() {
                 return {
+                    /**
+                     * Fired after click on the add button.
+                     *
+                     * @event add-inventory
+                     */
+
+                    /**
+                     * Fired after click on the print button.
+                     *
+                     * @event add-inventory
+                     * @param {detail.identifiers} the map of the identifiers to print.
+                     */
+
+
+                    /**
+                     * The array of the next object:
+                     *  @typedef {Object} Identifier
+                     * @property {string} id the identifier of a book
+                     * @property {string} rfid the radio-frequency identification of a book
+                     */
                     identifiers: {
                         type: Array,
-                        value: [{
-                            id: "17853",
-                            rfid: "1218954971455"
-                        }, {
-                            id: "18941",
-                            rfid: "1478954977981"
-                        },{
-                            id: "17853",
-                            rfid: "1218954971455"
-                        }, {
-                            id: "18941",
-                            rfid: "1478954977981"
-                        },{
-                            id: "17853",
-                            rfid: "1218954971455"
-                        }, {
-                            id: "18941",
-                            rfid: "1478954977981"
-                        },{
-                            id: "17853",
-                            rfid: "1218954971455"
-                        }, {
-                            id: "18941",
-                            rfid: "1478954977981"
-                        },{
-                            id: "17853",
-                            rfid: "1218954971455"
-                        }, {
-                            id: "18941",
-                            rfid: "1478954977981"
-                        },{
-                            id: "17853",
-                            rfid: "1218954971455"
-                        }, {
-                            id: "18941",
-                            rfid: "1478954977981"
-                        },{
-                            id: "17853",
-                            rfid: "1218954971455"
-                        }, {
-                            id: "18941",
-                            rfid: "1478954977981"
-                        },{
-                            id: "17853",
-                            rfid: "1218954971455"
-                        }, {
-                            id: "18941",
-                            rfid: "1478954977981"
-                        },{
-                            id: "17853",
-                            rfid: "1218954971455"
-                        }, {
-                            id: "18941",
-                            rfid: "1478954977981"
-                        },{
-                            id: "17853",
-                            rfid: "1218954971455"
-                        }, {
-                            id: "18941",
-                            rfid: "1478954977981"
-                        }]
+                        value: []
+                    },
+                    /**
+                     * The map where key = Identifier.id , value = Identifier.rfid
+                     */
+                    selectedIdentifiers: {
+                        type: Object,
+                        value: {}
                     }
+
                 };
+            }
+
+            /**
+             * Fires event `add-inventory`
+             * @private
+             */
+            _handleAddButton() {
+                this.dispatchEvent(new CustomEvent('add-inventory'));
+            }
+
+            /**
+             * Fires event `print-identifiers`
+             * @private
+             */
+            _handlePrintButton() {
+                this.dispatchEvent(new CustomEvent('print-identifiers', {
+                    detail: {
+                        identifiers: this.selectedIdentifiers
+                    }
+                }));
+            }
+
+            /**
+             * Adds selected identifier to the selectedIdentifiers map or
+             * deletes unselected identifiers from the selectedIdentifiers map.
+             *
+             * @param e event
+             * @private
+             */
+            _handleCheckBoxChange(e) {
+                const index = e.model.index;
+                const selectedIdentifiers = this.selectedIdentifiers;
+                const identifiers = this.identifiers;
+                if (!selectedIdentifiers[identifiers[index].id]) {
+                    selectedIdentifiers[identifiers[index].id] = identifiers[index].rfid;
+                    return;
+                }
+                delete selectedIdentifiers[identifiers[index].id];
             }
         }
 
