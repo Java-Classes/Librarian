@@ -21,6 +21,8 @@
 const threeWeeks = 21;
 const millisecondsInOneDay = 86400000;
 
+/* exported TEST_BOOKS */
+
 const TEST_BOOKS = [{
     id: "123456789",
     title: "Стив Джобс",

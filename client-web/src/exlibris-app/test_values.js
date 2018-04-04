@@ -25,6 +25,7 @@ const twoDays = 2;
 const millisecondsInOneDay = 86400000;
 
 /* exported libraryTestBooks */
+
 const libraryTestBooks = [
     {
         id: "8535902775",
@@ -598,6 +599,7 @@ const libraryTestBooks = [
         status: "AVAILABLE"
     }
 ];
+/* exported expectedSoonLibraryBooks */
 
 const expectedSoonLibraryBooks = [{
     id: "8535902733",
@@ -612,6 +614,8 @@ const expectedSoonLibraryBooks = [{
     "The technical core of EPI is a sequence of chapters on basic and advanced data structures, searching, sorting, broad algorithmic principles, concurrency, and system design. Each chapter consists of a brief review, followed by a broad and thought-provoking series of problems. We include a summary of data structure, algorithm, and problem solving patterns.",
     status: "EXPECTED_SOON"
 }];
+/* exported userTestBooks */
+
 const userTestBooks = {
         reserved: [{
             id: "8535902717",
