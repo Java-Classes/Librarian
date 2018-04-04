@@ -23,14 +23,12 @@
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 
 
-
-<link rel="import" href="./book-category-selector.html">
+<link rel="import" href="exlibris-category-selector.html">
 <link rel="import" href="./exlibris-file-uploader.html">
 <link rel="import" href="./exlibris-description-area.html">
 
 
-
-<dom-module id="book-details-form">
+<dom-module id="exlibris-book-details-form">
     <template>
         <style>
             :host {
@@ -66,7 +64,8 @@
                 margin-left: 30px;
                 margin-top: 20px;
             }
-            #description{
+
+            #description {
                 padding-left: 35px;
             }
 
@@ -82,22 +81,22 @@
                              value="{{authors}}"></paper-input>
                 <paper-input id="year-input" label="Year"
                              value="{{year}}"></paper-input>
-                <book-category-selector></book-category-selector>
+                <exlibris-category-selector></exlibris-category-selector>
             </div>
             <div id="cover">
                 <exlibris-file-uploader></exlibris-file-uploader>
             </div>
         </div>
         <div id="description">
-            <exlibris-description-area ></exlibris-description-area>
+            <exlibris-description-area></exlibris-description-area>
         </div>
     </template>
 
     <script>
 
-        class BookDetailsForm extends Polymer.Element {
+        class ExlibrisBookDetailsForm extends Polymer.Element {
             static get is() {
-                return 'book-details-form';
+                return 'exlibris-book-details-form';
             }
 
             static get properties() {
@@ -105,6 +104,6 @@
             }
         }
 
-        window.customElements.define(BookDetailsForm.is, BookDetailsForm);
+        window.customElements.define(ExlibrisBookDetailsForm.is, ExlibrisBookDetailsForm);
     </script>
 </dom-module>

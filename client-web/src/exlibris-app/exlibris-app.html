@@ -49,7 +49,7 @@
 <link rel="import" href="./menu/menu-item.html">
 <link rel="import" href="./book_values.html">
 <link rel="import" href="./book-dialog.html">
-<link rel="import" href="./wizard-dialog.html">
+<link rel="import" href="exlibris-wizard-dialog.html">
 
 <dom-module id="exlibris-app">
     <template>
@@ -255,7 +255,7 @@
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
-        <wizard-dialog id="wizard"></wizard-dialog>
+        <exlibris-wizard-dialog id="wizard"></exlibris-wizard-dialog>
         <book-dialog id="dialog"
                      on-book-dialog-closed="_handleDialogClose"
                      on-book-dialog-cancel-reservation="_cancelBookReservation"

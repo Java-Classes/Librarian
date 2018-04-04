@@ -36,10 +36,10 @@
       href="../../bower_components/paper-dialog-behavior/paper-dialog-shared-styles.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="./book_values.html">
-<link rel="import" href="./book-details-form.html">
+<link rel="import" href="exlibris-book-details-form.html">
 
 
-<dom-module id="wizard-dialog">
+<dom-module id="exlibris-wizard-dialog">
     <template>
         <style>
             :host {
@@ -143,6 +143,10 @@
                 margin-bottom: -6px;
             }
 
+            iron-icon {
+                --iron-icon-fill-color: var(--app-secondary-color);
+            }
+
 
         </style>
 
@@ -169,8 +173,7 @@
                                        link="/details"
                                        on-menu-item-click="_changeRoute">
                                 <iron-icon icon="radio-button-unchecked"
-                                           slot="icon"
-                                           style="--iron-icon-fill-color: var(--app-secondary-color)"></iron-icon>
+                                           slot="icon"></iron-icon>
                             </menu-item>
 
                             <menu-item data-name="inventory"
@@ -178,8 +181,7 @@
                                        link="/inventory"
                                        on-menu-item-click="_changeRoute">
                                 <iron-icon icon="av:library-books"
-                                           slot="icon"
-                                           style="--iron-icon-fill-color: var(--app-secondary-color)"></iron-icon>
+                                           slot="icon"></iron-icon>
                             </menu-item>
                         </iron-selector>
                     </div>
@@ -190,7 +192,7 @@
                             selected="[[page]]"
                             attr-for-selected="data-name">
                         <div data-name="details">
-                            <book-details-form></book-details-form>
+                            <exlibris-book-details-form></exlibris-book-details-form>
                         </div>
                         <div data-name="inventory">
                             Inventory
@@ -230,9 +232,9 @@
 
     <script>
 
-        class WizardDialog extends Polymer.Element {
+        class ExlibrisWizardDialog extends Polymer.Element {
             static get is() {
-                return 'wizard-dialog';
+                return 'exlibris-wizard-dialog';
             }
 
             static get properties() {
@@ -267,6 +269,6 @@
             }
         }
 
-        window.customElements.define(WizardDialog.is, WizardDialog);
+        window.customElements.define(ExlibrisWizardDialog.is, ExlibrisWizardDialog);
     </script>
 </dom-module>

@@ -25,7 +25,7 @@
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/neon-animation/web-animations.html">
 
-<dom-module id="book-category-selector">
+<dom-module id="exlibris-category-selector">
     <template>
         <style>
             :host {
@@ -103,9 +103,9 @@
 
     <script>
 
-        class BookCategorySelector extends Polymer.Element {
+        class ExlibrisCategorySelector extends Polymer.Element {
             static get is() {
-                return 'book-category-selector';
+                return 'exlibris-category-selector';
             }
 
             static get properties() {
@@ -130,18 +130,20 @@
             }
 
             _addCategory() {
-                if (this.selectedCategories.length < 4) {
+                console.log(this.selectedCategory);
+                if (this.selectedCategories.length <= 4 && this.selectedCategory) {
                     if (!this.selectedCategories.includes(this.selectedCategory)) {
                         this.push('selectedCategories', this.selectedCategory);
                     }
                 }
             }
+
             _deleteCategory(e) {
                 const index = e.model.index;
                 this.splice('selectedCategories', index, 1);
             }
         }
 
-        window.customElements.define(BookCategorySelector.is, BookCategorySelector);
+        window.customElements.define(ExlibrisCategorySelector.is, ExlibrisCategorySelector);
     </script>
 </dom-module>
