@@ -19,6 +19,8 @@
   -->
 
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/vaadin-upload/vaadin-upload.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 
 
 <dom-module id="exlibris-file-uploader">
@@ -28,14 +30,22 @@
                 display: block;
             }
 
-            #frame {
-                width: 160px;
-                height: 220px;
-                padding: 10px;
-                border: 1px solid #aaaaaa;
+            vaadin-upload {
+                max-width: 230px;
             }
+
+            paper-button {
+                min-width: 15px;
+                min-height: 5px;
+                background-color: #b4b4b4;
+                color: white;
+                font-size: 10px;
+            }
+
         </style>
-        <div id="frame" on-drop="drop" ondragover="allowDrop(event)"></div>
+        <vaadin-upload max-files="1" accept=".jpg,.png">
+            <paper-button slot="add-button">Upload file</paper-button>
+        </vaadin-upload>
     </template>
 
     <script>
@@ -48,12 +58,7 @@
             static get properties() {
                 return {};
             }
-
-            drop(e) {
-                console.log(e);
-            }
         }
-
         window.customElements.define(ExlibrisFileUploader.is, ExlibrisFileUploader);
     </script>
 </dom-module>

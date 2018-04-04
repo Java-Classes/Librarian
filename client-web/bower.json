@@ -25,7 +25,8 @@
     "iron-test-helpers": "PolymerElements/iron-test-helpers#^2.0.0",
     "iron-a11y-keys-behavior": "PolymerElements/iron-a11y-keys-behavior#^2.1.0",
     "mtz-marked-editor": "MaritzSTL/mtz-marked-editor#^0.2.2",
-    "paper-input": "PolymerElements/paper-input#^2.2.1"
+    "paper-input": "PolymerElements/paper-input#^2.2.1",
+    "vaadin-upload": "vaadin/vaadin-upload#^3.0.2"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0",
