@@ -245,7 +245,8 @@
                             "Delve into Java’s latest I/O APIs, including asynchronous channels\n" +
                             "Use Nashorn to execute JavaScript on the Java Virtual Machine\n" +
                             "Become familiar with development tools in OpenJDK",
-                            availableCount: 5
+                            availableCount: 5,
+                            status: 'AVAILABLE'
                         }
                     }
                 };
@@ -260,23 +261,23 @@
             }
 
             _isReserved(status) {
-                return status === bookStatus.RESERVED;
+                return status === BookStatus.RESERVED;
             }
 
             _isExpected(status) {
-                return status === bookStatus.EXPECTED;
+                return status === BookStatus.EXPECTED;
             }
 
             _isBorrowedAndCanBeExtended(book) {
-                return (book.status === bookStatus.SHOULD_RETURN_SOON
-                    || book.status === bookStatus.OVERDUE)
+                return (book.status === BookStatus.SHOULD_RETURN_SOON
+                    || book.status === BookStatus.OVERDUE)
                     && book.isAllowedLoanExtension;
             }
 
             _isBorrowedAndCannotBeExtended(book) {
-                return (book.status === bookStatus.SHOULD_RETURN_SOON
-                    || book.status === bookStatus.OVERDUE
-                    || book.status === bookStatus.BORROWED)
+                return (book.status === BookStatus.SHOULD_RETURN_SOON
+                    || book.status === BookStatus.OVERDUE
+                    || book.status === BookStatus.BORROWED)
                     && !book.isAllowedLoanExtension;
             }
 

@@ -149,6 +149,11 @@
                 };
             }
 
+            connectedCallback() {
+                super.connectedCallback();
+                this.addEventListener('click', this._handleClick);
+            }
+
             /**
              * Creates statusClass property depending on book.status.
              *
@@ -204,6 +209,10 @@
                         break;
                     }
                 }
+            }
+
+            _handleClick() {
+                console.log('Book click' + this.book.id);
             }
         }
 
