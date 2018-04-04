@@ -161,7 +161,7 @@
                         <div class="head-text">
                             <div class="title">[[book.title]]</div>
                             <div class="author">[[book.author]]</div>
-                            <div class="plain-text">[[book.fullStatusMessage]]</div>
+                            <div class="plain-text">[[_getMessage()]]</div>
                         </div>
                         <div class="head-button">
                             <template is="dom-if" if="[[_isReserved(book.status)]]">
@@ -209,27 +209,6 @@
                 return {
 
                     /**
-                     * Fired on the `CANCEL RESERVATION` button click.
-                     *
-                     * @event book-details-cancel-reservation
-                     * @param {detail.bookId} the id of a book the reservation of which must be canceled.
-                     */
-
-                    /**
-                     * Fired on the `RESERVE` button click.
-                     *
-                     * @event book-details-reserve-book
-                     * @param {detail.bookId} the id of a book to reserve.
-                     */
-
-                    /**
-                     * Fired on the `EXTEND FOR TWO WEEKS` button click.
-                     *
-                     * @event book-details-extend-loan
-                     * @param {detail.bookId} the id of a book the loan period of which must be extended.
-                     */
-
-                    /**
                      * The book object to display.
                      */
                     book: {
@@ -269,12 +248,59 @@
                     && !book.isAllowedLoanExtension;
             }
 
+            _getMessage() {
+                const book = this.book;
+                let message = '';
+                switch (book.status) {
+                    case BookStatus.AVAILABLE: {
+                        message = book.availableCount ? book.availableCount + ' available.\nScan QR code to borrow.' : '';
+                        break;
+                    }
+
+                    case BookStatus.EXPECTED: {
+                        message = 'Book not available.';
+                        break;
+                    }
+
+                    case BookStatus.EXPECTED_SOON: {
+                        message = 'Arriving to library shortly.';
+                        break;
+                    }
+
+                    case BookStatus.OVERDUE: {
+                        if (book.dueDate) {
+                            const now = new Date();
+                            const numberOfOverdueDays = now.getDate() - book.dueDate.getDate();
+                            message = numberOfOverdueDays + ' days overdue.';
+                        }
+                        break;
+                    }
+
+                    case BookStatus.READY_TO_PICK_UP: {
+                        message = book.date ? 'Book is ready to pick up.\nBorrow it before ' + book.date.toLocaleDateString() : '';
+                        break;
+                    }
+
+                    case BookStatus.RESERVED: {
+                        message = book.date ? 'Reserved for you.\nExpected on ' + book.date.toLocaleDateString() : '';
+                        break;
+                    }
+
+                    case BookStatus.BORROWED: {
+                        message = book.dueDate ? 'Borrowed by you.\nReturn before ' + book.dueDate.toLocaleDateString() : '';
+                        break;
+                    }
+                }
+                return message;
+            }
+
             /**
              * Handles the `CANCEL RESERVATION` button click.
              *
              * @private
              */
             _requestCancelReservation() {
+                alert('Reservation canceled!');
                 //Request someone to cancel reservation
             }
 
@@ -284,6 +310,7 @@
              * @private
              */
             _requestReservation() {
+                alert('Book reserved!');
                 //Request someone to make reservation
             }
 
@@ -293,6 +320,7 @@
              * @private
              */
             _requestLoanExtension() {
+                alert('Loan period extended!');
                 //Request someone to extend loan period
             }
         }

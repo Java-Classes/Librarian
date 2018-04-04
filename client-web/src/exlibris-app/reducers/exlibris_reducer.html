@@ -29,7 +29,7 @@
             reservedBooks: userTestBooks.reserved,
             allBooks: [...userTestBooks.overdue, ...libraryTestBooks],
             expectedSoonBooks: expectedSoonLibraryBooks,
-            selectedBook: expectedSoonLibraryBooks[0]
+            selectedBook: userTestBooks.overdue[0]
         };
 
         const reducer = (state = initialState, action) => {
