@@ -47,29 +47,27 @@
                 margin: 10px;
             }
 
-            .book-card > .content {
-                margin: 10px;
-            }
-
-            .book-card .content > .head-region {
+            .book-card .head-region {
                 display: flex;
                 flex-direction: row;
                 justify-content: flex-start;
                 align-items: flex-start;
                 width: 100%;
+                height: fit-content;
             }
 
-            .book-card > .content > .head-region > iron-image {
+            .book-card .head-region iron-image {
                 width: 40%;
                 --iron-image-width: 100%;
                 overflow: inherit;
+                box-shadow: 0 0 4px #8d8d8d;
             }
 
-            .book-card > .content > .head-region > iron-image.hidden {
+            .book-card .head-region iron-image.hidden {
                 display: none;
             }
 
-            .book-card > .content > .head-region > .head-info {
+            .book-card .head-region .head-info {
                 display: flex;
                 width: 70%;
                 height: 100%;
@@ -78,16 +76,41 @@
                 justify-content: space-between;
             }
 
-            .book-card > .content > .head-region > .head-info > .head-text {
+            .book-card .head-region .head-info .head-text {
+                display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
             }
 
-            .book-card > .content > .description {
-                margin: 10px;
+            .book-card .head-region .head-info .wide-screen {
+                display: block;
+                width: fit-content;
+                margin: 0;
             }
 
-            .book-card > .content > .head-region > .head-info > .head-text > .title {
+            .book-card .narrow-screen {
+                display: none;
+                width: fit-content;
+                margin: 12px 0 0 0;
+            }
+
+            paper-button {
+                margin: 0;
+                background-color: var(--exlibris-app-primary-color, blue);
+                color: white;
+            }
+
+            paper-button.small {
+                font-size: 12px;
+            }
+
+            .book-card .description {
+                margin-top: 30px;
+                margin-bottom: 30px;
+                padding: 0 50px 0 50px;
+            }
+
+            .book-card .head-region .head-info .head-text .title {
                 font-size: 25px;
                 line-height: 30px;
                 margin: 10px 0 10px 0;
@@ -95,13 +118,13 @@
                 font-weight: normal;
             }
 
-            .book-card > .content > .head-region > .head-info > .head-text > .author {
+            .book-card .head-region .head-info .head-text .author {
                 font-size: 12px;
                 font-weight: lighter;
                 margin: 5px 0 5px 0;
             }
 
-            .book-card > .content > .head-region > .head-info > .head-text > .plain-text {
+            .book-card .head-region .head-info .head-text .plain-text {
                 white-space: pre;
                 font-size: 15px;
                 font-weight: bold;
@@ -110,11 +133,18 @@
 
             @media only screen and (max-width: 400px) {
                 .book-card {
-                    @apply --layout-vertical;
                     border-radius: 0px;
                     box-shadow: unset;
                     background-color: initial;
                     margin: 0;
+                }
+
+                .book-card .head-region .head-info .wide-screen {
+                    display: none;
+                }
+
+                .book-card .narrow-screen {
+                    display: block;
                 }
 
                 .book-card > .content > .head-region > .head-info > .head-text > .title {
@@ -128,10 +158,6 @@
                 }
             }
 
-            paper-button {
-                background-color: var(--exlibris-app-primary-color, blue);
-                color: white;
-            }
 
         </style>
 
@@ -142,48 +168,26 @@
                 active="[[routeActive]]"></app-route>
 
         <div class="book-card">
-            <div class="content">
-                <div class="head-region">
-                    <iron-image class$="[[_isImageLoaded(loaded)]]"
-                                src="src/exlibris-app/images/cover-placeholder.png"></iron-image>
-                    <iron-image preload loaded="{{loaded}}" src="[[book.image]]"></iron-image>
-                    <div class="head-info">
-                        <div class="head-text">
-                            <div class="title">[[book.title]]</div>
-                            <div class="author">[[book.author]]</div>
-                            <div class="plain-text">[[_getMessage()]]</div>
-                        </div>
-                        <div class="head-button">
-                            <template is="dom-if" if="[[_isReserved(book.status)]]">
-                                <paper-button id="book-details-cancel-button"
-                                              raised
-                                              on-click="_requestCancelReservation">
-                                    CANCEL RESERVATION
-                                </paper-button>
-                            </template>
-                            <template is="dom-if" if="[[_isExpected(book.status)]]">
-                                <paper-button id="book-details-reserve-button"
-                                              raised
-                                              on-click="_requestReservation">
-                                    RESERVE
-                                </paper-button>
-                            </template>
-                            <template is="dom-if" if="[[_isBorrowedAndCanBeExtended(book)]]">
-                                <paper-button id="book-details-extend-button"
-                                              raised
-                                              on-click="_requestLoanExtension">
-                                    EXTEND FOR TWO WEEKS
-                                </paper-button>
-                            </template>
-                            <template is="dom-if" if="[[_isBorrowedAndCannotBeExtended(book)]]">
-                                <h3>RESERVED BY ANOTHER READER</h3>
-                            </template>
-                        </div>
+            <div class="head-region">
+                <iron-image class$="[[_isImageLoaded(loaded)]]"
+                            src="src/exlibris-app/images/cover-placeholder.png"></iron-image>
+                <iron-image preload loaded="{{loaded}}" src="[[book.image]]"></iron-image>
+                <div class="head-info">
+                    <div class="head-text">
+                        <div class="title">[[book.title]]</div>
+                        <div class="author">[[book.author]]</div>
+                        <div class="plain-text">[[_getMessage()]]</div>
+                    </div>
+                    <div class="wide-screen">
+                    <paper-button>[[buttonTitle]]</paper-button>
                     </div>
                 </div>
-                <div class="description">
-                    <div class="plain-text">[[book.description]]</div>
-                </div>
+            </div>
+            <div class="narrow-screen">
+            <paper-button class="small">[[buttonTitle]]</paper-button>
+            </div>
+            <div class="description">
+                <div class="plain-text">[[book.description]]</div>
             </div>
         </div>
     </template>
@@ -203,7 +207,12 @@
                      */
                     book: {
                         type: Object,
-                        statePath: 'selectedBook'
+                        statePath: 'selectedBook',
+                    },
+
+                    buttonTitle: {
+                        type: String,
+                        computed: '_getButtonTitle(book)'
                     }
                 };
             }
@@ -216,22 +225,22 @@
                 return loaded ? 'hidden' : '';
             }
 
-            _isReserved(status) {
-                return [BookStatus.READY_TO_PICK_UP, BookStatus.RESERVED].includes(status);
+            _isReserved() {
+                return [BookStatus.READY_TO_PICK_UP, BookStatus.RESERVED].includes(this.book.status);
             }
 
-            _isExpected(status) {
-                return [BookStatus.EXPECTED, BookStatus.EXPECTED_SOON].includes(status);
+            _isExpected() {
+                return [BookStatus.EXPECTED, BookStatus.EXPECTED_SOON].includes(this.book.status);
             }
 
-            _isBorrowedAndCanBeExtended(book) {
-                return [BookStatus.OVERDUE, BookStatus.SHOULD_RETURN_SOON].includes(status)
-                    && book.isAllowedLoanExtension;
+            _isBorrowedAndCanBeExtended() {
+                return [BookStatus.OVERDUE, BookStatus.SHOULD_RETURN_SOON].includes(this.book.status)
+                    && this.book.isAllowedLoanExtension;
             }
 
-            _isBorrowedAndCannotBeExtended(book) {
-                return [BookStatus.SHOULD_RETURN_SOON, BookStatus.OVERDUE, BookStatus.BORROWED].includes(book.status)
-                    && !book.isAllowedLoanExtension;
+            _isBorrowedAndCannotBeExtended() {
+                return [BookStatus.SHOULD_RETURN_SOON, BookStatus.OVERDUE, BookStatus.BORROWED].includes(this.book.status)
+                    && !this.book.isAllowedLoanExtension;
             }
 
             _getMessage() {
@@ -278,6 +287,12 @@
                     }
                 }
                 return message;
+            }
+
+            _getButtonTitle(book) {
+                if (this._isReserved()) return 'CANCEL RESERVATION';
+                if (this._isExpected()) return 'RESERVE';
+                if (this._isBorrowedAndCanBeExtended()) return 'EXTEND LOAN PERIOD';
             }
 
             /**
