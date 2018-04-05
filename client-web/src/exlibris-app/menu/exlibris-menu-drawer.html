@@ -40,15 +40,10 @@
                 color: #fff;
             }
 
-            exlibris-menu-item {
-                --exlibris-menu-item-background-color: var(--exlibris-app-background-color);
-                --exlibris-menu-item-title-color: var(--exlibris-app-secondary-color);
-            }
-
             exlibris-menu-item.iron-selected {
                 --exlibris-menu-item-background-color: var(--google-grey-300);
                 --exlibris-menu-item-title-color: black;
-                font-weight: bold;
+                --exlibris-menu-item-title-font-weight: bold;
             }
 
             exlibris-menu-item iron-icon {
@@ -128,15 +123,8 @@
         /**
          * The exlibris application menu drawer.
          *
-         * Provides the app menu with menu items.
-         * The menu item click changes app route.
-         *
-         * How to use `<exlibris-menu-drawer>` component.
-         * In typical use, just use `<exlibris-menu-drawer>` in app drawer:
-         * <app-drawer>
-         *   <exlibris-app></exlibris-app>
-         * </app-drawer>
-         * To make the selected menu item change style, bind the `selected` property.
+         * Provides the application menu with menu items.
+         * The menu item click changes application route.
          *
          * @customElement
          * @polymer

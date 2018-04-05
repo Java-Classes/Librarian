@@ -20,6 +20,7 @@
 
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../exlibris-app/exlibris-book-tile.html">
 <link rel="import" href="./book_values.html">
 
@@ -33,7 +34,9 @@
         </style>
         <iron-list items="[[books]]" as="book" scroll-target="document" grid>
             <template>
-                <exlibris-book-tile book="[[book]]"></exlibris-book-tile>
+                <div>
+                    <exlibris-book-tile book="[[book]]"></exlibris-book-tile>
+                </div>
             </template>
         </iron-list>
 
@@ -73,7 +76,6 @@
             }
 
             _onLowerThreshold() {
-                console.log('Add more books');
             }
         }
 

@@ -31,9 +31,6 @@
         <style>
             :host {
                 display: block;
-            }
-
-            .book-content {
                 @apply --layout-vertical;
                 border-radius: 3px;
                 box-shadow: 4px 4px 10px #888888;
@@ -101,18 +98,14 @@
             }
         </style>
 
-        <template is="dom-if" if="[[book]]">
-            <div class="book-content">
-                <iron-image sizing="cover"
-                            src="[[book.image]]">
-                </iron-image>
-                <div id="synopsis">
-                    <div id="title" title="[[book.title]]">[[book.title]]</div>
-                    <div id="author" title="[[book.author]]">[[book.author]]</div>
-                    <div id="status-text" class$="[[statusClass]]">[[book.statusMessage]]</div>
-                </div>
-            </div>
-        </template>
+        <iron-image sizing="cover"
+                    src="[[book.image]]">
+        </iron-image>
+        <div id="synopsis">
+            <div id="title" title="[[book.title]]">[[book.title]]</div>
+            <div id="author" title="[[book.author]]">[[book.author]]</div>
+            <div id="status-text" class$="[[statusClass]]">[[statusMessage]]</div>
+        </div>
     </template>
 
     <script>
@@ -134,14 +127,19 @@
                      *  @typedef {Object} Book
                      * @property {string} title the title of a book
                      * @property {string} authors string with authors of the book
-                     * @property {string} statusMessage full information about status
                      * @property {string} status  one of the following values: "overdue", "borrowed", "should-return-soon",
                      * "available", "reserved", "expected","ready-to-pick-up"
                      */
-                    book: {
-                        type: Object,
-                        observer: '_bookChanged'
+                    book: Object,
+
+                    /**
+                     * String with full information about book status.
+                     */
+                    statusMessage: {
+                        type: String,
+                        computed: '_computeBookStatusMessage(book)'
                     },
+
                     statusClass: {
                         value: String,
                         computed: "_computeClassForStatusMessage(book.status)"
@@ -157,7 +155,7 @@
             /**
              * Creates statusClass property depending on book.status.
              *
-             * @param status status of the book.
+             * @param {string} status the book status.
              * @returns {string} class for status message.
              * @private
              */
@@ -171,42 +169,36 @@
             }
 
             /**
-             * Creates statusMessage depending on the status
+             * Creates statusMessage depending on the book status.
              *
-             * @param book the book object
+             * @param{Object} book the book object
+             * @returns {string} statusMessage.
              * @private
              */
-            _bookChanged(book) {
+            _computeBookStatusMessage(book) {
                 switch (book.status) {
                     case BookStatus.OVERDUE: {
-                        const oneDay = 1000 * 60 * 60 * 24;
+                        const oneDay = 86400000;
                         const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / oneDay);
-                        book.statusMessage = numberOfOverdueDays + " DAYS OVERDUE";
-                        break;
+                        return numberOfOverdueDays + " DAYS OVERDUE";
                     }
                     case BookStatus.BORROWED: {
-                        book.statusMessage = "DUE ON " + book.dueDate.toLocaleDateString();
-                        break;
+                        return "DUE ON " + book.dueDate.toLocaleDateString();
                     }
                     case BookStatus.READY_TO_PICK_UP: {
-                        book.statusMessage = "READY TO PICK UP";
-                        break;
+                        return "READY TO PICK UP";
                     }
                     case BookStatus.RESERVED: {
-                        book.statusMessage = "EXPECTED ON " + book.date.toLocaleDateString();
-                        break;
+                        return "EXPECTED ON " + book.date.toLocaleDateString();
                     }
                     case BookStatus.EXPECTED_SOON: {
-                        book.statusMessage = "EXPECTED SOON";
-                        break;
+                        return "EXPECTED SOON";
                     }
                     case BookStatus.AVAILABLE: {
-                        book.statusMessage = book.availableCount + " AVAILABLE";
-                        break;
+                        return book.availableCount + " AVAILABLE";
                     }
                     case BookStatus.EXPECTED: {
-                        book.statusMessage = "EXPECTED";
-                        break;
+                        return "EXPECTED";
                     }
                 }
             }
