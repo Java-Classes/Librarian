@@ -1,0 +1,162 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+
+<link rel="import" href="./exlibris-menu-item.html">
+
+<dom-module id="exlibris-menu-drawer">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            app-toolbar {
+                background-color: var(--exlibris-app-primary-color);
+                color: #fff;
+            }
+
+            exlibris-menu-item.iron-selected {
+                --exlibris-menu-item-background-color: var(--google-grey-300);
+                --exlibris-menu-item-title-color: black;
+                --exlibris-menu-item-title-font-weight: bold;
+            }
+
+            exlibris-menu-item iron-icon {
+                --iron-icon-fill-color: var(--paper-grey-600)
+            }
+
+            exlibris-menu-item iron-icon.overdue {
+                --iron-icon-fill-color: var(--paper-red-600)
+            }
+
+            exlibris-menu-item iron-icon.green {
+                --iron-icon-fill-color: var(--paper-green-600)
+            }
+
+            exlibris-menu-item iron-icon.app-color {
+                --iron-icon-fill-color: var(--exlibris-app-primary-color)
+            }
+        </style>
+
+        <app-toolbar>TeamDev Library</app-toolbar>
+        <iron-selector id="menu-selector"
+                       attr-for-selected="data-page"
+                       selected="[[selected]]">
+
+            <exlibris-menu-item link="#/all-books"
+                                title="All Books"
+                                data-page="all-books">
+                <iron-icon icon="book"
+                           slot="icon"
+                           class="app-color"></iron-icon>
+            </exlibris-menu-item>
+
+            <exlibris-menu-item link="#/expected-soon"
+                                title="Expected Soon"
+                                data-page="expected-soon">
+                <iron-icon icon="update"
+                           slot="icon"
+                           class="green"></iron-icon>
+            </exlibris-menu-item>
+
+            <exlibris-menu-item link="#/borrowed-books"
+                                title="Borrowed Books"
+                                data-page="borrowed-books"
+                                count="[[countBadges.borrowed]]">
+                <iron-icon icon="shopping-basket"
+                           slot="icon"></iron-icon>
+            </exlibris-menu-item>
+
+            <exlibris-menu-item link="#/reserved-books"
+                                title="Reserved Books"
+                                data-page="reserved-books"
+                                count="[[countBadges.reserved]]">
+                <iron-icon icon="lock"
+                           slot="icon"></iron-icon>
+            </exlibris-menu-item>
+
+            <exlibris-menu-item link="#/should-return-books"
+                                title="Should Return Soon"
+                                data-page="should-return-books"
+                                count="[[countBadges.shouldReturnSoon]]">
+                <iron-icon icon="query-builder"
+                           slot="icon"></iron-icon>
+            </exlibris-menu-item>
+
+            <exlibris-menu-item link="#/overdue-books"
+                                title="Overdue"
+                                data-page="overdue-books"
+                                count="[[countBadges.overdue]]">
+                <iron-icon icon="warning"
+                           slot="icon"
+                           class="overdue"></iron-icon>
+            </exlibris-menu-item>
+        </iron-selector>
+    </template>
+
+    <script>
+        /**
+         * The exlibris application menu drawer.
+         *
+         * Provides the application menu with menu items.
+         * The menu item click changes application route.
+         *
+         * @customElement
+         * @polymer
+         */
+        class ExlibrisMenuDrawer extends Polymer.Element {
+            static get is() {
+                return 'exlibris-menu-drawer';
+            }
+
+            static get properties() {
+                return {
+                    /**
+                     * The selected menu item.
+                     */
+                    selected: String,
+
+                    /**
+                     * The state of the menu items count badges.
+                     */
+                    countBadges: {
+                        type: Object,
+                        value: {
+                            overdue: '',
+                            shouldReturnSoon: '',
+                            reserved: '',
+                            borrowed: ''
+                        }
+                    }
+                };
+            }
+        }
+
+        window.customElements.define(ExlibrisMenuDrawer.is, ExlibrisMenuDrawer);
+    </script>
+</dom-module>

@@ -21,6 +21,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="./../exlibris-app/shell/redux-store.html">
+
 <link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import"
       href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
@@ -33,7 +34,6 @@
 <link rel="import" href="../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
@@ -42,50 +42,37 @@
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="exlibris-category-dropdown.html">
 
-
+<link rel="import" href="./exlibris-book-grid.html">
 <link rel="import" href="exlibris-book-search.html">
-<link rel="import" href="./book-grid.html">
-<link rel="import" href="./menu/menu-item.html">
+<link rel="import" href="./exlibris-book-details.html">
+<link rel="import" href="./menu/exlibris-menu-drawer.html">
 <link rel="import" href="./book_values.html">
-<link rel="import" href="./book-dialog.html">
 
 <dom-module id="exlibris-app">
     <template>
         <style>
             :host {
-                --app-primary-color: var(--paper-blue-600);
-                --app-secondary-color: var(--paper-grey-600);
-                --app-background-color: var(--paper-grey-200);
+                --exlibris-app-primary-color: var(--paper-blue-600);
+                --exlibris-app-secondary-color: var(--paper-grey-600);
+                --exlibris-app-background-color: var(--paper-grey-200);
                 --app-drawer-width: 250px;
                 display: block;
             }
 
+            app-drawer {
+                --app-drawer-content-container: {
+                    background-color: var(--exlibris-app-background-color);
+                }
+            }
+
             app-toolbar {
-                background-color: var(--app-primary-color);
+                background-color: var(--exlibris-app-primary-color);
                 color: #fff;
             }
 
             app-drawer-layout:not([narrow]) [drawer-toggle] {
                 display: none;
             }
-
-            app-drawer {
-                --app-drawer-content-container: {
-                    background-color: var(--app-background-color);
-                }
-            }
-
-            menu-item {
-                --menu-item-background-color: var(--app-background-color);
-                --menu-item-title-color: var(--app-secondary-color)
-            }
-
-            menu-item.iron-selected {
-                --menu-item-background-color: var(--google-grey-300);
-                --menu-item-title-color: black;
-                font-weight: bold;
-            }
-
             exlibris-category-dropdown {
                 margin-left: 48px;
             }
@@ -106,7 +93,6 @@
                 margin: 0 auto;
             }
 
-
         </style>
 
         <app-location route="{{route}}"
@@ -117,78 +103,12 @@
                 pattern="/:page"
                 data="{{routeData}}"
                 tail="{{subRoute}}"></app-route>
-        <app-route
-                route="{{subRoute}}"
-                pattern="/:title/:id"
-                data="{{subRouteData}}"
-                active="{{subRouteActive}}"></app-route>
 
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
-            <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
-                <app-toolbar>TeamDev Library</app-toolbar>
-                <iron-selector attr-for-selected="data-name"
-                               selected="[[routeData.page]]"
-                               on-selected-item-changed="_getSelectedTitle">
-
-                    <menu-item data-name="all-books"
-                               title="All Books"
-                               link="/all-books"
-                               on-menu-item-click="_changeRoute">
-                        <iron-icon icon="book"
-                                   slot="icon"
-                                   style="--iron-icon-fill-color: var(--app-primary-color)"></iron-icon>
-                    </menu-item>
-
-                    <menu-item data-name="expected-soon"
-                               title="Expected Soon"
-                               link="/expected-soon"
-                               on-menu-item-click="_changeRoute">
-                        <iron-icon icon="update"
-                                   slot="icon"
-                                   style="--iron-icon-fill-color: var(--paper-green-600)"></iron-icon>
-                    </menu-item>
-
-                    <menu-item data-name="borrowed-books"
-                               title="Borrowed Books"
-                               count="[[borrowedBooks.length]]"
-                               link="/borrowed-books"
-                               on-menu-item-click="_changeRoute">
-                        <iron-icon icon="shopping-basket"
-                                   slot="icon"
-                                   style="--iron-icon-fill-color: var(--paper-grey-600)"></iron-icon>
-                    </menu-item>
-
-                    <menu-item data-name="reserved-books"
-                               title="Reserved Books"
-                               count="[[reservedBooks.length]]"
-                               link="/reserved-books"
-                               on-menu-item-click="_changeRoute">
-                        <iron-icon icon="lock"
-                                   slot="icon"
-                                   style="--iron-icon-fill-color: var(--paper-grey-600)"></iron-icon>
-                    </menu-item>
-
-                    <menu-item data-name="should-return-books"
-                               title="Should Retutn Soon"
-                               count="[[shouldReturnBooks.length]]"
-                               link="/should-return-books"
-                               on-menu-item-click="_changeRoute">
-                        <iron-icon icon="query-builder"
-                                   slot="icon"
-                                   style="--iron-icon-fill-color: var(--paper-grey-600)"></iron-icon>
-                    </menu-item>
-
-                    <menu-item data-name="overdue-books"
-                               title="Overdue"
-                               count="[[overdueBooks.length]]"
-                               link="/overdue-books"
-                               on-menu-item-click="_changeRoute">
-                        <iron-icon icon="warning"
-                                   slot="icon"
-                                   style="--iron-icon-fill-color: var(--paper-red-600)"></iron-icon>
-                    </menu-item>
-                </iron-selector>
+            <app-drawer id="drawer" swipe-open="[[narrow]]" slot="drawer" on-click="_toggleDrawer">
+                <exlibris-menu-drawer selected="[[routeData.page]]"
+                                      count-badges="[[countBadges]]"></exlibris-menu-drawer>
             </app-drawer>
 
             <!-- Main content -->
@@ -197,7 +117,7 @@
                     <app-toolbar>
                         <paper-icon-button id="number" icon="menu"
                                            drawer-toggle></paper-icon-button>
-                        <span drawer-toggle>[[selectedTitle]]</span>
+                        <span drawer-toggle>[[appHeaderTitle]]</span>
                         <exlibris-book-search on-exlibris-book-search-search="_handleSearch"></exlibris-book-search>
                     </app-toolbar>
                 </app-header>
@@ -211,32 +131,28 @@
                 <iron-pages
                         id="pages"
                         selected="[[routeData.page]]"
-                        attr-for-selected="data-name"
+                        attr-for-selected="data-page"
                         fallback-selection="view404"
-                        role="main">
-                    <book-grid data-name="all-books" books="[[allBooks]]"
-                               on-book-tile-click="_handleBookClick"></book-grid>
-                    <book-grid data-name="overdue-books" books="[[overdueBooks]]"
-                               on-book-tile-click="_handleBookClick"></book-grid>
-                    <book-grid data-name="borrowed-books" books="[[borrowedBooks]]"
-                               on-book-tile-click="_handleBookClick"></book-grid>
-                    <book-grid data-name="reserved-books" books="[[reservedBooks]]"
-                               on-book-tile-click="_handleBookClick"></book-grid>
-                    <book-grid data-name="expected-soon"
-                               books="[[expectedSoonBooks]]"
-                               on-book-tile-click="_handleBookClick"></book-grid>
-                    <book-grid data-name="should-return-books"
-                               books="[[shouldReturnBooks]]"
-                               on-book-tile-click="_handleBookClick"></book-grid>
-                    <div data-name="view404">View404</div>
+                        role="main"
+                        on-exlibris-book-tile-click="_handleBookClick">
+                    <exlibris-book-grid data-page="all-books"
+                                        books="[[allBooks]]"></exlibris-book-grid>
+                    <exlibris-book-grid data-page="overdue-books"
+                                        books="[[overdueBooks]]"></exlibris-book-grid>
+                    <exlibris-book-grid data-page="borrowed-books"
+                                        books="[[borrowedBooks]]"></exlibris-book-grid>
+                    <exlibris-book-grid data-page="reserved-books"
+                                        books="[[reservedBooks]]"></exlibris-book-grid>
+                    <exlibris-book-grid data-page="expected-soon"
+                                        books="[[expectedSoonBooks]]"></exlibris-book-grid>
+                    <exlibris-book-grid data-page="should-return-books"
+                                        books="[[shouldReturnBooks]]"></exlibris-book-grid>
+                    <exlibris-book-details data-page="book-details"
+                                           route="[[subRoute]]"></exlibris-book-details>
+                    <div data-page="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
-        <book-dialog id="dialog"
-                     on-book-dialog-closed="_handleDialogClose"
-                     on-book-dialog-cancel-reservation="_cancelBookReservation"
-                     on-book-dialog-reserve-book="_reserveBook"
-                     on-book-dialog-extend-loan="_extendBookLoanPeriod"></book-dialog>
     </template>
 
     <script>
@@ -254,7 +170,7 @@
          * @polymer
          * @appliesMixin ReduxMixin
          */
-        class ExlibrisApp extends ReduxMixin(Polymer.Element) {
+        class ExlibrisApp extends ExlibrisApplication.ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'exlibris-app';
             }
@@ -263,10 +179,11 @@
                 return {
 
                     /**
-                     * The title of the selected page.
+                     * Defines count badges of the menu items.
                      */
-                    selectedTitle: {
-                        type: String,
+                    countBadges: {
+                        type: Object,
+                        computed: '_computeCountBadges(overdueBooks.length, shouldReturnBooks.length, reservedBooks.length, borrowedBooks.length)'
                     },
 
                     /**
@@ -318,27 +235,21 @@
                     },
 
                     /**
-                     * The page to show in the book dialog backdrop.
+                     * The title of the app header.
+                     * Computed from `routeData.page` value.
                      */
-                    previousPage: String,
-
-                    /**
-                     * The subRoute parameters.
-                     */
-                    subRouteData: Object,
-
-                    /**
-                     * Indicates that the `subRoute` matches the `pattern`.
-                     */
-                    subRouteActive: Boolean,
+                    appHeaderTitle: {
+                        type: String,
+                        computed: '_getTitle(routeData.page)'
+                    },
 
                     /**
                      * The array of categories.
                      */
                     categories: {
-                        type: Array,
+                    type: Array,
                         statePath: 'categories'
-                    }
+                }
                 };
             }
 
@@ -361,68 +272,55 @@
 
             static get observers() {
                 return [
-                    '_routePageChanged(routeData.page, subRouteActive)'
+                    '_routePageChanged(routeData.page)'
                 ];
+            }
+
+            _computeCountBadges(overdueCount, shouldReturnCount, reservedCount, borrowedCount) {
+                return {
+                    overdue: overdueCount,
+                    shouldReturnSoon: shouldReturnCount,
+                    reserved: reservedCount,
+                    borrowed: borrowedCount
+                }
             }
 
             /**
              * Checks for an empty route passed to redirect user to the default app view.
-             *
-             * If the route matches the `book-dialog` route, searches for the book by
-             * the id from URL, opens modal dialog with specified book,
-             * selects the appropriate page to show in the dialog background.
              */
             _routePageChanged() {
                 if (!this.route.path) {
                     this.set('route.path', '/all-books');
                 }
-
-                if (this.routeData.page === 'book-details' && this.subRouteActive) {
-                    Polymer.RenderStatus.afterNextRender(this, function () {
-                        const bookId = this.subRouteData.id;
-                        const book = this._findBookById(bookId);
-                        if (book) {
-                            const bookDialog = this.$.dialog;
-                            bookDialog.book = book;
-                            bookDialog.open();
-                        } else {
-                            this.set('route.path', '/view404');
-                        }
-                    });
-
-                    // To display the proper content under the dialog backdrop.
-                    this.$.pages.selected = this.previousPage ? this.previousPage : 'all-books';
-                }
-
-                this.previousPage = this.$.pages.selected;
             }
 
             /**
-             * Handles menu item click event. Changes application route.
-             * If the page is in the `narrow` state, toggles the drawer.
+             * Computes the title of the app header.
+             * Removes dashes from the `routeData.page` value and
+             * capitalizes each word first letter.
              *
-             * @param e the event of the menu item click. Contains the link to redirect on.
+             * @param {string} page the current page.
+             * @returns {string} capitalized page value without dashes.
              * @private
              */
-            _changeRoute(e) {
-                this.set('route.path', e.detail);
+            _getTitle(page) {
+                let title;
+                if (page) {
+                    const unDashedString = page.replace(/-/g, ' ');
+                    title = unDashedString.replace(/\w\S*/g, function (txt) {
+                        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                    });
+                }
+                return title ? title : 'All Books';
+            }
+
+            /**
+             * Closes drawer on click in the narrow mode.
+             * @private
+             */
+            _toggleDrawer() {
                 if (this.narrow) {
                     this.$.drawer.toggle();
-                }
-            }
-
-            /**
-             * Handles the selected menu item changed event.
-             * Sets the `selectedTitle` property with the appropriate value.
-             *
-             * @param e the event fired when selection of menu items selector has changed.
-             *          Contains the selected menu item.
-             * @private
-             */
-            _getSelectedTitle(e) {
-                let selectedMenuItem = e.detail.value;
-                if (selectedMenuItem) {
-                    this.set('selectedTitle', selectedMenuItem.title);
                 }
             }
 
@@ -438,74 +336,24 @@
 
             /**
              * Handles the book tile click event.
-             * Opens modal dialog for specified book.
+             * Sets the route path for the specified book using the book title and the Id.
              *
              * @param e the book tile click event.
-             *        `e.detail` contains the book value.
+             *        `e.detail` contains the book Id and the book title.
              * @private
              */
             _handleBookClick(e) {
-                const book = e.detail;
+                const bookId = e.detail.bookId;
+                const bookTitle = e.detail.bookTitle;
                 e.stopPropagation();
                 e.preventDefault();
-                this.set('route.path', '/book-details/' + book.title.replace(/\s/g, '_') + '/' + book.id);
-            }
-
-            /**
-             * Searches the book in the related book arrays by id.
-             */
-            _findBookById(id) {
-                const book = this.allBooks.find(x => x.id === id)
-                    || this.expectedSoonBooks.find(x => x.id === id)
-                    || this.overdueBooks.find(x => x.id === id)
-                    || this.shouldReturnBooks.find(x => x.id === id)
-                    || this.borrowedBooks.find(x => x.id === id)
-                    || this.reservedBooks.find(x => x.id === id);
-                return book;
-            }
-
-            /**
-             * Handles the book dialog close action.
-             * Sets the route path to the previous value.
-             */
-            _handleDialogClose(e) {
-                if (this.previousPage) {
-                    this.set('route.path', '/' + this.previousPage);
+                if (bookId && bookTitle) {
+                    return this.set('route.path', '/book-details/' + bookTitle.replace(/\s/g, '_') + '/' + bookId);
                 }
+                this.set('route.path', '/view404');
             }
 
-            /**
-             * Handles the request to cancel book reservation.
-             *
-             * @param e the dialog button click event.
-             * @private
-             */
-            _cancelBookReservation(e) {
-                const bookId = e.detail.bookId;
-                console.log('Cancel book reservation ' + bookId);
-            }
 
-            /**
-             * Handles the request to reserve book.
-             *
-             * @param e the dialog button click event.
-             * @private
-             */
-            _reserveBook(e) {
-                const bookId = e.detail.bookId;
-                console.log('Reserve book ' + bookId);
-            }
-
-            /**
-             * Handles the request to extend book loan period.
-             *
-             * @param e the dialog button click event.
-             * @private
-             */
-            _extendBookLoanPeriod(e) {
-                const bookId = e.detail.bookId;
-                console.log('Extend loan ' + bookId);
-            }
 
             /**
              * Handles the exlibris-book-search-search event.

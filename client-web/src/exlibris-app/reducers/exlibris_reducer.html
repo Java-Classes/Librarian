@@ -22,30 +22,19 @@
 <link rel="import" href="../actions/exlibris_actions.html">
 
 <script>
-    const reducer = (state, action) => {
-        if (!state) {
-            const overdueBooks = createOverdueBooks(userTestBooks.overdue);
-            let allBooks = createAllBooks(libraryTestBooks, overdueBooks);
-            const borrowedBooks = createBorrowBooks(userTestBooks.borrowed, overdueBooks);
-            const shouldReturnBooks = createShouldReturnBooks(userTestBooks.borrowed);
-            const reservedBooks = createReservedBooks(userTestBooks.reserved, overdueBooks);
-            const expectedSoonBooks = createExpectedSoonBooks(libraryTestBooks);
-            removeSubArrayFromArray(allBooks, borrowedBooks);
-            removeSubArrayFromArray(allBooks, reservedBooks);
-            removeSubArrayFromArray(allBooks, overdueBooks);
-            removeSubArrayFromArray(allBooks, expectedSoonBooks);
-            allBooks = [...overdueBooks, ...allBooks];
-            const categories = ["All", ...testCategories];
-            return {
-                overdueBooks: overdueBooks,
-                borrowedBooks: borrowedBooks,
-                shouldReturnBooks: shouldReturnBooks,
-                reservedBooks: reservedBooks,
-                allBooks: allBooks,
-                expectedSoonBooks: expectedSoonBooks,
-                categories: categories
-            };
-        }
+    /* exported reducer */
+
+    const initialState = {
+        overdueBooks: userTestBooks.overdue,
+        borrowedBooks: [...userTestBooks.overdue, ...userTestBooks.borrowed],
+        shouldReturnBooks: userTestBooks.shouldReturnSoon,
+        reservedBooks: userTestBooks.reserved,
+        allBooks: [...userTestBooks.overdue, ...libraryTestBooks],
+        expectedSoonBooks: expectedSoonLibraryBooks,
+        selectedBook: userTestBooks.reserved[0]
+    };
+
+    const reducer = (state = initialState, action) => {
         switch (action.type) {
             case ExlibrisActions.SEARCH_BY_CATEGORY:
                 //TODO:2018-51-27:yurii.haidamaka Add requests to the server
@@ -59,205 +48,4 @@
                 return state;
         }
     };
-
-    /**
-     * Creates an object by copying the following properties from the argument:
-     * id, title, author, category, description, image
-     * @param book object with main book fields
-     * @returns {{} & {id, title, author, category, description, image}} clone object
-     * @private
-     */
-    function cloneMainFields(book) {
-        return Object.assign({}, {
-            id: book.id,
-            title: book.title,
-            author: book.author,
-            category: book.category,
-            description: book.description,
-            image: book.image,
-            isAllowedLoanExtension: book.isAllowedLoanExtension
-        });
-    }
-
-    /**
-     * Creates array `borrowedBooks`.
-     *
-     * Clones next fields from `libraryBooks`:
-     * id, title, author, category, description, image
-     * Adds fields `status` equals `borrowed`
-     * and `statusMessage` equals `DUE ON DATE`
-     *
-     * If there are less than 3 days left before the `dueDAte`, the book
-     * will be added to the `shouldReturnBooks` array.
-     *
-     * @param books all `borrowed` user books from library
-     */
-    function createBorrowBooks(books, overdue, shouldReturn) {
-        const borrowedBooks = books.map(book => {
-            const newBook = this.cloneMainFields(book);
-            newBook["status"] = bookStatus.BORROWED;
-            newBook["statusMessage"] = "DUE ON " + book.dueDate.toLocaleDateString();
-            newBook["fullStatusMessage"] = "Borrowed by you.\nReturn before " + book.dueDate.toLocaleDateString() + '.';
-            return newBook;
-        });
-        return [...overdue, ...borrowedBooks];
-    }
-
-    /**
-     * Creates array `shouldReturnBooks`.
-     *
-     * Clones next fields from `libraryBooks`:
-     * id, title, author, category, description, image
-     *
-     * Adds fields `status` and `statusMessage` values
-     * depending on the `dueDate`.
-     *
-     *
-     * @param books all books from library
-     */
-    function createShouldReturnBooks(books) {
-        const shouldReturnBooks = books.map(book => {
-            const oneDay = 1000 * 60 * 60 * 24;
-            if (Math.floor((new Date() - book.dueDate) / oneDay) <= 3) {
-                const newBook = this.cloneMainFields(book);
-                newBook["status"] = bookStatus.SHOULD_RETURN_SOON;
-                newBook["statusMessage"] = "DUE ON " + book.dueDate.toLocaleDateString();
-                newBook["fullStatusMessage"] = "Borrowed by you.\nReturn before " + book.dueDate.toLocaleDateString() + '.';
-                return newBook;
-            }
-        });
-        return shouldReturnBooks;
-    }
-
-    /**
-     * Creates array `overdueBooks`.
-     *
-     * Clones next fields from `libraryBooks`:
-     * id, title, author, category, description, image
-     * Adds fields `status` equals `overdue`
-     * and `statusMessage` equals `N DAYS OVERDUE`
-     *
-     *
-     * @param books all `overdue` user books from library
-     */
-    function createOverdueBooks(books) {
-        const overdueBooks = books.map(book => {
-            const newBook = cloneMainFields(book);
-            newBook["status"] = bookStatus.OVERDUE;
-            const oneDay = 1000 * 60 * 60 * 24;
-            const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / oneDay);
-            newBook["statusMessage"] = numberOfOverdueDays + " DAYS OVERDUE";
-            newBook["fullStatusMessage"] = numberOfOverdueDays + " days overdue.";
-            return newBook;
-        });
-
-        return overdueBooks;
-    }
-
-    /**
-     * Creates array `reservedBooks`.
-     *
-     * Clones next fields from `libraryBooks`:
-     * id, title, author, category, description, image
-     * Adds fields `status` equals `reserved`
-     * and next `statusMessage`:
-     *
-     * `READY TO PICK UP` - for books from `readyToPickUp` array
-     * `EXPECTED ON` - for books from `expected` array.
-     *
-     * @param books all `reserved` user books from library
-     */
-    function createReservedBooks(books) {
-        const readyToPickUpBooks = books.readyToPickUp.map(book => {
-            const newBook = cloneMainFields(book);
-            newBook["status"] = bookStatus.RESERVED;
-            newBook["statusMessage"] = "READY TO PICK UP";
-            newBook["fullStatusMessage"] = "Reserved for you.\nReady to pick up.";
-            return newBook;
-        });
-
-        const expectedUserBooks = books.expected.map(book => {
-                const newBook = cloneMainFields(book);
-                newBook["status"] = bookStatus.RESERVED;
-                newBook["statusMessage"] = "EXPECTED ON " + book.date.toLocaleDateString();
-                newBook["fullStatusMessage"] = "Reserved for you.\nExpected on " +
-                    book.date.toLocaleDateString() + '.';
-                return newBook;
-            }
-        );
-        return [...readyToPickUpBooks, ...expectedUserBooks];
-    }
-
-    /**
-     * Creates array `allBooks`.
-     *
-     * Clones next fields from `libraryBooks`:
-     * id, title, author, category, description, image
-     * Adds fields `status` and `statusMessage` values
-     * depending on the `availableCount`.
-     *
-     *
-     * @param books all books from library
-     */
-    function createAllBooks(books) {
-        const allBooks = books.map(book => {
-            const newBook = cloneMainFields(book);
-            if (book.availableCount !== undefined) {
-                if (book.availableCount > 0) {
-                    newBook["status"] = bookStatus.AVAILABLE;
-                    newBook["statusMessage"] = book.availableCount + " AVAILABLE";
-                    newBook["fullStatusMessage"] = book.availableCount + ' available.' + '\n' + 'Scan QR code to borrow.';
-                    return newBook;
-                }
-                newBook["status"] = bookStatus.EXPECTED;
-                newBook["statusMessage"] = "EXPECTED";
-                newBook["fullStatusMessage"] = "Not available.";
-                return newBook;
-            }
-            return newBook;
-        });
-
-        return allBooks;
-    }
-
-    /**
-     * Creates array `expectedSoonBooks`.
-     *
-     * Clones next fields from `libraryBooks`:
-     * id, title, author, category, description, image
-     * Adds fields `status` and `statusMessage` values
-     * depending on the `expectedSoon` field.
-     *
-     *
-     * @param books all books from library
-     */
-    function createExpectedSoonBooks(books) {
-        const expectedSoonBooks = [];
-        books.forEach(book => {
-            if (book.expectedSoon) {
-                const newBook = cloneMainFields(book);
-                newBook["status"] = bookStatus.EXPECTED;
-                newBook["statusMessage"] = "EXPECTED SOON";
-                expectedSoonBooks.push(newBook);
-            }
-        });
-        return expectedSoonBooks;
-    }
-
-    /**
-     * Removes all elements of the second array from the first.
-     *
-     * @param array whose elements will be deleted
-     * @param books array with elements for remove
-     * @private
-     */
-    function removeSubArrayFromArray(allBooks, books) {
-        allBooks.forEach((book, index) => {
-            books.forEach(b => {
-                if (b.id === book.id) {
-                    allBooks.splice(index, 1);
-                }
-            });
-        });
-    }
 </script>

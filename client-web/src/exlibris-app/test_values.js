@@ -18,11 +18,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-const threeWeeks = 21;
 const twoWeeks = 14;
+const threeWeeks = 21;
 const threeDays = 3;
 const twoDays = 2;
 const millisecondsInOneDay = 86400000;
+
+/* exported libraryTestBooks */
 
 const libraryTestBooks = [
     {
@@ -39,7 +41,8 @@ const libraryTestBooks = [
         "Мрачный психологический триллер с увлекательным сюжетом «ПРЕЖДЕ ЧЕМ ОН СОГРЕШИТ» – это книга #7 в захватывающей серии детективных романов, рассказывающих о любимой героине. От книги просто невозможно оторваться.\n" +
         "\n" +
         "Также не пропустите роман Блейка Пирса «КОГДА ОНА УШЛА» (Загадки Райли Пейдж—Книга #1), бестселлер #1 с более чем 900 отзывов с высшей оценкой. Роман доступен для бесплатного скачивания!",
-        availableCount: 3
+        availableCount: 3,
+        status: "AVAILABLE"
     }, {
         id: "8535902771",
         title: "The Martian",
@@ -58,7 +61,8 @@ const libraryTestBooks = [
         "So yeah. I’m screwed.\n" +
         "\n" +
         "Andy Weir's second novel Artemis is now available",
-        availableCount: 0
+        availableCount: 0,
+        status: "EXPECTED"
     }, {
 
         id: "8535902772",
@@ -82,7 +86,8 @@ const libraryTestBooks = [
         "How to implement complete error handling without obscuring code logic\n" +
         "How to unit test and practice test-driven development\n" +
         "This book is a must for any developer, software engineer, project manager, team lead, or systems analyst with an interest in producing better code.",
-        availableCount: 4
+        availableCount: 4,
+        status: "AVAILABLE"
     }, {
         id: "8535902773",
         title: "Java Generics and Collections: Speed Up the Java Development Process",
@@ -104,7 +109,8 @@ const libraryTestBooks = [
         "Concurrent programming and thread safety with collections\n" +
         "Performance implications of different collections\n" +
         "Generics and the new collection libraries they inspired take Java to anew level. If you want to take your software development practice toa new level, this book is essential reading.",
-        availableCount: 0
+        availableCount: 0,
+        status: "EXPECTED"
     }, {
 
         id: "8535902774",
@@ -132,8 +138,8 @@ const libraryTestBooks = [
         "This fourth edition makes C++11 thoroughly accessible to programmers moving from C++98 or other languages, while introducing insights and techniques that even cutting-edge C++11 programmers will find indispensable.\n" +
         "\n" +
         "This book features an enhanced, layflat binding, which allows the book to stay open more easily when placed on a flat surface. This special binding method—noticeable by a small space inside the spine—also increases durability.",
-
-        availableCount: 6
+        availableCount: 6,
+        status: "AVAILABLE"
     }, {
         id: "8535902776",
         title: "Elon Musk: How the Billionaire CEO of SpaceX and Tesla is Shaping our Future",
@@ -163,7 +169,8 @@ const libraryTestBooks = [
         "\n" +
         "Style and approach\n" +
         "This is your guide to designing custom web components, and the concepts are explained in a conversational and easy-to-follow style. Each topic is explained through examples, with detailed explanations wherever required.",
-        availableCount: 8
+        availableCount: 8,
+        status: "AVAILABLE"
     }, {
 
         id: "8535902777",
@@ -180,25 +187,25 @@ const libraryTestBooks = [
         "\n" +
         "“After reading it over a couple of hours and putting its ideas to work for the past five years, I can say it has done more to improve my abilities as a Web designer than any other book.”\n" +
         "–Jeffrey Zeldman, author of Designing with Web Standards",
-
-        availableCount: 10
+        availableCount: 10,
+        status: "AVAILABLE"
     }, {
         id: "8535902778",
         title: "Node.js в действии. 2-е издание",
         image: "https://books.google.com/books/content/images/frontcover/s9VMDwAAQBAJ?fife=w200-h300",
         author: "Кантелон МайкХартер МаркГоловайчук TJРайлих Натан",
-        category: "Web Design",
         description: "Реактивное программирование - совершенно новая и многообещающая парадигма, позволяющая эффективно решать задачи, связанные с созданием распределенных систем и программированием для JVM. Эта книга расскажет, как организовать поток задач, наладить обмен сообщениями между элементами программы, обеспечить параллельную и конкурентную обработку и создавать надежные, отказоустойчивые и гибкие приложения. Перед вами - основополагающая работа по шаблонам проектирования (design patterns) этой парадигмы. Книга проиллюстрирована многочисленными примерами и ориентирована на опытных Java- и Scala-разработчиков",
-        availableCount: 11
+        availableCount: 11,
+        status: "AVAILABLE"
     }, {
 
         id: "8535902779",
         title: "React.js. Быстрый старт",
         image: "https://books.google.com/books/content/images/frontcover/g79TDgAAQBAJ?fife=w200-h300",
         author: "Стоян Стефанов",
-        category: "Web Design",
         description: "Незаменимая вводная книга по технологии React для взыскательных JavaScript-разработчиков. Все самое интересное о сверхпопулярном инструменте от компании Facebook. В книге рассмотрены основные концепции высокопроизводительного программирования при помощи React, реальные примеры кода и доступные блок-схемы. Прочитав ее, вы научитесь: • Создавать и использовать собственные компоненты React наряду с универсальными компонентами DOM • Писать компоненты для таблиц данных, позволяющие редактировать, сортировать таблицу, выполнять в ней поиск и экспортировать ее содержимое • Использовать дополнительный синтаксис JSX в качестве альтернативы для вызовов функций • Запускать низкоуровневый гибкий процесс сборки, который освободит вам время и поможет сосредоточиться на работе с React • Работать с инструментами ESLint, Flow и Jest, позволяющими проверять и тестировать код по мере разработки приложения • Обеспечивать коммуникацию между компонентами при помощи Flux В итоге у вас получится полноценное веб-приложение, позволяющее сохранять данные на стороне клиента.",
-        availableCount: 0
+        availableCount: 0,
+        status: "EXPECTED"
     }, {
 
         id: "8535902710",
@@ -230,8 +237,8 @@ const libraryTestBooks = [
         "Style and approach\n" +
         "This is an easy-to-follow, example-based, comprehensive introduction to all the major features in Qt. The content of each chapter is explained and organized around one or multiple simple game examples to learn Qt in a fun way.\n" +
         "\n",
-
-        availableCount: 13
+        availableCount: 13,
+        status: "AVAILABLE"
     }, {
 
         id: "8535902711",
@@ -240,7 +247,8 @@ const libraryTestBooks = [
         author: "Iuliana CosminaRob HarropChris SchaeferClarence Ho",
         category: "Java Programming",
         description: "",
-        availableCount: 286
+        availableCount: 286,
+        status: "AVAILABLE"
     }, {
         id: "8535902712",
         title: "JavaScript: The Good Parts: The Good Parts",
@@ -264,7 +272,8 @@ const libraryTestBooks = [
         "The real beauty? As you move ahead with the subset of JavaScript that this book presents, you'll also sidestep the need to unlearn all the bad parts. Of course, if you want to find out more about the bad parts and how to use them badly, simply consult any other JavaScript book.\n" +
         "\n" +
         "With JavaScript: The Good Parts, you'll discover a beautiful, elegant, lightweight and highly expressive language that lets you create effective code, whether you're managing object libraries or just trying to get Ajax to run fast. If you develop sites or applications for the Web, this book is an absolute must.",
-        availableCount: 15
+        availableCount: 15,
+        status: "AVAILABLE"
     }, {
         id: "8535902713",
         title: "Java in a Nutshell: A Desktop Quick Reference, Edition 6",
@@ -283,7 +292,8 @@ const libraryTestBooks = [
         "Delve into Java’s latest I/O APIs, including asynchronous channels\n" +
         "Use Nashorn to execute JavaScript on the Java Virtual Machine\n" +
         "Become familiar with development tools in OpenJDK",
-        availableCount: 5
+        availableCount: 5,
+        status: "AVAILABLE"
     }, {
         id: "8535902714",
         title: "You Don't Know JS: ES6 & Beyond",
@@ -302,7 +312,8 @@ const libraryTestBooks = [
         "Leverage new API helpers, including Array, Object, Math, Number, and String\n" +
         "Extend your program’s capabilities through meta programming\n" +
         "Preview features likely coming to JS beyond ES6",
-        availableCount: 1
+        availableCount: 1,
+        status: "AVAILABLE"
     }, {
         id: "8535902715",
         title: "Прежде Чем Он Согрешит ",
@@ -317,13 +328,14 @@ const libraryTestBooks = [
         "Мрачный психологический триллер с увлекательным сюжетом «ПРЕЖДЕ ЧЕМ ОН СОГРЕШИТ» – это книга #7 в захватывающей серии детективных романов, рассказывающих о любимой героине. От книги просто невозможно оторваться.\n" +
         "\n" +
         "Также не пропустите роман Блейка Пирса «КОГДА ОНА УШЛА» (Загадки Райли Пейдж—Книга #1), бестселлер #1 с более чем 900 отзывов с высшей оценкой. Роман доступен для бесплатного скачивания!",
-        availableCount: 3
+        availableCount: 3,
+        status: "AVAILABLE"
     }, {
         id: "8535902716",
         title: "The Martian",
         image: "https://books.google.com/books/content/images/frontcover/gdxlAQAAQBAJ?fife=w200-h300",
         author: "Andy Weir",
-        category: "Fiction",
+        category: "Fiction ",
         description: "The Sunday Times Bestseller behind the major new film from Ridley Scott starring Matt Damon and Jessica Chastain.\n" +
         "I’m stranded on Mars.\n" +
         "\n" +
@@ -336,28 +348,8 @@ const libraryTestBooks = [
         "So yeah. I’m screwed.\n" +
         "\n" +
         "Andy Weir's second novel Artemis is now available",
-        availableCount: 2
-
-    }, {
-        id: "8535902717",
-        title: "Effective Java: Edition 2",
-        image: "https://books.google.com/books/content/images/frontcover/ka2VUBqHiWkC?fife=w200-h300",
-        author: "Joshua Bloch",
-        category: "Java Programming",
-        description: "Are you looking for a deeper understanding of the Java™ programming language so that you can write code that is clearer, more correct, more robust, and more reusable? Look no further! Effective Java™, Second Edition, brings together seventy-eight indispensable programmer’s rules of thumb: working, best-practice solutions for the programming challenges you encounter every day.\n" +
-        "This highly anticipated new edition of the classic, Jolt Award-winning work has been thoroughly updated to cover Java SE 5 and Java SE 6 features introduced since the first edition. Bloch explores new design patterns and language idioms, showing you how to make the most of features ranging from generics to enums, annotations to autoboxing.\n" +
-        "\n" +
-        "Each chapter in the book consists of several “items” presented in the form of a short, standalone essay that provides specific advice, insight into Java platform subtleties, and outstanding code examples. The comprehensive descriptions and explanations for each item illuminate what to do, what not to do, and why.\n" +
-        "\n" +
-        "Highlights include:\n" +
-        "\n" +
-        "New coverage of generics, enums, annotations, autoboxing, the for-each loop, varargs, concurrency utilities, and much more\n" +
-        "Updated techniques and best practices on classic topics, including objects, classes, libraries, methods, and serialization\n" +
-        "How to avoid the traps and pitfalls of commonly misunderstood subtleties of the language\n" +
-        "Focus on the language and its most fundamental libraries: java.lang, java.util, and, to a lesser extent, java.util.concurrent and java.io\n" +
-        "Simply put, Effective Java™, Second Edition, presents the most practical, authoritative guidelines available for writing efficient, well-designed programs.",
-        availableCount: 2
-
+        availableCount: 2,
+        status: "AVAILABLE"
     }, {
         id: "8535902718",
         title: "Clean Code: A Handbook of Agile Software Craftsmanship",
@@ -380,20 +372,8 @@ const libraryTestBooks = [
         "How to implement complete error handling without obscuring code logic\n" +
         "How to unit test and practice test-driven development\n" +
         "This book is a must for any developer, software engineer, project manager, team lead, or systems analyst with an interest in producing better code.",
-        availableCount: 1
-    }, {
-        id: "8535902719",
-        title: "Java 8 Preview Sampler",
-        image: "https://books.google.com/books/content/images/frontcover/5FVOAwAAQBAJ?fife=w200-h300",
-        author: "Herbert Schildt",
-        category: "Java Programming",
-        description: "In this exclusive eBook, preview excerpts from brand-new and forthcoming Oracle Press Java JDK 8 books. Written by leading Java experts, Oracle Press books offer the most definitive, complete, and up-to-date coverage of the latest Java release. Featuring an introduction by bestselling programming author Herb Schildt, this eBook includes chapters from the following Oracle Press books:\n" +
-        "Java: The Complete Reference, Ninth Edition by Herb Schildt\n" +
-        "Java: A Beginner’s Guide, Sixth Edition by Herb Schildt\n" +
-        "Mastering Lambdas: Java Programming in a Multicore World by Maurice Naftalin\n" +
-        "Quick Start Guide to JavaFX by J.F. DiMarzio\n" +
-        "Mastering JavaFX 8 Controls: Create Custom JavaFX 8 Controls for Cross-Platform Applications by Hendrik Ebbers",
-        availableCount: 26
+        availableCount: 1,
+        status: "AVAILABLE"
     }, {
         id: "8535902720",
         title: "Java Generics and Collections: Speed Up the Java Development Process",
@@ -415,7 +395,8 @@ const libraryTestBooks = [
         "Concurrent programming and thread safety with collections\n" +
         "Performance implications of different collections\n" +
         "Generics and the new collection libraries they inspired take Java to anew level. If you want to take your software development practice toa new level, this book is essential reading.",
-        availableCount: 226
+        availableCount: 226,
+        status: "AVAILABLE"
     }, {
         id: "8535902721",
         title: "The C++ Programming Language: Edition 4",
@@ -442,22 +423,8 @@ const libraryTestBooks = [
         "This fourth edition makes C++11 thoroughly accessible to programmers moving from C++98 or other languages, while introducing insights and techniques that even cutting-edge C++11 programmers will find indispensable.\n" +
         "\n" +
         "This book features an enhanced, layflat binding, which allows the book to stay open more easily when placed on a flat surface. This special binding method—noticeable by a small space inside the spine—also increases durability.",
-
-        availableCount: 20
-    }, {
-        id: "8535902722",
-        title: "Mastering Lambdas: Java Programming in a Multicore World",
-        image: "https://books.google.com/books/content/images/frontcover/Zw5oBAAAQBAJ?fife=w200-h300",
-        author: "Maurice Naftalin",
-        category: "Java Programming",
-        description: "In this exclusive eBook, preview excerpts from brand-new and forthcoming Oracle Press Java JDK 8 books. Written by leading Java experts, Oracle Press books offer the most definitive, complete, and up-to-date coverage of the latest Java release. Featuring an introduction by bestselling programming author Herb Schildt, this eBook includes chapters from the following Oracle Press books:\n" +
-        "Java: The Complete Reference, Ninth Edition by Herb Schildt\n" +
-        "Java: A Beginner’s Guide, Sixth Edition by Herb Schildt\n" +
-        "Mastering Lambdas: Java Programming in a Multicore World by Maurice Naftalin\n" +
-        "Quick Start Guide to JavaFX by J.F. DiMarzio\n" +
-        "Mastering JavaFX 8 Controls: Create Custom JavaFX 8 Controls for Cross-Platform Applications by Hendrik Ebbers",
-
-        availableCount: 10
+        availableCount: 20,
+        status: "AVAILABLE"
     }, {
         id: "8535902723",
         title: "Elon Musk: How the Billionaire CEO of SpaceX and Tesla is Shaping our Future",
@@ -470,38 +437,8 @@ const libraryTestBooks = [
         "He started a pair of huge dot-com successes, including PayPal, which eBay acquired for $1.5 billion in 2002. Musk was forced out as CEO and so began his lost years in which he decided to go it alone and baffled friends by investing his fortune in rockets and electric cars. Meanwhile Musk’s marriage disintegrated as his technological obsessions took over his life ...\n" +
         "\n" +
         "Elon Musk is the Steve Jobs of the present and the future, and for the past twelve months, he has been shadowed by tech reporter, Ashlee Vance. Elon Musk: How the Billionaire CEO of Spacex and Tesla is Shaping our Future is an important, exciting and intelligent account of the real-life Iron Man.",
-        availableCount: 26
-    }, {
-        id: "8535902724",
-        title: "Getting Started with Polymer",
-        image: "https://books.google.com/books/content/images/frontcover/fAFwDQAAQBAJ?fife=w200-h300",
-        author: "Arshak Khachatrian",
-        category: "Web Design",
-        description: "Explore the whole new world of web development and create responsive web apps using PolymerAbout This Book\n" +
-        "Get to grips with the principles of Material Design and Google Web components\n" +
-        "Make full use of the Polymer Designer Tool, Polymer Starter Kit, and Dart to create responsive web apps\n" +
-        "An in-depth guide with real-life examples so you can learn everything you need to know about Polymer\n" +
-        "Who This Book Is For\n" +
-        "If you are a beginner-level web developer who would like to learn the concepts of web development using the Polymer library, then this is the book for you. Knowledge of JavaScript and HTML is expected.\n" +
-        "\n" +
-        "What You Will Learn\n" +
-        "Understand the basics of web components such as Shadow DOM, HTML imports, Templates, and custom elements\n" +
-        "Familiarize yourself with the principles of Material Design\n" +
-        "Install Polymer on your system and create your project structure\n" +
-        "Use the different Polymer 1.0 elements in your code\n" +
-        "Work with Polymer.dart and create your own app\n" +
-        "Get to know the best practices in Polymer programming from the top guys in the Polymer team\n" +
-        "In Detail\n" +
-        "Polymer is a library that helps you develop fast, responsive applications for the desktop and mobile web. It uses the Web Components specifications for the components and Material Design concepts to create a beautiful user interface.\n" +
-        "\n" +
-        "This focused, fast-paced guide deals with Polymer web components. We will cover layouts, attributes, elements, and handling touch and gesture events. You will also see how to build custom web components and applications using Polymer. Don't want to code? You can make the most of the Polymer Designer Tool app and create your own app without coding at all. Finally, you will see how you can improve your Polymer application by reading the best practices from Google Polymer team.\n" +
-        "\n" +
-        "By the end of this book, you will be equipped with all the necessary skills to use Polymer to create custom web components.\n" +
-        "\n" +
-        "Style and approach\n" +
-        "This is your guide to designing custom web components, and the concepts are explained in a conversational and easy-to-follow style. Each topic is explained through examples, with detailed explanations wherever required.",
-
-        availableCount: 3
+        availableCount: 26,
+        status: "AVAILABLE"
     }, {
         id: "8535902725",
         title: "Don't Make Me Think, Revisited: A Common Sense Approach to Web Usability, Edition 3",
@@ -517,8 +454,8 @@ const libraryTestBooks = [
         "\n" +
         "“After reading it over a couple of hours and putting its ideas to work for the past five years, I can say it has done more to improve my abilities as a Web designer than any other book.”\n" +
         "–Jeffrey Zeldman, author of Designing with Web Standards",
-
-        availableCount: 6
+        availableCount: 6,
+        status: "AVAILABLE"
     }, {
         id: "8535902726",
         title: "Node.js в действии. 2-е издание",
@@ -526,8 +463,8 @@ const libraryTestBooks = [
         author: "Кантелон МайкХартер МаркГоловайчук TJРайлих Натан",
         category: "JavaScript",
         description: "Реактивное программирование - совершенно новая и многообещающая парадигма, позволяющая эффективно решать задачи, связанные с созданием распределенных систем и программированием для JVM. Эта книга расскажет, как организовать поток задач, наладить обмен сообщениями между элементами программы, обеспечить параллельную и конкурентную обработку и создавать надежные, отказоустойчивые и гибкие приложения. Перед вами - основополагающая работа по шаблонам проектирования (design patterns) этой парадигмы. Книга проиллюстрирована многочисленными примерами и ориентирована на опытных Java- и Scala-разработчиков",
-
-        availableCount: 14
+        availableCount: 14,
+        status: "AVAILABLE"
     }, {
         id: "8535902727",
         title: "React.js. Быстрый старт",
@@ -535,7 +472,8 @@ const libraryTestBooks = [
         author: "Стоян Стефанов",
         category: "JavaScript",
         description: "Незаменимая вводная книга по технологии React для взыскательных JavaScript-разработчиков. Все самое интересное о сверхпопулярном инструменте от компании Facebook. В книге рассмотрены основные концепции высокопроизводительного программирования при помощи React, реальные примеры кода и доступные блок-схемы. Прочитав ее, вы научитесь: • Создавать и использовать собственные компоненты React наряду с универсальными компонентами DOM • Писать компоненты для таблиц данных, позволяющие редактировать, сортировать таблицу, выполнять в ней поиск и экспортировать ее содержимое • Использовать дополнительный синтаксис JSX в качестве альтернативы для вызовов функций • Запускать низкоуровневый гибкий процесс сборки, который освободит вам время и поможет сосредоточиться на работе с React • Работать с инструментами ESLint, Flow и Jest, позволяющими проверять и тестировать код по мере разработки приложения • Обеспечивать коммуникацию между компонентами при помощи Flux В итоге у вас получится полноценное веб-приложение, позволяющее сохранять данные на стороне клиента.",
-        availableCount: 4
+        availableCount: 4,
+        status: "AVAILABLE"
     }, {
         id: "8535902728",
         title: "Game Programming Using Qt: Beginner's Guide",
@@ -566,8 +504,8 @@ const libraryTestBooks = [
         "Style and approach\n" +
         "This is an easy-to-follow, example-based, comprehensive introduction to all the major features in Qt. The content of each chapter is explained and organized around one or multiple simple game examples to learn Qt in a fun way.\n" +
         "\n",
-
-        availableCount: 13
+        availableCount: 13,
+        status: "AVAILABLE"
     }, {
         id: "8535902729",
         title: "Pro Spring 5: An In-Depth Guide to the Spring Framework and Its Tools, Edition 5",
@@ -592,7 +530,8 @@ const libraryTestBooks = [
         "Who This Book Is For\n" +
         "\n" +
         "Experienced Java and enterprise Java developers and programmers. Some experience with Spring highly recommended.",
-        availableCount: 286
+        availableCount: 286,
+        status: "AVAILABLE"
     }, {
         id: "853590277530",
         title: "JavaScript: The Good Parts: The Good Parts",
@@ -616,7 +555,8 @@ const libraryTestBooks = [
         "The real beauty? As you move ahead with the subset of JavaScript that this book presents, you'll also sidestep the need to unlearn all the bad parts. Of course, if you want to find out more about the bad parts and how to use them badly, simply consult any other JavaScript book.\n" +
         "\n" +
         "With JavaScript: The Good Parts, you'll discover a beautiful, elegant, lightweight and highly expressive language that lets you create effective code, whether you're managing object libraries or just trying to get Ajax to run fast. If you develop sites or applications for the Web, this book is an absolute must.",
-        availableCount: 15
+        availableCount: 15,
+        status: "AVAILABLE"
     }, {
         id: "8535902731",
         title: "Java in a Nutshell: A Desktop Quick Reference, Edition 6",
@@ -635,7 +575,8 @@ const libraryTestBooks = [
         "Delve into Java’s latest I/O APIs, including asynchronous channels\n" +
         "Use Nashorn to execute JavaScript on the Java Virtual Machine\n" +
         "Become familiar with development tools in OpenJDK",
-        availableCount: 5
+        availableCount: 5,
+        status: "AVAILABLE"
     }, {
         id: "8535902732",
         title: "You Don't Know JS: ES6 & Beyond",
@@ -654,60 +595,65 @@ const libraryTestBooks = [
         "Leverage new API helpers, including Array, Object, Math, Number, and String\n" +
         "Extend your program’s capabilities through meta programming\n" +
         "Preview features likely coming to JS beyond ES6",
-        availableCount: 1
-    }, {
-        id: "8535902733",
-        title: "Elements of Programming Interviews: The Insiders' Guide",
-        image: "https://books.google.com/books/content/images/frontcover/y6FLBQAAQBAJ?fife=w200-h300",
-        author: "Adnan AzizTsung-Hsien LeeAmit Prakash",
-        category: "Business",
-        description: "The core of EPI is a collection of over 300 problems with detailed solutions, including 100 figures, 250 tested programs, and 150 variants. The problems are representative of questions asked at the leading software companies.\n" +
-        "\n" +
-        "The book begins with a summary of the nontechnical aspects of interviewing, such as common mistakes, strategies for a great interview, perspectives from the other side of the table, tips on negotiating the best offer, and a guide to the best ways to use EPI.\n" +
-        "\n" +
-        "The technical core of EPI is a sequence of chapters on basic and advanced data structures, searching, sorting, broad algorithmic principles, concurrency, and system design. Each chapter consists of a brief review, followed by a broad and thought-provoking series of problems. We include a summary of data structure, algorithm, and problem solving patterns.",
-        expectedSoon: true
+        availableCount: 1,
+        status: "AVAILABLE"
     }
 ];
+/* exported expectedSoonLibraryBooks */
+
+const expectedSoonLibraryBooks = [{
+    id: "8535902733",
+    title: "Elements of Programming Interviews: The Insiders' Guide",
+    image: "https://books.google.com/books/content/images/frontcover/y6FLBQAAQBAJ?fife=w200-h300",
+    author: "Adnan AzizTsung-Hsien LeeAmit Prakash",
+    category: "Business ",
+    description: "The core of EPI is a collection of over 300 problems with detailed solutions, including 100 figures, 250 tested programs, and 150 variants. The problems are representative of questions asked at the leading software companies.\n" +
+    "\n" +
+    "The book begins with a summary of the nontechnical aspects of interviewing, such as common mistakes, strategies for a great interview, perspectives from the other side of the table, tips on negotiating the best offer, and a guide to the best ways to use EPI.\n" +
+    "\n" +
+    "The technical core of EPI is a sequence of chapters on basic and advanced data structures, searching, sorting, broad algorithmic principles, concurrency, and system design. Each chapter consists of a brief review, followed by a broad and thought-provoking series of problems. We include a summary of data structure, algorithm, and problem solving patterns.",
+    status: "EXPECTED_SOON"
+}];
+/* exported userTestBooks */
 
 const userTestBooks = {
-        reserved: {
-            readyToPickUp: [{
-                id: "8535902717",
-                title: "Effective Java: Edition 2",
-                image: "https://books.google.com/books/content/images/frontcover/ka2VUBqHiWkC?fife=w200-h300",
-                author: "Joshua Bloch",
-                category: "Java Programming",
-                description: "Are you looking for a deeper understanding of the Java™ programming language so that you can write code that is clearer, more correct, more robust, and more reusable? Look no further! Effective Java™, Second Edition, brings together seventy-eight indispensable programmer’s rules of thumb: working, best-practice solutions for the programming challenges you encounter every day.\n" +
-                "This highly anticipated new edition of the classic, Jolt Award-winning work has been thoroughly updated to cover Java SE 5 and Java SE 6 features introduced since the first edition. Bloch explores new design patterns and language idioms, showing you how to make the most of features ranging from generics to enums, annotations to autoboxing.\n" +
-                "\n" +
-                "Each chapter in the book consists of several “items” presented in the form of a short, standalone essay that provides specific advice, insight into Java platform subtleties, and outstanding code examples. The comprehensive descriptions and explanations for each item illuminate what to do, what not to do, and why.\n" +
-                "\n" +
-                "Highlights include:\n" +
-                "\n" +
-                "New coverage of generics, enums, annotations, autoboxing, the for-each loop, varargs, concurrency utilities, and much more\n" +
-                "Updated techniques and best practices on classic topics, including objects, classes, libraries, methods, and serialization\n" +
-                "How to avoid the traps and pitfalls of commonly misunderstood subtleties of the language\n" +
-                "Focus on the language and its most fundamental libraries: java.lang, java.util, and, to a lesser extent, java.util.concurrent and java.io\n" +
-                "Simply put, Effective Java™, Second Edition, presents the most practical, authoritative guidelines available for writing efficient, well-designed programs.",
-                date: new Date(new Date().getTime() + threeDays * millisecondsInOneDay)
+        reserved: [{
+            id: "8535902717",
+            title: "Effective Java: Edition 2",
+            image: "https://books.google.com/books/content/images/frontcover/ka2VUBqHiWkC?fife=w200-h300",
+            author: "Joshua Bloch",
+            category: "Java Programming",
+            description: "Are you looking for a deeper understanding of the Java™ programming language so that you can write code that is clearer, more correct, more robust, and more reusable? Look no further! Effective Java™, Second Edition, brings together seventy-eight indispensable programmer’s rules of thumb: working, best-practice solutions for the programming challenges you encounter every day.\n" +
+            "This highly anticipated new edition of the classic, Jolt Award-winning work has been thoroughly updated to cover Java SE 5 and Java SE 6 features introduced since the first edition. Bloch explores new design patterns and language idioms, showing you how to make the most of features ranging from generics to enums, annotations to autoboxing.\n" +
+            "\n" +
+            "Each chapter in the book consists of several “items” presented in the form of a short, standalone essay that provides specific advice, insight into Java platform subtleties, and outstanding code examples. The comprehensive descriptions and explanations for each item illuminate what to do, what not to do, and why.\n" +
+            "\n" +
+            "Highlights include:\n" +
+            "\n" +
+            "New coverage of generics, enums, annotations, autoboxing, the for-each loop, varargs, concurrency utilities, and much more\n" +
+            "Updated techniques and best practices on classic topics, including objects, classes, libraries, methods, and serialization\n" +
+            "How to avoid the traps and pitfalls of commonly misunderstood subtleties of the language\n" +
+            "Focus on the language and its most fundamental libraries: java.lang, java.util, and, to a lesser extent, java.util.concurrent and java.io\n" +
+            "Simply put, Effective Java™, Second Edition, presents the most practical, authoritative guidelines available for writing efficient, well-designed programs.",
+            date: new Date(new Date().getTime() + threeDays * millisecondsInOneDay),
+            status: "READY_TO_PICK_UP"
+        }, {
 
-            }],
-            expected: [{
-                id: "8535902719",
-                title: "Java 8 Preview Sampler",
-                image: "https://books.google.com/books/content/images/frontcover/5FVOAwAAQBAJ?fife=w200-h300",
-                author: "Herbert Schildt",
-                category: "Java Programming",
-                description: "In this exclusive eBook, preview excerpts from brand-new and forthcoming Oracle Press Java JDK 8 books. Written by leading Java experts, Oracle Press books offer the most definitive, complete, and up-to-date coverage of the latest Java release. Featuring an introduction by bestselling programming author Herb Schildt, this eBook includes chapters from the following Oracle Press books:\n" +
-                "Java: The Complete Reference, Ninth Edition by Herb Schildt\n" +
-                "Java: A Beginner’s Guide, Sixth Edition by Herb Schildt\n" +
-                "Mastering Lambdas: Java Programming in a Multicore World by Maurice Naftalin\n" +
-                "Quick Start Guide to JavaFX by J.F. DiMarzio\n" +
-                "Mastering JavaFX 8 Controls: Create Custom JavaFX 8 Controls for Cross-Platform Applications by Hendrik Ebbers",
-                date: new Date(new Date().getTime() + threeWeeks * millisecondsInOneDay)
-            }]
-        },
+            id: "8535902719",
+            title: "Java 8 Preview Sampler",
+            image: "https://books.google.com/books/content/images/frontcover/5FVOAwAAQBAJ?fife=w200-h300",
+            author: "Herbert Schildt",
+            category: "Java Programming",
+            description: "In this exclusive eBook, preview excerpts from brand-new and forthcoming Oracle Press Java JDK 8 books. Written by leading Java experts, Oracle Press books offer the most definitive, complete, and up-to-date coverage of the latest Java release. Featuring an introduction by bestselling programming author Herb Schildt, this eBook includes chapters from the following Oracle Press books:\n" +
+            "Java: The Complete Reference, Ninth Edition by Herb Schildt\n" +
+            "Java: A Beginner’s Guide, Sixth Edition by Herb Schildt\n" +
+            "Mastering Lambdas: Java Programming in a Multicore World by Maurice Naftalin\n" +
+            "Quick Start Guide to JavaFX by J.F. DiMarzio\n" +
+            "Mastering JavaFX 8 Controls: Create Custom JavaFX 8 Controls for Cross-Platform Applications by Hendrik Ebbers",
+            date: new Date(new Date().getTime() + threeWeeks * millisecondsInOneDay),
+            status: "RESERVED"
+        }
+        ],
         borrowed: [{
             id: "8535902724",
             title: "Getting Started with Polymer",
@@ -738,6 +684,7 @@ const userTestBooks = {
             "Style and approach\n" +
             "This is your guide to designing custom web components, and the concepts are explained in a conversational and easy-to-follow style. Each topic is explained through examples, with detailed explanations wherever required.",
             dueDate: new Date(new Date().getTime() + twoWeeks * millisecondsInOneDay),
+            status: "BORROWED",
             isAllowedLoanExtension: true
         }],
         overdue: [{
@@ -753,6 +700,40 @@ const userTestBooks = {
             "Quick Start Guide to JavaFX by J.F. DiMarzio\n" +
             "Mastering JavaFX 8 Controls: Create Custom JavaFX 8 Controls for Cross-Platform Applications by Hendrik Ebbers",
             dueDate: new Date(new Date().getTime() - twoDays * millisecondsInOneDay),
+            status: "OVERDUE",
+            isAllowedLoanExtension: false
+        }],
+        shouldReturnSoon: [{
+            id: "8535902724",
+            title: "Getting Started with Polymer",
+            image: "https://books.google.com/books/content/images/frontcover/fAFwDQAAQBAJ?fife=w200-h300",
+            author: "Arshak Khachatrian",
+            category: "Web Design",
+            description: "Explore the whole new world of web development and create responsive web apps using PolymerAbout This Book\n" +
+            "Get to grips with the principles of Material Design and Google Web components\n" +
+            "Make full use of the Polymer Designer Tool, Polymer Starter Kit, and Dart to create responsive web apps\n" +
+            "An in-depth guide with real-life examples so you can learn everything you need to know about Polymer\n" +
+            "Who This Book Is For\n" +
+            "If you are a beginner-level web developer who would like to learn the concepts of web development using the Polymer library, then this is the book for you. Knowledge of JavaScript and HTML is expected.\n" +
+            "\n" +
+            "What You Will Learn\n" +
+            "Understand the basics of web components such as Shadow DOM, HTML imports, Templates, and custom elements\n" +
+            "Familiarize yourself with the principles of Material Design\n" +
+            "Install Polymer on your system and create your project structure\n" +
+            "Use the different Polymer 1.0 elements in your code\n" +
+            "Work with Polymer.dart and create your own app\n" +
+            "Get to know the best practices in Polymer programming from the top guys in the Polymer team\n" +
+            "In Detail\n" +
+            "Polymer is a library that helps you develop fast, responsive applications for the desktop and mobile web. It uses the Web Components specifications for the components and Material Design concepts to create a beautiful user interface.\n" +
+            "\n" +
+            "This focused, fast-paced guide deals with Polymer web components. We will cover layouts, attributes, elements, and handling touch and gesture events. You will also see how to build custom web components and applications using Polymer. Don't want to code? You can make the most of the Polymer Designer Tool app and create your own app without coding at all. Finally, you will see how you can improve your Polymer application by reading the best practices from Google Polymer team.\n" +
+            "\n" +
+            "By the end of this book, you will be equipped with all the necessary skills to use Polymer to create custom web components.\n" +
+            "\n" +
+            "Style and approach\n" +
+            "This is your guide to designing custom web components, and the concepts are explained in a conversational and easy-to-follow style. Each topic is explained through examples, with detailed explanations wherever required.",
+            dueDate: new Date(new Date().getTime() + threeDays * millisecondsInOneDay),
+            status: "BORROWED",
             isAllowedLoanExtension: false
         }]
     }

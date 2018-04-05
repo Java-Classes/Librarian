@@ -1,0 +1,95 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-styles/color.html">
+
+<dom-module id="exlibris-menu-item">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            a {
+                text-decoration: none;
+            }
+
+            .item {
+                cursor: pointer;
+                margin: 10px;
+                align-items: center;
+                color: var(--exlibris-menu-item-title-color, var(--exlibris-app-secondary-color));
+                font-weight: var(--exlibris-menu-item-title-font-weight, normal);
+                border-radius: var(--exlibris-menu-item-border-radius, 3px);
+                background-color: var(--exlibris-menu-item-background-color, var(--exlibris-app-background-color));
+                line-height: 40px;
+                --iron-icon-height: 26px;
+                --iron-icon-width: 26px;
+                padding-left: 12px;
+                font-size: 15px;
+            }
+
+            .item:hover {
+                background-color: var(--google-grey-300);
+            }
+            .name {
+                padding-left: 12px;
+            }
+
+            .count-badge {
+                position: fixed;
+                right: 10%;
+            }
+        </style>
+        <a href="[[link]]">
+            <div id="menu-item-body" class="item">
+                <slot name="icon"></slot>
+                <span id="menu-item-title" class="name">[[title]]</span>
+                <span id="menu-item-badge" class="count-badge">[[count]]</span>
+            </div>
+        </a>
+    </template>
+
+    <script>
+        /**
+         * The single item of the exlibris menu drawer.
+         * Can be customized with an icon and a count number.
+         *
+         * The following custom properties are also available for styling:
+         *
+         * Custom property | Description | Default
+         * ----------------|-------------|----------
+         * `--menu-item-title-color` | Element text color | black
+         * `--menu-item-background-color` | Background color of the element display area | white
+         * `--exlibris-menu-item-border-radius` | Item border radius | 3px
+         * `--exlibris-menu-item-title-font-weight` | Item title font weight | normal
+         *
+         * @customElement
+         * @polymer
+         */
+        class ExlibrisMenuItem extends Polymer.Element {
+            static get is() {
+                return 'exlibris-menu-item';
+            }
+
+            static get properties() {
+                return {
+                    /**
+                     * The link to follow on item click.
+                     */
+                    link: String,
+
+                    /**
+                     * The element title to display.
+                     */
+                    title: String,
+
+                    /**
+                     * The element count badge value to display.
+                     */
+                    count: Number
+                };
+            }
+        }
+
+        window.customElements.define(ExlibrisMenuItem.is, ExlibrisMenuItem);
+    </script>
+</dom-module>
