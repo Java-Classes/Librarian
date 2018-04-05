@@ -31,21 +31,21 @@
             IRON_IMAGE_SELECTOR: "iron-image"
         };
 
-        let bookGrid;
+        let bookTile;
         setup(() => {
-            bookGrid = fixture('BasicTestFixture');
+            bookTile = fixture('BasicTestFixture');
         });
 
-        test('should display `book` from property', function (done) {
-            bookGrid.book = TEST_BOOKS[0];
+        test('should display one tile with synopsis and image', function (done) {
+            bookTile.book = TEST_BOOKS[0];
             flush(function () {
-                const title = bookGrid.shadowRoot.querySelector(BookGridSelector.TITLE_SELECTOR);
+                const title = bookTile.shadowRoot.querySelector(BookGridSelector.TITLE_SELECTOR);
                 assert.equal(TEST_BOOKS[0].title, title.innerHTML);
-                const author = bookGrid.shadowRoot.querySelector(BookGridSelector.AUTHOR_SELECTOR);
+                const author = bookTile.shadowRoot.querySelector(BookGridSelector.AUTHOR_SELECTOR);
                 assert.equal(TEST_BOOKS[0].author, author.innerHTML);
-                const statusMessage = bookGrid.shadowRoot.querySelector(BookGridSelector.STATUS_MESSAGE_SELECTOR);
+                const statusMessage = bookTile.shadowRoot.querySelector(BookGridSelector.STATUS_MESSAGE_SELECTOR);
                 assert.equal(TEST_BOOKS[0].statusMessage, statusMessage.innerHTML);
-                const image = bookGrid.shadowRoot.querySelector(BookGridSelector.IRON_IMAGE_SELECTOR);
+                const image = bookTile.shadowRoot.querySelector(BookGridSelector.IRON_IMAGE_SELECTOR);
                 const imageURL = image.shadowRoot.querySelector("img").getAttribute("src");
                 assert.equal(TEST_BOOKS[0].image, imageURL);
                 done();
