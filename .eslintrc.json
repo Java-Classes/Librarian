@@ -25,6 +25,7 @@
   ],
   "globals": {
     "Polymer": false,
+    "PolymerRedux": false,
     "ExlibrisApplication": true,
     "Redux": true,
     "ReduxMixin": true,
