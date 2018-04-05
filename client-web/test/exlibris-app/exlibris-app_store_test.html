@@ -25,9 +25,18 @@
 
 <script>
     suite('exlibris-app', function () {
+        let mock;
+
+        setup(()=>{
+             mock = sinon.mock(ExlibrisApplication.store);
+        });
+
+        teardown(()=>{
+            mock.restore();
+        });
 
         test('should set allBooks value from state', function () {
-            const mock = sinon.mock(ExlibrisApplication.store);
+
             mock.expects("getState").returns({allBooks: [...TEST_BOOKS]});
             const element = fixture('BasicTestFixture');
             assert.deepEqual(element.allBooks, TEST_BOOKS);
@@ -35,7 +44,6 @@
             mock.restore();
         });
         test('should set borrowedBooks value from state', function () {
-            const mock = sinon.mock(ExlibrisApplication.store);
             mock.expects("getState").returns({borrowedBooks: [...TEST_BOOKS]});
             const element = fixture('BasicTestFixture');
             assert.deepEqual(element.borrowedBooks, TEST_BOOKS);
@@ -43,7 +51,6 @@
             mock.restore();
         });
         test('should set reservedBooks value from state', function () {
-            const mock = sinon.mock(ExlibrisApplication.store);
             mock.expects("getState").returns({reservedBooks: [...TEST_BOOKS]});
             const element = fixture('BasicTestFixture');
             assert.deepEqual(element.reservedBooks, TEST_BOOKS);
@@ -51,7 +58,6 @@
             mock.restore();
         });
         test('should set shouldReturnBooks value from state', function () {
-            const mock = sinon.mock(ExlibrisApplication.store);
             mock.expects("getState").returns({shouldReturnBooks: [...TEST_BOOKS]});
             const element = fixture('BasicTestFixture');
             assert.deepEqual(element.shouldReturnBooks, TEST_BOOKS);
@@ -59,7 +65,6 @@
             mock.restore();
         });
         test('should set overdueBooks value from state', function () {
-            const mock = sinon.mock(ExlibrisApplication.store);
             mock.expects("getState").returns({overdueBooks: [...TEST_BOOKS]});
             const element = fixture('BasicTestFixture');
             assert.deepEqual(element.overdueBooks, TEST_BOOKS);
@@ -67,7 +72,6 @@
             mock.restore();
         });
         test('should set expectedSoonBooks value from state', function () {
-            const mock = sinon.mock(ExlibrisApplication.store);
             mock.expects("getState").returns({expectedSoonBooks: [...TEST_BOOKS]});
             const element = fixture('BasicTestFixture');
             assert.deepEqual(element.expectedSoonBooks, TEST_BOOKS);

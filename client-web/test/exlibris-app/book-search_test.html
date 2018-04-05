@@ -32,13 +32,13 @@
     <script src="./../../bower_components/iron-test-helpers/mock-interactions.js"></script>
     <script src="./test_variables.js"></script>
 
-    <link rel="import" href="../../src/exlibris-app/book-search.html">
+    <link rel="import" href="../../src/exlibris-app/exlibris-book-search.html">
 </head>
 <body>
 
 <test-fixture id="BasicTestFixture">
     <template>
-        <book-search></book-search>
+        <exlibris-book-search></exlibris-book-search>
     </template>
 </test-fixture>
 
@@ -51,7 +51,7 @@
 
         test('should dispatch book-search-search event after press enter on the input', function (done) {
             const input = bookSearch.shadowRoot.querySelector("#input");
-            bookSearch.addEventListener('book-search-search', function () {
+            bookSearch.addEventListener('exlibris-book-search-search', function () {
                 done();
             });
             MockInteractions.pressEnter(input);
