@@ -24,7 +24,7 @@
 <script>
     suite('exlibris-book-tile', function () {
 
-        const BookGridSelector = {
+        const BookTileSelector = {
             STATUS_MESSAGE_SELECTOR: "#status-text",
             TITLE_SELECTOR: "#title",
             AUTHOR_SELECTOR: "#author",
@@ -39,13 +39,13 @@
         test('should display one tile with synopsis and image', function (done) {
             bookTile.book = TEST_BOOKS[0];
             flush(function () {
-                const title = bookTile.shadowRoot.querySelector(BookGridSelector.TITLE_SELECTOR);
+                const title = bookTile.shadowRoot.querySelector(BookTileSelector.TITLE_SELECTOR);
                 assert.equal(TEST_BOOKS[0].title, title.innerHTML);
-                const author = bookTile.shadowRoot.querySelector(BookGridSelector.AUTHOR_SELECTOR);
+                const author = bookTile.shadowRoot.querySelector(BookTileSelector.AUTHOR_SELECTOR);
                 assert.equal(TEST_BOOKS[0].author, author.innerHTML);
-                const statusMessage = bookTile.shadowRoot.querySelector(BookGridSelector.STATUS_MESSAGE_SELECTOR);
+                const statusMessage = bookTile.shadowRoot.querySelector(BookTileSelector.STATUS_MESSAGE_SELECTOR);
                 assert.equal(TEST_BOOKS[0].statusMessage, statusMessage.innerHTML);
-                const image = bookTile.shadowRoot.querySelector(BookGridSelector.IRON_IMAGE_SELECTOR);
+                const image = bookTile.shadowRoot.querySelector(BookTileSelector.IRON_IMAGE_SELECTOR);
                 const imageURL = image.shadowRoot.querySelector("img").getAttribute("src");
                 assert.equal(TEST_BOOKS[0].image, imageURL);
                 done();
