@@ -98,17 +98,18 @@
             }
         </style>
 
-            <iron-image sizing="cover"
-                        src="[[book.image]]">
-            </iron-image>
-            <div id="synopsis">
-                <div id="title" title="[[book.title]]">[[book.title]]</div>
-                <div id="author" title="[[book.author]]">[[book.author]]</div>
-                <div id="status-text" class$="[[statusClass]]">[[statusMessage]]</div>
-            </div>
+        <iron-image sizing="cover"
+                    src="[[book.image]]">
+        </iron-image>
+        <div id="synopsis">
+            <div id="title" title="[[book.title]]">[[book.title]]</div>
+            <div id="author" title="[[book.author]]">[[book.author]]</div>
+            <div id="status-text" class$="[[statusClass]]">[[statusMessage]]</div>
+        </div>
     </template>
 
     <script>
+        const oneDay = 1000 * 60 * 60 * 24;
         /**
          * `<exlibris-book-tile>` components displays short information about book: picture, synopsis and status.
          *
@@ -150,7 +151,7 @@
             /**
              * Creates statusClass property depending on book.status.
              *
-             * @param status status of the book.
+             * @param {string} status the book status.
              * @returns {string} class for status message.
              * @private
              */
@@ -172,7 +173,6 @@
             _computeBookStatusMessage(book) {
                 switch (book.status) {
                     case BookStatus.OVERDUE: {
-                        const oneDay = 1000 * 60 * 60 * 24;
                         const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / oneDay);
                         return numberOfOverdueDays + " DAYS OVERDUE";
                     }
@@ -195,7 +195,6 @@
                         return "EXPECTED";
                     }
                 }
-                console.log(book);
             }
         }
 
