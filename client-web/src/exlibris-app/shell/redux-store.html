@@ -3,8 +3,13 @@
 <script>
     {
         const initialState = {};
-        const reducer = (state, action) => {
+
+        const reducer = (state = initialState, action) => {
+            switch (action) {
+                default: return state;
+            }
         };
+
         const store = Redux.createStore(reducer);
         ReduxMixin = PolymerRedux(store);
 
