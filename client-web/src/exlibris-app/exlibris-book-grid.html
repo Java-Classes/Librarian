@@ -34,7 +34,9 @@
         </style>
         <iron-list items="[[books]]" as="book" scroll-target="document" grid>
             <template>
-                <exlibris-book-tile book="[[book]]"></exlibris-book-tile>
+                <div>
+                    <exlibris-book-tile book="[[book]]"></exlibris-book-tile>
+                </div>
             </template>
         </iron-list>
 

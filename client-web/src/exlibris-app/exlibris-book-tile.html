@@ -31,9 +31,6 @@
         <style>
             :host {
                 display: block;
-            }
-
-            .book-content {
                 @apply --layout-vertical;
                 border-radius: 3px;
                 box-shadow: 4px 4px 10px #888888;
@@ -101,18 +98,14 @@
             }
         </style>
 
-        <template is="dom-if" if="[[book]]">
-            <div class="book-content">
-                <iron-image sizing="cover"
-                            src="[[book.image]]">
-                </iron-image>
-                <div id="synopsis">
-                    <div id="title" title="[[book.title]]">[[book.title]]</div>
-                    <div id="author" title="[[book.author]]">[[book.author]]</div>
-                    <div id="status-text" class$="[[statusClass]]">[[statusMessage]]</div>
-                </div>
+            <iron-image sizing="cover"
+                        src="[[book.image]]">
+            </iron-image>
+            <div id="synopsis">
+                <div id="title" title="[[book.title]]">[[book.title]]</div>
+                <div id="author" title="[[book.author]]">[[book.author]]</div>
+                <div id="status-text" class$="[[statusClass]]">[[statusMessage]]</div>
             </div>
-        </template>
     </template>
 
     <script>
