@@ -36,8 +36,9 @@
       href="../../bower_components/paper-dialog-behavior/paper-dialog-shared-styles.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="./book_values.html">
-<link rel="import" href="exlibris-book-details-form.html">
-<link rel="import" href="exlibris-book-inventory-table.html">
+<link rel="import" href="./exlibris-book-details-form.html">
+<link rel="import" href="./exlibris-book-inventory-table.html">
+<link rel="import" href="./menu/exlibris-menu-item.html">
 
 
 <dom-module id="exlibris-wizard-dialog">
@@ -63,7 +64,7 @@
 
             #navigator {
                 @apply --layout-horizontal;
-                background-color: var(--app-primary-color);
+                background-color: var(--exlibris-app-primary-color);
                 height: 10%;
                 margin-top: 0;
                 margin-bottom: 0;
@@ -151,6 +152,10 @@
                 --iron-icon-fill-color: var(--app-secondary-color);
             }
 
+            exlibris-menu-item {
+                --exlibris-menu-item-border-radius: 0;
+            }
+
 
         </style>
 
@@ -172,21 +177,21 @@
                                        selected="{{page}}"
                                        on-selected-item-changed="_getSelectedTitle">
 
-                            <menu-item data-name="details"
-                                       title="Details"
-                                       link="/details"
-                                       on-menu-item-click="_changeRoute">
+                            <exlibris-menu-item data-name="details"
+                                                title="Details"
+                                                link="/details"
+                                                on-menu-item-click="_changeRoute">
                                 <iron-icon icon="radio-button-unchecked"
                                            slot="icon"></iron-icon>
-                            </menu-item>
+                            </exlibris-menu-item>
 
-                            <menu-item data-name="inventory"
-                                       title="Inventory"
-                                       link="/inventory"
-                                       on-menu-item-click="_changeRoute">
+                            <exlibris-menu-item data-name="inventory"
+                                                title="Inventory"
+                                                link="/inventory"
+                                                on-menu-item-click="_changeRoute">
                                 <iron-icon icon="av:library-books"
                                            slot="icon"></iron-icon>
-                            </menu-item>
+                            </exlibris-menu-item>
                         </iron-selector>
                     </div>
                 </div>
