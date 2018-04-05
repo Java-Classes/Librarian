@@ -1,7 +1,14 @@
 {
   "extends": "eslint:recommended",
   "rules": {
-    "no-console": ["error", {"allow": ["error"]}],
+    "no-console": [
+      "error",
+      {
+        "allow": [
+          "error"
+        ]
+      }
+    ],
     "eqeqeq": "error",
     "valid-jsdoc": [
       "error",
@@ -11,9 +18,20 @@
         "requireReturn": false
       }
     ],
-    "curly": ["error", "multi-line"],
+    "curly": [
+      "error",
+      "multi-line"
+    ],
     "no-multi-spaces": "error",
-    "no-magic-numbers": ["error", {"ignore": [0, 1]}],
+    "no-magic-numbers": [
+      "error",
+      {
+        "ignore": [
+          0,
+          1
+        ]
+      }
+    ],
     "no-var": "error"
   },
   "env": {
@@ -24,6 +42,20 @@
     "html"
   ],
   "globals": {
-    "Polymer": false
+    "Polymer": false,
+    "BookStatus": false,
+    "userTestBooks": false,
+    "expectedSoonLibraryBooks": false,
+    "suite": false,
+    "setup": false,
+    "sinon": false,
+    "test": false,
+    "TEST_BOOKS": false,
+    "assert": false,
+    "Redux": false,
+    "ExlibrisApplication": false,
+    "ReduxMixin": false,
+    "fixture": false,
+    "flush": false
   }
 }

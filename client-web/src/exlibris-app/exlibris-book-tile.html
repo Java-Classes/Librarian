@@ -98,14 +98,14 @@
             }
         </style>
 
-            <iron-image sizing="cover"
-                        src="[[book.image]]">
-            </iron-image>
-            <div id="synopsis">
-                <div id="title" title="[[book.title]]">[[book.title]]</div>
-                <div id="author" title="[[book.author]]">[[book.author]]</div>
-                <div id="status-text" class$="[[statusClass]]">[[statusMessage]]</div>
-            </div>
+        <iron-image sizing="cover"
+                    src="[[book.image]]">
+        </iron-image>
+        <div id="synopsis">
+            <div id="title" title="[[book.title]]">[[book.title]]</div>
+            <div id="author" title="[[book.author]]">[[book.author]]</div>
+            <div id="status-text" class$="[[statusClass]]">[[statusMessage]]</div>
+        </div>
     </template>
 
     <script>
@@ -150,8 +150,8 @@
             /**
              * Creates statusClass property depending on book.status.
              *
-             * @param status status of the book.
-             * @returns {string} class for status message.
+             * @param {String} status status of the book.
+             * @returns {String} class for status message.
              * @private
              */
             _computeClassForStatusMessage(status) {
@@ -195,7 +195,6 @@
                         return "EXPECTED";
                     }
                 }
-                console.log(book);
             }
         }
 
