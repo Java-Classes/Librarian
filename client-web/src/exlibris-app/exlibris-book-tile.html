@@ -109,7 +109,6 @@
     </template>
 
     <script>
-        const oneDay = 1000 * 60 * 60 * 24;
         /**
          * `<exlibris-book-tile>` components displays short information about book: picture, synopsis and status.
          *
@@ -167,12 +166,13 @@
             /**
              * Creates statusMessage depending on the status
              *
-             * @param book the book object
+             * @param{object} book the book object
              * @private
              */
             _computeBookStatusMessage(book) {
                 switch (book.status) {
                     case BookStatus.OVERDUE: {
+                        const oneDay = 86400000;
                         const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / oneDay);
                         return numberOfOverdueDays + " DAYS OVERDUE";
                     }

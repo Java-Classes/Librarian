@@ -21,6 +21,7 @@
 <link rel="import" href="../book_values.html">
 
 <script>
+
     const initialState = {
         overdueBooks: userTestBooks.overdue,
         borrowedBooks: [...userTestBooks.overdue, ...userTestBooks.borrowed],
@@ -32,8 +33,7 @@
 
     const reducer = (state = initialState, action) => {
         switch (action) {
-            default:
-                return state;
+            default: return state;
         }
     };
 </script>
