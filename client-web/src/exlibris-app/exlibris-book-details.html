@@ -193,15 +193,16 @@
                     <div class="head-text">
                         <div class="title">[[book.title]]</div>
                         <div class="author">[[book.author]]</div>
-                        <div class="plain-text">[[_getMessage()]]</div>
+                        <div class="plain-text">[[statusMessage]]</div>
                     </div>
                     <div class="wide-screen">
-                        <paper-button>[[buttonTitle]]</paper-button>
+                        <paper-button on-click="_handleButtonClick">[[buttonTitle]]</paper-button>
                     </div>
                 </div>
             </div>
             <div class="narrow-screen">
-                <paper-button class="small">[[buttonTitle]]</paper-button>
+                <paper-button class="small" on-click="_handleButtonClick">[[buttonTitle]]
+                </paper-button>
             </div>
             <div class="description">
                 [[book.description]]
@@ -229,7 +230,12 @@
 
                     buttonTitle: {
                         type: String,
-                        computed: '_getButtonTitle(book)'
+                        computed: '_computeButton(book)'
+                    },
+
+                    statusMessage: {
+                        type: String,
+                        computed: '_getMessage(book)'
                     }
                 };
             }
@@ -306,10 +312,20 @@
                 return message;
             }
 
-            _getButtonTitle(book) {
-                if (this._isReserved()) return 'CANCEL RESERVATION';
-                if (this._isExpected()) return 'RESERVE';
-                if (this._isBorrowedAndCanBeExtended()) return 'EXTEND LOAN PERIOD';
+            _computeButton() {
+                if (this._isReserved()) {
+                    this._handleButtonClick = this._requestCancelReservation;
+                    return 'CANCEL RESERVATION';
+                }
+
+                if (this._isExpected()) {
+                    this._handleButtonClick = this._requestReservation;
+                    return 'RESERVE';
+                }
+
+                if (this._isBorrowedAndCanBeExtended()) {
+                    this._handleButtonClick = this._requestLoanExtension;
+                    return 'EXTEND LOAN PERIOD';}
             }
 
             /**
