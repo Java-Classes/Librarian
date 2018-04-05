@@ -41,7 +41,7 @@
             .book-card {
                 @apply --layout-vertical;
                 border-radius: 3px;
-                box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0,0,0,.12), 0 2px 4px rgba(0,0,0,.24);
+                box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24);
                 background-color: white;
                 max-width: 1000px;
                 margin: 10px;
@@ -60,7 +60,7 @@
                 width: 40%;
                 --iron-image-width: 100%;
                 overflow: inherit;
-                box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0,0,0,.12), 0 2px 4px rgba(0,0,0,.24);
+                box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24);
                 margin-left: 25px;
                 margin-top: 25px;
             }
@@ -174,8 +174,6 @@
                     padding-left: 10px;
                 }
             }
-
-
         </style>
 
         <app-route
@@ -186,7 +184,7 @@
 
         <div class="book-card">
             <div class="head-region">
-                <iron-image class$="[[_isImageLoaded(loaded)]]"
+                <iron-image class$="[[_isBookCoverLoaded(loaded)]]"
                             src="src/exlibris-app/images/cover-placeholder.png"></iron-image>
                 <iron-image preload loaded="{{loaded}}" src="[[book.image]]"></iron-image>
                 <div class="head-info">
@@ -197,7 +195,7 @@
                     </div>
                     <div class="wide-screen">
                         <paper-button on-click="_handleButtonClick"
-                                      hidden="[[_isHidden()]]">
+                                      hidden="[[_isActionButtonHidden()]]">
                             [[buttonTitle]]
                         </paper-button>
                         <div>[[actionUnsupportedMessage]]</div>
@@ -207,7 +205,7 @@
             <div class="narrow-screen">
                 <paper-button class="small"
                               on-click="_handleButtonClick"
-                              hidden="[[_isHidden()]]">
+                              hidden="[[_isActionButtonHidden()]]">
                     [[buttonTitle]]
                 </paper-button>
                 <div>[[actionUnsupportedMessage]]</div>
@@ -248,14 +246,6 @@
 
                     actionUnsupportedMessage: String
                 };
-            }
-
-            /**
-             * Used to set custom style for the placeholder image
-             * when the original image is loaded.
-             */
-            _isImageLoaded(loaded) {
-                return loaded ? 'hidden' : '';
             }
 
             _isReserved() {
@@ -343,7 +333,26 @@
                 }
             }
 
-            _isHidden() {
+            /**
+             * Used to set custom style for the placeholder image
+             * when the original image is loaded.
+             *
+             * @param {boolean} loaded main cover loading status.
+             * @returns {string} the iron-image custom class value.
+             * @private
+             */
+            _isBookCoverLoaded(loaded) {
+                return loaded ? 'hidden' : '';
+            }
+
+            /**
+             * Indicates the action button to set `hidden` when the
+             * button is not supported for this book status.
+             *
+             * @returns {boolean} is button displayed or not.
+             * @private
+             */
+            _isActionButtonHidden() {
                 return !this.buttonTitle;
             }
 
