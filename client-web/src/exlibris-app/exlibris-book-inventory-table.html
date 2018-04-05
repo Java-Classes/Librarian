@@ -188,6 +188,7 @@
              */
             _handleAddButton() {
                 this.dispatchEvent(new CustomEvent('add-inventory'));
+                console.log("The `add-inventory` event was fired.");
             }
 
             /**
@@ -200,6 +201,7 @@
                         identifiers: this.selectedIdentifiers
                     }
                 }));
+                console.log("The `print-identifiers` event was fired.");
             }
 
             /**
