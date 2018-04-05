@@ -1,11 +1,11 @@
 <link rel="import" href="../../../bower_components/polymer-redux/polymer-redux.html">
-<link rel="import" href="../reducers/exlibris_reducer.html">
+<link rel="import" href="../../../src/exlibris-app/reducers/exlibris_reducer.html">
 
 <script>
     {
-        window.ExlibrisApplication = window.ExlibrisApplication || {};
-        const store = Redux.createStore(ExlibrisApplication.reducer);
+        const store = Redux.createStore(reducer);
         ReduxMixin = PolymerRedux(store);
+        window.ExlibrisApplication = {};
         ExlibrisApplication.store = store;
         ExlibrisApplication.ReduxMixin = ReduxMixin;
     }

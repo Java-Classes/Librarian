@@ -45,25 +45,30 @@
 
 <script>
     suite('exlibris-menu-item', function () {
+        let element;
         const TITLE = 'title';
         const COUNT = 2;
+        const MENU_ITEM_TITLE_SELECTOR = '#menu-item-title';
+        const MENU_ITEM_COUNT_BADGE_SELECTOR = '#menu-item-badge';
+
+        setup(() => {
+            element = fixture('BasicTestFixture');
+        });
 
         test('should display title and count badge.', function () {
-            const element = fixture('BasicTestFixture');
             element.set('title', TITLE);
             element.set('count', COUNT);
             const elementShadowRoot = element.shadowRoot;
-            const title = elementShadowRoot.querySelector('#menu-item-title');
-            const badge = elementShadowRoot.querySelector('#menu-item-badge');
+            const title = elementShadowRoot.querySelector(MENU_ITEM_TITLE_SELECTOR);
+            const badge = elementShadowRoot.querySelector(MENU_ITEM_COUNT_BADGE_SELECTOR);
 
             assert.equal(title.innerHTML, TITLE);
             assert.equal(badge.innerHTML, COUNT);
         });
 
         test('should reflect on attribute change.', function () {
-            const element = fixture('BasicTestFixture');
             const elementShadowRoot = element.shadowRoot;
-            const badge = elementShadowRoot.querySelector('#menu-item-badge');
+            const badge = elementShadowRoot.querySelector(MENU_ITEM_COUNT_BADGE_SELECTOR);
             assert.isUndefined(element.count);
             assert.equal(badge.innerHTML, ' ');
 

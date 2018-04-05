@@ -21,23 +21,19 @@
 <link rel="import" href="../book_values.html">
 
 <script>
-    {
-        const initialState = {
-            overdueBooks: userTestBooks.overdue,
-            borrowedBooks: [...userTestBooks.overdue, ...userTestBooks.borrowed],
-            shouldReturnBooks: userTestBooks.shouldReturnSoon,
-            reservedBooks: userTestBooks.reserved,
-            allBooks: [...userTestBooks.overdue, ...libraryTestBooks],
-            expectedSoonBooks: expectedSoonLibraryBooks
-        };
+    const initialState = {
+        overdueBooks: userTestBooks.overdue,
+        borrowedBooks: [...userTestBooks.overdue, ...userTestBooks.borrowed],
+        shouldReturnBooks: userTestBooks.shouldReturnSoon,
+        reservedBooks: userTestBooks.reserved,
+        allBooks: [...userTestBooks.overdue, ...libraryTestBooks],
+        expectedSoonBooks: expectedSoonLibraryBooks
+    };
 
-        const reducer = (state = initialState, action) => {
-            return state;
-        };
-
-        window.ExlibrisApplication = window.ExlibrisApplication || {};
-
-        ExlibrisApplication.initialState = initialState;
-        ExlibrisApplication.reducer = reducer;
-    }
+    const reducer = (state = initialState, action) => {
+        switch (action) {
+            default:
+                return state;
+        }
+    };
 </script>

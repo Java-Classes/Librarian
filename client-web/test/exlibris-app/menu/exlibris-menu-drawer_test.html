@@ -44,8 +44,8 @@
 <script>
     suite('exlibris-menu-drawer', function () {
         let element;
-        const SELECTED = 'all-books';
-        const SELECTED_LINK = '#/' + SELECTED;
+        const SELECTED_DATA_PAGE = 'all-books';
+        const SELECTED_LINK = '#/' + SELECTED_DATA_PAGE;
 
         const MENU_LIST_SELECTOR = '#menu-selector';
         const MENU_ITEM_SELECTOR = 'exlibris-menu-item';
@@ -63,29 +63,30 @@
         });
 
         test('should set the selected item according to the passed value.', function () {
-            element.set('selected', SELECTED);
+            element.set('selected', SELECTED_DATA_PAGE);
             const elementShadowRoot = element.shadowRoot;
-            const selector = elementShadowRoot.querySelector(MENU_LIST_SELECTOR);
-            selector.forceSynchronousItemUpdate();
+            const appMenu = elementShadowRoot.querySelector(MENU_LIST_SELECTOR);
+            appMenu.forceSynchronousItemUpdate();
 
-            const selectedDataName = selector.selected;
-            const selectedItemLink = selector.selectedItem.link;
+            const selectedDataPage = appMenu.selected;
+            const selectedMenuItemLink = appMenu.selectedItem.link;
 
-            assert.equal(selectedDataName, SELECTED);
-            assert.equal(selectedItemLink, SELECTED_LINK);
+            assert.equal(selectedDataPage, SELECTED_DATA_PAGE);
+            assert.equal(selectedMenuItemLink, SELECTED_LINK);
         });
 
         test('should contain the list of menu items with correct references.', function () {
             const elementShadowRoot = element.shadowRoot;
-            const selector = elementShadowRoot.querySelector(MENU_LIST_SELECTOR);
-            const menuItems = selector.querySelectorAll(MENU_ITEM_SELECTOR);
+            const appMenu = elementShadowRoot.querySelector(MENU_LIST_SELECTOR);
+            const menuItems = appMenu.querySelectorAll(MENU_ITEM_SELECTOR);
 
             assert.equal(menuItems.length, MENU_REFERENCES.length);
+
             menuItems.forEach(function (item, index) {
                 const actualRef = item.shadowRoot.querySelectorAll(MENU_ITEM_LINK_SELECTOR)[0].href;
                 const expectedRef = MENU_REFERENCES[index];
                 assert.isTrue(actualRef.endsWith(expectedRef),
-                    'actual: ' + actualRef + ', expected to end with: ' + expectedRef);
+                    actualRef + ' should end with: ' + expectedRef);
             });
         });
     });
