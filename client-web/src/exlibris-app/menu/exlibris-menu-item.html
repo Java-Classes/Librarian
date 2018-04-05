@@ -37,14 +37,12 @@
             }
         </style>
         <a href="[[link]]">
-        <div id="menu-item-body" class="item">
-            <slot name="icon"></slot>
-            <span id="menu-item-title" class="name">[[title]]</span>
-            <span id="menu-item-badge" class="count-badge">[[count]]</span>
-        </div>
+            <div id="menu-item-body" class="item">
+                <slot name="icon"></slot>
+                <span id="menu-item-title" class="name">[[title]]</span>
+                <span id="menu-item-badge" class="count-badge">[[count]]</span>
+            </div>
         </a>
-
-
     </template>
 
     <script>
@@ -59,6 +57,7 @@
          * `--menu-item-title-color` | Element text color | black
          * `--menu-item-background-color` | Background color of the element display area | white
          * `--exlibris-menu-item-border-radius` | Item border radius | 3px
+         * `--exlibris-menu-item-title-font-weight` | Item title font weight | normal
          *
          * @customElement
          * @polymer
@@ -73,7 +72,7 @@
                     /**
                      * The link to follow on item click.
                      */
-                    link : String,
+                    link: String,
 
                     /**
                      * The element title to display.
