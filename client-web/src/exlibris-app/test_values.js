@@ -684,7 +684,8 @@ const userTestBooks = {
             "Style and approach\n" +
             "This is your guide to designing custom web components, and the concepts are explained in a conversational and easy-to-follow style. Each topic is explained through examples, with detailed explanations wherever required.",
             dueDate: new Date(new Date().getTime() + twoWeeks * millisecondsInOneDay),
-            status: "BORROWED"
+            status: "BORROWED",
+            isAllowedLoanExtension: true
         }],
         overdue: [{
             id: "8535902722",
@@ -699,7 +700,8 @@ const userTestBooks = {
             "Quick Start Guide to JavaFX by J.F. DiMarzio\n" +
             "Mastering JavaFX 8 Controls: Create Custom JavaFX 8 Controls for Cross-Platform Applications by Hendrik Ebbers",
             dueDate: new Date(new Date().getTime() - twoDays * millisecondsInOneDay),
-            status: "OVERDUE"
+            status: "OVERDUE",
+            isAllowedLoanExtension: false
         }],
         shouldReturnSoon: [{
             id: "8535902724",
@@ -731,7 +733,8 @@ const userTestBooks = {
             "Style and approach\n" +
             "This is your guide to designing custom web components, and the concepts are explained in a conversational and easy-to-follow style. Each topic is explained through examples, with detailed explanations wherever required.",
             dueDate: new Date(new Date().getTime() + threeDays * millisecondsInOneDay),
-            status: "BORROWED"
+            status: "BORROWED",
+            isAllowedLoanExtension: false
         }]
     }
 ;

@@ -41,7 +41,7 @@
             .book-card {
                 @apply --layout-vertical;
                 border-radius: 3px;
-                box-shadow: 4px 4px 10px #888888;
+                box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0,0,0,.12), 0 2px 4px rgba(0,0,0,.24);
                 background-color: white;
                 max-width: 800px;
                 margin: 10px;
@@ -60,7 +60,7 @@
                 width: 40%;
                 --iron-image-width: 100%;
                 overflow: inherit;
-                box-shadow: 0 0 4px #8d8d8d;
+                box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0,0,0,.12), 0 2px 4px rgba(0,0,0,.24);
                 margin-left: 25px;
                 margin-top: 25px;
             }
@@ -82,7 +82,6 @@
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
-                /*color: var(--exlibris-app-secondary-color);*/
             }
 
             .book-card .head-region .head-info .wide-screen {
@@ -120,7 +119,7 @@
             .book-card .head-region .head-info .head-text .title {
                 font-size: 25px;
                 line-height: 30px;
-                margin: 40px 0 10px 0;
+                margin: 40px 15px 10px 0;
                 text-align: left;
                 font-weight: normal;
             }
@@ -167,7 +166,7 @@
                 .book-card .head-region .head-info .head-text .title {
                     font-size: 16px;
                     line-height: 15px;
-                    margin: 20px 0 5px 0;
+                    margin: 20px 15px 5px 0;
                 }
 
                 .book-card .head-region .head-info {
@@ -196,13 +195,21 @@
                         <div class="plain-text">[[statusMessage]]</div>
                     </div>
                     <div class="wide-screen">
-                        <paper-button on-click="_handleButtonClick">[[buttonTitle]]</paper-button>
+                        <paper-button on-click="_handleButtonClick"
+                                      hidden="[[_isHidden()]]">
+                            [[buttonTitle]]
+                        </paper-button>
+                        <div>[[actionUnsupportedMessage]]</div>
                     </div>
                 </div>
             </div>
             <div class="narrow-screen">
-                <paper-button class="small" on-click="_handleButtonClick">[[buttonTitle]]
+                <paper-button class="small"
+                              on-click="_handleButtonClick"
+                              hidden="[[_isHidden()]]">
+                    [[buttonTitle]]
                 </paper-button>
+                <div>[[actionUnsupportedMessage]]</div>
             </div>
             <div class="description">
                 [[book.description]]
@@ -236,7 +243,9 @@
                     statusMessage: {
                         type: String,
                         computed: '_getMessage(book)'
-                    }
+                    },
+
+                    actionUnsupportedMessage: String
                 };
             }
 
@@ -325,7 +334,16 @@
 
                 if (this._isBorrowedAndCanBeExtended()) {
                     this._handleButtonClick = this._requestLoanExtension;
-                    return 'EXTEND LOAN PERIOD';}
+                    return 'EXTEND LOAN PERIOD';
+                }
+
+                if (this._isBorrowedAndCannotBeExtended()) {
+                    this.actionUnsupportedMessage = 'RESERVED BY ANOTHER READER';
+                }
+            }
+
+            _isHidden() {
+                return !this.buttonTitle;
             }
 
             /**
