@@ -231,6 +231,15 @@
 
                     /**
                      * The book object to display.
+                     *
+                     * @typedef {Object} Book
+                     * @property {string} id
+                     * @property {string} title the title of a book
+                     * @property {string} image the book cover URL
+                     * @property {string} author string with authors of the book
+                     * @property {string} category the book category
+                     * @property {number} availableCount the number of items available for borrowing.
+                     * @property {BookStatus} status  one of the BookStatus values.
                      */
                     book: {
                         type: Object,
