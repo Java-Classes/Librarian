@@ -14,16 +14,14 @@
         };
 
         const store = Redux.createStore(reducer);
+        window.ExlibrisApp = {};
+        ExlibrisApp.store = store;
 
         /**
          * This mixin provides the Exlibris Application state access.
          *
          * @mixinFunction
          */
-        ReduxMixin = PolymerRedux(store);
-
-        window.ExlibrisApp = {};
-        ExlibrisApp.store = store;
-        ExlibrisApp.ReduxMixin = ReduxMixin;
+        ExlibrisApp.ReduxMixin = PolymerRedux(store);
     }
 </script>
