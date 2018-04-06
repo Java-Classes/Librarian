@@ -32,7 +32,10 @@
         expectedSoonBooks: expectedSoonLibraryBooks
     };
 
-    const reducer = (state = initialState) => {
-        return state;
+    const reducer = (state = initialState, action) => {
+        switch (action) {
+            default:
+                return state;
+        }
     };
 </script>
