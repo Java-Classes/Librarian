@@ -99,8 +99,7 @@
                         selected="[[routeData.page]]"
                         attr-for-selected="data-page"
                         fallback-selection="view404"
-                        role="main"
-                        on-exlibris-book-tile-click="_handleBookClick">
+                        role="main">
                     <exlibris-book-grid data-page="all-books"
                                         books="[[allBooks]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="overdue-books"
@@ -262,25 +261,6 @@
                 if (this.narrow) {
                     this.$.drawer.toggle();
                 }
-            }
-
-            /**
-             * Handles the book tile click event.
-             * Sets the route path for the specified book using the book title and the Id.
-             *
-             * @param e the book tile click event.
-             *        `e.detail` contains the book Id and the book title.
-             * @private
-             */
-            _handleBookClick(e) {
-                const bookId = e.detail.bookId;
-                const bookTitle = e.detail.bookTitle;
-                e.stopPropagation();
-                e.preventDefault();
-                if (bookId && bookTitle) {
-                    return this.set('route.path', '/book-details/' + bookTitle.replace(/\s/g, '_') + '/' + bookId);
-                }
-                this.set('route.path', '/view404');
             }
         }
 
