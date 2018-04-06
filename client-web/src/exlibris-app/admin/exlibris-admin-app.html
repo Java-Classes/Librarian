@@ -36,6 +36,7 @@
 <link rel="import" href="../../../bower_components/paper-styles/color.html">
 <link rel="import" href="../../../bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 
 
 <dom-module id="exlibris-admin-app">
@@ -97,7 +98,9 @@
                         attr-for-selected="data-page"
                         fallback-selection="view404"
                         role="main">
-
+                    <div data-page="inventory">
+                        <paper-button on-tap="addBookHandle">Add book</paper-button>
+                    </div>
                     <div data-page="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
