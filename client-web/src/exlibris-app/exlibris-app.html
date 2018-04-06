@@ -107,16 +107,16 @@
          * Library application. The polymer-based single page app.
          *
          * How to use `<exlibris-app>` component.
-         * In typical use, just use `<exlibris-app>` at the top of your body:
+         * In typical use, just add `<exlibris-app>` to the top of your body:
          * <body>
          *   <exlibris-app></exlibris-app>
          * </body>
          *
          * @customElement
          * @polymer
-         * @appliesMixin ExlibrisApplication.ReduxMixin
+         * @appliesMixin ExlibrisApp.ReduxMixin
          */
-        class ExlibrisApp extends ExlibrisApplication.ReduxMixin(Polymer.Element) {
+        class ExlibrisMainApp extends ExlibrisApp.ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'exlibris-app';
             }
@@ -194,6 +194,6 @@
             }
         }
 
-        window.customElements.define(ExlibrisApp.is, ExlibrisApp);
+        window.customElements.define(ExlibrisMainApp.is, ExlibrisMainApp);
     </script>
 </dom-module>

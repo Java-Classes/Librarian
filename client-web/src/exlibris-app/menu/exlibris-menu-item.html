@@ -16,8 +16,6 @@
                 cursor: pointer;
                 margin: 10px;
                 align-items: center;
-                color: var(--exlibris-menu-item-title-color, var(--app-secondary-color));
-                font-weight: var(--exlibris-menu-item-title-font-weight, normal);
                 border-radius: var(--exlibris-menu-item-border-radius, 3px);
                 background-color: var(--exlibris-menu-item-background-color, var(--exlibris-app-background-color));
                 line-height: 40px;
@@ -27,7 +25,13 @@
                 font-size: 15px;
             }
 
-            .name {
+            .item-font {
+                color: var(--app-secondary-color);
+                font-weight: normal;
+                @apply --exlibris-menu-item-font;
+            }
+
+            .title {
                 padding-left: 12px;
             }
 
@@ -38,9 +42,9 @@
         </style>
         <a href="[[link]]">
             <div id="menu-item-body" class="item">
-                <slot name="icon"></slot>
-                <span id="menu-item-title" class="name">[[title]]</span>
-                <span id="menu-item-badge" class="count-badge">[[count]]</span>
+                <slot></slot>
+                <span id="menu-item-title" class="item-font title">[[title]]</span>
+                <span id="menu-item-badge" class="item-font count-badge">[[count]]</span>
             </div>
         </a>
     </template>
@@ -54,10 +58,9 @@
          *
          * Custom property | Description | Default
          * ----------------|-------------|----------
-         * `--menu-item-title-color` | Element text color | black
-         * `--menu-item-background-color` | Background color of the element display area | white
+         * `--exlibris-menu-item-background-color` | Background color of the element display area | `--exlibris-app-background-color`
          * `--exlibris-menu-item-border-radius` | Item border radius | 3px
-         * `--exlibris-menu-item-title-font-weight` | Item title font weight | normal
+         * `--exlibris-menu-item-font` | Mixin applied to the item title and badge | `{}`
          *
          * @customElement
          * @polymer

@@ -2,7 +2,7 @@
 
 <script>
     {
-        /*global Redux PolymerRedux ReduxMixin:true*/
+        /*global Redux PolymerRedux */
 
         const initialState = {};
 
@@ -22,8 +22,8 @@
          */
         ReduxMixin = PolymerRedux(store);
 
-        window.ExlibrisApplication = {};
-        ExlibrisApplication.store = store;
-        ExlibrisApplication.ReduxMixin = ReduxMixin;
+        window.ExlibrisApp = {};
+        ExlibrisApp.store = store;
+        ExlibrisApp.ReduxMixin = ReduxMixin;
     }
 </script>
