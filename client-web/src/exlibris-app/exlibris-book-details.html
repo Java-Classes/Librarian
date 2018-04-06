@@ -35,13 +35,13 @@
 
             :host {
                 display: flex;
-                margin-left: 15%;
+                margin-left: 100px;
             }
 
             .book-card {
                 @apply --layout-vertical;
                 border-radius: 3px;
-                box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24);
+                box-shadow: 4px 4px 10px #888888;
                 background-color: white;
                 max-width: 1000px;
                 margin: 10px;
@@ -57,7 +57,6 @@
             }
 
             .book-card .head-region iron-image {
-                width: 40%;
                 --iron-image-width: 100%;
                 overflow: inherit;
                 box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24);
@@ -84,13 +83,13 @@
                 justify-content: flex-start;
             }
 
-            .book-card .head-region .head-info .wide-screen {
+            .book-card .head-region .head-info .button-wide-screen {
                 display: block;
                 width: 100%;
                 margin: 0;
             }
 
-            .book-card .narrow-screen {
+            .book-card .button-narrow-screen {
                 display: none;
                 width: fit-content;
                 margin: 15px 0 0 15px;
@@ -98,7 +97,7 @@
 
             paper-button {
                 margin: 0;
-                background-color: var(--exlibris-app-primary-color, blue);
+                background-color: var(--exlibris-app-primary-color);
                 color: white;
                 height: 36px;
                 font-size: 14px;
@@ -109,7 +108,7 @@
                 font-size: 12px;
             }
 
-            .book-card .description {
+            #description {
                 margin-top: 30px;
                 margin-bottom: 30px;
                 padding: 0 25px 0 25px;
@@ -117,7 +116,7 @@
                 color: var(--exlibris-app-secondary-color);
             }
 
-            .book-card .head-region .head-info .head-text .title {
+            #title {
                 font-size: 25px;
                 line-height: 30px;
                 margin: 40px 15px 10px 0;
@@ -125,20 +124,24 @@
                 font-weight: normal;
             }
 
-            .book-card .head-region .head-info .head-text .author {
+            #author {
                 font-size: 12px;
                 font-weight: lighter;
                 margin: 5px 0 5px 0;
             }
 
-            .book-card .head-region .head-info .head-text .plain-text {
+            #status-message {
                 white-space: pre;
                 font-size: 15px;
                 font-weight: bold;
                 margin: 20px 0 5px 0;
             }
 
-            @media only screen and (max-width: 640px) {
+            @media only screen and (max-width: 900px) {
+                :host {
+                    margin-left: unset;
+                }
+
                 .book-card {
                     border-radius: 0;
                     box-shadow: unset;
@@ -151,27 +154,27 @@
                     margin-top: 15px;
                 }
 
-                .book-card .head-region .head-info .wide-screen {
+                .book-card .head-region .head-info .button-wide-screen {
                     display: none;
                 }
 
-                .book-card .narrow-screen {
+                .book-card .button-narrow-screen {
                     display: block;
-                }
-
-                .book-card .description {
-                    margin-top: 8px;
-                    padding: 0 15px 0 15px;
-                }
-
-                .book-card .head-region .head-info .head-text .title {
-                    font-size: 16px;
-                    line-height: 15px;
-                    margin: 20px 15px 5px 0;
                 }
 
                 .book-card .head-region .head-info {
                     padding-left: 10px;
+                }
+
+                #description {
+                    margin-top: 8px;
+                    padding: 0 15px 0 15px;
+                }
+
+                #title {
+                    font-size: 16px;
+                    line-height: 15px;
+                    margin: 20px 15px 5px 0;
                 }
             }
         </style>
@@ -189,12 +192,12 @@
                 <iron-image preload loaded="{{loaded}}" src="[[book.image]]"></iron-image>
                 <div class="head-info">
                     <div class="head-text">
-                        <div class="title">[[book.title]]</div>
-                        <div class="author">[[book.author]]</div>
-                        <div class="plain-text">[[statusMessage]]</div>
+                        <div id="title">[[book.title]]</div>
+                        <div id="author">[[book.author]]</div>
+                        <div id="status-message">[[statusMessage]]</div>
                     </div>
-                    <div class="wide-screen">
-                        <paper-button on-click="_handleButtonClick"
+                    <div class="button-wide-screen">
+                        <paper-button raised on-click="_handleButtonClick"
                                       hidden="[[_isActionButtonHidden()]]">
                             [[buttonTitle]]
                         </paper-button>
@@ -202,7 +205,7 @@
                     </div>
                 </div>
             </div>
-            <div class="narrow-screen">
+            <div class="button-narrow-screen">
                 <paper-button class="small"
                               on-click="_handleButtonClick"
                               hidden="[[_isActionButtonHidden()]]">
@@ -210,7 +213,7 @@
                 </paper-button>
                 <div>[[actionUnsupportedMessage]]</div>
             </div>
-            <div class="description">
+            <div id="description">
                 [[book.description]]
             </div>
         </div>
