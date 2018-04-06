@@ -36,22 +36,23 @@
 <link rel="import" href="../../../bower_components/paper-styles/color.html">
 <link rel="import" href="../../../bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../admin/exlibris-admin-add-button.html">
+<link rel="import" href="./exlibris-wizard-dialog.html">
 
 
 <dom-module id="exlibris-admin-app">
     <template>
         <style>
             :host {
-                --exlibris-app-primary-color: var(--paper-blue-600);
-                --exlibris-app-secondary-color: var(--paper-grey-600);
-                --exlibris-app-background-color: var(--paper-grey-200);
+                --exlibris-admin-app-primary-color: var(--paper-blue-600);
+                --exlibris-admin-app-secondary-color: var(--paper-grey-600);
+                --exlibris-admin-app-background-color: var(--paper-grey-200);
                 --app-drawer-width: 250px;
                 display: block;
             }
 
             app-toolbar {
-                background-color: var(--exlibris-app-primary-color);
+                background-color: var(--exlibris-admin-app-primary-color);
                 box-shadow: 3px 3px 12px #888888;
                 color: #fff;
             }
@@ -111,12 +112,14 @@
                         fallback-selection="view404"
                         role="main">
                     <div data-page="inventory">
-                        <paper-button on-tap="addBookHandle">Add book</paper-button>
+                        <exlibris-admin-add-button
+                                on-tap="_handleAddButtonTab"></exlibris-admin-add-button>
                     </div>
                     <div data-page="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
+        <exlibris-wizard-dialog id="wizard"></exlibris-wizard-dialog>
     </template>
 
     <script>
@@ -152,6 +155,9 @@
                 if (!this.route.path) {
                     this.set('route.path', '/inventory');
                 }
+            }
+            _handleAddButtonTab(){
+                this.$.wizard.open();
             }
 
         }

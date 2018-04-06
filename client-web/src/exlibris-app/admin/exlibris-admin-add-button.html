@@ -1,0 +1,97 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="./../../exlibris-app/shell/redux-store.html">
+
+<link rel="import"
+      href="../../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import"
+      href="../../../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import"
+      href="../../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+
+<dom-module id="exlibris-admin-add-button">
+    <template>
+        <style>
+            :host {
+                display: block;
+                @apply --layout-vertical;
+                @apply --layout-end;
+            }
+
+            paper-button {
+                margin-right: 50px;
+                margin-top: 50px;
+                background-color: var(--exlibris-admin-app-primary-color);
+                min-width: 60px;
+                max-width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                box-shadow: 3px 3px 10px #888888;
+            }
+
+            iron-icon {
+                --iron-icon-fill-color: white;
+            }
+
+
+        </style>
+
+        <paper-button>
+            <iron-icon icon="icons:add"></iron-icon>
+        </paper-button>
+    </template>
+
+    <script>
+
+        /**
+         * `<exlibris-admin-add-button>` displays circle button.
+         *
+         * @customElement
+         * @polymer
+         */
+        class ExlibrisAdminAddButton extends Polymer.Element {
+            static get is() {
+                return 'exlibris-admin-add-button';
+            }
+
+            static get properties() {
+                return {};
+            }
+
+        }
+
+        window.customElements.define(ExlibrisAdminAddButton.is, ExlibrisAdminAddButton);
+    </script>
+</dom-module>

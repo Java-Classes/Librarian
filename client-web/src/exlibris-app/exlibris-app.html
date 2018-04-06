@@ -47,7 +47,6 @@
 <link rel="import" href="./exlibris-book-details.html">
 <link rel="import" href="./menu/exlibris-menu-drawer.html">
 <link rel="import" href="./book_values.html">
-<link rel="import" href="exlibris-wizard-dialog.html">
 
 <dom-module id="exlibris-app">
     <template>
@@ -159,7 +158,6 @@
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
-        <exlibris-wizard-dialog id="wizard"></exlibris-wizard-dialog>
     </template>
 
     <script>
@@ -373,9 +371,6 @@
                 e.stopPropagation();
             }
 
-            addBookHandle() {
-                this.$.wizard.open();
-            }
 
         }
 
