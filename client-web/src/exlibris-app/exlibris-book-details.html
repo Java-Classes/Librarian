@@ -246,36 +246,28 @@
                         statePath: 'selectedBook',
                     },
 
-                    buttonTitle: {
+                    /**
+                     * The title of the button.
+                     */
+                    button: {
                         type: String,
-                        computed: '_computeButton(book)'
+                        computed: '_identifyButton(book)'
                     },
 
+                    /**
+                     * The message about the status of the book.
+                     */
                     statusMessage: {
                         type: String,
                         computed: '_getMessage(book)'
                     },
 
+                    /**
+                     * The message about the status of the book.
+                     * Shown when the button is not supported for the book.
+                     */
                     actionUnsupportedMessage: String
                 };
-            }
-
-            _isReserved() {
-                return [BookStatus.READY_TO_PICK_UP, BookStatus.RESERVED].includes(this.book.status);
-            }
-
-            _isExpected() {
-                return [BookStatus.EXPECTED, BookStatus.EXPECTED_SOON].includes(this.book.status);
-            }
-
-            _isBorrowedAndCanBeExtended() {
-                return [BookStatus.OVERDUE, BookStatus.SHOULD_RETURN_SOON].includes(this.book.status)
-                    && this.book.isAllowedLoanExtension;
-            }
-
-            _isBorrowedAndCannotBeExtended() {
-                return [BookStatus.SHOULD_RETURN_SOON, BookStatus.OVERDUE, BookStatus.BORROWED].includes(this.book.status)
-                    && !this.book.isAllowedLoanExtension;
             }
 
             _getMessage() {
@@ -324,25 +316,42 @@
                 return message;
             }
 
-            _computeButton() {
-                if (this._isReserved()) {
+            /**
+             * Identifies the button title and the button click handler
+             * depending on the book status.
+             * If the button if unsupported sets the `actionUnsupportedMessage`.
+             */
+            _identifyButton() {
+                if (this.__isReserved()) {
                     this._handleButtonClick = this._requestCancelReservation;
                     return 'CANCEL RESERVATION';
-                }
-
-                if (this._isExpected()) {
+                } else if (this.__isExpected()) {
                     this._handleButtonClick = this._requestReservation;
                     return 'RESERVE';
-                }
-
-                if (this._isBorrowedAndCanBeExtended()) {
+                } else if (this.__isBorrowedAndCanBeExtended()) {
                     this._handleButtonClick = this._requestLoanExtension;
                     return 'EXTEND LOAN PERIOD';
-                }
-
-                if (this._isBorrowedAndCannotBeExtended()) {
+                } else if (this.__isBorrowedAndCannotBeExtended()) {
                     this.actionUnsupportedMessage = 'RESERVED BY ANOTHER READER';
                 }
+            }
+
+            __isReserved() {
+                return [BookStatus.READY_TO_PICK_UP, BookStatus.RESERVED].includes(this.book.status);
+            }
+
+            __isExpected() {
+                return [BookStatus.EXPECTED, BookStatus.EXPECTED_SOON].includes(this.book.status);
+            }
+
+            __isBorrowedAndCanBeExtended() {
+                return [BookStatus.OVERDUE, BookStatus.SHOULD_RETURN_SOON].includes(this.book.status)
+                    && this.book.isAllowedLoanExtension;
+            }
+
+            __isBorrowedAndCannotBeExtended() {
+                return [BookStatus.SHOULD_RETURN_SOON, BookStatus.OVERDUE, BookStatus.BORROWED].includes(this.book.status)
+                    && !this.book.isAllowedLoanExtension;
             }
 
             /**
