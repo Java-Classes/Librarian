@@ -199,7 +199,7 @@
                     <div class="button-wide-screen">
                         <paper-button raised on-click="_handleButtonClick"
                                       hidden="[[_isActionButtonHidden()]]">
-                            [[buttonTitle]]
+                            [[button.title]]
                         </paper-button>
                         <div>[[actionUnsupportedMessage]]</div>
                     </div>
@@ -209,7 +209,7 @@
                 <paper-button class="small"
                               on-click="_handleButtonClick"
                               hidden="[[_isActionButtonHidden()]]">
-                    [[buttonTitle]]
+                    [[button.title]]
                 </paper-button>
                 <div>[[actionUnsupportedMessage]]</div>
             </div>
@@ -247,10 +247,13 @@
                     },
 
                     /**
-                     * The title of the button.
+                     * The button title and click handler.
+                     *
+                     * @property {string} title the button title
+                     * @property {function} the button click handler function
                      */
                     button: {
-                        type: String,
+                        type: Object,
                         computed: '_identifyButton(book)'
                     },
 
@@ -323,15 +326,27 @@
              */
             _identifyButton() {
                 if (this.__isReserved()) {
-                    this._handleButtonClick = this._requestCancelReservation;
-                    return 'CANCEL RESERVATION';
-                } else if (this.__isExpected()) {
-                    this._handleButtonClick = this._requestReservation;
-                    return 'RESERVE';
-                } else if (this.__isBorrowedAndCanBeExtended()) {
-                    this._handleButtonClick = this._requestLoanExtension;
-                    return 'EXTEND LOAN PERIOD';
-                } else if (this.__isBorrowedAndCannotBeExtended()) {
+                    return {
+                        title: 'CANCEL RESERVATION',
+                        clickHandler: this._requestCancelReservation
+                    };
+                }
+
+                if (this.__isExpected()) {
+                    return {
+                        title: 'RESERVE',
+                        clickHandler: this._requestReservation
+                    };
+                }
+
+                if (this.__isBorrowedAndCanBeExtended()) {
+                    return {
+                        title: 'EXTEND LOAN PERIOD',
+                        clickHandler: this._requestLoanExtension
+                    };
+                }
+
+                if (this.__isBorrowedAndCannotBeExtended()) {
                     this.actionUnsupportedMessage = 'RESERVED BY ANOTHER READER';
                 }
             }
@@ -355,7 +370,7 @@
             }
 
             /**
-             * Used to set custom style for the placeholder image
+             * Used to hide the book cover placeholder image
              * when the original image is loaded.
              *
              * @param {boolean} loaded main cover loading status.
@@ -374,7 +389,16 @@
              * @private
              */
             _isActionButtonHidden() {
-                return !this.buttonTitle;
+                return !this.button;
+            }
+
+            /**
+             * Handles the button click.
+             *
+             * @private
+             */
+            _handleButtonClick() {
+                this.button.clickHandler();
             }
 
             /**
