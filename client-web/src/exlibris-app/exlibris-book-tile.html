@@ -191,8 +191,8 @@
             _computeBookStatusMessage(book) {
                 switch (book.status) {
                     case BookStatus.OVERDUE: {
-                        const oneDay = 86400000;
-                        const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / oneDay);
+                        const ONE_DAY = 86400000;
+                        const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / ONE_DAY);
                         return numberOfOverdueDays + " DAYS OVERDUE";
                     }
                     case BookStatus.BORROWED: {
