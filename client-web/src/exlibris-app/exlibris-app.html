@@ -103,11 +103,10 @@
     </template>
 
     <script>
-
         /**
-         * # Library application. The polymer-based single page app.
+         * Library application. The polymer-based single page app.
          *
-         * ## How to use `<exlibris-app>` component.
+         * How to use `<exlibris-app>` component.
          * In typical use, just use `<exlibris-app>` at the top of your body:
          * <body>
          *   <exlibris-app></exlibris-app>
@@ -115,7 +114,7 @@
          *
          * @customElement
          * @polymer
-         * @appliesMixin ReduxMixin
+         * @appliesMixin ExlibrisApplication.ReduxMixin
          */
         class ExlibrisApp extends ExlibrisApplication.ReduxMixin(Polymer.Element) {
             static get is() {
