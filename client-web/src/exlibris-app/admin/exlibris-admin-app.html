@@ -1,0 +1,132 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="./../../exlibris-app/shell/redux-store.html">
+
+<link rel="import"
+      href="../../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import"
+      href="../../../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import"
+      href="../../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/paper-styles/color.html">
+
+
+
+
+<dom-module id="exlibris-admin-app">
+    <template>
+        <style>
+            :host {
+                --exlibris-app-primary-color: var(--paper-blue-600);
+                --exlibris-app-secondary-color: var(--paper-grey-600);
+                --exlibris-app-background-color: var(--paper-grey-200);
+                --app-drawer-width: 250px;
+                display: block;
+            }
+
+            app-toolbar {
+                background-color: var(--exlibris-app-primary-color);
+                color: #fff;
+            }
+
+        </style>
+
+        <app-location route="{{route}}"
+                      use-hash-as-path></app-location>
+
+        <app-route
+                route="{{route}}"
+                pattern="/:page"
+                data="{{routeData}}"
+                tail="{{subRoute}}"></app-route>
+
+        <app-drawer-layout fullbleed narrow="{{narrow}}">
+
+            <!-- Main content -->
+            <app-header-layout has-scrolling-region>
+                <app-header slot="header" fixed>
+                    <app-toolbar>
+                       <div>Exlibris</div>
+                    </app-toolbar>
+                </app-header>
+
+                <iron-pages
+                        id="pages"
+                        selected="[[routeData.page]]"
+                        attr-for-selected="data-page"
+                        fallback-selection="view404"
+                        role="main">
+
+                    <div data-page="view404">View404</div>
+                </iron-pages>
+            </app-header-layout>
+        </app-drawer-layout>
+    </template>
+
+    <script>
+
+        /**
+         * # Library application. The polymer-based single page app for admin.
+         *
+         *
+         * @customElement
+         * @polymer
+         * @appliesMixin ReduxMixin
+         */
+        class ExlibrisAdminApp extends ExlibrisApplication.ReduxMixin(Polymer.Element) {
+            static get is() {
+                return 'exlibris-admin-app';
+            }
+
+            static get properties() {
+                return {
+
+                };
+            }
+
+
+            static get observers() {
+                return [
+                    '_routePageChanged(routeData.page)'
+                ];
+            }
+
+            /**
+             * Checks for an empty route passed to redirect user to the default app view.
+             */
+            _routePageChanged() {
+                if (!this.route.path) {
+                    this.set('route.path', '/inventory');
+                }
+            }
+
+        }
+
+        window.customElements.define(ExlibrisAdminApp.is, ExlibrisAdminApp);
+    </script>
+</dom-module>
