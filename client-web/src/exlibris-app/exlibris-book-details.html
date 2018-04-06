@@ -28,6 +28,7 @@
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="./book_values.html">
+<link rel="import" href="./actions/exlibris_action.html">
 
 <dom-module id="exlibris-book-details">
     <template>
@@ -269,8 +270,28 @@
                      * The message about the status of the book.
                      * Shown when the button is not supported for the book.
                      */
-                    actionUnsupportedMessage: String
+                    actionUnsupportedMessage: String,
+
+                    routeData: {
+                        type: Object,
+                        observer: "_routeDataChanged"
+                    }
                 };
+            }
+
+            static get actions() {
+                return {
+                    findBookById(bookId) {
+                        return {
+                            type: ElibrisActions.FIND_BOOK_BY_ID,
+                            bookId: bookId
+                        }
+                    }
+                }
+            }
+
+            _routeDataChanged(routeData) {
+                this.dispatch('findBookById', routeData.id);
             }
 
             _getMessage() {

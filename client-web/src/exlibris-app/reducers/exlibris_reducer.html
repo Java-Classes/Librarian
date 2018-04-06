@@ -19,6 +19,7 @@
   -->
 <script src="../test_values.js"></script>
 <link rel="import" href="../book_values.html">
+<link rel="import" href="../actions/exlibris_action.html">
 
 <script>
     /* exported reducer */
@@ -35,7 +36,10 @@
     };
 
     const reducer = (state = initialState, action) => {
-        switch (action) {
+        switch (action.type) {
+            case ElibrisActions.FIND_BOOK_BY_ID: {
+                return Object.assign({}, state, {selectedBook: action.id});
+            }
             default:
                 return state;
         }
