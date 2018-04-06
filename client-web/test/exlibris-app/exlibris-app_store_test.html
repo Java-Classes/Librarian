@@ -36,7 +36,6 @@
         });
 
         test('should set allBooks value from state', function () {
-
             mock.expects("getState").returns({allBooks: [...TEST_BOOKS]});
             const element = fixture('BasicTestFixture');
             assert.deepEqual(element.allBooks, TEST_BOOKS);

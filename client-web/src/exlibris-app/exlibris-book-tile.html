@@ -118,7 +118,8 @@
 
     <script>
         /**
-         * `<exlibris-book-tile>` components displays short information about book: picture, synopsis and status.
+         * `<exlibris-book-tile>` components displays short information about book: picture,
+         *  synopsis and status.
          *
          * @customElement
          * @polymer
@@ -133,10 +134,10 @@
                     /**
                      * The next objects:
                      *  @typedef {Object} Book
+                     * @property {string} id the identifier of a book
                      * @property {string} title the title of a book
                      * @property {string} authors string with authors of the book
-                     * @property {string} status  one of the following values: "overdue", "borrowed", "should-return-soon",
-                     * "available", "reserved", "expected","ready-to-pick-up"
+                     * @property {string} status  one of the BookStatus values
                      */
                     book: Object,
 
