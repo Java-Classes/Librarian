@@ -21,7 +21,9 @@
 <script>
     /* exported BookStatus */
 
-    const BookStatus = {
+    window.ExlibrisApplication = {} || ExlibrisApplication;
+
+    ExlibrisApplication.BookStatus = {
         OVERDUE: "OVERDUE",
         BORROWED: "BORROWED",
         SHOULD_RETURN_SOON: "SHOULD_RETURN_SOON",
@@ -31,5 +33,4 @@
         EXPECTED: "EXPECTED",
         READY_TO_PICK_UP: "READY_TO_PICK_UP",
     };
-
 </script>
