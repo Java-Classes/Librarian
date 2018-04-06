@@ -34,8 +34,8 @@
 <link rel="import" href="../../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../../bower_components/paper-styles/color.html">
-
-
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
 
 
 <dom-module id="exlibris-admin-app">
@@ -51,7 +51,18 @@
 
             app-toolbar {
                 background-color: var(--exlibris-app-primary-color);
+                box-shadow: 3px 3px 12px #888888;
                 color: #fff;
+            }
+
+            paper-tabs {
+                margin-left: 25px;
+                --paper-tabs-selection-bar-color: white;
+            }
+
+            paper-tab {
+                margin-left: 10px;
+                --paper-tab-ink: white;
             }
 
         </style>
@@ -71,7 +82,12 @@
             <app-header-layout has-scrolling-region>
                 <app-header slot="header" fixed>
                     <app-toolbar>
-                       <div>Exlibris</div>
+                        <div>Exlibris</div>
+                        <paper-tabs selected="0">
+                            <paper-tab>Inventory</paper-tab>
+                            <paper-tab>Readers</paper-tab>
+                            <paper-tab>Lost Books</paper-tab>
+                        </paper-tabs>
                     </app-toolbar>
                 </app-header>
 
@@ -104,9 +120,7 @@
             }
 
             static get properties() {
-                return {
-
-                };
+                return {};
             }
 
 
