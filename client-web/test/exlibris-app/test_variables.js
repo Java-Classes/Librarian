@@ -21,7 +21,6 @@
     const threeWeeks = 21;
     const millisecondsInOneDay = 86400000;
     window.ExlibrisApplication = {} || ExlibrisApplication;
-    console.log("dsfsd");
     ExlibrisApplication.TEST_BOOKS = [{
         id: "123456789",
         title: "Стив Джобс",

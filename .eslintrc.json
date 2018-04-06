@@ -28,8 +28,7 @@
       {
         "ignore": [
           0,
-          1,
-          86400000
+          1
         ]
       }
     ],
@@ -52,6 +51,6 @@
     "ExlibrisApplication": false,
     "fixture": false,
     "flush": false,
-    "teardown": false,
+    "teardown": false
   }
 }
