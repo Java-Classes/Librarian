@@ -23,20 +23,21 @@
 <script>
     /* exported reducer */
     /*global userTestBooks libraryTestBooks expectedSoonLibraryBooks*/
+    {
+        const initialState = {
+            overdueBooks: userTestBooks.overdue,
+            borrowedBooks: [...userTestBooks.overdue, ...userTestBooks.borrowed],
+            shouldReturnBooks: userTestBooks.shouldReturnSoon,
+            reservedBooks: userTestBooks.reserved,
+            allBooks: [...userTestBooks.overdue, ...libraryTestBooks],
+            expectedSoonBooks: expectedSoonLibraryBooks
+        };
 
-    const initialState = {
-        overdueBooks: userTestBooks.overdue,
-        borrowedBooks: [...userTestBooks.overdue, ...userTestBooks.borrowed],
-        shouldReturnBooks: userTestBooks.shouldReturnSoon,
-        reservedBooks: userTestBooks.reserved,
-        allBooks: [...userTestBooks.overdue, ...libraryTestBooks],
-        expectedSoonBooks: expectedSoonLibraryBooks
-    };
-
-    ExlibrisApplication.reducer = (state = initialState, action) => {
-        switch (action) {
-            default:
-                return state;
-        }
-    };
+        ExlibrisApplication.reducer = (state = initialState, action) => {
+            switch (action) {
+                default:
+                    return state;
+            }
+        };
+    }
 </script>

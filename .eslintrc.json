@@ -44,17 +44,14 @@
   ],
   "globals": {
     "Polymer": false,
-    "BookStatus": false,
     "suite": false,
     "setup": false,
     "sinon": false,
     "test": false,
-    "TEST_BOOKS": false,
     "assert": false,
     "ExlibrisApplication": false,
     "fixture": false,
     "flush": false,
     "teardown": false,
-    "reducer": false
   }
 }
