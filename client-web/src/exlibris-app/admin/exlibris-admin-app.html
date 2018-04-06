@@ -66,6 +66,12 @@
                 --paper-tab-ink: white;
             }
 
+            a {
+                text-decoration: none;
+                color: white;
+                margin-top: 30px;
+            }
+
         </style>
 
         <app-location route="{{route}}"
@@ -85,9 +91,15 @@
                     <app-toolbar>
                         <div>Exlibris</div>
                         <paper-tabs selected="0">
-                            <paper-tab>Inventory</paper-tab>
-                            <paper-tab>Readers</paper-tab>
-                            <paper-tab>Lost Books</paper-tab>
+                            <paper-tab>
+                                <a href="#/inventory">Inventory</a>
+                            </paper-tab>
+                            <paper-tab>
+                                <a href="#/readers">Readers</a>
+                            </paper-tab>
+                            <paper-tab>
+                                <a href="#/lost-books">Lost Books</a>
+                            </paper-tab>
                         </paper-tabs>
                     </app-toolbar>
                 </app-header>
