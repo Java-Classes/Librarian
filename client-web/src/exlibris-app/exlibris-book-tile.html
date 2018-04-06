@@ -31,7 +31,6 @@
         <style>
             :host {
                 display: block;
-                @apply --layout-vertical;
                 border-radius: 3px;
                 box-shadow: 4px 4px 10px #888888;
                 cursor: pointer;
@@ -41,9 +40,17 @@
                 margin: 20px;
             }
 
+            a {
+                @apply --layout-vertical;
+                text-decoration: none;
+                width: 100%;
+                height: 100%;
+            }
+
             iron-image {
                 border-radius: 3px 3px 0 0;
-                height: 75%;
+                height: 230px;
+                width: 100%;
             }
 
             iron-image:hover {
@@ -52,7 +59,7 @@
 
             #synopsis {
                 @apply --layout-vertical;
-                height: 25%;
+                height: 70px;
                 bottom: 0;
                 left: 0;
                 right: 0;
@@ -97,15 +104,16 @@
                 background: var(--paper-green-400);
             }
         </style>
-
-        <iron-image sizing="cover"
-                    src="[[book.image]]">
-        </iron-image>
-        <div id="synopsis">
-            <div id="title" title="[[book.title]]">[[book.title]]</div>
-            <div id="author" title="[[book.author]]">[[book.author]]</div>
-            <div id="status-text" class$="[[statusClass]]">[[statusMessage]]</div>
-        </div>
+        <a href="[[link]]">
+            <iron-image sizing="cover"
+                        src="[[book.image]]">
+            </iron-image>
+            <div id="synopsis">
+                <div id="title" title="[[book.title]]">[[book.title]]</div>
+                <div id="author" title="[[book.author]]">[[book.author]]</div>
+                <div id="status-text" class$="[[statusClass]]">[[statusMessage]]</div>
+            </div>
+        </a>
     </template>
 
     <script>
@@ -143,7 +151,16 @@
                     statusClass: {
                         value: String,
                         computed: "_computeClassForStatusMessage(book.status)"
+                    },
+
+                    /**
+                     * The link to follow on item click.
+                     */
+                    link: {
+                        type: String,
+                        computed: '_computeLink(book)'
                     }
+
                 };
             }
 
@@ -196,6 +213,17 @@
                         return "EXPECTED";
                     }
                 }
+            }
+
+            /**
+             * Creates link depending on the book details.
+             *
+             * @param{Object} book the book object
+             * @returns {string} link.
+             * @private
+             */
+            _computeLink(book) {
+                return '#/book-details/' + book.title.replace(/\s/g, '_') + '/' + book.id;
             }
         }
 
