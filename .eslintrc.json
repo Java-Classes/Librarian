@@ -45,9 +45,6 @@
   "globals": {
     "Polymer": false,
     "BookStatus": false,
-    "userTestBooks": false,
-    "libraryTestBooks": false,
-    "expectedSoonLibraryBooks": false,
     "suite": false,
     "setup": false,
     "sinon": false,
