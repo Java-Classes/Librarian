@@ -3,7 +3,24 @@
 
 <script>
     {
+        /*global Redux PolymerRedux ReduxMixin:true*/
+
+        const initialState = {};
+
+        const reducer = (state = initialState, action) => {
+            switch (action) {
+                default:
+                    return state;
+            }
+        };
+
         const store = Redux.createStore(reducer);
+
+        /**
+         * This mixin provides the Exlibris Application state access.
+         *
+         * @mixinFunction
+         */
         ReduxMixin = PolymerRedux(store);
         window.ExlibrisApplication = {};
         ExlibrisApplication.store = store;

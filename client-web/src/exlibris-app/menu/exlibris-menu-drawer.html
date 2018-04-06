@@ -143,18 +143,16 @@
 
                     /**
                      * The state of the menu items count badges.
+                     *
+                     * @typedef {Object} User's books count badges.
+                     * @property {number} overdue the overdue books count.
+                     * @property {number} shouldReturnSoon the should be returned books count.
+                     * @property {number} reserved the reserved books count.
+                     * @property {number} borrowed the borrowed books count.
                      */
-                    countBadges: {
-                        type: Object,
-                        value: {
-                            overdue: '',
-                            shouldReturnSoon: '',
-                            reserved: '',
-                            borrowed: ''
-                        }
+                    countBadges: Object
                     }
-                };
-            }
+                }
         }
 
         window.customElements.define(ExlibrisMenuDrawer.is, ExlibrisMenuDrawer);
