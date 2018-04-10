@@ -49,7 +49,8 @@
         </style>
 
         <div id="code-type" hidden="[[!redirectValues.codeType.length]]">
-            [[redirectValues.codeType]]</div>
+            [[redirectValues.codeType]]
+        </div>
         <a href="" id="title" on-click="_openInNewTab">
             [[redirectValues.title]]
             <iron-icon icon="open-in-new"></iron-icon>
@@ -58,16 +59,31 @@
     </template>
 
     <script>
-        const ISBN10Matcher = /^\d{10}$/g;
-        const ISBN13Matcher = /^\d{13}$/g;
-        const ASINMatcher = /^[\d, A-Z]{10}$/g;
-        const AMAZON_SERCH_LINK = 'https://www.amazon.com/%s/dp/%s/';
-        const PLAY_BOOKS_SEARCH_LINK = 'https://play.google.com/store/search?q=%s&c=books'
+        const BOOK_CODE_MATCHERS = {
+            ISBN_10: /^\d{10}$/g,
+            ISBN_13: /^\d{13}$/g,
+            ASIN: /^[\d, A-Z]{10}$/g
+        };
+
+        const EXTERNAL_SEARCH_LINKS = {
+            AMAZON: 'https://www.amazon.com/%s/dp/%s/',
+            PLAY_BOOKS: 'https://play.google.com/store/search?q=%s&c=books'
+        };
 
         String.prototype.format = function () {
             return [...arguments].reduce((p, c) => p.replace(/%s/, c), this);
         };
 
+        /**
+         * The book external link component.
+         *
+         * Generates the link to the one of global book services and
+         * opens it in the new tab. The external service choice depends
+         * on the book code format.
+         *
+         * @customElement
+         * @polymer
+         */
         class ExlibrisBookDetailsRedirectLink extends Polymer.Element {
             static get is() {
                 return 'exlibris-book-details-redirect-link';
@@ -75,50 +91,80 @@
 
             static get properties() {
                 return {
+                    /**
+                     * The book unique code.
+                     * Can be presented in the form of ISBN-10, ISBN-13 or ASIN.
+                     */
                     bookCode: String,
 
+                    /**
+                     * The book title.
+                     */
                     bookTitle: String,
 
+                    /**
+                     * The book external link reference, title and the code type.
+                     *
+                     * @property {string} codeType the detected book code type.
+                     * @property {string} title  the reference title.
+                     * @property {string} href  the link to open in the new tab.
+                     */
                     redirectValues: {
                         type: Object,
-                        computed: "_handleCode(bookCode, bookTitle)"
+                        computed: "_calculateReference(bookCode, bookTitle)"
                     }
                 };
             }
 
-            _handleCode(bookCode) {
-                if (bookCode && bookCode.match(ISBN10Matcher)) {
-                    return {
-                        codeType: 'ISBN:  ',
-                        title: bookCode,
-                        href: AMAZON_SERCH_LINK.format(this.bookTitle, bookCode)
-                    }
-                }
-
-                if (bookCode && bookCode.match(ISBN13Matcher)) {
+            /**
+             * Checks for the passed book code format.
+             *
+             * If the `bookCode` matches the `ISBN-10` or `ASIN` pattern, generates
+             * the Amazon book link.
+             * If the `bookCode` matches the `ISBN-13` pattern, generates the Google Play Books
+             * search by the `ISBN-13` link.
+             * If the `bookCode` does not match any patterns, generates the Google Play Books
+             * search by the `bookTitle`.
+             */
+            _calculateReference(bookCode, bookTitle) {
+                if (bookCode && bookCode.match(BOOK_CODE_MATCHERS.ISBN_10)) {
                     return {
                         codeType: 'ISBN:',
                         title: bookCode,
-                        href: PLAY_BOOKS_SEARCH_LINK.format(bookCode)
+                        href: EXTERNAL_SEARCH_LINKS.AMAZON.format(bookTitle, bookCode)
                     }
                 }
-                if (bookCode && bookCode.match(ASINMatcher)) {
+
+                if (bookCode && bookCode.match(BOOK_CODE_MATCHERS.ISBN_13)) {
+                    return {
+                        codeType: 'ISBN:',
+                        title: bookCode,
+                        href: EXTERNAL_SEARCH_LINKS.PLAY_BOOKS.format(bookCode)
+                    }
+                }
+                if (bookCode && bookCode.match(BOOK_CODE_MATCHERS.ASIN)) {
                     return {
                         codeType: 'ASIN:',
                         title: bookCode,
-                        href: AMAZON_SERCH_LINK.format(this.bookTitle, bookCode)
+                        href: EXTERNAL_SEARCH_LINKS.AMAZON.format(bookTitle, bookCode)
                     }
                 }
 
                 return {
                     codeType: '',
                     title: 'Search on Google play',
-                    href: PLAY_BOOKS_SEARCH_LINK.format(this.bookTitle.replace(' ', '%20'))
+                    href: EXTERNAL_SEARCH_LINKS.PLAY_BOOKS.format(bookTitle.replace(' ', '%20'))
                 }
             }
 
+            /**
+             * Opens the new tab with the specified book link.
+             * @private
+             */
             _openInNewTab() {
-                window.open(this.redirectValues.href,'_blank');
+                if (this.redirectValues.href) {
+                    window.open(this.redirectValues.href, '_blank');
+                }
             }
         }
 
