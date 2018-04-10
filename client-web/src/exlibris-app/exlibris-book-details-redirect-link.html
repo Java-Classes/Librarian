@@ -51,11 +51,11 @@
         <div id="code-type" hidden="[[!redirectValues.codeType.length]]">
             [[redirectValues.codeType]]
         </div>
-        <a href="" id="title" on-click="_openInNewTab">
+        <a id="title" target="_blank" href="[[redirectValues.href]]">
             [[redirectValues.title]]
             <iron-icon icon="open-in-new"></iron-icon>
         </a>
-
+        </div>
     </template>
 
     <script>
@@ -154,16 +154,6 @@
                     codeType: '',
                     title: 'Search on Google play',
                     href: EXTERNAL_SEARCH_LINKS.PLAY_BOOKS.format(bookTitle.replace(' ', '%20'))
-                }
-            }
-
-            /**
-             * Opens the new tab with the specified book link.
-             * @private
-             */
-            _openInNewTab() {
-                if (this.redirectValues.href) {
-                    window.open(this.redirectValues.href, '_blank');
                 }
             }
         }
