@@ -84,17 +84,19 @@
             <div id="synopsis">
                 <div id="title">Details</div>
                 <paper-input id="isbn-input" label="ISBN"
-                             value="{{book.isbn}}"></paper-input>
+                             value="{{book.isbn}}" maxlength="13" auto-validate pattern="[0-9]*"
+                             error-message="numbers only!"></paper-input>
                 <paper-input id="title-input" label="Title"
                              value="{{book.title}}"></paper-input>
                 <paper-input id="authors-input" label="Authors"
                              value="{{book.authors}}"></paper-input>
                 <paper-input id="year-input" label="Year"
-                             value="{{book.year}}"></paper-input>
+                             value="{{book.year}}" auto-validate pattern="[0-9]*"
+                             error-message="numbers only!" maxlength="4"></paper-input>
                 <exlibris-category-selector></exlibris-category-selector>
             </div>
             <div id="cover">
-                <exlibris-file-uploader></exlibris-file-uploader>
+                <exlibris-file-uploader file="{{book.file}}"></exlibris-file-uploader>
             </div>
         </div>
         <div id="description">
