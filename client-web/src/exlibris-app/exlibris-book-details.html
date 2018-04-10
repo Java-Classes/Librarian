@@ -30,6 +30,8 @@
 <link rel="import" href="./book_values.html">
 <link rel="import" href="./actions/exlibris_action.html">
 
+<link rel="import" href="exlibris-book-details-redirect-link.html">
+
 <dom-module id="exlibris-book-details">
     <template>
         <style>
@@ -188,6 +190,8 @@
                     <div class="head-text">
                         <div id="title">[[book.title]]</div>
                         <div id="author">[[book.author]]</div>
+                        <exlibris-book-details-redirect-link book-code="[[book.isbn]]"
+                                                             book-title="[[book.title]]"></exlibris-book-details-redirect-link>
                         <div id="status-message">[[statusMessage]]</div>
                     </div>
                     <div class="button-wide-screen">
