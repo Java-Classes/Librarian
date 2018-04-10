@@ -19,8 +19,9 @@
   -->
 
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../../../bower_components/vaadin-upload/vaadin-upload.html">
-<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
 
 
 <dom-module id="exlibris-file-uploader">
@@ -28,37 +29,86 @@
         <style>
             :host {
                 display: block;
+                @apply --layout-vertical;
             }
 
-            vaadin-upload {
-                max-width: 230px;
+            paper-input {
+                visibility: hidden;
             }
 
             paper-button {
-                min-width: 15px;
-                min-height: 5px;
-                background-color: #b4b4b4;
+                margin-top: 20px;
+                background-color: var(--exlibris-admin-app-primary-color);
                 color: white;
-                font-size: 10px;
+                width: 80px;
+                height: 30px;
+                margin-left: 40px;
+                font-size: 12px;
+            }
+
+            #image {
+                margin-left: 40px;
+                width: 168px;
+                height: 230px;
+                background-color: #e6e6e6;
+                border: 1px solid #bdbdbd;
+            }
+
+            #button {
+                margin-left: 40px;
+                @apply --layout-horizontal;
+            }
+
+            #button-name {
+                margin-top: 3px;
+                margin-left: 3px;
+                cursor: pointer;
             }
 
         </style>
-        <vaadin-upload max-files="1" accept=".jpg,.png">
-            <paper-button slot="add-button">Upload file</paper-button>
-        </vaadin-upload>
+
+
+        <iron-image id=image sizing="contain"
+                    src="[[imageURL]]">
+        </iron-image>
+
+        <div id="button" on-tap="_handleAddFileTap">
+            <iron-icon icon="cloud-download"></iron-icon>
+            <div id="button-name">Upload Cover</div>
+        </div>
+
+        <paper-input id="input" type="file" on-change="_handleChange"></paper-input>
+
     </template>
 
     <script>
-
         class ExlibrisFileUploader extends Polymer.Element {
             static get is() {
                 return 'exlibris-file-uploader';
             }
 
             static get properties() {
-                return {};
+                return {
+                    file: Object,
+                    imageURL: String
+                };
             }
+
+            _handleAddFileTap() {
+                this.$.input.inputElement.inputElement.click();
+            }
+
+            _handleChange(e) {
+                this.file = e.target.inputElement.inputElement.files[0];
+                this.imageURL = (window.URL ? URL : webkitURL).createObjectURL(this.file);
+            }
+
+            computeIsFileLoaded(imageURL) {
+                return !!imageURL;
+            }
+
         }
+
         window.customElements.define(ExlibrisFileUploader.is, ExlibrisFileUploader);
     </script>
 </dom-module>
