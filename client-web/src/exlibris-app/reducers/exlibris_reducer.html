@@ -38,6 +38,7 @@
     const reducer = (state = initialState, action) => {
         switch (action.type) {
             case ElibrisActions.FIND_BOOK_BY_ID: {
+                // sleep(1000);
                 const id = action.bookId;
                 const book =
                     state.allBooks.find(x => x.id === id)
@@ -53,5 +54,13 @@
         }
     };
 
+    function sleep(milliseconds) {
+        const start = new Date().getTime();
+        for (let i = 0; i < 1e7; i++) {
+            if ((new Date().getTime() - start) > milliseconds){
+                break;
+            }
+        }
+    }
 
 </script>

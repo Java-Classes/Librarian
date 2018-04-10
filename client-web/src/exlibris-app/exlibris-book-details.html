@@ -65,10 +65,6 @@
                 margin-top: 25px;
             }
 
-            .book-card .head-region iron-image.hidden {
-                display: none;
-            }
-
             .book-card .head-region .head-info {
                 display: flex;
                 width: 70%;
@@ -187,9 +183,7 @@
 
         <div class="book-card">
             <div class="head-region">
-                <iron-image class$="[[_isBookCoverLoaded(loaded)]]"
-                            src="src/exlibris-app/images/cover-placeholder.png"></iron-image>
-                <iron-image preload loaded="{{loaded}}" src="[[book.image]]"></iron-image>
+                <iron-image src="[[book.image]]"></iron-image>
                 <div class="head-info">
                     <div class="head-text">
                         <div id="title">[[book.title]]</div>
@@ -239,6 +233,9 @@
                      * @property {string} author string with authors of the book
                      * @property {string} category the book category
                      * @property {number} availableCount the number of items available for borrowing.
+                     * @property {boolean} isAllowedLoanExtension is loan extension provided.
+                     * @property {Date} date the date when the book is expected to become available.
+                     * @property {Date} dueDate the date when the book should be returned.
                      * @property {BookStatus} status  one of the BookStatus values.
                      */
                     book: {
@@ -306,10 +303,17 @@
                 }
             }
 
+            /**
+             * Dispatches action to find book by Id specified by the `routeData`.
+             */
             _routeDataChanged(routeData) {
                 this.dispatch('findBookById', routeData.id);
             }
 
+            /**
+             * Sets the appropriate button title and click handler function
+             * according to the passed book.
+             */
             _updateButton(book) {
                 if (book) {
                     switch (book.status) {
@@ -346,6 +350,10 @@
                 }
             }
 
+            /**
+             * Sets the appropriate status message
+             * according to the passed book.
+             */
             _updateStatusMessage(book) {
                 if (book) {
                     switch (book.status) {
@@ -367,6 +375,7 @@
                                 const numberOfOverdueDays = now.getDate() - book.dueDate.getDate();
                                 return numberOfOverdueDays + ' days overdue.';
                             }
+                            break;
                         }
 
                         case BookStatus.READY_TO_PICK_UP: {
@@ -388,6 +397,10 @@
                 }
             }
 
+            /**
+             * Sets the appropriate message if the button is not supported
+             * for the passed book.
+             */
             _updateActionUnsupportedMessage(book) {
                 if (book) {
                     switch (book.status) {
@@ -406,19 +419,8 @@
             }
 
             /**
-             * Used to hide the book cover placeholder image
-             * when the original image is loaded.
-             *
-             * @param {boolean} loaded main cover loading status.
-             * @returns {string} the iron-image custom class value.
-             * @private
-             */
-            _isBookCoverLoaded(loaded) {
-                return loaded ? 'hidden' : '';
-            }
-
-            /**
              * Handles the button click.
+             * Calls the button clickHandler function.
              *
              * @private
              */
