@@ -275,6 +275,19 @@
                         computed: '_updateActionUnsupportedMessage(book)'
                     },
 
+                    /**
+                     * The URL part that defines the book Id.
+                     * Should match the pattern `/:title/:id`
+                     *
+                     */
+                    route: String,
+
+                    /**
+                     * Contains the book Id passed in the URL.
+                     *
+                     * @property {string} title the title of the book
+                     * @property {function} id the Id of the book
+                     */
                     routeData: {
                         type: Object,
                         observer: "_routeDataChanged"
@@ -298,89 +311,97 @@
             }
 
             _updateButton(book) {
-                switch (book.status) {
-                    case BookStatus.EXPECTED_SOON:
-                    case BookStatus.EXPECTED: {
-                        return {
-                            title: 'RESERVE',
-                            clickHandler: this._requestReservation
-                        };
-                    }
-
-                    case BookStatus.OVERDUE:
-                    case BookStatus.BORROWED:
-                    case BookStatus.SHOULD_RETURN_SOON: {
-                        if (book.isAllowedLoanExtension) {
+                if (book) {
+                    switch (book.status) {
+                        case BookStatus.EXPECTED_SOON:
+                        case BookStatus.EXPECTED: {
                             return {
-                                title: 'EXTEND LOAN PERIOD',
-                                clickHandler: this._requestLoanExtension
+                                title: 'RESERVE',
+                                clickHandler: this._requestReservation
                             };
                         }
-                        break;
-                    }
 
-                    case BookStatus.RESERVED:
-                    case BookStatus.READY_TO_PICK_UP: {
-                        return {
-                            title: 'CANCEL RESERVATION',
-                            clickHandler: this._requestCancelReservation
-                        };
+                        case BookStatus.OVERDUE:
+                        case BookStatus.BORROWED:
+                        case BookStatus.SHOULD_RETURN_SOON: {
+                            if (book.isAllowedLoanExtension) {
+                                return {
+                                    title: 'EXTEND LOAN PERIOD',
+                                    clickHandler: this._requestLoanExtension
+                                };
+                            }
+                            break;
+                        }
+
+                        case BookStatus.RESERVED:
+                        case BookStatus.READY_TO_PICK_UP: {
+                            return {
+                                title: 'CANCEL RESERVATION',
+                                clickHandler: this._requestCancelReservation
+                            };
+                        }
+                        default:
+                            return null;
                     }
-                    default:
-                        return null;
                 }
             }
 
             _updateStatusMessage(book) {
-                switch (book.status) {
-                    case BookStatus.AVAILABLE: {
-                        return book.availableCount ? book.availableCount + ' available.\nScan QR code to borrow.' : '';
-                    }
-
-                    case BookStatus.EXPECTED: {
-                         return 'Book not available.';
-                    }
-
-                    case BookStatus.EXPECTED_SOON: {
-                        return 'Arriving to library shortly.';
-                    }
-
-                    case BookStatus.OVERDUE: {
-                        if (book.dueDate) {
-                            const now = new Date();
-                            const numberOfOverdueDays = now.getDate() - book.dueDate.getDate();
-                            return numberOfOverdueDays + ' days overdue.';
+                if (book) {
+                    switch (book.status) {
+                        case BookStatus.AVAILABLE: {
+                            return book.availableCount ? book.availableCount + ' available.\nScan QR code to borrow.' : '';
                         }
-                    }
 
-                    case BookStatus.READY_TO_PICK_UP: {
-                        return book.date ? 'Book is ready to pick up.\nBorrow it before ' + book.date.toLocaleDateString() : '';
-                    }
+                        case BookStatus.EXPECTED: {
+                            return 'Book not available.';
+                        }
 
-                    case BookStatus.RESERVED: {
-                        return book.date ? 'Reserved for you.\nExpected on ' + book.date.toLocaleDateString() : '';
-                    }
+                        case BookStatus.EXPECTED_SOON: {
+                            return 'Arriving to library shortly.';
+                        }
 
-                    case BookStatus.BORROWED:
-                    case BookStatus.SHOULD_RETURN_SOON: {
-                        return book.dueDate ? 'Borrowed by you.\nReturn before ' + book.dueDate.toLocaleDateString() : '';
-                    }
+                        case BookStatus.OVERDUE: {
+                            if (book.dueDate) {
+                                const now = new Date();
+                                const numberOfOverdueDays = now.getDate() - book.dueDate.getDate();
+                                return numberOfOverdueDays + ' days overdue.';
+                            }
+                        }
 
-                    default: return '';
+                        case BookStatus.READY_TO_PICK_UP: {
+                            return book.date ? 'Book is ready to pick up.\nBorrow it before ' + book.date.toLocaleDateString() : '';
+                        }
+
+                        case BookStatus.RESERVED: {
+                            return book.date ? 'Reserved for you.\nExpected on ' + book.date.toLocaleDateString() : '';
+                        }
+
+                        case BookStatus.BORROWED:
+                        case BookStatus.SHOULD_RETURN_SOON: {
+                            return book.dueDate ? 'Borrowed by you.\nReturn before ' + book.dueDate.toLocaleDateString() : '';
+                        }
+
+                        default:
+                            return '';
+                    }
                 }
             }
 
-            _updateActionUnsupportedMessage(book){
-                switch (book.status) {
-                    case BookStatus.BORROWED:
-                    case BookStatus.SHOULD_RETURN_SOON:
-                    case BookStatus.OVERDUE: {
-                        if (!book.isAllowedLoanExtension) {
-                            return 'RESERVED BY ANOTHER READER';
+            _updateActionUnsupportedMessage(book) {
+                if (book) {
+                    switch (book.status) {
+                        case BookStatus.BORROWED:
+                        case BookStatus.SHOULD_RETURN_SOON:
+                        case BookStatus.OVERDUE: {
+                            if (!book.isAllowedLoanExtension) {
+                                return 'RESERVED BY ANOTHER READER';
+                            }
+                            break;
                         }
-                        break;
+                        default:
+                            return '';
                     }
-                    default: return '';
                 }
             }
 
