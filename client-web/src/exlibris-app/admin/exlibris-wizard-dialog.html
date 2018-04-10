@@ -145,7 +145,7 @@
                 margin-bottom: -6px;
             }
 
-            #next-label {
+            .next-label {
                 font-size: 10px;
                 margin-bottom: -6px;
             }
@@ -185,16 +185,18 @@
                     </div>
                     <div id="menu">
                         <iron-selector attr-for-selected="data-name"
-                                       selected="{{page}}">
+                                       selected="[[page]]">
 
                             <exlibris-menu-item data-name="details"
-                                                title="Details">
+                                                title="Details"
+                                                on-tap="_handleDetailsTap">
                                 <iron-icon icon="radio-button-unchecked"
                                            slot="icon"></iron-icon>
                             </exlibris-menu-item>
 
                             <exlibris-menu-item data-name="inventory"
-                                                title="Inventory">
+                                                title="Inventory"
+                                                on-tap="_handleInventoryTap">
                                 <iron-icon icon="av:library-books"
                                            slot="icon"></iron-icon>
                             </exlibris-menu-item>
@@ -204,7 +206,7 @@
                 <div id="page">
 
                     <iron-pages
-                            selected="[[page]]"
+                            selected="{{page}}"
                             attr-for-selected="data-name">
                         <exlibris-book-details-form
                                 data-name="details"></exlibris-book-details-form>
@@ -218,25 +220,31 @@
             <div id="navigator">
 
                 <div id="cancel-button" on-tap="close">CANCEL</div>
-                <div id="previous-button">
-
+                <div id="previous-button" on-tap="_handleDetailsTap">
                     <template is="dom-if" if="[[!_isDetails(page)]]">
-                        <div id="previous-label" on-tap="_changePage">PREVIOUS</div>
+                        <div id="previous-label">PREVIOUS</div>
                         <iron-icon class="arrow-icon" icon="arrow-back"
                                    slot="icon"></iron-icon>
                         <span class="next-text">DETAIL</span>
                     </template>
                 </div>
-                <div id="next-button" on-tap="_changePage">
-                    <div id="next-label">NEXT</div>
+                <div id="next-button">
                     <template is="dom-if" if="[[_isDetails(page)]]">
-                        <span class="next-text">INVENTORY</span>
+                        <div on-tap="_handleInventoryTap">
+                            <div class="next-label">NEXT</div>
+                            <span class="next-text">INVENTORY</span>
+                            <iron-icon class="arrow-icon" icon="arrow-forward"
+                                       slot="icon"></iron-icon>
+                        </div>
                     </template>
                     <template is="dom-if" if="[[!_isDetails(page)]]">
-                        <span class="next-text" on-tap="_handleFinish"> FINISH</span>
+                        <div on-tap="_handleFinish">
+                            <div class="next-label">NEXT</div>
+                            <span class="next-text"> FINISH</span>
+                            <iron-icon class="arrow-icon" icon="arrow-forward"
+                                       slot="icon"></iron-icon>
+                        </div>
                     </template>
-                    <iron-icon class="arrow-icon" icon="arrow-forward"
-                               slot="icon"></iron-icon>
                 </div>
 
             </div>
@@ -265,7 +273,6 @@
              */
             open() {
                 this.$.dialog.open();
-                console.log(12);
             }
 
             /**
@@ -282,19 +289,32 @@
                 return false;
             }
 
-            _changePage() {
-                if (this.page === "details") {
-                    this.page = "inventory";
-                    return;
-                }
-                this.page = "details";
-            }
+            // _changePage() {
+            //     if (this.page === "details") {
+            //         this.page = "inventory";
+            //         return;
+            //     }
+            //     this.page = "details";
+            // }
 
 
             _handleFinish() {
                 this.dispatchEvent(new CustomEvent("input-finished"));
                 console.log("Input was finished")
             }
+
+            _handleInventoryTap() {
+                console.log(this.page);
+                console.log("inventory tap");
+                this.page = "inventory";
+            }
+
+            _handleDetailsTap() {
+                console.log(this.page);
+                console.log("details tap");
+                this.page = "details";
+            }
+
         }
 
         window.customElements.define(ExlibrisWizardDialog.is, ExlibrisWizardDialog);
