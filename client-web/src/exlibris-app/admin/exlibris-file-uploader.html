@@ -67,7 +67,6 @@
 
         </style>
 
-
         <iron-image id=image sizing="contain"
                     src="[[imageURL]]">
         </iron-image>
@@ -82,6 +81,9 @@
     </template>
 
     <script>
+        /**
+         * <exlibris-file-uploader> shows button to select a file and displays uploaded image.
+         */
         class ExlibrisFileUploader extends Polymer.Element {
             static get is() {
                 return 'exlibris-file-uploader';
@@ -89,24 +91,38 @@
 
             static get properties() {
                 return {
+
+                    /**
+                     * A file that was uploaded
+                     */
                     file: Object,
+
+                    /**
+                     * A URL of the uploaded image for demonstration.
+                     */
                     imageURL: String
                 };
             }
 
+            /**
+             * Clicks on the hidden input element after tapping the add button.
+             *
+             * @private
+             */
             _handleAddFileTap() {
                 this.$.input.inputElement.inputElement.click();
             }
 
+            /**
+             * Updates properties file and imageURL after downloading the file.
+             *
+             * @param e change event
+             * @private
+             */
             _handleChange(e) {
                 this.file = e.target.inputElement.inputElement.files[0];
                 this.imageURL = (window.URL ? URL : webkitURL).createObjectURL(this.file);
             }
-
-            computeIsFileLoaded(imageURL) {
-                return !!imageURL;
-            }
-
         }
 
         window.customElements.define(ExlibrisFileUploader.is, ExlibrisFileUploader);
