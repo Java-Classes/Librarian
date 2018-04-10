@@ -32,16 +32,27 @@
         reservedBooks: userTestBooks.reserved,
         allBooks: [...userTestBooks.overdue, ...libraryTestBooks],
         expectedSoonBooks: expectedSoonLibraryBooks,
-        selectedBook: userTestBooks.reserved[0]
+        selectedBook: {}
     };
 
     const reducer = (state = initialState, action) => {
         switch (action.type) {
             case ElibrisActions.FIND_BOOK_BY_ID: {
-                return Object.assign({}, state, {selectedBook: action.id});
+                const id = action.bookId;
+                const book = {
+                    ...state.allBooks.find(x => x.id === id)
+                    || state.expectedSoonBooks.find(x => x.id === id)
+                    || state.overdueBooks.find(x => x.id === id)
+                    || state.shouldReturnBooks.find(x => x.id === id)
+                    || state.borrowedBooks.find(x => x.id === id)
+                    || state.reservedBooks.find(x => x.id === id)
+                };
+                return Object.assign({}, state, {selectedBook: book});
             }
             default:
                 return state;
         }
     };
+
+
 </script>

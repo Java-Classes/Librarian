@@ -199,7 +199,7 @@
                     </div>
                     <div class="button-wide-screen">
                         <paper-button raised on-click="_handleButtonClick"
-                                      hidden="[[_isActionButtonHidden()]]">
+                                      hidden="[[_isButtonHidden(button)]]">
                             [[button.title]]
                         </paper-button>
                         <div>[[actionUnsupportedMessage]]</div>
@@ -209,7 +209,7 @@
             <div class="button-narrow-screen">
                 <paper-button class="small"
                               on-click="_handleButtonClick"
-                              hidden="[[_isActionButtonHidden()]]">
+                              hidden="[[_isButtonHidden(button)]]">
                     [[button.title]]
                 </paper-button>
                 <div>[[actionUnsupportedMessage]]</div>
@@ -245,6 +245,7 @@
                     book: {
                         type: Object,
                         statePath: 'selectedBook',
+                        observer: '_computeValues'
                     },
 
                     /**
@@ -254,23 +255,23 @@
                      * @property {function} the button click handler function
                      */
                     button: {
-                        type: Object,
-                        computed: '_identifyButton(book)'
+                        type: Object
                     },
 
                     /**
                      * The message about the status of the book.
                      */
                     statusMessage: {
-                        type: String,
-                        computed: '_getMessage(book)'
+                        type: String
                     },
 
                     /**
                      * The message about the status of the book.
                      * Shown when the button is not supported for the book.
                      */
-                    actionUnsupportedMessage: String,
+                    actionUnsupportedMessage: {
+                        type: String
+                    },
 
                     routeData: {
                         type: Object,
@@ -294,22 +295,31 @@
                 this.dispatch('findBookById', routeData.id);
             }
 
-            _getMessage() {
-                const book = this.book;
-                let message = '';
+            _computeValues(book) {
+                this.statusMessage = '';
+                this.button = undefined;
+                this.actionUnsupportedMessage = '';
                 switch (book.status) {
                     case BookStatus.AVAILABLE: {
-                        message = book.availableCount ? book.availableCount + ' available.\nScan QR code to borrow.' : '';
+                        this.statusMessage = book.availableCount ? book.availableCount + ' available.\nScan QR code to borrow.' : '';
                         break;
                     }
 
                     case BookStatus.EXPECTED: {
-                        message = 'Book not available.';
+                        this.statusMessage = 'Book not available.';
+                        this.button = {
+                            title: 'RESERVE',
+                            clickHandler: this._requestReservation
+                        };
                         break;
                     }
 
                     case BookStatus.EXPECTED_SOON: {
-                        message = 'Arriving to library shortly.';
+                        this.statusMessage = 'Arriving to library shortly.';
+                        this.button = {
+                            title: 'RESERVE',
+                            clickHandler: this._requestReservation
+                        };
                         break;
                     }
 
@@ -317,77 +327,50 @@
                         if (book.dueDate) {
                             const now = new Date();
                             const numberOfOverdueDays = now.getDate() - book.dueDate.getDate();
-                            message = numberOfOverdueDays + ' days overdue.';
+                            this.statusMessage = numberOfOverdueDays + ' days overdue.';
+                        }
+                        if (book.isAllowedLoanExtension) {
+                            this.button = {
+                                title: 'EXTEND LOAN PERIOD',
+                                clickHandler: this._requestLoanExtension
+                            };
+                        } else {
+                            this.actionUnsupportedMessage = 'RESERVED BY ANOTHER READER';
                         }
                         break;
                     }
 
                     case BookStatus.READY_TO_PICK_UP: {
-                        message = book.date ? 'Book is ready to pick up.\nBorrow it before ' + book.date.toLocaleDateString() : '';
+                        this.statusMessage = book.date ? 'Book is ready to pick up.\nBorrow it before ' + book.date.toLocaleDateString() : '';
+                        this.button = {
+                            title: 'CANCEL RESERVATION',
+                            clickHandler: this._requestCancelReservation
+                        };
                         break;
                     }
 
                     case BookStatus.RESERVED: {
-                        message = book.date ? 'Reserved for you.\nExpected on ' + book.date.toLocaleDateString() : '';
+                        this.statusMessage = book.date ? 'Reserved for you.\nExpected on ' + book.date.toLocaleDateString() : '';
+                        this.button = {
+                            title: 'CANCEL RESERVATION',
+                            clickHandler: this._requestCancelReservation
+                        };
                         break;
                     }
 
-                    case BookStatus.BORROWED: {
-                        message = book.dueDate ? 'Borrowed by you.\nReturn before ' + book.dueDate.toLocaleDateString() : '';
+                    case BookStatus.BORROWED: case BookStatus.SHOULD_RETURN_SOON:{
+                        this.statusMessage = book.dueDate ? 'Borrowed by you.\nReturn before ' + book.dueDate.toLocaleDateString() : '';
+                        if (book.isAllowedLoanExtension) {
+                            this.button = {
+                                title: 'EXTEND LOAN PERIOD',
+                                clickHandler: this._requestLoanExtension
+                            };
+                        } else {
+                            this.actionUnsupportedMessage = 'RESERVED BY ANOTHER READER';
+                        }
                         break;
                     }
                 }
-                return message;
-            }
-
-            /**
-             * Identifies the button title and the button click handler
-             * depending on the book status.
-             * If the button if unsupported sets the `actionUnsupportedMessage`.
-             */
-            _identifyButton() {
-                if (this.__isReserved()) {
-                    return {
-                        title: 'CANCEL RESERVATION',
-                        clickHandler: this._requestCancelReservation
-                    };
-                }
-
-                if (this.__isExpected()) {
-                    return {
-                        title: 'RESERVE',
-                        clickHandler: this._requestReservation
-                    };
-                }
-
-                if (this.__isBorrowedAndCanBeExtended()) {
-                    return {
-                        title: 'EXTEND LOAN PERIOD',
-                        clickHandler: this._requestLoanExtension
-                    };
-                }
-
-                if (this.__isBorrowedAndCannotBeExtended()) {
-                    this.actionUnsupportedMessage = 'RESERVED BY ANOTHER READER';
-                }
-            }
-
-            __isReserved() {
-                return [BookStatus.READY_TO_PICK_UP, BookStatus.RESERVED].includes(this.book.status);
-            }
-
-            __isExpected() {
-                return [BookStatus.EXPECTED, BookStatus.EXPECTED_SOON].includes(this.book.status);
-            }
-
-            __isBorrowedAndCanBeExtended() {
-                return [BookStatus.OVERDUE, BookStatus.SHOULD_RETURN_SOON].includes(this.book.status)
-                    && this.book.isAllowedLoanExtension;
-            }
-
-            __isBorrowedAndCannotBeExtended() {
-                return [BookStatus.SHOULD_RETURN_SOON, BookStatus.OVERDUE, BookStatus.BORROWED].includes(this.book.status)
-                    && !this.book.isAllowedLoanExtension;
             }
 
             /**
@@ -409,8 +392,8 @@
              * @returns {boolean} is button displayed or not.
              * @private
              */
-            _isActionButtonHidden() {
-                return !this.button;
+            _isButtonHidden(button) {
+                return !button;
             }
 
             /**
