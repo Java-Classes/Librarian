@@ -39,7 +39,7 @@
 
 <test-fixture id="BasicTestFixture">
     <template>
-        <book-dialog></book-dialog>
+        <exlibris-book-details></exlibris-book-details>
     </template>
 </test-fixture>
 
@@ -55,44 +55,16 @@
         const RESERVE_BUTTON_SELECTOR = '.head-region > .head-info > .head-button > #book-dialog-reserve-button';
         const EXTEND_BUTTON_SELECTOR = '.head-region > .head-info > .head-button > #book-dialog-extend-button';
         const RESERVED_BY_ANOTHER_SELECTOR = '.head-region > .head-info > .head-button > h3';
-        const CLOSE_BUTTON_SELECTOR = '.close-button > paper-icon-button';
 
-        let bookDialog;
+        let bookDetails;
         setup(() => {
-            bookDialog = fixture('BasicTestFixture');
-        });
-
-        test('should not display without open() call.', function () {
-            const modal = bookDialog.$.dialog;
-            assert.isFalse(modal.opened);
-        });
-
-        test('should display when open() called.', function () {
-            const modal = bookDialog.$.dialog;
-            assert.isFalse(modal.opened);
-            bookDialog.open();
-            assert.isTrue(modal.opened);
-        });
-
-        test('should close on close button click called. Tan fire close event.', function (done) {
-            bookDialog.addEventListener('book-dialog-closed', function () {
-                done();
-            });
-            const dialogShadowRoot = bookDialog.shadowRoot;
-            const modal = bookDialog.$.dialog;
-            assert.isFalse(modal.opened);
-            bookDialog.open();
-            assert.isTrue(modal.opened);
-
-            const closeButton = dialogShadowRoot.querySelector(CLOSE_BUTTON_SELECTOR);
-            closeButton.click();
-            assert.isFalse(modal.opened);
+            bookDetails = fixture('BasicTestFixture');
         });
 
         test('should display book image, title, author and description.', function () {
-            bookDialog.set('book', TEST_BOOK);
-            bookDialog.open();
-            const dialogShadowRoot = bookDialog.shadowRoot;
+            bookDetails.set('book', TEST_BOOK);
+            bookDetails.open();
+            const dialogShadowRoot = bookDetails.shadowRoot;
             const bookCover = dialogShadowRoot.querySelector(IMAGE_SELECTOR);
             const bookTitle = dialogShadowRoot.querySelector(BOOK_TITLE_SELECTOR);
             const bookAuthor = dialogShadowRoot.querySelector(BOOK_AUTHOR_SELECTOR);
@@ -108,15 +80,15 @@
 
         test('should display `RESERVE` button when book status is `EXPECTED` and fire event on click.', function (done) {
             const expectedBook = Object.assign(TEST_BOOK, {status: bookStatus.EXPECTED});
-            bookDialog.set('book', expectedBook);
-            bookDialog.addEventListener('book-dialog-reserve-book', function (e) {
+            bookDetails.set('book', expectedBook);
+            bookDetails.addEventListener('book-dialog-reserve-book', function (e) {
                 const bookId = e.detail.bookId;
                 assert.equal(bookId, expectedBook.id);
                 done();
             });
 
-            bookDialog.open();
-            const dialogShadowRoot = bookDialog.shadowRoot;
+            bookDetails.open();
+            const dialogShadowRoot = bookDetails.shadowRoot;
             flush(function () {
                 const reserveButton = dialogShadowRoot.querySelector(RESERVE_BUTTON_SELECTOR);
                 assert.isNotNull(reserveButton, 'Button is not displayed');
@@ -127,15 +99,15 @@
 
         test('should display `CANCEL RESERVATION` button when book status is `RESERVED` and fire event on click.', function (done) {
             const expectedBook = Object.assign(TEST_BOOK, {status: bookStatus.RESERVED});
-            bookDialog.set('book', expectedBook);
-            bookDialog.addEventListener('book-dialog-cancel-reservation', function (e) {
+            bookDetails.set('book', expectedBook);
+            bookDetails.addEventListener('book-dialog-cancel-reservation', function (e) {
                 const bookId = e.detail.bookId;
                 assert.equal(bookId, expectedBook.id);
                 done();
             });
 
-            bookDialog.open();
-            const dialogShadowRoot = bookDialog.shadowRoot;
+            bookDetails.open();
+            const dialogShadowRoot = bookDetails.shadowRoot;
             flush(function () {
                 const cancelButton = dialogShadowRoot.querySelector(RESERVE_CANCEL_BUTTON_SELECTOR);
                 assert.isNotNull(cancelButton, 'Button is not displayed');
@@ -150,15 +122,15 @@
                 status: bookStatus.SHOULD_RETURN_SOON,
                 isAllowedLoanExtension: true
             });
-            bookDialog.set('book', bookAllowedToExtend);
-            bookDialog.addEventListener('book-dialog-extend-loan', function (e) {
+            bookDetails.set('book', bookAllowedToExtend);
+            bookDetails.addEventListener('book-dialog-extend-loan', function (e) {
                 const bookId = e.detail.bookId;
                 assert.equal(bookId, bookAllowedToExtend.id);
                 done();
             });
 
-            bookDialog.open();
-            const dialogShadowRoot = bookDialog.shadowRoot;
+            bookDetails.open();
+            const dialogShadowRoot = bookDetails.shadowRoot;
             flush(function () {
                 const extendButton = dialogShadowRoot.querySelector(EXTEND_BUTTON_SELECTOR);
                 assert.isNotNull(extendButton, 'Button is not displayed');
@@ -173,15 +145,15 @@
                 status: bookStatus.OVERDUE,
                 isAllowedLoanExtension: true
             });
-            bookDialog.set('book', bookAllowedToExtend);
-            bookDialog.addEventListener('book-dialog-extend-loan', function (e) {
+            bookDetails.set('book', bookAllowedToExtend);
+            bookDetails.addEventListener('book-dialog-extend-loan', function (e) {
                 const bookId = e.detail.bookId;
                 assert.equal(bookId, bookAllowedToExtend.id);
                 done();
             });
 
-            bookDialog.open();
-            const dialogShadowRoot = bookDialog.shadowRoot;
+            bookDetails.open();
+            const dialogShadowRoot = bookDetails.shadowRoot;
             flush(function () {
                 const extendButton = dialogShadowRoot.querySelector(EXTEND_BUTTON_SELECTOR);
                 assert.isNotNull(extendButton, 'Button is not displayed');
@@ -197,10 +169,10 @@
                 status: bookStatus.BORROWED,
                 isAllowedLoanExtension: false
             });
-            bookDialog.set('book', bookNotAllowedToExtend);
-            bookDialog.open();
+            bookDetails.set('book', bookNotAllowedToExtend);
+            bookDetails.open();
 
-            const dialogShadowRoot = bookDialog.shadowRoot;
+            const dialogShadowRoot = bookDetails.shadowRoot;
             flush(function () {
                 const reservedByAnother = dialogShadowRoot.querySelector(RESERVED_BY_ANOTHER_SELECTOR);
                 assert.isNotNull(reservedByAnother, 'Row is not displayed');
@@ -215,10 +187,10 @@
                 status: bookStatus.OVERDUE,
                 isAllowedLoanExtension: false
             });
-            bookDialog.set('book', bookNotAllowedToExtend);
-            bookDialog.open();
+            bookDetails.set('book', bookNotAllowedToExtend);
+            bookDetails.open();
 
-            const dialogShadowRoot = bookDialog.shadowRoot;
+            const dialogShadowRoot = bookDetails.shadowRoot;
             flush(function () {
                 const reservedByAnother = dialogShadowRoot.querySelector(RESERVED_BY_ANOTHER_SELECTOR);
                 assert.isNotNull(reservedByAnother, 'Row is not displayed');
@@ -233,10 +205,10 @@
                 status: bookStatus.SHOULD_RETURN_SOON,
                 isAllowedLoanExtension: false
             });
-            bookDialog.set('book', bookNotAllowedToExtend);
-            bookDialog.open();
+            bookDetails.set('book', bookNotAllowedToExtend);
+            bookDetails.open();
 
-            const dialogShadowRoot = bookDialog.shadowRoot;
+            const dialogShadowRoot = bookDetails.shadowRoot;
             flush(function () {
                 const reservedByAnother = dialogShadowRoot.querySelector(RESERVED_BY_ANOTHER_SELECTOR);
                 assert.isNotNull(reservedByAnother, 'Row is not displayed');

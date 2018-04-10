@@ -183,8 +183,7 @@
         <app-route
                 route="{{route}}"
                 pattern="/:title/:id"
-                data="{{routeData}}"
-                active="[[routeActive]]"></app-route>
+                data="{{routeData}}"></app-route>
 
         <div class="book-card">
             <div class="head-region">
@@ -199,7 +198,7 @@
                     </div>
                     <div class="button-wide-screen">
                         <paper-button raised on-click="_handleButtonClick"
-                                      hidden="[[_isButtonHidden(button)]]">
+                                      hidden="[[!button]]">
                             [[button.title]]
                         </paper-button>
                         <div>[[actionUnsupportedMessage]]</div>
@@ -209,7 +208,7 @@
             <div class="button-narrow-screen">
                 <paper-button class="small"
                               on-click="_handleButtonClick"
-                              hidden="[[_isButtonHidden(button)]]">
+                              hidden="[[!button]]">
                     [[button.title]]
                 </paper-button>
                 <div>[[actionUnsupportedMessage]]</div>
@@ -244,25 +243,27 @@
                      */
                     book: {
                         type: Object,
-                        statePath: 'selectedBook',
-                        observer: '_computeValues'
+                        statePath: 'selectedBook'
                     },
 
                     /**
                      * The button title and click handler.
                      *
                      * @property {string} title the button title
-                     * @property {function} the button click handler function
+                     * @property {function} clickHandler the button click handler function
                      */
                     button: {
-                        type: Object
+                        type: Object,
+                        computed: '_updateButton(book)',
+                        value: null
                     },
 
                     /**
                      * The message about the status of the book.
                      */
                     statusMessage: {
-                        type: String
+                        type: String,
+                        computed: '_updateStatusMessage(book)'
                     },
 
                     /**
@@ -270,7 +271,8 @@
                      * Shown when the button is not supported for the book.
                      */
                     actionUnsupportedMessage: {
-                        type: String
+                        type: String,
+                        computed: '_updateActionUnsupportedMessage(book)'
                     },
 
                     routeData: {
@@ -295,81 +297,90 @@
                 this.dispatch('findBookById', routeData.id);
             }
 
-            _computeValues(book) {
-                this.statusMessage = '';
-                this.button = undefined;
-                this.actionUnsupportedMessage = '';
+            _updateButton(book) {
+                switch (book.status) {
+                    case BookStatus.EXPECTED_SOON:
+                    case BookStatus.EXPECTED: {
+                        return {
+                            title: 'RESERVE',
+                            clickHandler: this._requestReservation
+                        };
+                    }
+
+                    case BookStatus.OVERDUE:
+                    case BookStatus.BORROWED:
+                    case BookStatus.SHOULD_RETURN_SOON: {
+                        if (book.isAllowedLoanExtension) {
+                            return {
+                                title: 'EXTEND LOAN PERIOD',
+                                clickHandler: this._requestLoanExtension
+                            };
+                        }
+                        break;
+                    }
+
+                    case BookStatus.RESERVED:
+                    case BookStatus.READY_TO_PICK_UP: {
+                        return {
+                            title: 'CANCEL RESERVATION',
+                            clickHandler: this._requestCancelReservation
+                        };
+                    }
+                    default:
+                        return null;
+                }
+            }
+
+            _updateStatusMessage(book) {
                 switch (book.status) {
                     case BookStatus.AVAILABLE: {
-                        this.statusMessage = book.availableCount ? book.availableCount + ' available.\nScan QR code to borrow.' : '';
-                        break;
+                        return book.availableCount ? book.availableCount + ' available.\nScan QR code to borrow.' : '';
                     }
 
                     case BookStatus.EXPECTED: {
-                        this.statusMessage = 'Book not available.';
-                        this.button = {
-                            title: 'RESERVE',
-                            clickHandler: this._requestReservation
-                        };
-                        break;
+                         return 'Book not available.';
                     }
 
                     case BookStatus.EXPECTED_SOON: {
-                        this.statusMessage = 'Arriving to library shortly.';
-                        this.button = {
-                            title: 'RESERVE',
-                            clickHandler: this._requestReservation
-                        };
-                        break;
+                        return 'Arriving to library shortly.';
                     }
 
                     case BookStatus.OVERDUE: {
                         if (book.dueDate) {
                             const now = new Date();
                             const numberOfOverdueDays = now.getDate() - book.dueDate.getDate();
-                            this.statusMessage = numberOfOverdueDays + ' days overdue.';
+                            return numberOfOverdueDays + ' days overdue.';
                         }
-                        if (book.isAllowedLoanExtension) {
-                            this.button = {
-                                title: 'EXTEND LOAN PERIOD',
-                                clickHandler: this._requestLoanExtension
-                            };
-                        } else {
-                            this.actionUnsupportedMessage = 'RESERVED BY ANOTHER READER';
-                        }
-                        break;
                     }
 
                     case BookStatus.READY_TO_PICK_UP: {
-                        this.statusMessage = book.date ? 'Book is ready to pick up.\nBorrow it before ' + book.date.toLocaleDateString() : '';
-                        this.button = {
-                            title: 'CANCEL RESERVATION',
-                            clickHandler: this._requestCancelReservation
-                        };
-                        break;
+                        return book.date ? 'Book is ready to pick up.\nBorrow it before ' + book.date.toLocaleDateString() : '';
                     }
 
                     case BookStatus.RESERVED: {
-                        this.statusMessage = book.date ? 'Reserved for you.\nExpected on ' + book.date.toLocaleDateString() : '';
-                        this.button = {
-                            title: 'CANCEL RESERVATION',
-                            clickHandler: this._requestCancelReservation
-                        };
-                        break;
+                        return book.date ? 'Reserved for you.\nExpected on ' + book.date.toLocaleDateString() : '';
                     }
 
-                    case BookStatus.BORROWED: case BookStatus.SHOULD_RETURN_SOON:{
-                        this.statusMessage = book.dueDate ? 'Borrowed by you.\nReturn before ' + book.dueDate.toLocaleDateString() : '';
-                        if (book.isAllowedLoanExtension) {
-                            this.button = {
-                                title: 'EXTEND LOAN PERIOD',
-                                clickHandler: this._requestLoanExtension
-                            };
-                        } else {
-                            this.actionUnsupportedMessage = 'RESERVED BY ANOTHER READER';
+                    case BookStatus.BORROWED:
+                    case BookStatus.SHOULD_RETURN_SOON: {
+                        return book.dueDate ? 'Borrowed by you.\nReturn before ' + book.dueDate.toLocaleDateString() : '';
+                    }
+
+                    default: return '';
+                }
+            }
+
+            _updateActionUnsupportedMessage(book){
+                switch (book.status) {
+                    case BookStatus.BORROWED:
+                    case BookStatus.SHOULD_RETURN_SOON:
+                    case BookStatus.OVERDUE: {
+                        if (!book.isAllowedLoanExtension) {
+                            return 'RESERVED BY ANOTHER READER';
                         }
                         break;
                     }
+                    default: return '';
                 }
             }
 
@@ -383,17 +394,6 @@
              */
             _isBookCoverLoaded(loaded) {
                 return loaded ? 'hidden' : '';
-            }
-
-            /**
-             * Indicates the action button to set `hidden` when the
-             * button is not supported for this book status.
-             *
-             * @returns {boolean} is button displayed or not.
-             * @private
-             */
-            _isButtonHidden(button) {
-                return !button;
             }
 
             /**
