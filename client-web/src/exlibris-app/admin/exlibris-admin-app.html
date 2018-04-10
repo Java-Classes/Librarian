@@ -119,7 +119,7 @@
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
-        <exlibris-wizard-dialog id="wizard"></exlibris-wizard-dialog>
+        <!--<exlibris-wizard-dialog id="wizard"></exlibris-wizard-dialog>-->
     </template>
 
     <script>
@@ -157,7 +157,8 @@
                 }
             }
             _handleAddButtonTab(){
-                this.$.wizard.open();
+                const wizardNode = document.createElement('exlibris-wizard-dialog');
+                this.shadowRoot.appendChild(wizardNode);
             }
 
         }

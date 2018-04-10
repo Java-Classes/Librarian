@@ -158,6 +158,12 @@
                 --exlibris-menu-item-border-radius: 0;
             }
 
+            exlibris-menu-item.iron-selected {
+                --exlibris-menu-item-background-color: var(--google-grey-300);
+                --exlibris-menu-item-title-color: black;
+                --exlibris-menu-item-title-font-weight: bold;
+            }
+
             paper-icon-button {
                 color: var(--exlibris-admin-app-secondary-color);
             }
@@ -165,7 +171,7 @@
 
         </style>
 
-        <paper-dialog id="dialog" with-backdrop>
+        <paper-dialog id="dialog" with-backdrop opened="true">
 
             <div id="content">
 
