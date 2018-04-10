@@ -32,8 +32,8 @@
         allBooks: [...userTestBooks.overdue, ...libraryTestBooks],
         expectedSoonBooks: expectedSoonLibraryBooks,
         selectedBook: userTestBooks.reserved[0],
-        categories: testCategories
-
+        categories: testCategories,
+        editableBook: {}
     };
 
     const reducer = (state = initialState, action) => {
@@ -46,6 +46,9 @@
                 //TODO:2018-51-27:yurii.haidamaka Add requests to the server
                 console.log("New search data by query from the server should be received.");
                 return state;
+            case ExlibrisActions.ADD_BOOK:
+                //TODO:2018-51-27:yurii.haidamaka Add validatio inputted book
+                return Object.assign({}, state, {editableBook: action.book});
             default :
                 return state;
         }

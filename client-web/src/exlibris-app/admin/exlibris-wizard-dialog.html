@@ -26,6 +26,8 @@
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="./../exlibris-app/shell/redux-store.html">
 <link rel="import"
       href="../../../bower_components/paper-dialog-behavior/paper-dialog-behavior.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
@@ -209,7 +211,8 @@
                             selected="{{page}}"
                             attr-for-selected="data-name">
                         <exlibris-book-details-form
-                                data-name="details"></exlibris-book-details-form>
+                                data-name="details"
+                                book="{{book}}"></exlibris-book-details-form>
                         <div data-name="inventory">
                             <exlibris-book-inventory-table></exlibris-book-inventory-table>
                         </div>
@@ -254,7 +257,7 @@
 
     <script>
 
-        class ExlibrisWizardDialog extends Polymer.Element {
+        class ExlibrisWizardDialog extends ExlibrisApplication.ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'exlibris-wizard-dialog';
             }
@@ -264,6 +267,22 @@
                     page: {
                         type: String,
                         value: 'details'
+                    },
+                    book: {
+                        type: Object,
+                        statePath: 'editableBook',
+                        reflectToAttribute: true
+                    }
+                };
+            }
+
+            static get actions() {
+                return {
+                    addBook(book) {
+                        return {
+                            type: ExlibrisActions.ADD_BOOK,
+                            book: book
+                        };
                     },
                 };
             }
@@ -289,29 +308,17 @@
                 return false;
             }
 
-            // _changePage() {
-            //     if (this.page === "details") {
-            //         this.page = "inventory";
-            //         return;
-            //     }
-            //     this.page = "details";
-            // }
-
-
             _handleFinish() {
-                this.dispatchEvent(new CustomEvent("input-finished"));
+                // this.dispatchEvent(new CustomEvent("input-finished"));
                 console.log("Input was finished")
             }
 
             _handleInventoryTap() {
-                console.log(this.page);
-                console.log("inventory tap");
+                this.dispatch('addBook', this.book);
                 this.page = "inventory";
             }
 
             _handleDetailsTap() {
-                console.log(this.page);
-                console.log("details tap");
                 this.page = "details";
             }
 
