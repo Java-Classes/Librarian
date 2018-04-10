@@ -88,7 +88,8 @@
             menuItems.forEach(function (item, index) {
                 const actualRef = item.shadowRoot.querySelectorAll(MENU_SELECTORS.MENU_ITEM_LINK)[0].href;
                 const expectedRef = MENU_REFERENCES[index];
-                assert.isTrue(actualRef.endsWith(expectedRef),
+                const isActualRefEndsWithExpectedValue = actualRef.indexOf(expectedRef) === actualRef.length - expectedRef.length;
+                assert.isTrue(isActualRefEndsWithExpectedValue,
                     'should have link that ends with: ' + expectedRef + '\nActual: ' + actualRef);
             });
         });
