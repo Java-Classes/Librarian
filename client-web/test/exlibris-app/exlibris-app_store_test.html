@@ -7,10 +7,10 @@
 
     <title>exlibris-app store test</title>
 
+    <script src="./test_variables.js"></script>
     <script src="../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../bower_components/web-component-tester/browser.js"></script>
     <script src="../../node_modules/redux/dist/redux.js"></script>
-
 
     <link rel="import" href="../../src/exlibris-app/exlibris-app.html">
 </head>
@@ -26,53 +26,53 @@
     suite('exlibris-app', function () {
         let mock;
 
-        setup(()=>{
-             mock = sinon.mock(ExlibrisApplication.store);
+        setup(() => {
+            mock = sinon.mock(ExlibrisApplication.store);
         });
 
-        teardown(()=>{
+        teardown(() => {
             mock.restore();
         });
 
         test('should set allBooks value from state', function () {
-            mock.expects("getState").returns({allBooks: [...ExlibrisApplication.TEST_BOOKS]});
+            mock.expects("getState").returns({allBooks: [...ExlibrisAppTest.BOOKS]});
             const element = fixture('BasicTestFixture');
-            assert.deepEqual(element.allBooks, ExlibrisApplication.TEST_BOOKS);
+            assert.deepEqual(element.allBooks, ExlibrisAppTest.BOOKS);
             mock.verify();
             mock.restore();
         });
         test('should set borrowedBooks value from state', function () {
-            mock.expects("getState").returns({borrowedBooks: [...ExlibrisApplication.TEST_BOOKS]});
+            mock.expects("getState").returns({borrowedBooks: [...ExlibrisAppTest.BOOKS]});
             const element = fixture('BasicTestFixture');
-            assert.deepEqual(element.borrowedBooks, ExlibrisApplication.TEST_BOOKS);
+            assert.deepEqual(element.borrowedBooks, ExlibrisAppTest.BOOKS);
             mock.verify();
             mock.restore();
         });
         test('should set reservedBooks value from state', function () {
-            mock.expects("getState").returns({reservedBooks: [...ExlibrisApplication.TEST_BOOKS]});
+            mock.expects("getState").returns({reservedBooks: [...ExlibrisAppTest.BOOKS]});
             const element = fixture('BasicTestFixture');
-            assert.deepEqual(element.reservedBooks, ExlibrisApplication.TEST_BOOKS);
+            assert.deepEqual(element.reservedBooks, ExlibrisAppTest.BOOKS);
             mock.verify();
             mock.restore();
         });
         test('should set shouldReturnBooks value from state', function () {
-            mock.expects("getState").returns({shouldReturnBooks: [...ExlibrisApplication.TEST_BOOKS]});
+            mock.expects("getState").returns({shouldReturnBooks: [...ExlibrisAppTest.BOOKS]});
             const element = fixture('BasicTestFixture');
-            assert.deepEqual(element.shouldReturnBooks, ExlibrisApplication.TEST_BOOKS);
+            assert.deepEqual(element.shouldReturnBooks, ExlibrisAppTest.BOOKS);
             mock.verify();
             mock.restore();
         });
         test('should set overdueBooks value from state', function () {
-            mock.expects("getState").returns({overdueBooks: [...ExlibrisApplication.TEST_BOOKS]});
+            mock.expects("getState").returns({overdueBooks: [...ExlibrisAppTest.BOOKS]});
             const element = fixture('BasicTestFixture');
-            assert.deepEqual(element.overdueBooks, ExlibrisApplication.TEST_BOOKS);
+            assert.deepEqual(element.overdueBooks, ExlibrisAppTest.BOOKS);
             mock.verify();
             mock.restore();
         });
         test('should set expectedSoonBooks value from state', function () {
-            mock.expects("getState").returns({expectedSoonBooks: [...ExlibrisApplication.TEST_BOOKS]});
+            mock.expects("getState").returns({expectedSoonBooks: [...ExlibrisAppTest.BOOKS]});
             const element = fixture('BasicTestFixture');
-            assert.deepEqual(element.expectedSoonBooks, ExlibrisApplication.TEST_BOOKS);
+            assert.deepEqual(element.expectedSoonBooks, ExlibrisAppTest.BOOKS);
             mock.verify();
             mock.restore();
         });

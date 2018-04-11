@@ -18,10 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 {
+    window.ExlibrisAppTest = {} || ExlibrisAppTest;
     const threeWeeks = 21;
     const millisecondsInOneDay = 86400000;
-    window.ExlibrisApplication = {} || ExlibrisApplication;
-    ExlibrisApplication.TEST_BOOKS = [{
+
+    ExlibrisAppTest.BOOKS = [{
         id: "123456789",
         title: "Стив Джобс",
         image: "https://books.google.com/books/content/images/frontcover/xSWOMjMSzi8C?fife=w200-h300",
