@@ -314,7 +314,9 @@
              * Dispatches action to find book by Id specified by the `routeData`.
              */
             _routeDataChanged(routeData) {
-                this.dispatch('findBookById', routeData.id);
+                if (this.routeData.id) {
+                    this.dispatch('findBookById', routeData.id);
+                }
             }
 
             /**
