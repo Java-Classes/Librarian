@@ -12,7 +12,7 @@
                 text-decoration: none;
             }
 
-            #menu-item-body {
+            #item {
                 margin: 10px;
                 align-items: center;
                 border-radius: var(--exlibris-menu-item-border-radius, 3px);
@@ -26,21 +26,21 @@
                 font-weight: normal;
             }
 
-            #menu-item-title {
+            #title {
                 padding-left: 12px;
                 @apply --exlibris-menu-item-title;
             }
 
-            #menu-item-badge {
+            #count-badge {
                 position: fixed;
                 right: 24px;
             }
         </style>
         <a href="[[link]]">
-            <div id="menu-item-body">
+            <div id="item">
                 <slot></slot>
-                <span id="menu-item-title">[[title]]</span>
-                <span id="menu-item-badge">[[count]]</span>
+                <span id="title">[[title]]</span>
+                <span id="count-badge">[[count]]</span>
             </div>
         </a>
     </template>
