@@ -27,23 +27,19 @@
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
 
 <link rel="import" href="./exlibris-menu-item.html">
+<link rel="import" href="../global-style.html">
 
 <dom-module id="exlibris-menu-drawer">
     <template>
-        <style>
+        <style include="global-style">
             :host {
                 display: block;
             }
 
-            app-toolbar {
-                background-color: var(--exlibris-app-primary-color);
-                color: #fff;
-            }
-
             exlibris-menu-item.iron-selected {
-                --exlibris-menu-item-background-color: var(--google-grey-300);
+                --exlibris-menu-item-background-color: var(--paper-grey-300);
                 --exlibris-menu-item-title: {
-                    color: black;
+                    color: var(--paper-grey-900);
                     font-weight: bold;
                 };
             }
