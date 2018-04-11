@@ -18,10 +18,9 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
+<link rel="import" href="./shell/exlibris-app-namespace.html">
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
-<link rel="import" href="./../exlibris-app/shell/redux-store.html">
-
 <link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import"
       href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
@@ -38,6 +37,9 @@
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 
+<link rel="import" href="./menu/exlibris-menu-drawer.html">
+<link rel="import" href="./shell/redux-store.html">
+<link rel="import" href="./global-style.html">
 <link rel="import" href="./exlibris-book-details.html">
 <link rel="import" href="./menu/exlibris-menu-drawer.html">
 <link rel="import" href="./exlibris-book-grid.html">
@@ -45,11 +47,17 @@
     <template>
         <style>
             :host {
-                --exlibris-app-primary-color: var(--paper-blue-600);
-                --exlibris-app-secondary-color: var(--paper-grey-600);
-                --exlibris-app-background-color: var(--paper-grey-200);
-                --app-drawer-width: 250px;
                 display: block;
+                font-family: 'Roboto', 'Noto', sans-serif;
+            }
+
+            app-drawer-layout {
+                --app-drawer-width: 250px;
+                background-color: var(--exlibris-app-background-color);
+            }
+
+            app-drawer-layout:not([narrow]) [drawer-toggle] {
+                display: none;
             }
 
             app-drawer {
@@ -60,11 +68,7 @@
 
             app-toolbar {
                 background-color: var(--exlibris-app-primary-color);
-                color: #fff;
-            }
-
-            app-drawer-layout:not([narrow]) [drawer-toggle] {
-                display: none;
+                color: var(--paper-grey-50);
             }
         </style>
 
@@ -125,16 +129,16 @@
          * Library application. The polymer-based single page app.
          *
          * How to use `<exlibris-app>` component.
-         * In typical use, just use `<exlibris-app>` at the top of your body:
+         * In typical use, just add `<exlibris-app>` to the top of your body:
          * <body>
          *   <exlibris-app></exlibris-app>
          * </body>
          *
          * @customElement
          * @polymer
-         * @appliesMixin ExlibrisApplication.ReduxMixin
+         * @appliesMixin ExlibrisApp.ReduxMixin
          */
-        class ExlibrisApp extends ExlibrisApplication.ReduxMixin(Polymer.Element) {
+        class ExlibrisMainApp extends ExlibrisApp.ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'exlibris-app';
             }
@@ -264,6 +268,6 @@
             }
         }
 
-        window.customElements.define(ExlibrisApp.is, ExlibrisApp);
+        window.customElements.define(ExlibrisMainApp.is, ExlibrisMainApp);
     </script>
 </dom-module>

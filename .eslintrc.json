@@ -28,8 +28,7 @@
       {
         "ignore": [
           0,
-          1,
-          86400000
+          1
         ]
       }
     ],
@@ -44,17 +43,15 @@
   ],
   "globals": {
     "Polymer": false,
-    "BookStatus": false,
+    "ExlibrisApp": true,
+    "assert": false,
     "suite": false,
     "setup": false,
     "sinon": false,
     "test": false,
-    "TEST_BOOKS": false,
-    "assert": false,
-    "ExlibrisApplication": false,
+    "ExlibrisAppTest": false,
     "fixture": false,
     "flush": false,
-    "teardown": false,
-    "reducer": false
+    "teardown": false
   }
 }

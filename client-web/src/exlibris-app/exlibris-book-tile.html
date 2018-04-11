@@ -18,7 +18,6 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
-
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
@@ -173,10 +172,10 @@
              * @private
              */
             _computeClassForStatusMessage(status) {
-                if (status === BookStatus.OVERDUE) {
+                if (status === ExlibrisApplication.BookStatus.OVERDUE) {
                     return "warn";
                 }
-                if (status === BookStatus.BORROWED || status === BookStatus.SHOULD_RETURN_SOON) {
+                if (status === ExlibrisApplication.BookStatus.BORROWED || status === ExlibrisApplication.BookStatus.SHOULD_RETURN_SOON) {
                     return "active";
                 }
             }
@@ -190,27 +189,27 @@
              */
             _computeBookStatusMessage(book) {
                 switch (book.status) {
-                    case BookStatus.OVERDUE: {
-                        const oneDay = 86400000;
-                        const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / oneDay);
+                    case ExlibrisApplication.BookStatus.OVERDUE: {
+                        const MILLISECONDS_IN_ONE_DAY = 86400000;
+                        const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / MILLISECONDS_IN_ONE_DAY);
                         return numberOfOverdueDays + " DAYS OVERDUE";
                     }
-                    case BookStatus.BORROWED: {
+                    case ExlibrisApplication.BookStatus.BORROWED: {
                         return "DUE ON " + book.dueDate.toLocaleDateString();
                     }
-                    case BookStatus.READY_TO_PICK_UP: {
+                    case ExlibrisApplication.BookStatus.READY_TO_PICK_UP: {
                         return "READY TO PICK UP";
                     }
-                    case BookStatus.RESERVED: {
+                    case ExlibrisApplication.BookStatus.RESERVED: {
                         return "EXPECTED ON " + book.date.toLocaleDateString();
                     }
-                    case BookStatus.EXPECTED_SOON: {
+                    case ExlibrisApplication.BookStatus.EXPECTED_SOON: {
                         return "EXPECTED SOON";
                     }
-                    case BookStatus.AVAILABLE: {
+                    case ExlibrisApplication.BookStatus.AVAILABLE: {
                         return book.availableCount + " AVAILABLE";
                     }
-                    case BookStatus.EXPECTED: {
+                    case ExlibrisApplication.BookStatus.EXPECTED: {
                         return "EXPECTED";
                     }
                 }

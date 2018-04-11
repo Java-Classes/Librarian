@@ -46,8 +46,11 @@
         let element;
         const TITLE = 'title';
         const COUNT = 2;
-        const MENU_ITEM_TITLE_SELECTOR = '#menu-item-title';
-        const MENU_ITEM_COUNT_BADGE_SELECTOR = '#menu-item-badge';
+
+        const MENU_ITEM_SELECTORS = {
+            TITLE : '#title',
+            COUNT_BADGE : '#count-badge'
+        };
 
         setup(() => {
             element = fixture('BasicTestFixture');
@@ -57,8 +60,8 @@
             element.set('title', TITLE);
             element.set('count', COUNT);
             const elementShadowRoot = element.shadowRoot;
-            const title = elementShadowRoot.querySelector(MENU_ITEM_TITLE_SELECTOR);
-            const badge = elementShadowRoot.querySelector(MENU_ITEM_COUNT_BADGE_SELECTOR);
+            const title = elementShadowRoot.querySelector(MENU_ITEM_SELECTORS.TITLE);
+            const badge = elementShadowRoot.querySelector(MENU_ITEM_SELECTORS.COUNT_BADGE);
 
             assert.equal(title.innerHTML, TITLE);
             assert.equal(badge.innerHTML, COUNT);
@@ -66,7 +69,7 @@
 
         test('should reflect on attribute change.', function () {
             const elementShadowRoot = element.shadowRoot;
-            const badge = elementShadowRoot.querySelector(MENU_ITEM_COUNT_BADGE_SELECTOR);
+            const badge = elementShadowRoot.querySelector(MENU_ITEM_SELECTORS.COUNT_BADGE);
             assert.isUndefined(element.count);
             assert.equal(badge.innerHTML, ' ');
 

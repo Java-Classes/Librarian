@@ -18,10 +18,15 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<script>
-    /* exported ElibrisActions */
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/custom-style.html">
 
-    const ElibrisActions = {
-        FIND_BOOK_BY_ID : "FIND_BOOK_BY_ID",
-    }
-</script>
+<custom-style>
+    <style is="custom-style">
+        html {
+            --exlibris-app-primary-color: var(--paper-blue-600);
+            --exlibris-app-secondary-color: var(--paper-grey-600);
+            --exlibris-app-background-color: var(--paper-grey-200);
+        }
+    </style>
+</custom-style>

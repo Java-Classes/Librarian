@@ -17,30 +17,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+{
+    window.ExlibrisAppTest = {} || ExlibrisAppTest;
+    const threeWeeks = 21;
+    const millisecondsInOneDay = 86400000;
 
-const threeWeeks = 21;
-const millisecondsInOneDay = 86400000;
-
-/* exported TEST_BOOKS */
-
-const TEST_BOOKS = [{
-    id: "123456789",
-    title: "Стив Джобс",
-    image: "https://books.google.com/books/content/images/frontcover/xSWOMjMSzi8C?fife=w200-h300",
-    author: "Уолтер Айзексон",
-    category: "Biography",
-    description: "В основу этой биографии легли беседы с самим Стивом Джобсом, а также с его родственниками, друзьями, врагами, соперниками и коллегами. Джобс никак не контролировал автора. Он откровенно отвечал на все вопросы и ждал такой же честности от остальных. Это рассказ о жизни, полной падений и взлетов, о сильном человеке и талантливом бизнесмене, который одним из первых понял: чтобы добиться успеха в XXI веке, нужно соединить креативность и технологии.",
-    status: "available",
-    statusMessage: "3 AVAILABLE",
-    availableCount: 3
-}, {
-    id: "123456790",
-    title: "Эйнштейн. Его жизнь и его Вселенная",
-    image: "https://books.google.com/books/content/images/frontcover/28IOCQAAQBAJ?fife=w200-h300",
-    author: "Уолтер Айзексон",
-    category: "Biography",
-    description: "Уолтер Айзексон, автор знаменитой биографии Стивена Джобса, написал книгу об одном из самых известных ученых XX века, Альберте Эйнштейне. Он не только подробно и доступно изложил суть научных концепций и открытий автора теории относительности, но и увлекательно рассказал об Эйнштейне-человеке. В книге приводится множество документальных материалов – письма, воспоминания, дневниковые записи. Перед нами встает образ удивительно талантливого человека, мечтателя и бунтаря, гуманиста и мыслителя.",
-    status: "reserved",
-    date: new Date(new Date().getTime() + threeWeeks * millisecondsInOneDay)
-}];
-
+    ExlibrisAppTest.BOOKS = [{
+        id: "123456789",
+        title: "Стив Джобс",
+        image: "https://books.google.com/books/content/images/frontcover/xSWOMjMSzi8C?fife=w200-h300",
+        author: "Уолтер Айзексон",
+        category: "Biography",
+        description: "В основу этой биографии легли беседы с самим Стивом Джобсом, а также с его родственниками, друзьями, врагами, соперниками и коллегами. Джобс никак не контролировал автора. Он откровенно отвечал на все вопросы и ждал такой же честности от остальных. Это рассказ о жизни, полной падений и взлетов, о сильном человеке и талантливом бизнесмене, который одним из первых понял: чтобы добиться успеха в XXI веке, нужно соединить креативность и технологии.",
+        status: "AVAILABLE",
+        statusMessage: "3 AVAILABLE",
+        availableCount: 3
+    }, {
+        id: "123456790",
+        title: "Эйнштейн. Его жизнь и его Вселенная",
+        image: "https://books.google.com/books/content/images/frontcover/28IOCQAAQBAJ?fife=w200-h300",
+        author: "Уолтер Айзексон",
+        category: "Biography",
+        description: "Уолтер Айзексон, автор знаменитой биографии Стивена Джобса, написал книгу об одном из самых известных ученых XX века, Альберте Эйнштейне. Он не только подробно и доступно изложил суть научных концепций и открытий автора теории относительности, но и увлекательно рассказал об Эйнштейне-человеке. В книге приводится множество документальных материалов – письма, воспоминания, дневниковые записи. Перед нами встает образ удивительно талантливого человека, мечтателя и бунтаря, гуманиста и мыслителя.",
+        status: "RESERVED",
+        date: new Date(new Date().getTime() + threeWeeks * millisecondsInOneDay)
+    }];
+}

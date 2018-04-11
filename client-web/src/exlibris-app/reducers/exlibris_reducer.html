@@ -24,43 +24,43 @@
 <script>
     /* exported reducer */
     /*global userTestBooks libraryTestBooks expectedSoonLibraryBooks*/
+    {
+        const initialState = {
+            overdueBooks: userTestBooks.overdue,
+            borrowedBooks: [...userTestBooks.overdue, ...userTestBooks.borrowed],
+            shouldReturnBooks: userTestBooks.shouldReturnSoon,
+            reservedBooks: userTestBooks.reserved,
+            allBooks: [...userTestBooks.overdue, ...libraryTestBooks],
+            expectedSoonBooks: expectedSoonLibraryBooks,
+            selectedBook: {}
+        };
 
-    const initialState = {
-        overdueBooks: userTestBooks.overdue,
-        borrowedBooks: [...userTestBooks.overdue, ...userTestBooks.borrowed],
-        shouldReturnBooks: userTestBooks.shouldReturnSoon,
-        reservedBooks: userTestBooks.reserved,
-        allBooks: [...userTestBooks.overdue, ...libraryTestBooks],
-        expectedSoonBooks: expectedSoonLibraryBooks,
-        selectedBook: {}
-    };
-
-    const reducer = (state = initialState, action) => {
-        switch (action.type) {
-            case ElibrisActions.FIND_BOOK_BY_ID: {
-                // sleep(1000);
-                const id = action.bookId;
-                const book =
-                    state.allBooks.find(x => x.id === id)
-                    || state.expectedSoonBooks.find(x => x.id === id)
-                    || state.overdueBooks.find(x => x.id === id)
-                    || state.shouldReturnBooks.find(x => x.id === id)
-                    || state.borrowedBooks.find(x => x.id === id)
-                    || state.reservedBooks.find(x => x.id === id);
-                return Object.assign({}, state, {selectedBook: book});
+        ExlibrisApplication.reducer = (state = initialState, action) => {
+            switch (action) {
+                case ElibrisActions.FIND_BOOK_BY_ID: {
+                    // sleep(1000);
+                    const id = action.bookId;
+                    const book =
+                        state.allBooks.find(x => x.id === id)
+                        || state.expectedSoonBooks.find(x => x.id === id)
+                        || state.overdueBooks.find(x => x.id === id)
+                        || state.shouldReturnBooks.find(x => x.id === id)
+                        || state.borrowedBooks.find(x => x.id === id)
+                        || state.reservedBooks.find(x => x.id === id);
+                    return Object.assign({}, state, {selectedBook: book});
+                }
+                default:
+                    return state;
             }
-            default:
-                return state;
-        }
-    };
+        };
 
-    function sleep(milliseconds) {
-        const start = new Date().getTime();
-        for (let i = 0; i < 1e7; i++) {
-            if ((new Date().getTime() - start) > milliseconds){
-                break;
+        function sleep(milliseconds) {
+            const start = new Date().getTime();
+            for (let i = 0; i < 1e7; i++) {
+                if ((new Date().getTime() - start) > milliseconds){
+                    break;
+                }
             }
         }
     }
-
 </script>

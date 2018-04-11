@@ -18,11 +18,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-const twoWeeks = 14;
-const threeWeeks = 21;
-const threeDays = 3;
-const twoDays = 2;
-const millisecondsInOneDay = 86400000;
+const TWO_WEEKS = 14;
+const THREE_WEEKS = 21;
+const THREE_DAYS = 3;
+const TWO_DAYS = 2;
+const MILLISECONDS_IN_ONE_DAY = 86400000;
 
 /* exported libraryTestBooks */
 
@@ -652,7 +652,7 @@ const userTestBooks = {
             "How to avoid the traps and pitfalls of commonly misunderstood subtleties of the language\n" +
             "Focus on the language and its most fundamental libraries: java.lang, java.util, and, to a lesser extent, java.util.concurrent and java.io\n" +
             "Simply put, Effective Java™, Second Edition, presents the most practical, authoritative guidelines available for writing efficient, well-designed programs.",
-            date: new Date(new Date().getTime() + threeDays * millisecondsInOneDay),
+            date: new Date(new Date().getTime() + THREE_DAYS * MILLISECONDS_IN_ONE_DAY),
             status: "READY_TO_PICK_UP"
         }, {
 
@@ -667,7 +667,7 @@ const userTestBooks = {
             "Mastering Lambdas: Java Programming in a Multicore World by Maurice Naftalin\n" +
             "Quick Start Guide to JavaFX by J.F. DiMarzio\n" +
             "Mastering JavaFX 8 Controls: Create Custom JavaFX 8 Controls for Cross-Platform Applications by Hendrik Ebbers",
-            date: new Date(new Date().getTime() + threeWeeks * millisecondsInOneDay),
+            date: new Date(new Date().getTime() + THREE_WEEKS * MILLISECONDS_IN_ONE_DAY),
             status: "RESERVED"
         }
         ],
@@ -700,7 +700,7 @@ const userTestBooks = {
             "\n" +
             "Style and approach\n" +
             "This is your guide to designing custom web components, and the concepts are explained in a conversational and easy-to-follow style. Each topic is explained through examples, with detailed explanations wherever required.",
-            dueDate: new Date(new Date().getTime() + twoWeeks * millisecondsInOneDay),
+            dueDate: new Date(new Date().getTime() + TWO_WEEKS * MILLISECONDS_IN_ONE_DAY),
             status: "BORROWED",
             isAllowedLoanExtension: true
         }],
@@ -716,7 +716,7 @@ const userTestBooks = {
             "Mastering Lambdas: Java Programming in a Multicore World by Maurice Naftalin\n" +
             "Quick Start Guide to JavaFX by J.F. DiMarzio\n" +
             "Mastering JavaFX 8 Controls: Create Custom JavaFX 8 Controls for Cross-Platform Applications by Hendrik Ebbers",
-            dueDate: new Date(new Date().getTime() - twoDays * millisecondsInOneDay),
+            dueDate: new Date(new Date().getTime() - TWO_DAYS * MILLISECONDS_IN_ONE_DAY),
             status: "OVERDUE",
             isAllowedLoanExtension: false
         }],
@@ -749,7 +749,7 @@ const userTestBooks = {
             "\n" +
             "Style and approach\n" +
             "This is your guide to designing custom web components, and the concepts are explained in a conversational and easy-to-follow style. Each topic is explained through examples, with detailed explanations wherever required.",
-            dueDate: new Date(new Date().getTime() + threeDays * millisecondsInOneDay),
+            dueDate: new Date(new Date().getTime() + THREE_DAYS * MILLISECONDS_IN_ONE_DAY),
             status: "BORROWED",
             isAllowedLoanExtension: false
         }]
