@@ -18,7 +18,7 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <script src="../test_values.js"></script>
-<link rel="import" href="../book_values.html">
+<link rel="import" href="../book/book_values.html">
 <link rel="import" href="../actions/exlibris_action.html">
 
 <script>
@@ -35,9 +35,9 @@
             selectedBook: {}
         };
 
-        ExlibrisApplication.reducer = (state = initialState, action) => {
-            switch (action) {
-                case ElibrisActions.FIND_BOOK_BY_ID: {
+        ExlibrisApp.reducer = (state = initialState, action) => {
+            switch (action.type) {
+                case ExlibrisActions.FIND_BOOK_BY_ID: {
                     // sleep(1000);
                     const id = action.bookId;
                     const book =

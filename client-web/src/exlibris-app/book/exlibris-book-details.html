@@ -18,19 +18,22 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<link rel="import" href="../../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
-<link rel="import" href="../../bower_components/app-route/app-route.html">
-<link rel="import" href="../../bower_components/paper-styles/color.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../bower_components/iron-image/iron-image.html">
-<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../shell/exlibris-app-namespace.html">
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="../shell/redux-store.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="./book_values.html">
-<link rel="import" href="./actions/exlibris_action.html">
+<link rel="import" href="../actions/exlibris_action.html">
 
-<link rel="import" href="exlibris-book-details-redirect-link.html">
+<link rel="import" href="./exlibris-book-details-redirect-link.html">
 
 <dom-module id="exlibris-book-details">
     <template>
@@ -219,7 +222,7 @@
 
     <script>
 
-        class ExlibrisBookDetails extends window.ExlibrisApplication.ReduxMixin(Polymer.Element) {
+        class ExlibrisBookDetails extends ExlibrisApp.ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'exlibris-book-details';
             }
@@ -300,7 +303,7 @@
                 return {
                     findBookById(bookId) {
                         return {
-                            type: ElibrisActions.FIND_BOOK_BY_ID,
+                            type: ExlibrisActions.FIND_BOOK_BY_ID,
                             bookId: bookId
                         }
                     }
@@ -321,17 +324,17 @@
             _updateButton(book) {
                 if (book) {
                     switch (book.status) {
-                        case BookStatus.EXPECTED_SOON:
-                        case BookStatus.EXPECTED: {
+                        case ExlibrisApp.BookStatus.EXPECTED_SOON:
+                        case ExlibrisApp.BookStatus.EXPECTED: {
                             return {
                                 title: 'RESERVE',
                                 clickHandler: this._requestReservation
                             };
                         }
 
-                        case BookStatus.OVERDUE:
-                        case BookStatus.BORROWED:
-                        case BookStatus.SHOULD_RETURN_SOON: {
+                        case ExlibrisApp.BookStatus.OVERDUE:
+                        case ExlibrisApp.BookStatus.BORROWED:
+                        case ExlibrisApp.BookStatus.SHOULD_RETURN_SOON: {
                             if (book.isAllowedLoanExtension) {
                                 return {
                                     title: 'EXTEND LOAN PERIOD',
@@ -341,8 +344,8 @@
                             break;
                         }
 
-                        case BookStatus.RESERVED:
-                        case BookStatus.READY_TO_PICK_UP: {
+                        case ExlibrisApp.BookStatus.RESERVED:
+                        case ExlibrisApp.BookStatus.READY_TO_PICK_UP: {
                             return {
                                 title: 'CANCEL RESERVATION',
                                 clickHandler: this._requestCancelReservation
@@ -361,19 +364,19 @@
             _updateStatusMessage(book) {
                 if (book) {
                     switch (book.status) {
-                        case BookStatus.AVAILABLE: {
+                        case ExlibrisApp.BookStatus.AVAILABLE: {
                             return book.availableCount ? book.availableCount + ' available.\nScan QR code to borrow.' : '';
                         }
 
-                        case BookStatus.EXPECTED: {
+                        case ExlibrisApp.BookStatus.EXPECTED: {
                             return 'Book not available.';
                         }
 
-                        case BookStatus.EXPECTED_SOON: {
+                        case ExlibrisApp.BookStatus.EXPECTED_SOON: {
                             return 'Arriving to library shortly.';
                         }
 
-                        case BookStatus.OVERDUE: {
+                        case ExlibrisApp.BookStatus.OVERDUE: {
                             if (book.dueDate) {
                                 const now = new Date();
                                 const numberOfOverdueDays = now.getDate() - book.dueDate.getDate();
@@ -382,16 +385,16 @@
                             break;
                         }
 
-                        case BookStatus.READY_TO_PICK_UP: {
+                        case ExlibrisApp.BookStatus.READY_TO_PICK_UP: {
                             return book.date ? 'Book is ready to pick up.\nBorrow it before ' + book.date.toLocaleDateString() : '';
                         }
 
-                        case BookStatus.RESERVED: {
+                        case ExlibrisApp.BookStatus.RESERVED: {
                             return book.date ? 'Reserved for you.\nExpected on ' + book.date.toLocaleDateString() : '';
                         }
 
-                        case BookStatus.BORROWED:
-                        case BookStatus.SHOULD_RETURN_SOON: {
+                        case ExlibrisApp.BookStatus.BORROWED:
+                        case ExlibrisApp.BookStatus.SHOULD_RETURN_SOON: {
                             return book.dueDate ? 'Borrowed by you.\nReturn before ' + book.dueDate.toLocaleDateString() : '';
                         }
 
@@ -408,9 +411,9 @@
             _updateActionUnsupportedMessage(book) {
                 if (book) {
                     switch (book.status) {
-                        case BookStatus.BORROWED:
-                        case BookStatus.SHOULD_RETURN_SOON:
-                        case BookStatus.OVERDUE: {
+                        case ExlibrisApp.BookStatus.BORROWED:
+                        case ExlibrisApp.BookStatus.SHOULD_RETURN_SOON:
+                        case ExlibrisApp.BookStatus.OVERDUE: {
                             if (!book.isAllowedLoanExtension) {
                                 return 'RESERVED BY ANOTHER READER';
                             }
