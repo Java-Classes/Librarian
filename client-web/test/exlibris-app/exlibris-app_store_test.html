@@ -63,7 +63,6 @@
             const element = fixture('BasicTestFixture');
             assert.deepEqual(element.overdueBooks, ExlibrisAppTest.BOOKS);
             mock.verify();
-            mock.restore();
         });
         test('should set expectedSoonBooks value from state', function () {
             mock.expects("getState").returns({expectedSoonBooks: [...ExlibrisAppTest.BOOKS]});
