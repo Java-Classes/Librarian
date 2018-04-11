@@ -172,10 +172,10 @@
              * @private
              */
             _computeClassForStatusMessage(status) {
-                if (status === ExlibrisApplication.BookStatus.OVERDUE) {
+                if (status === ExlibrisApp.BookStatus.OVERDUE) {
                     return "warn";
                 }
-                if (status === ExlibrisApplication.BookStatus.BORROWED || status === ExlibrisApplication.BookStatus.SHOULD_RETURN_SOON) {
+                if (status === ExlibrisApp.BookStatus.BORROWED || status === ExlibrisApp.BookStatus.SHOULD_RETURN_SOON) {
                     return "active";
                 }
             }
@@ -189,27 +189,27 @@
              */
             _computeBookStatusMessage(book) {
                 switch (book.status) {
-                    case ExlibrisApplication.BookStatus.OVERDUE: {
+                    case ExlibrisApp.BookStatus.OVERDUE: {
                         const MILLISECONDS_IN_ONE_DAY = 86400000;
                         const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / MILLISECONDS_IN_ONE_DAY);
                         return numberOfOverdueDays + " DAYS OVERDUE";
                     }
-                    case ExlibrisApplication.BookStatus.BORROWED: {
+                    case ExlibrisApp.BookStatus.BORROWED: {
                         return "DUE ON " + book.dueDate.toLocaleDateString();
                     }
-                    case ExlibrisApplication.BookStatus.READY_TO_PICK_UP: {
+                    case ExlibrisApp.BookStatus.READY_TO_PICK_UP: {
                         return "READY TO PICK UP";
                     }
-                    case ExlibrisApplication.BookStatus.RESERVED: {
+                    case ExlibrisApp.BookStatus.RESERVED: {
                         return "EXPECTED ON " + book.date.toLocaleDateString();
                     }
-                    case ExlibrisApplication.BookStatus.EXPECTED_SOON: {
+                    case ExlibrisApp.BookStatus.EXPECTED_SOON: {
                         return "EXPECTED SOON";
                     }
-                    case ExlibrisApplication.BookStatus.AVAILABLE: {
+                    case ExlibrisApp.BookStatus.AVAILABLE: {
                         return book.availableCount + " AVAILABLE";
                     }
-                    case ExlibrisApplication.BookStatus.EXPECTED: {
+                    case ExlibrisApp.BookStatus.EXPECTED: {
                         return "EXPECTED";
                     }
                 }
