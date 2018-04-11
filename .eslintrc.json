@@ -49,6 +49,7 @@
     "test": false,
     "assert": false,
     "ExlibrisApplication": false,
+    "ExlibrisAppTest": false,
     "fixture": false,
     "flush": false,
     "teardown": false
