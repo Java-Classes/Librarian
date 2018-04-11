@@ -19,30 +19,33 @@
   -->
 
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/custom-style.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
 
 <dom-module id="global-style">
     <template>
-        <style>
-            app-drawer-layout {
-                --exlibris-app-primary-color: var(--paper-blue-600);
-                --exlibris-app-secondary-color: var(--paper-grey-600);
-                --exlibris-app-background-color: var(--paper-grey-200);
-                --app-drawer-width: 250px;
-                font-family: 'Roboto', 'Noto', sans-serif;
-                background-color: var(--paper-grey-200);
-            }
-
-            app-drawer {
-                --app-drawer-content-container: {
-                    background-color: var(--exlibris-app-background-color);
+        <custom-style>
+            <style>
+                app-drawer-layout {
+                    --exlibris-app-primary-color: var(--paper-blue-600);
+                    --exlibris-app-secondary-color: var(--paper-grey-600);
+                    --exlibris-app-background-color: var(--paper-grey-200);
+                    --app-drawer-width: 250px;
+                    font-family: 'Roboto', 'Noto', sans-serif;
+                    background-color: var(--paper-grey-200);
                 }
-            }
 
-            app-toolbar {
-                background-color: var(--exlibris-app-primary-color);
-                color: var(--paper-grey-50);
-            }
-        </style>
+                app-drawer {
+                    --app-drawer-content-container: {
+                        background-color: var(--exlibris-app-background-color);
+                    }
+                }
+
+                app-toolbar {
+                    background-color: var(--exlibris-app-primary-color);
+                    color: var(--paper-grey-50);
+                }
+            </style>
+        </custom-style>
     </template>
 </dom-module>
