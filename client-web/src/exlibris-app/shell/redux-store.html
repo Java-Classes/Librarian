@@ -1,4 +1,5 @@
 <link rel="import" href="../../../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="./exlibris-app-namespace.html">
 <link rel="import" href="../../../src/exlibris-app/reducers/exlibris_reducer.html">
 
 <script>
@@ -7,13 +8,20 @@
         const store = Redux.createStore(ExlibrisApplication.reducer);
 
         /**
+         * The Redux store of the Exlibris application state.
+         *
+         * @memberof ExlibrisApp
+         * @polymer
+         */
+        ExlibrisApp.store = store;
+
+        /**
          * This mixin provides the Exlibris Application state access.
          *
+         * @memberof ExlibrisApp
+         * @polymer
          * @mixinFunction
          */
-        ReduxMixin = PolymerRedux(store);
-
-        ExlibrisApplication.store = store;
-        ExlibrisApplication.ReduxMixin = ReduxMixin;
+        ExlibrisApp.ReduxMixin = PolymerRedux(store);
     }
 </script>
