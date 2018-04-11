@@ -190,8 +190,8 @@
             _computeBookStatusMessage(book) {
                 switch (book.status) {
                     case ExlibrisApplication.BookStatus.OVERDUE: {
-                        const ONE_DAY = 86400000;
-                        const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / ONE_DAY);
+                        const MILLISECONDS_IN_ONE_DAY = 86400000;
+                        const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / MILLISECONDS_IN_ONE_DAY);
                         return numberOfOverdueDays + " DAYS OVERDUE";
                     }
                     case ExlibrisApplication.BookStatus.BORROWED: {
