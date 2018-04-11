@@ -39,28 +39,24 @@
             const element = fixture('BasicTestFixture');
             assert.deepEqual(element.allBooks, ExlibrisAppTest.BOOKS);
             mock.verify();
-            mock.restore();
         });
         test('should set borrowedBooks value from state', function () {
             mock.expects("getState").returns({borrowedBooks: [...ExlibrisAppTest.BOOKS]});
             const element = fixture('BasicTestFixture');
             assert.deepEqual(element.borrowedBooks, ExlibrisAppTest.BOOKS);
             mock.verify();
-            mock.restore();
         });
         test('should set reservedBooks value from state', function () {
             mock.expects("getState").returns({reservedBooks: [...ExlibrisAppTest.BOOKS]});
             const element = fixture('BasicTestFixture');
             assert.deepEqual(element.reservedBooks, ExlibrisAppTest.BOOKS);
             mock.verify();
-            mock.restore();
         });
         test('should set shouldReturnBooks value from state', function () {
             mock.expects("getState").returns({shouldReturnBooks: [...ExlibrisAppTest.BOOKS]});
             const element = fixture('BasicTestFixture');
             assert.deepEqual(element.shouldReturnBooks, ExlibrisAppTest.BOOKS);
             mock.verify();
-            mock.restore();
         });
         test('should set overdueBooks value from state', function () {
             mock.expects("getState").returns({overdueBooks: [...ExlibrisAppTest.BOOKS]});
@@ -74,7 +70,6 @@
             const element = fixture('BasicTestFixture');
             assert.deepEqual(element.expectedSoonBooks, ExlibrisAppTest.BOOKS);
             mock.verify();
-            mock.restore();
         });
     });
 </script>
