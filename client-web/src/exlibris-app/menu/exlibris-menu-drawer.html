@@ -31,9 +31,14 @@
 
 <dom-module id="exlibris-menu-drawer">
     <template>
-        <style include="global-style">
+        <style>
             :host {
                 display: block;
+            }
+
+            app-toolbar {
+                background-color: var(--exlibris-app-primary-color);
+                color: var(--paper-grey-50);
             }
 
             exlibris-menu-item.iron-selected {
