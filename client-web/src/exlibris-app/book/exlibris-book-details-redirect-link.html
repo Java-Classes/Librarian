@@ -127,33 +127,36 @@
              * search by the `bookTitle`.
              */
             _calculateReference(bookCode, bookTitle) {
-                if (bookCode && bookCode.match(BOOK_CODE_MATCHERS.ISBN_10)) {
-                    return {
-                        codeType: 'ISBN:',
-                        title: bookCode,
-                        href: EXTERNAL_SEARCH_LINKS.AMAZON.format(bookTitle, bookCode)
+                if (bookCode && bookTitle) {
+                    if (bookCode.match(BOOK_CODE_MATCHERS.ISBN_10)) {
+                        return {
+                            codeType: 'ISBN:',
+                            title: bookCode,
+                            href: EXTERNAL_SEARCH_LINKS.AMAZON.format(bookTitle, bookCode)
+                        }
                     }
-                }
 
-                if (bookCode && bookCode.match(BOOK_CODE_MATCHERS.ISBN_13)) {
-                    return {
-                        codeType: 'ISBN:',
-                        title: bookCode,
-                        href: EXTERNAL_SEARCH_LINKS.PLAY_BOOKS.format(bookCode)
+                    if (bookCode.match(BOOK_CODE_MATCHERS.ISBN_13)) {
+                        return {
+                            codeType: 'ISBN:',
+                            title: bookCode,
+                            href: EXTERNAL_SEARCH_LINKS.PLAY_BOOKS.format(bookCode)
+                        }
+                    }
+                    if (bookCode.match(BOOK_CODE_MATCHERS.ASIN)) {
+                        return {
+                            codeType: 'ASIN:',
+                            title: bookCode,
+                            href: EXTERNAL_SEARCH_LINKS.AMAZON.format(bookTitle, bookCode)
+                        }
                     }
                 }
-                if (bookCode && bookCode.match(BOOK_CODE_MATCHERS.ASIN)) {
+                if (bookTitle) {
                     return {
-                        codeType: 'ASIN:',
-                        title: bookCode,
-                        href: EXTERNAL_SEARCH_LINKS.AMAZON.format(bookTitle, bookCode)
+                        codeType: '',
+                        title: 'Search on Google play',
+                        href: EXTERNAL_SEARCH_LINKS.PLAY_BOOKS.format(bookTitle)
                     }
-                }
-
-                return {
-                    codeType: '',
-                    title: 'Search on Google play',
-                    href: EXTERNAL_SEARCH_LINKS.PLAY_BOOKS.format(bookTitle.replace(' ', '%20'))
                 }
             }
         }
