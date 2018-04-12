@@ -112,6 +112,11 @@
                 pattern="/all-books/category/:name"
                 data="{{categoryData}}"
         ></app-route>
+        <app-route
+                route="{{route}}"
+                pattern="/all-books/search/:query"
+                data="{{searchData}}"
+        ></app-route>
 
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
@@ -256,9 +261,6 @@
                     categories: {
                         type: Array,
                         statePath: 'categories'
-                    },
-                    categoryData: {
-                        type: Object
                     }
                 };
             }
@@ -283,7 +285,8 @@
             static get observers() {
                 return [
                     '_routePageChanged(routeData.page)',
-                    '_categoryDataChanged(categoryData.name)'
+                    '_categoryDataChanged(categoryData.name)',
+                    '_searchDataChanged(searchData.query)'
                 ];
             }
 
@@ -306,14 +309,27 @@
             }
 
             /**
-             * * Creates the 'FILTER_BY_CATEGORY' redux action.
+             * Creates the 'FILTER_BY_CATEGORY' redux action.
              * @param {string} name the name of the category
+             * @private
              */
             _categoryDataChanged(name) {
                 if (name) {
                     this.dispatch('filterByCategory', name);
                 }
             }
+
+            /**
+             * Creates the 'SEARCH_BY_QUERY' redux action.
+             * @param {string} query the search request
+             * @private
+             */
+            _searchDataChanged(query) {
+                if (query) {
+                    this.dispatch('searchByQuery', query);
+                }
+            }
+
 
             /**
              * Computes the title of the app header.
@@ -353,7 +369,7 @@
              * @private
              */
             _handleSearch(e) {
-                this.dispatch('searchByQuery', e.detail.query);
+                this.set('route.path', '/all-books/search/' + e.detail.query);
                 e.stopPropagation();
             }
         }
