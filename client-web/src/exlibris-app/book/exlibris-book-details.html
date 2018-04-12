@@ -38,7 +38,6 @@
 <dom-module id="exlibris-book-details">
     <template>
         <style>
-
             :host {
                 display: flex;
                 margin-left: 100px;
@@ -47,8 +46,8 @@
             .book-card {
                 @apply --layout-vertical;
                 border-radius: 3px;
-                box-shadow: 4px 4px 10px #888888;
-                background-color: white;
+                box-shadow: 4px 4px 10px var(--paper-grey-500);
+                background-color: var(--paper-grey-50);
                 max-width: 1000px;
                 margin: 10px;
             }
@@ -65,7 +64,7 @@
             .book-card .head-region iron-image {
                 --iron-image-width: 100%;
                 overflow: inherit;
-                box-shadow: 0 -1px 0 #e0e0e0, 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24);
+                box-shadow: 0 -1px 0 var(--paper-grey-300), 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24);
                 margin-left: 25px;
                 margin-top: 25px;
             }
@@ -100,7 +99,7 @@
             paper-button {
                 margin: 0;
                 background-color: var(--exlibris-app-primary-color);
-                color: white;
+                color: var(--paper-grey-50);
                 height: 36px;
                 font-size: 14px;
                 padding: 0 16px 0 16px;
@@ -198,7 +197,8 @@
                         <div id="status-message">[[statusMessage]]</div>
                     </div>
                     <div class="button-wide-screen">
-                        <paper-button raised on-click="_handleButtonClick"
+                        <paper-button raised
+                                      on-click="_handleButtonClick"
                                       hidden="[[!button]]">
                             [[button.title]]
                         </paper-button>
@@ -429,7 +429,7 @@
 
             /**
              * Handles the button click.
-             * Calls the button clickHandler function.
+             * Calls the button clickHandler` function.
              *
              * @private
              */
