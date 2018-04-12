@@ -110,13 +110,11 @@
         <app-route
                 route="{{route}}"
                 pattern="/all-books/category/:name"
-                data="{{categoryData}}"
-        ></app-route>
+                data="{{categoryData}}"></app-route>
         <app-route
                 route="{{route}}"
                 pattern="/all-books/search/:query"
-                data="{{searchData}}"
-        ></app-route>
+                data="{{searchData}}"></app-route>
 
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
@@ -325,9 +323,7 @@
              * @private
              */
             _searchDataChanged(query) {
-                if (query) {
                     this.dispatch('searchByQuery', query);
-                }
             }
 
 

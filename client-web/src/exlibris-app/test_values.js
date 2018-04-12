@@ -258,7 +258,7 @@ const libraryTestBooks = [
         isbn: "1484228073",
         category: "Java Programming",
         description: "",
-        availableCount: 286,
+        availableCount: 8,
         status: "AVAILABLE"
     }, {
         id: "0596517742",
