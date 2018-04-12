@@ -2,14 +2,8 @@
   "verbose": true,
   "persistent": true,
   "plugins": {
-    "sauce": {
-      "disabled": true,
-      "browsers": [
-        "chrome",
-        "firefox",
-        "ie",
-        "safari"
-      ]
+    "local": {
+      "browsers": ["chrome", "firefox", "ie"]
     }
   }
 }
