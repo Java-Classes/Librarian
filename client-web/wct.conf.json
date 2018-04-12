@@ -3,7 +3,7 @@
   "persistent": true,
   "plugins": {
     "local": {
-      "browsers": ["chrome", "firefox", "ie"]
+      "browsers": ["all"]
     }
   }
 }
