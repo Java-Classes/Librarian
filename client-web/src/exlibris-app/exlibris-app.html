@@ -77,6 +77,7 @@
                 background-color: var(--exlibris-app-primary-color);
                 color: var(--paper-grey-50);
             }
+
             exlibris-category-dropdown {
                 margin-left: 48px;
             }
@@ -121,15 +122,10 @@
                         <paper-icon-button id="number" icon="menu"
                                            drawer-toggle></paper-icon-button>
                         <span drawer-toggle>[[appHeaderTitle]]</span>
-                        <exlibris-book-search on-exlibris-book-search-search="_handleSearch"></exlibris-book-search>
+                        <exlibris-book-search
+                                on-exlibris-book-search-search="_handleSearch"></exlibris-book-search>
                     </app-toolbar>
                 </app-header>
-
-                <div class="category">
-                    <exlibris-category-dropdown class="custom"
-                                                categories="[[categories]]"
-                                                on-category-changed="_changeCategory"></exlibris-category-dropdown>
-                </div>
 
                 <iron-pages
                         id="pages"
@@ -138,7 +134,13 @@
                         fallback-selection="view404"
                         role="main">
                     <exlibris-book-grid data-page="all-books"
-                                        books="[[allBooks]]"></exlibris-book-grid>
+                                        books="[[allBooks]]">
+                        <div class="category">
+                            <exlibris-category-dropdown class="custom"
+                                                        categories="[[categories]]"
+                                                        on-category-changed="_changeCategory"></exlibris-category-dropdown>
+                        </div>
+                    </exlibris-book-grid>
                     <exlibris-book-grid data-page="overdue-books"
                                         books="[[overdueBooks]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="borrowed-books"
@@ -248,9 +250,9 @@
                      * The array of categories.
                      */
                     categories: {
-                    type: Array,
+                        type: Array,
                         statePath: 'categories'
-                }
+                    }
                 };
             }
 
