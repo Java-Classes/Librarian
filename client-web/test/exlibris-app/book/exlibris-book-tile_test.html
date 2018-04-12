@@ -1,0 +1,78 @@
+<!doctype html>
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>exlibris-book-tile test</title>
+
+    <link rel="import" href="../../../src/exlibris-app/shell/exlibris-app-namespace.html">
+    <script src="../test_variables.js"></script>
+    <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../../../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../../src/exlibris-app/book/exlibris-book-tile.html">
+</head>
+<body>
+
+<test-fixture id="BasicTestFixture">
+    <template>
+        <exlibris-book-tile></exlibris-book-tile>
+    </template>
+</test-fixture>
+
+<script>
+    suite('exlibris-book-tile', function () {
+
+        const BookTileSelector = {
+            STATUS_MESSAGE_SELECTOR: "#status-text",
+            TITLE_SELECTOR: "#title",
+            AUTHOR_SELECTOR: "#author",
+            IRON_IMAGE_SELECTOR: "iron-image"
+        };
+
+        let bookTile;
+        setup(() => {
+            bookTile = fixture('BasicTestFixture');
+        });
+
+        test('should display one tile with synopsis and image', function (done) {
+            bookTile.book = ExlibrisAppTest.BOOKS[0];
+            flush(function () {
+                const title = bookTile.shadowRoot.querySelector(BookTileSelector.TITLE_SELECTOR);
+                assert.equal(ExlibrisAppTest.BOOKS[0].title, title.innerHTML);
+                const author = bookTile.shadowRoot.querySelector(BookTileSelector.AUTHOR_SELECTOR);
+                assert.equal(ExlibrisAppTest.BOOKS[0].author, author.innerHTML);
+                const statusMessage = bookTile.shadowRoot.querySelector(BookTileSelector.STATUS_MESSAGE_SELECTOR);
+                assert.equal(ExlibrisAppTest.BOOKS[0].statusMessage, statusMessage.innerHTML);
+                const image = bookTile.shadowRoot.querySelector(BookTileSelector.IRON_IMAGE_SELECTOR);
+                const imageURL = image.shadowRoot.querySelector("img").getAttribute("src");
+                assert.equal(ExlibrisAppTest.BOOKS[0].image, imageURL);
+                done();
+            });
+        });
+    });
+</script>
+</body>
+</html>

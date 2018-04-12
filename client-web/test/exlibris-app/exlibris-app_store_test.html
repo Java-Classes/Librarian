@@ -7,11 +7,10 @@
 
     <title>exlibris-app store test</title>
 
+    <script src="./test_variables.js"></script>
     <script src="../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../bower_components/web-component-tester/browser.js"></script>
     <script src="../../node_modules/redux/dist/redux.js"></script>
-    <script src="test_variables.js"></script>
-
 
     <link rel="import" href="../../src/exlibris-app/exlibris-app.html">
 </head>
@@ -27,56 +26,49 @@
     suite('exlibris-app', function () {
         let mock;
 
-        setup(()=>{
-             mock = sinon.mock(ExlibrisApplication.store);
+        setup(() => {
+            mock = sinon.mock(ExlibrisApp.store);
         });
 
-        teardown(()=>{
+        teardown(() => {
             mock.restore();
         });
 
         test('should set allBooks value from state', function () {
-
-            mock.expects("getState").returns({allBooks: [...TEST_BOOKS]});
+            mock.expects("getState").returns({allBooks: [...ExlibrisAppTest.BOOKS]}).atLeast(1);
             const element = fixture('BasicTestFixture');
-            assert.deepEqual(element.allBooks, TEST_BOOKS);
+            assert.deepEqual(element.allBooks, ExlibrisAppTest.BOOKS);
             mock.verify();
-            mock.restore();
         });
         test('should set borrowedBooks value from state', function () {
-            mock.expects("getState").returns({borrowedBooks: [...TEST_BOOKS]});
+            mock.expects("getState").returns({borrowedBooks: [...ExlibrisAppTest.BOOKS]}).atLeast(1);
             const element = fixture('BasicTestFixture');
-            assert.deepEqual(element.borrowedBooks, TEST_BOOKS);
+            assert.deepEqual(element.borrowedBooks, ExlibrisAppTest.BOOKS);
             mock.verify();
-            mock.restore();
         });
         test('should set reservedBooks value from state', function () {
-            mock.expects("getState").returns({reservedBooks: [...TEST_BOOKS]});
+            mock.expects("getState").returns({reservedBooks: [...ExlibrisAppTest.BOOKS]}).atLeast(1);
             const element = fixture('BasicTestFixture');
-            assert.deepEqual(element.reservedBooks, TEST_BOOKS);
+            assert.deepEqual(element.reservedBooks, ExlibrisAppTest.BOOKS);
             mock.verify();
-            mock.restore();
         });
         test('should set shouldReturnBooks value from state', function () {
-            mock.expects("getState").returns({shouldReturnBooks: [...TEST_BOOKS]});
+            mock.expects("getState").returns({shouldReturnBooks: [...ExlibrisAppTest.BOOKS]}).atLeast(1);
             const element = fixture('BasicTestFixture');
-            assert.deepEqual(element.shouldReturnBooks, TEST_BOOKS);
+            assert.deepEqual(element.shouldReturnBooks, ExlibrisAppTest.BOOKS);
             mock.verify();
-            mock.restore();
         });
         test('should set overdueBooks value from state', function () {
-            mock.expects("getState").returns({overdueBooks: [...TEST_BOOKS]});
+            mock.expects("getState").returns({overdueBooks: [...ExlibrisAppTest.BOOKS]}).atLeast(1);
             const element = fixture('BasicTestFixture');
-            assert.deepEqual(element.overdueBooks, TEST_BOOKS);
+            assert.deepEqual(element.overdueBooks, ExlibrisAppTest.BOOKS);
             mock.verify();
-            mock.restore();
         });
         test('should set expectedSoonBooks value from state', function () {
-            mock.expects("getState").returns({expectedSoonBooks: [...TEST_BOOKS]});
+            mock.expects("getState").returns({expectedSoonBooks: [...ExlibrisAppTest.BOOKS]}).atLeast(1);
             const element = fixture('BasicTestFixture');
-            assert.deepEqual(element.expectedSoonBooks, TEST_BOOKS);
+            assert.deepEqual(element.expectedSoonBooks, ExlibrisAppTest.BOOKS);
             mock.verify();
-            mock.restore();
         });
     });
 </script>

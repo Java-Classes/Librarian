@@ -1,0 +1,473 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<link rel="import" href="../shell/exlibris-app-namespace.html">
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="../shell/redux-store.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="./book_values.html">
+<link rel="import" href="../actions/exlibris_action.html">
+
+<link rel="import" href="./exlibris-book-details-redirect-link.html">
+
+<dom-module id="exlibris-book-details">
+    <template>
+        <style>
+            :host {
+                display: flex;
+                margin-left: 100px;
+            }
+
+            .book-card {
+                @apply --layout-vertical;
+                border-radius: 3px;
+                box-shadow: 4px 4px 10px var(--paper-grey-500);
+                background-color: var(--paper-grey-50);
+                max-width: 1000px;
+                margin: 10px;
+            }
+
+            .book-card .head-region {
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+                align-items: flex-start;
+                width: 100%;
+                height: fit-content;
+            }
+
+            .book-card .head-region iron-image {
+                --iron-image-width: 100%;
+                overflow: inherit;
+                box-shadow: 0 -1px 0 var(--paper-grey-300), 0 0 2px rgba(0, 0, 0, .12), 0 2px 4px rgba(0, 0, 0, .24);
+                margin-left: 25px;
+                margin-top: 25px;
+            }
+
+            .book-card .head-region .head-info {
+                display: flex;
+                width: 70%;
+                height: 100%;
+                padding-left: 30px;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            .book-card .head-region .head-info .head-text {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+            }
+
+            .book-card .head-region .head-info .button-wide-screen {
+                display: block;
+                width: 100%;
+                margin: 0;
+            }
+
+            .book-card .button-narrow-screen {
+                display: none;
+                width: fit-content;
+                margin: 15px 0 0 15px;
+            }
+
+            paper-button {
+                margin: 0;
+                background-color: var(--exlibris-app-primary-color);
+                color: var(--paper-grey-50);
+                height: 36px;
+                font-size: 14px;
+                padding: 0 16px 0 16px;
+            }
+
+            paper-button.small {
+                font-size: 12px;
+            }
+
+            #description {
+                margin-top: 30px;
+                margin-bottom: 30px;
+                padding: 0 25px 0 25px;
+                text-align: justify;
+                color: var(--exlibris-app-secondary-color);
+            }
+
+            #title {
+                font-size: 25px;
+                line-height: 30px;
+                margin: 40px 15px 10px 0;
+                text-align: left;
+                font-weight: normal;
+            }
+
+            #author {
+                font-size: 12px;
+                font-weight: lighter;
+                margin: 5px 0 5px 0;
+            }
+
+            #status-message {
+                white-space: pre;
+                font-size: 15px;
+                font-weight: bold;
+                margin: 20px 0 5px 0;
+            }
+
+            @media only screen and (max-width: 900px) {
+                :host {
+                    margin-left: unset;
+                }
+
+                .book-card {
+                    border-radius: 0;
+                    box-shadow: unset;
+                    background-color: initial;
+                    margin: 0;
+                }
+
+                .book-card .head-region iron-image {
+                    margin-left: 15px;
+                    margin-top: 15px;
+                }
+
+                .book-card .head-region .head-info .button-wide-screen {
+                    display: none;
+                }
+
+                .book-card .button-narrow-screen {
+                    display: block;
+                }
+
+                .book-card .head-region .head-info {
+                    padding-left: 10px;
+                }
+
+                #description {
+                    margin-top: 8px;
+                    padding: 0 15px 0 15px;
+                }
+
+                #title {
+                    font-size: 16px;
+                    line-height: 15px;
+                    margin: 20px 15px 5px 0;
+                }
+            }
+        </style>
+
+        <app-route
+                route="{{route}}"
+                pattern="/:title/:id"
+                data="{{routeData}}"></app-route>
+
+        <div class="book-card">
+            <div class="head-region">
+                <iron-image src="[[book.image]]"></iron-image>
+                <div class="head-info">
+                    <div class="head-text">
+                        <div id="title">[[book.title]]</div>
+                        <div id="author">[[book.author]]</div>
+                        <exlibris-book-details-redirect-link book-code="[[book.isbn]]"
+                                                             book-title="[[book.title]]"></exlibris-book-details-redirect-link>
+                        <div id="status-message">[[statusMessage]]</div>
+                    </div>
+                    <div class="button-wide-screen">
+                        <paper-button raised
+                                      on-click="_handleButtonClick"
+                                      hidden="[[!button]]">
+                            [[button.title]]
+                        </paper-button>
+                        <div>[[actionUnsupportedMessage]]</div>
+                    </div>
+                </div>
+            </div>
+            <div class="button-narrow-screen">
+                <paper-button class="small"
+                              on-click="_handleButtonClick"
+                              hidden="[[!button]]">
+                    [[button.title]]
+                </paper-button>
+                <div>[[actionUnsupportedMessage]]</div>
+            </div>
+            <div id="description">
+                [[book.description]]
+            </div>
+        </div>
+    </template>
+
+    <script>
+
+        class ExlibrisBookDetails extends ExlibrisApp.ReduxMixin(Polymer.Element) {
+            static get is() {
+                return 'exlibris-book-details';
+            }
+
+            static get properties() {
+                return {
+
+                    /**
+                     * The book object to display.
+                     *
+                     * @typedef {Object} Book
+                     * @property {string} id
+                     * @property {string} title the title of a book
+                     * @property {string} image the book cover URL
+                     * @property {string} author string with authors of the book
+                     * @property {string} category the book category
+                     * @property {number} availableCount the number of items available for borrowing.
+                     * @property {boolean} isAllowedLoanExtension is loan extension provided.
+                     * @property {Date} date the date when the book is expected to become available.
+                     * @property {Date} dueDate the date when the book should be returned.
+                     * @property {BookStatus} status  one of the BookStatus values.
+                     */
+                    book: {
+                        type: Object,
+                        statePath: 'selectedBook'
+                    },
+
+                    /**
+                     * The button title and click handler.
+                     *
+                     * @property {string} title the button title
+                     * @property {function} clickHandler the button click handler function
+                     */
+                    button: {
+                        type: Object,
+                        computed: '_updateButton(book)',
+                        value: null
+                    },
+
+                    /**
+                     * The message about the status of the book.
+                     */
+                    statusMessage: {
+                        type: String,
+                        computed: '_updateStatusMessage(book)'
+                    },
+
+                    /**
+                     * The message about the status of the book.
+                     * Shown when the button is not supported for the book.
+                     */
+                    actionUnsupportedMessage: {
+                        type: String,
+                        computed: '_updateActionUnsupportedMessage(book)'
+                    },
+
+                    /**
+                     * The URL part that defines the book Id.
+                     * Should match the pattern `/:title/:id`
+                     *
+                     */
+                    route: String,
+
+                    /**
+                     * Contains the book Id passed in the URL.
+                     *
+                     * @property {string} title the title of the book
+                     * @property {function} id the Id of the book
+                     */
+                    routeData: {
+                        type: Object,
+                        observer: "_routeDataChanged"
+                    }
+                };
+            }
+
+            static get actions() {
+                return {
+                    findBookById(bookId) {
+                        return {
+                            type: ExlibrisActions.FIND_BOOK_BY_ID,
+                            bookId: bookId
+                        }
+                    }
+                }
+            }
+
+            /**
+             * Dispatches action to find book by Id specified by the `routeData`.
+             */
+            _routeDataChanged(routeData) {
+                if (this.routeData.id) {
+                    this.dispatch('findBookById', routeData.id);
+                }
+            }
+
+            /**
+             * Sets the appropriate button title and click handler function
+             * according to the passed book.
+             */
+            _updateButton(book) {
+                if (book) {
+                    switch (book.status) {
+                        case ExlibrisApp.BookStatus.EXPECTED_SOON:
+                        case ExlibrisApp.BookStatus.EXPECTED: {
+                            return {
+                                title: 'RESERVE',
+                                clickHandler: this._requestReservation
+                            };
+                        }
+
+                        case ExlibrisApp.BookStatus.OVERDUE:
+                        case ExlibrisApp.BookStatus.BORROWED:
+                        case ExlibrisApp.BookStatus.SHOULD_RETURN_SOON: {
+                            if (book.isAllowedLoanExtension) {
+                                return {
+                                    title: 'EXTEND LOAN PERIOD',
+                                    clickHandler: this._requestLoanExtension
+                                };
+                            }
+                            break;
+                        }
+
+                        case ExlibrisApp.BookStatus.RESERVED:
+                        case ExlibrisApp.BookStatus.READY_TO_PICK_UP: {
+                            return {
+                                title: 'CANCEL RESERVATION',
+                                clickHandler: this._requestCancelReservation
+                            };
+                        }
+                        default:
+                            return null;
+                    }
+                }
+            }
+
+            /**
+             * Sets the appropriate status message
+             * according to the passed book.
+             */
+            _updateStatusMessage(book) {
+                if (book) {
+                    switch (book.status) {
+                        case ExlibrisApp.BookStatus.AVAILABLE: {
+                            return book.availableCount ? book.availableCount + ' available.\nScan QR code to borrow.' : '';
+                        }
+
+                        case ExlibrisApp.BookStatus.EXPECTED: {
+                            return 'Book not available.';
+                        }
+
+                        case ExlibrisApp.BookStatus.EXPECTED_SOON: {
+                            return 'Arriving to library shortly.';
+                        }
+
+                        case ExlibrisApp.BookStatus.OVERDUE: {
+                            if (book.dueDate) {
+                                const now = new Date();
+                                const numberOfOverdueDays = now.getDate() - book.dueDate.getDate();
+                                return numberOfOverdueDays + ' days overdue.';
+                            }
+                            break;
+                        }
+
+                        case ExlibrisApp.BookStatus.READY_TO_PICK_UP: {
+                            return book.date ? 'Book is ready to pick up.\nBorrow it before ' + book.date.toLocaleDateString() : '';
+                        }
+
+                        case ExlibrisApp.BookStatus.RESERVED: {
+                            return book.date ? 'Reserved for you.\nExpected on ' + book.date.toLocaleDateString() : '';
+                        }
+
+                        case ExlibrisApp.BookStatus.BORROWED:
+                        case ExlibrisApp.BookStatus.SHOULD_RETURN_SOON: {
+                            return book.dueDate ? 'Borrowed by you.\nReturn before ' + book.dueDate.toLocaleDateString() : '';
+                        }
+
+                        default:
+                            return '';
+                    }
+                }
+            }
+
+            /**
+             * Sets the appropriate message if the button is not supported
+             * for the passed book.
+             */
+            _updateActionUnsupportedMessage(book) {
+                if (book) {
+                    switch (book.status) {
+                        case ExlibrisApp.BookStatus.BORROWED:
+                        case ExlibrisApp.BookStatus.SHOULD_RETURN_SOON:
+                        case ExlibrisApp.BookStatus.OVERDUE: {
+                            if (!book.isAllowedLoanExtension) {
+                                return 'RESERVED BY ANOTHER READER';
+                            }
+                            break;
+                        }
+                        default:
+                            return '';
+                    }
+                }
+            }
+
+            /**
+             * Handles the button click.
+             * Calls the button clickHandler` function.
+             *
+             * @private
+             */
+            _handleButtonClick() {
+                this.button.clickHandler();
+            }
+
+            /**
+             * Handles the `CANCEL RESERVATION` button click.
+             *
+             * @private
+             */
+            _requestCancelReservation() {
+                alert('Reservation canceled!');
+                //Request someone to cancel reservation
+            }
+
+            /**
+             * Handles the `RESERVE` button click.
+             *
+             * @private
+             */
+            _requestReservation() {
+                alert('Book reserved!');
+                //Request someone to make reservation
+            }
+
+            /**
+             * Handles the `EXTEND FOR TWO WEEKS` button click.
+             *
+             * @private
+             */
+            _requestLoanExtension() {
+                alert('Loan period extended!');
+                //Request someone to extend loan period
+            }
+        }
+
+        window.customElements.define(ExlibrisBookDetails.is, ExlibrisBookDetails);
+    </script>
+</dom-module>

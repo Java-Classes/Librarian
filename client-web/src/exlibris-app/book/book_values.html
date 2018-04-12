@@ -19,11 +19,16 @@
   -->
 
 <script>
-    /* exported ExlibrisActions */
+    /* exported BookStatus */
 
-    const ExlibrisActions = {
-        SEARCH_BY_CATEGORY: "SEARCH_BY_CATEGORY",
-        SEARCH_BY_QUERY: "SEARCH_BY_QUERY",
-        FIND_BOOK_BY_ID: "FIND_BOOK_BY_ID",
-    }
+    ExlibrisApp.BookStatus = {
+        OVERDUE: "OVERDUE",
+        BORROWED: "BORROWED",
+        SHOULD_RETURN_SOON: "SHOULD_RETURN_SOON",
+        AVAILABLE: "AVAILABLE",
+        RESERVED: "RESERVED",
+        EXPECTED_SOON: "EXPECTED_SOON",
+        EXPECTED: "EXPECTED",
+        READY_TO_PICK_UP: "READY_TO_PICK_UP",
+    };
 </script>

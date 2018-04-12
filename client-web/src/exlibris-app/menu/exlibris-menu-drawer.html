@@ -27,6 +27,7 @@
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
 
 <link rel="import" href="./exlibris-menu-item.html">
+<link rel="import" href="../global-style.html">
 
 <dom-module id="exlibris-menu-drawer">
     <template>
@@ -37,13 +38,15 @@
 
             app-toolbar {
                 background-color: var(--exlibris-app-primary-color);
-                color: #fff;
+                color: var(--paper-grey-50);
             }
 
             exlibris-menu-item.iron-selected {
-                --exlibris-menu-item-background-color: var(--google-grey-300);
-                --exlibris-menu-item-title-color: black;
-                --exlibris-menu-item-title-font-weight: bold;
+                --exlibris-menu-item-background-color: var(--paper-grey-300);
+                --exlibris-menu-item-title: {
+                    color: var(--paper-grey-900);
+                    font-weight: bold;
+                };
             }
 
             exlibris-menu-item iron-icon {
@@ -63,7 +66,7 @@
             }
         </style>
 
-        <app-toolbar>TeamDev Library</app-toolbar>
+        <app-toolbar>Exlibris</app-toolbar>
         <iron-selector id="menu-selector"
                        attr-for-selected="data-page"
                        selected="[[selected]]">
@@ -72,7 +75,6 @@
                                 title="All Books"
                                 data-page="all-books">
                 <iron-icon icon="book"
-                           slot="icon"
                            class="app-color"></iron-icon>
             </exlibris-menu-item>
 
@@ -80,7 +82,6 @@
                                 title="Expected Soon"
                                 data-page="expected-soon">
                 <iron-icon icon="update"
-                           slot="icon"
                            class="green"></iron-icon>
             </exlibris-menu-item>
 
@@ -88,24 +89,21 @@
                                 title="Borrowed Books"
                                 data-page="borrowed-books"
                                 count="[[countBadges.borrowed]]">
-                <iron-icon icon="shopping-basket"
-                           slot="icon"></iron-icon>
+                <iron-icon icon="shopping-basket"></iron-icon>
             </exlibris-menu-item>
 
             <exlibris-menu-item link="#/reserved-books"
                                 title="Reserved Books"
                                 data-page="reserved-books"
                                 count="[[countBadges.reserved]]">
-                <iron-icon icon="lock"
-                           slot="icon"></iron-icon>
+                <iron-icon icon="lock"></iron-icon>
             </exlibris-menu-item>
 
             <exlibris-menu-item link="#/should-return-books"
                                 title="Should Return Soon"
                                 data-page="should-return-books"
                                 count="[[countBadges.shouldReturnSoon]]">
-                <iron-icon icon="query-builder"
-                           slot="icon"></iron-icon>
+                <iron-icon icon="query-builder"></iron-icon>
             </exlibris-menu-item>
 
             <exlibris-menu-item link="#/overdue-books"
@@ -113,7 +111,6 @@
                                 data-page="overdue-books"
                                 count="[[countBadges.overdue]]">
                 <iron-icon icon="warning"
-                           slot="icon"
                            class="overdue"></iron-icon>
             </exlibris-menu-item>
         </iron-selector>
@@ -143,17 +140,15 @@
 
                     /**
                      * The state of the menu items count badges.
+                     *
+                     * @typedef {Object} User's books count badges.
+                     * @property {number} overdue the overdue books count.
+                     * @property {number} shouldReturnSoon the should be returned books count.
+                     * @property {number} reserved the reserved books count.
+                     * @property {number} borrowed the borrowed books count.
                      */
-                    countBadges: {
-                        type: Object,
-                        value: {
-                            overdue: '',
-                            shouldReturnSoon: '',
-                            reserved: '',
-                            borrowed: ''
-                        }
-                    }
-                };
+                    countBadges: Object
+                }
             }
         }
 

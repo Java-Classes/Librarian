@@ -18,10 +18,9 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
+<link rel="import" href="./shell/exlibris-app-namespace.html">
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
-<link rel="import" href="./../exlibris-app/shell/redux-store.html">
-
 <link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import"
       href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
@@ -41,22 +40,31 @@
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 
-<link rel="import" href="./exlibris-book-grid.html">
+<link rel="import" href="./menu/exlibris-menu-drawer.html">
+<link rel="import" href="./shell/redux-store.html">
+<link rel="import" href="./global-style.html">
+<link rel="import" href="./book/exlibris-book-details.html">
 <link rel="import" href="./exlibris-book-search.html">
 <link rel="import" href="./exlibris-category-dropdown.html">
-<link rel="import" href="./exlibris-book-details.html">
 <link rel="import" href="./menu/exlibris-menu-drawer.html">
-<link rel="import" href="./book_values.html">
+<link rel="import" href="./book/exlibris-book-grid.html">
+<link rel="import" href="./book/book_values.html">
 
 <dom-module id="exlibris-app">
     <template>
         <style>
             :host {
-                --exlibris-app-primary-color: var(--paper-blue-600);
-                --exlibris-app-secondary-color: var(--paper-grey-600);
-                --exlibris-app-background-color: var(--paper-grey-200);
-                --app-drawer-width: 250px;
                 display: block;
+                font-family: 'Roboto', 'Noto', sans-serif;
+            }
+
+            app-drawer-layout {
+                --app-drawer-width: 250px;
+                background-color: var(--exlibris-app-background-color);
+            }
+
+            app-drawer-layout:not([narrow]) [drawer-toggle] {
+                display: none;
             }
 
             app-drawer {
@@ -67,11 +75,7 @@
 
             app-toolbar {
                 background-color: var(--exlibris-app-primary-color);
-                color: #fff;
-            }
-
-            app-drawer-layout:not([narrow]) [drawer-toggle] {
-                display: none;
+                color: var(--paper-grey-50);
             }
             exlibris-category-dropdown {
                 margin-left: 48px;
@@ -132,8 +136,7 @@
                         selected="[[routeData.page]]"
                         attr-for-selected="data-page"
                         fallback-selection="view404"
-                        role="main"
-                        on-exlibris-book-tile-click="_handleBookClick">
+                        role="main">
                     <exlibris-book-grid data-page="all-books"
                                         books="[[allBooks]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="overdue-books"
@@ -155,21 +158,20 @@
     </template>
 
     <script>
-
         /**
-         * # Library application. The polymer-based single page app.
+         * Library application. The polymer-based single page app.
          *
-         * ## How to use `<exlibris-app>` component.
-         * In typical use, just use `<exlibris-app>` at the top of your body:
+         * How to use `<exlibris-app>` component.
+         * In typical use, just add `<exlibris-app>` to the top of your body:
          * <body>
          *   <exlibris-app></exlibris-app>
          * </body>
          *
          * @customElement
          * @polymer
-         * @appliesMixin ReduxMixin
+         * @appliesMixin ExlibrisApp.ReduxMixin
          */
-        class ExlibrisApp extends ExlibrisApplication.ReduxMixin(Polymer.Element) {
+        class ExlibrisMainApp extends ExlibrisApp.ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'exlibris-app';
             }
@@ -333,26 +335,6 @@
                 this.dispatch('searchByCategory', this.categories[e.detail]);
             }
 
-            /**
-             * Handles the book tile click event.
-             * Sets the route path for the specified book using the book title and the Id.
-             *
-             * @param e the book tile click event.
-             *        `e.detail` contains the book Id and the book title.
-             * @private
-             */
-            _handleBookClick(e) {
-                const bookId = e.detail.bookId;
-                const bookTitle = e.detail.bookTitle;
-                e.stopPropagation();
-                e.preventDefault();
-                if (bookId && bookTitle) {
-                    return this.set('route.path', '/book-details/' + bookTitle.replace(/\s/g, '_') + '/' + bookId);
-                }
-                this.set('route.path', '/view404');
-            }
-
-
 
             /**
              * Handles the exlibris-book-search-search event.
@@ -366,6 +348,6 @@
             }
         }
 
-        window.customElements.define(ExlibrisApp.is, ExlibrisApp);
+        window.customElements.define(ExlibrisMainApp.is, ExlibrisMainApp);
     </script>
 </dom-module>

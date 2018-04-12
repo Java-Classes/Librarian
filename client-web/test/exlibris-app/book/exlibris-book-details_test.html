@@ -1,0 +1,224 @@
+<!doctype html>
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>book-grid test</title>
+
+    <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../../../bower_components/web-component-tester/browser.js"></script>
+    <script src="../../../node_modules/redux/dist/redux.js"></script>
+    <script src="../test_variables.js"></script>
+
+    <link rel="import" href="../../../src/exlibris-app/book/exlibris-book-details.html">
+    <link rel="import" href="../test_variables.js">
+    <link rel="import" href="../../../src/exlibris-app/book/book_values.html">
+</head>
+<body>
+
+<test-fixture id="BasicTestFixture">
+    <template>
+        <exlibris-book-details></exlibris-book-details>
+    </template>
+</test-fixture>
+
+<script>
+    suite('book-dialog', function () {
+        // const TEST_BOOK = TEST_BOOKS[0];
+        const IMAGE_SELECTOR = 'iron-image';
+        const BOOK_TITLE_SELECTOR = '.head-region > .head-info > .head-text > h1';
+        const BOOK_AUTHOR_SELECTOR = '.head-region > .head-info > .head-text > h3';
+        const BOOK_FULL_STATUS_MESSAGE_SELECTOR = '.head-region > .head-info > .head-text > h2';
+        const BOOK_DESCRIPTION = '.book-description';
+        const RESERVE_CANCEL_BUTTON_SELECTOR = '.head-region > .head-info > .head-button > #book-dialog-cancel-button';
+        const RESERVE_BUTTON_SELECTOR = '.head-region > .head-info > .head-button > #book-dialog-reserve-button';
+        const EXTEND_BUTTON_SELECTOR = '.head-region > .head-info > .head-button > #book-dialog-extend-button';
+        const RESERVED_BY_ANOTHER_SELECTOR = '.head-region > .head-info > .head-button > h3';
+
+        // let bookDetails;
+        // setup(() => {
+        //     bookDetails = fixture('BasicTestFixture');
+        // });
+        //
+        // test('should display book image, title, author and description.', function () {
+        //     bookDetails.set('book', TEST_BOOK);
+        //     bookDetails.open();
+        //     const dialogShadowRoot = bookDetails.shadowRoot;
+        //     const bookCover = dialogShadowRoot.querySelector(IMAGE_SELECTOR);
+        //     const bookTitle = dialogShadowRoot.querySelector(BOOK_TITLE_SELECTOR);
+        //     const bookAuthor = dialogShadowRoot.querySelector(BOOK_AUTHOR_SELECTOR);
+        //     const bookFullStatusMessage = dialogShadowRoot.querySelector(BOOK_FULL_STATUS_MESSAGE_SELECTOR);
+        //     const bookDescription = dialogShadowRoot.querySelector(BOOK_DESCRIPTION);
+        //
+        //     assert.equal(bookCover.src, TEST_BOOK.image);
+        //     assert.equal(bookTitle.innerHTML, TEST_BOOK.title);
+        //     assert.equal(bookAuthor.innerHTML, TEST_BOOK.author);
+        //     assert.equal(bookFullStatusMessage.innerHTML, TEST_BOOK.fullStatusMessage);
+        //     assert.equal(bookDescription.innerHTML, TEST_BOOK.description);
+        // });
+        //
+        // test('should display `RESERVE` button when book status is `EXPECTED` and fire event on click.', function (done) {
+        //     const expectedBook = Object.assign(TEST_BOOK, {status: bookStatus.EXPECTED});
+        //     bookDetails.set('book', expectedBook);
+        //     bookDetails.addEventListener('book-dialog-reserve-book', function (e) {
+        //         const bookId = e.detail.bookId;
+        //         assert.equal(bookId, expectedBook.id);
+        //         done();
+        //     });
+        //
+        //     bookDetails.open();
+        //     const dialogShadowRoot = bookDetails.shadowRoot;
+        //     flush(function () {
+        //         const reserveButton = dialogShadowRoot.querySelector(RESERVE_BUTTON_SELECTOR);
+        //         assert.isNotNull(reserveButton, 'Button is not displayed');
+        //         assert.equal(reserveButton.innerHTML.trim(), 'RESERVE');
+        //         reserveButton.click();
+        //     });
+        // });
+        //
+        // test('should display `CANCEL RESERVATION` button when book status is `RESERVED` and fire event on click.', function (done) {
+        //     const expectedBook = Object.assign(TEST_BOOK, {status: bookStatus.RESERVED});
+        //     bookDetails.set('book', expectedBook);
+        //     bookDetails.addEventListener('book-dialog-cancel-reservation', function (e) {
+        //         const bookId = e.detail.bookId;
+        //         assert.equal(bookId, expectedBook.id);
+        //         done();
+        //     });
+        //
+        //     bookDetails.open();
+        //     const dialogShadowRoot = bookDetails.shadowRoot;
+        //     flush(function () {
+        //         const cancelButton = dialogShadowRoot.querySelector(RESERVE_CANCEL_BUTTON_SELECTOR);
+        //         assert.isNotNull(cancelButton, 'Button is not displayed');
+        //         assert.equal(cancelButton.innerHTML.trim(), 'CANCEL RESERVATION');
+        //         cancelButton.click();
+        //     });
+        // });
+        //
+        // test('should display `EXTEND FOR TWO WEEKS` button when book status is `SHOULD_RETURN_SOON`' +
+        //     ' and available for extension. Than fire event on click.', function (done) {
+        //     const bookAllowedToExtend = Object.assign(TEST_BOOK, {
+        //         status: bookStatus.SHOULD_RETURN_SOON,
+        //         isAllowedLoanExtension: true
+        //     });
+        //     bookDetails.set('book', bookAllowedToExtend);
+        //     bookDetails.addEventListener('book-dialog-extend-loan', function (e) {
+        //         const bookId = e.detail.bookId;
+        //         assert.equal(bookId, bookAllowedToExtend.id);
+        //         done();
+        //     });
+        //
+        //     bookDetails.open();
+        //     const dialogShadowRoot = bookDetails.shadowRoot;
+        //     flush(function () {
+        //         const extendButton = dialogShadowRoot.querySelector(EXTEND_BUTTON_SELECTOR);
+        //         assert.isNotNull(extendButton, 'Button is not displayed');
+        //         assert.equal(extendButton.innerHTML.trim(), 'EXTEND FOR TWO WEEKS');
+        //         extendButton.click();
+        //     });
+        // });
+        //
+        // test('should display `EXTEND FOR TWO WEEKS` button when book status is `OVERDUE`' +
+        //     ' and available for extension. Than fire event on click.', function (done) {
+        //     const bookAllowedToExtend = Object.assign(TEST_BOOK, {
+        //         status: bookStatus.OVERDUE,
+        //         isAllowedLoanExtension: true
+        //     });
+        //     bookDetails.set('book', bookAllowedToExtend);
+        //     bookDetails.addEventListener('book-dialog-extend-loan', function (e) {
+        //         const bookId = e.detail.bookId;
+        //         assert.equal(bookId, bookAllowedToExtend.id);
+        //         done();
+        //     });
+        //
+        //     bookDetails.open();
+        //     const dialogShadowRoot = bookDetails.shadowRoot;
+        //     flush(function () {
+        //         const extendButton = dialogShadowRoot.querySelector(EXTEND_BUTTON_SELECTOR);
+        //         assert.isNotNull(extendButton, 'Button is not displayed');
+        //         assert.equal(extendButton.innerHTML.trim(), 'EXTEND FOR TWO WEEKS');
+        //         extendButton.click();
+        //     });
+        // });
+        //
+        //
+        // test('should display `RESERVED BY ANOTHER READER` when book status is `BORROWED`' +
+        //     ' and extension not allowed.', function (done) {
+        //     const bookNotAllowedToExtend = Object.assign(TEST_BOOK, {
+        //         status: bookStatus.BORROWED,
+        //         isAllowedLoanExtension: false
+        //     });
+        //     bookDetails.set('book', bookNotAllowedToExtend);
+        //     bookDetails.open();
+        //
+        //     const dialogShadowRoot = bookDetails.shadowRoot;
+        //     flush(function () {
+        //         const reservedByAnother = dialogShadowRoot.querySelector(RESERVED_BY_ANOTHER_SELECTOR);
+        //         assert.isNotNull(reservedByAnother, 'Row is not displayed');
+        //         assert.equal(reservedByAnother.innerHTML.trim(), 'RESERVED BY ANOTHER READER');
+        //         done();
+        //     });
+        // });
+        //
+        // test('should display `RESERVED BY ANOTHER READER` when book status is `OVERDUE`' +
+        //     ' and extension not allowed.', function (done) {
+        //     const bookNotAllowedToExtend = Object.assign(TEST_BOOK, {
+        //         status: bookStatus.OVERDUE,
+        //         isAllowedLoanExtension: false
+        //     });
+        //     bookDetails.set('book', bookNotAllowedToExtend);
+        //     bookDetails.open();
+        //
+        //     const dialogShadowRoot = bookDetails.shadowRoot;
+        //     flush(function () {
+        //         const reservedByAnother = dialogShadowRoot.querySelector(RESERVED_BY_ANOTHER_SELECTOR);
+        //         assert.isNotNull(reservedByAnother, 'Row is not displayed');
+        //         assert.equal(reservedByAnother.innerHTML.trim(), 'RESERVED BY ANOTHER READER');
+        //         done();
+        //     });
+        // });
+        //
+        // test('should display `RESERVED BY ANOTHER READER` when book status is `SHOULD_RETURN_SOON`' +
+        //     ' and extension not allowed.', function (done) {
+        //     const bookNotAllowedToExtend = Object.assign(TEST_BOOK, {
+        //         status: bookStatus.SHOULD_RETURN_SOON,
+        //         isAllowedLoanExtension: false
+        //     });
+        //     bookDetails.set('book', bookNotAllowedToExtend);
+        //     bookDetails.open();
+        //
+        //     const dialogShadowRoot = bookDetails.shadowRoot;
+        //     flush(function () {
+        //         const reservedByAnother = dialogShadowRoot.querySelector(RESERVED_BY_ANOTHER_SELECTOR);
+        //         assert.isNotNull(reservedByAnother, 'Row is not displayed');
+        //         assert.equal(reservedByAnother.innerHTML.trim(), 'RESERVED BY ANOTHER READER');
+        //         done();
+        //     });
+        // });
+
+    });
+</script>
+</body>
+</html>
