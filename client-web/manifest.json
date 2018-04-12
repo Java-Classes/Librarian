@@ -1,0 +1,7 @@
+{
+  "name": "exlibris",
+  "short_name": "exlibris",
+  "description": "The library application for TeamDev company.",
+  "start_url": "/",
+  "display": "standalone"
+}

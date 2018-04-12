@@ -1,0 +1,12 @@
+{
+  "name": "exlibris",
+  "version": "1.0.0",
+  "description": "A packaged exlibris app",
+  "scripts": {
+    "test": "polymer test",
+    "postinstall": "bower install"
+  },
+  "dependencies": {
+    "redux": "^3.6.0"
+  }
+}

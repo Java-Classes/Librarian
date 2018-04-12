@@ -1,0 +1,91 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../global-style.html">
+
+<dom-module id="exlibris-menu-item">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            a {
+                text-decoration: none;
+            }
+
+            #item {
+                margin: 10px;
+                align-items: center;
+                border-radius: var(--exlibris-menu-item-border-radius, 3px);
+                background-color: var(--exlibris-menu-item-background-color, var(--exlibris-app-background-color));
+                line-height: 40px;
+                --iron-icon-height: 26px;
+                --iron-icon-width: 26px;
+                padding-left: 12px;
+                font-size: 15px;
+                color: var(--exlibris-app-secondary-color);
+                font-weight: normal;
+            }
+
+            #title {
+                padding-left: 12px;
+                @apply --exlibris-menu-item-title;
+            }
+
+            #count-badge {
+                position: fixed;
+                right: 24px;
+            }
+        </style>
+        <a href="[[link]]">
+            <div id="item">
+                <slot></slot>
+                <span id="title">[[title]]</span>
+                <span id="count-badge">[[count]]</span>
+            </div>
+        </a>
+    </template>
+
+    <script>
+        /**
+         * The single item of the exlibris menu drawer.
+         * Can be customized with an icon and a count number.
+         *
+         * The following custom properties are also available for styling:
+         *
+         * Custom property | Description | Default
+         * ----------------|-------------|----------
+         * `--exlibris-menu-item-background-color` | Background color of the element display area | `--exlibris-app-background-color`
+         * `--exlibris-menu-item-border-radius` | Item border radius | 3px
+         * `--exlibris-menu-item-title` | Mixin applied to the item title | `{}`
+         *
+         * @customElement
+         * @polymer
+         */
+        class ExlibrisMenuItem extends Polymer.Element {
+            static get is() {
+                return 'exlibris-menu-item';
+            }
+
+            static get properties() {
+                return {
+                    /**
+                     * The link to follow on the item click.
+                     */
+                    link: String,
+
+                    /**
+                     * The element title.
+                     */
+                    title: String,
+
+                    /**
+                     * The element count badge value.
+                     */
+                    count: Number
+                };
+            }
+        }
+
+        window.customElements.define(ExlibrisMenuItem.is, ExlibrisMenuItem);
+    </script>
+</dom-module>

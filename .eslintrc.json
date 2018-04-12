@@ -24,6 +24,12 @@
     "html"
   ],
   "globals": {
-    "Polymer": false
+    "Polymer": false,
+    "ExlibrisApp": true,
+    "assert": false,
+    "test": false,
+    "suite": false,
+    "fixture": false,
+    "setup": false
   }
 }

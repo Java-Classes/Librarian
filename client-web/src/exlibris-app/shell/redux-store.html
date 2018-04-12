@@ -1,0 +1,36 @@
+<link rel="import" href="../../../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="./exlibris-app-namespace.html">
+
+<script>
+    {
+        /*global Redux PolymerRedux */
+
+        const initialState = {};
+
+        const reducer = (state = initialState, action) => {
+            switch (action) {
+                default:
+                    return state;
+            }
+        };
+
+        const store = Redux.createStore(reducer);
+
+        /**
+         * The Redux store of the Exlibris application state.
+         *
+         * @memberof ExlibrisApp
+         * @polymer
+         */
+        ExlibrisApp.store = store;
+
+        /**
+         * This mixin provides the Exlibris Application state access.
+         *
+         * @memberof ExlibrisApp
+         * @polymer
+         * @mixinFunction
+         */
+        ExlibrisApp.ReduxMixin = PolymerRedux(store);
+    }
+</script>

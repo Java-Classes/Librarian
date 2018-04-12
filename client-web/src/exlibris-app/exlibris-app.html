@@ -1,0 +1,200 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<link rel="import" href="./shell/exlibris-app-namespace.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import"
+      href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import"
+      href="../../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import"
+      href="../../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-styles/color.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+
+<link rel="import" href="./menu/exlibris-menu-drawer.html">
+<link rel="import" href="./shell/redux-store.html">
+<link rel="import" href="./global-style.html">
+
+<dom-module id="exlibris-app">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            app-drawer-layout {
+                --app-drawer-width: 250px;
+                background-color: var(--exlibris-app-background-color);
+            }
+
+            app-drawer-layout:not([narrow]) [drawer-toggle] {
+                display: none;
+            }
+
+            app-drawer {
+                --app-drawer-content-container: {
+                    background-color: var(--exlibris-app-background-color);
+                }
+            }
+
+            app-toolbar {
+                background-color: var(--exlibris-app-primary-color);
+                color: var(--paper-grey-50);
+            }
+        </style>
+
+        <app-location route="{{route}}"
+                      use-hash-as-path></app-location>
+
+        <app-route
+                route="{{route}}"
+                pattern="/:page"
+                data="{{routeData}}"></app-route>
+
+        <app-drawer-layout fullbleed narrow="{{narrow}}">
+            <!-- Drawer content -->
+            <app-drawer id="drawer" swipe-open="[[narrow]]" slot="drawer" on-click="_toggleDrawer">
+                <exlibris-menu-drawer selected="[[routeData.page]]"
+                                      count-badges="[[countBadges]]"></exlibris-menu-drawer>
+            </app-drawer>
+            <!-- Main content -->
+            <app-header-layout has-scrolling-region>
+                <app-header slot="header" condenses reveals effects="waterfall">
+                    <app-toolbar>
+                        <paper-icon-button id="number" icon="menu"
+                                           drawer-toggle></paper-icon-button>
+                        <span drawer-toggle>[[appHeaderTitle]]</span>
+                    </app-toolbar>
+                </app-header>
+
+                <iron-pages
+                        selected="[[routeData.page]]"
+                        attr-for-selected="data-page"
+                        fallback-selection="view404"
+                        role="main">
+                    <div data-page="view404">View404</div>
+                </iron-pages>
+            </app-header-layout>
+        </app-drawer-layout>
+    </template>
+    <script>
+        /**
+         * Library application. The polymer-based single page app.
+         *
+         * How to use `<exlibris-app>` component.
+         * In typical use, just add `<exlibris-app>` to the top of your body:
+         * <body>
+         *   <exlibris-app></exlibris-app>
+         * </body>
+         *
+         * @customElement
+         * @polymer
+         * @appliesMixin ExlibrisApp.ReduxMixin
+         */
+        class ExlibrisMainApp extends ExlibrisApp.ReduxMixin(Polymer.Element) {
+            static get is() {
+                return 'exlibris-app';
+            }
+
+            static get properties() {
+                return {
+
+                    /**
+                     * Defines count badges of the menu items.
+                     */
+                    countBadges: {
+                        type: Object,
+                        value: {
+                            overdue: 1,
+                            shouldReturnSoon: 1,
+                            reserved: 1,
+                            borrowed: 1
+                        }
+                    },
+
+                    /**
+                     * The title of the app header.
+                     * Computed from `routeData.page` value.
+                     */
+                    appHeaderTitle: {
+                        type: String,
+                        computed: '_getTitle(routeData.page)'
+                    }
+                };
+            }
+
+            static get observers() {
+                return [
+                    '_routePageChanged(routeData.page)',
+                ];
+            }
+
+            /**
+             * Checks for an empty route passed to redirect user to the default app view.
+             */
+            _routePageChanged() {
+                if (!this.route.path) {
+                    this.set('route.path', '/all-books');
+                }
+            }
+
+            /**
+             * Computes the title of the app header.
+             * Removes dashes from the `routeData.page` value and
+             * capitalizes each word first letter.
+             *
+             * @param {string} page the current page.
+             * @returns {string} capitalized page value without dashes.
+             * @private
+             */
+            _getTitle(page) {
+                let title;
+                if (page) {
+                    const unDashedString = page.replace(/-/g, ' ');
+                    title = unDashedString.replace(/\w\S*/g, function (txt) {
+                        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                    });
+                }
+                return title ? title : 'All Books';
+            }
+
+            /**
+             * Closes drawer on click in the narrow mode.
+             * @private
+             */
+            _toggleDrawer() {
+                if (this.narrow) {
+                    this.$.drawer.toggle();
+                }
+            }
+        }
+
+        window.customElements.define(ExlibrisMainApp.is, ExlibrisMainApp);
+    </script>
+</dom-module>
