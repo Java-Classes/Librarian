@@ -107,6 +107,11 @@
                 pattern="/:page"
                 data="{{routeData}}"
                 tail="{{subRoute}}"></app-route>
+        <app-route
+                route="{{route}}"
+                pattern="/all-books/category/:name"
+                data="{{categoryData}}"
+        ></app-route>
 
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
@@ -137,8 +142,7 @@
                                         books="[[allBooks]]">
                         <div class="category">
                             <exlibris-category-dropdown class="custom"
-                                                        categories="[[categories]]"
-                                                        on-category-changed="_changeCategory"></exlibris-category-dropdown>
+                                                        categories="[[categories]]"></exlibris-category-dropdown>
                         </div>
                     </exlibris-book-grid>
                     <exlibris-book-grid data-page="overdue-books"
@@ -252,6 +256,9 @@
                     categories: {
                         type: Array,
                         statePath: 'categories'
+                    },
+                    categoryData: {
+                        type: Object
                     }
                 };
             }
@@ -275,7 +282,8 @@
 
             static get observers() {
                 return [
-                    '_routePageChanged(routeData.page)'
+                    '_routePageChanged(routeData.page)',
+                    '_categoryDataChanged(categoryData.name)'
                 ];
             }
 
@@ -294,6 +302,16 @@
             _routePageChanged() {
                 if (!this.route.path) {
                     this.set('route.path', '/all-books');
+                }
+            }
+
+            /**
+             * * Creates the 'SEARCH_BY_CATEGORY' redux action.
+             * @param {string} name the name of the category
+             */
+            _categoryDataChanged(name) {
+                if (name) {
+                    this.dispatch('searchByCategory', name);
                 }
             }
 
@@ -325,16 +343,6 @@
                 if (this.narrow) {
                     this.$.drawer.toggle();
                 }
-            }
-
-            /**
-             * Creates the 'SEARCH_BY_CATEGORY' redux action after  appearing of
-             * "selected-changed" event from paper-dropdown-menu'.
-             *
-             * @private
-             */
-            _changeCategory(e) {
-                this.dispatch('searchByCategory', this.categories[e.detail]);
             }
 
 

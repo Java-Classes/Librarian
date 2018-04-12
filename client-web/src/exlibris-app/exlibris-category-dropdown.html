@@ -44,13 +44,26 @@
                     color: var(--paper-grey-600);
                 };
             }
+            a {
+                text-decoration: none !important;
+                color: var(--paper-grey-900);
+            }
+            a:visited {
+                color: var(--paper-grey-900);
+            }
+
+            a:active {
+                color: var(--paper-grey-900);
+            }
         </style>
 
         <paper-dropdown-menu label="Category" vertical-offset="60">
             <paper-listbox slot="dropdown-content" class="dropdown-content"
                            on-selected-changed="_changeCategory">
                 <template is="dom-repeat" items="[[categories]]">
-                    <paper-item>[[item]]</paper-item>
+                    <a href="#/all-books/category/[[item]]">
+                        <paper-item>[[item]]</paper-item>
+                    </a>
                 </template>
             </paper-listbox>
         </paper-dropdown-menu>
@@ -81,12 +94,6 @@
                         value: []
                     }
                 };
-            }
-
-            _changeCategory(e) {
-                this.dispatchEvent(new CustomEvent('category-changed', {
-                    detail: e.detail.value
-                }));
             }
 
         }
