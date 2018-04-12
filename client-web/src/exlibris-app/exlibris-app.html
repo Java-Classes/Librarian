@@ -265,9 +265,9 @@
 
             static get actions() {
                 return {
-                    searchByCategory(category) {
+                    filterByCategory(category) {
                         return {
-                            type: ExlibrisActions.SEARCH_BY_CATEGORY,
+                            type: ExlibrisActions.FILTER_BY_CATEGORY,
                             category: category
                         };
                     },
@@ -306,12 +306,12 @@
             }
 
             /**
-             * * Creates the 'SEARCH_BY_CATEGORY' redux action.
+             * * Creates the 'FILTER_BY_CATEGORY' redux action.
              * @param {string} name the name of the category
              */
             _categoryDataChanged(name) {
                 if (name) {
-                    this.dispatch('searchByCategory', name);
+                    this.dispatch('filterByCategory', name);
                 }
             }
 
