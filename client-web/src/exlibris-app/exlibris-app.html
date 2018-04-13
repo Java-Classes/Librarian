@@ -101,17 +101,24 @@
                         fallback-selection="view404"
                         role="main">
                     <exlibris-book-grid data-page="all-books"
-                                        books="[[allBooks]]"></exlibris-book-grid>
+                                        books="[[allBooks]]"
+                                        message="[[bookMessage.ALL]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="overdue-books"
-                                        books="[[overdueBooks]]"></exlibris-book-grid>
+                                        books="[[overdueBooks]]" type-of-books="overdue"
+                                        message="[[bookMessage.OVERDUE]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="borrowed-books"
-                                        books="[[borrowedBooks]]"></exlibris-book-grid>
+                                        books="[[borrowedBooks]]" type-of-books="borrowed"
+                                        message="[[bookMessage.BORROWED]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="reserved-books"
-                                        books="[[reservedBooks]]"></exlibris-book-grid>
+                                        books="[[reservedBooks]]" type-of-books="reserved"
+                                        message="[[bookMessage.RESERVED]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="expected-soon"
-                                        books="[[expectedSoonBooks]]"></exlibris-book-grid>
+                                        books="[[expectedSoonBooks]]" type-of-books="expected"
+                                        message="[[bookMessage.EXPECTED_SOON]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="should-return-books"
-                                        books="[[shouldReturnBooks]]"></exlibris-book-grid>
+                                        books="[[shouldReturnBooks]]"
+                                        type-of-books="should return soon"
+                                        message="[[bookMessage.SHOULD_RETURN_SOON]]"></exlibris-book-grid>
                     <div data-page="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
@@ -194,6 +201,16 @@
                         type: Array,
                         statePath: 'expectedSoonBooks'
                     },
+
+                    /**
+                     * The enum of book messages tht will be shown in the case
+                     * of an empty books array.
+                     */
+                    bookMessage: {
+                        type: Object,
+                        value: ExlibrisApp.BookMessage
+                    },
+
                     /**
                      * The title of the app header.
                      * Computed from `routeData.page` value.
