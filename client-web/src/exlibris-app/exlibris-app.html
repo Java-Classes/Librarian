@@ -55,7 +55,6 @@
         <style>
             :host {
                 display: block;
-                font-family: 'Roboto', 'Noto', sans-serif;
             }
 
             app-drawer-layout {
@@ -142,25 +141,32 @@
                         fallback-selection="view404"
                         role="main">
                     <exlibris-book-grid data-page="all-books"
-                                        books="[[allBooks]]">
+                                        books="[[allBooks]]"
+                                        message="[[bookMessage.ALL]]">
                         <div class="category">
                             <exlibris-category-dropdown class="custom"
                                                         categories="[[categories]]"></exlibris-category-dropdown>
                         </div>
                     </exlibris-book-grid>
                     <exlibris-book-grid data-page="overdue-books"
-                                        books="[[overdueBooks]]"></exlibris-book-grid>
+                                        books="[[overdueBooks]]" type-of-books="overdue"
+                                        message="[[bookMessage.OVERDUE]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="borrowed-books"
-                                        books="[[borrowedBooks]]"></exlibris-book-grid>
+                                        books="[[borrowedBooks]]" type-of-books="borrowed"
+                                        message="[[bookMessage.BORROWED]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="reserved-books"
-                                        books="[[reservedBooks]]"></exlibris-book-grid>
+                                        books="[[reservedBooks]]" type-of-books="reserved"
+                                        message="[[bookMessage.RESERVED]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="expected-soon"
-                                        books="[[expectedSoonBooks]]"></exlibris-book-grid>
+                                        books="[[expectedSoonBooks]]" type-of-books="expected"
+                                        message="[[bookMessage.EXPECTED_SOON]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="should-return-books"
-                                        books="[[shouldReturnBooks]]"></exlibris-book-grid>
+                                        books="[[shouldReturnBooks]]"
+                                        type-of-books="should return soon"
+                                        message="[[bookMessage.SHOULD_RETURN_SOON]]"></exlibris-book-grid>
                     <exlibris-book-details data-page="book-details"
                                            route="[[subRoute]]"></exlibris-book-details>
-                    <div data-page="view404">View404</div>
+                   <div data-page="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
@@ -245,6 +251,15 @@
                     },
 
                     /**
+                     * The enum of book messages tht will be shown in the case
+                     * of an empty books array.
+                     */
+                    bookMessage: {
+                        type: Object,
+                        value: ExlibrisApp.EmptyArrayMessage
+                    },
+
+                    /**
                      * The title of the app header.
                      * Computed from `routeData.page` value.
                      */
@@ -290,10 +305,10 @@
 
             _computeCountBadges(overdueCount, shouldReturnCount, reservedCount, borrowedCount) {
                 return {
-                    overdue: overdueCount,
-                    shouldReturnSoon: shouldReturnCount,
-                    reserved: reservedCount,
-                    borrowed: borrowedCount
+                    overdue: overdueCount !== 0 ? overdueCount : '',
+                    shouldReturnSoon: shouldReturnCount !== 0 ? shouldReturnCount : '',
+                    reserved: reservedCount !== 0 ? reservedCount : '',
+                    borrowed: borrowedCount !== 0 ? borrowedCount : ''
                 }
             }
 

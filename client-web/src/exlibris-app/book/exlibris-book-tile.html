@@ -24,14 +24,16 @@
 <link rel="import" href="../../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="book_values.html">
+<link rel="import" href="./../global-style.html">
+<link rel="import" href="./book_values.html">
 
 <dom-module id="exlibris-book-tile">
     <template>
         <style>
             :host {
+                @apply --shadow-elevation-8dp;
                 display: block;
                 border-radius: 3px;
-                box-shadow: 4px 4px 10px #888888;
                 background-color: var(--paper-grey-900);
                 width: 160px;
                 height: 300px;
@@ -61,45 +63,46 @@
                 bottom: 0;
                 left: 0;
                 right: 0;
-                background: var(--paper-grey-50);
+                background: var( --light-theme-background-color);
             }
 
             #title {
-                text-overflow: ellipsis;
-                overflow: hidden;
+                @apply --paper-font-body1;
+                @apply --paper-font-common-nowrap;
                 width: 145px;
-                white-space: nowrap;
-                color: var(--paper-grey-900);
-                font-size: 14px;
+                color: var(--paper-grey-800);
                 padding-left: 9px;
-                margin-top: 3px;
-
+                margin-top: 6px;
             }
 
             #author {
-                text-overflow: ellipsis;
-                overflow: hidden;
+                @apply --paper-font-caption;
+                @apply --paper-font-common-nowrap;
                 width: 150px;
-                white-space: nowrap;
                 color: var(--paper-grey-700);
-                font-size: 12px;
                 padding-left: 9px;
             }
 
-            #status-text {
+            #status {
+                @apply --layout-horizontal;
+                @apply --layout-center;
                 background: var(--exlibris-app-primary-color);
-                color: var(--paper-grey-50);
                 font-size: 12px;
-                text-align: center;
                 margin-top: 5px;
+                height: 30px;
             }
 
-            #status-text.warn {
+            #status.warn {
                 background: var(--paper-red-400);
             }
 
-            #status-text.active {
+            #status.active {
                 background: var(--paper-green-400);
+            }
+
+            #status-text {
+                color: var(--dark-theme-text-color);
+                margin: 0 auto;
             }
         </style>
         <a href="[[link]]">
@@ -109,7 +112,9 @@
             <div id="synopsis">
                 <div id="title" title="[[book.title]]">[[book.title]]</div>
                 <div id="author" title="[[book.author]]">[[book.author]]</div>
-                <div id="status-text" class$="[[statusClass]]">[[statusMessage]]</div>
+                <div id="status" class$="[[statusClass]]">
+                    <div id="status-text">[[statusMessage]]</div>
+                </div>
             </div>
         </a>
     </template>
@@ -159,7 +164,6 @@
                         type: String,
                         computed: '_computeLink(book)'
                     }
-
                 };
             }
 
