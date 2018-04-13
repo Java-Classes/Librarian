@@ -142,7 +142,7 @@
                         role="main">
                     <exlibris-book-grid data-page="all-books"
                                         books="[[allBooks]]"
-                                        message="[[bookMessage.ALL]]">
+                                        message="[[messageForEmptyAllBooks]]">
                         <div class="category">
                             <exlibris-category-dropdown class="custom"
                                                         categories="[[categories]]"></exlibris-category-dropdown>
@@ -166,7 +166,7 @@
                                         message="[[bookMessage.SHOULD_RETURN_SOON]]"></exlibris-book-grid>
                     <exlibris-book-details data-page="book-details"
                                            route="[[subRoute]]"></exlibris-book-details>
-                   <div data-page="view404">View404</div>
+                    <div data-page="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
@@ -274,6 +274,9 @@
                     categories: {
                         type: Array,
                         statePath: 'categories'
+                    },
+                    messageForEmptyAllBooks: {
+                        type: String
                     }
                 };
             }
@@ -328,6 +331,7 @@
              */
             _categoryDataChanged(name) {
                 if (name) {
+                    this.messageForEmptyAllBooks = "There are no books in this category.";
                     this.dispatch('filterByCategory', name);
                 }
             }
@@ -338,7 +342,10 @@
              * @private
              */
             _searchDataChanged(query) {
-                    this.dispatch('searchByQuery', query);
+                if (query) {
+                    this.messageForEmptyAllBooks = "We couldn't find anything for your search - " + query + ".";
+                }
+                this.dispatch('searchByQuery', query);
             }
 
 
@@ -383,6 +390,13 @@
                 this.set('route.path', '/all-books/search/' + e.detail.query);
                 e.stopPropagation();
             }
+
+            // _computeMessageAll(name,query){
+            //     if(name){
+            //         return "name";
+            //     }
+            //     else return "query";
+            // }
         }
 
         window.customElements.define(ExlibrisMainApp.is, ExlibrisMainApp);
