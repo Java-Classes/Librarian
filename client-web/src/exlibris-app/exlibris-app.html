@@ -208,7 +208,7 @@
                      */
                     bookMessage: {
                         type: Object,
-                        value: ExlibrisApp.BookMessage
+                        value: ExlibrisApp.EmptyArrayMessage
                     },
 
                     /**
@@ -230,10 +230,10 @@
 
             _computeCountBadges(overdueCount, shouldReturnCount, reservedCount, borrowedCount) {
                 return {
-                    overdue: overdueCount,
-                    shouldReturnSoon: shouldReturnCount,
-                    reserved: reservedCount,
-                    borrowed: borrowedCount
+                    overdue: overdueCount !== 0 ? overdueCount : '',
+                    shouldReturnSoon: shouldReturnCount !== 0 ? shouldReturnCount : '',
+                    reserved: reservedCount !== 0 ? reservedCount : '',
+                    borrowed: borrowedCount !== 0 ? borrowedCount : ''
                 }
             }
 

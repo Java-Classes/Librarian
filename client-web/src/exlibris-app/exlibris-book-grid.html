@@ -25,7 +25,6 @@
 <link rel="import" href="../exlibris-app/exlibris-book-tile.html">
 <link rel="import" href="./book_values.html">
 
-
 <dom-module id="exlibris-book-grid">
     <template>
         <style>
@@ -59,7 +58,7 @@
 
     <script>
         /**
-         * `<book-grid>` components displays grid of books with picture, synopsis and status.
+         * `<book-grid>` component displays grid of books with picture, synopsis and status.
          *
          * @customElement
          * @polymer
@@ -99,7 +98,7 @@
             }
 
             /**
-             * Adds an `div` tag with `message` to the shadowRoot in the case of length of the `books` array equals 0.
+             * Adds the message to the shadow root if the books array is empty.
              *
              * @param {string} length the length of the `books` array
              * @private

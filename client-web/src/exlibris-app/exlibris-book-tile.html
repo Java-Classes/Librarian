@@ -30,9 +30,9 @@
     <template>
         <style>
             :host {
+                @apply --shadow-elevation-8dp;
                 display: block;
                 border-radius: 3px;
-                box-shadow: 4px 4px 10px #888888;
                 background-color: var(--paper-grey-900);
                 width: 160px;
                 height: 300px;
@@ -62,15 +62,13 @@
                 bottom: 0;
                 left: 0;
                 right: 0;
-                background: var(--paper-grey-50);
+                background: var( --light-theme-background-color);
             }
 
             #title {
                 @apply --paper-font-body1;
-                text-overflow: ellipsis;
-                overflow: hidden;
+                @apply --paper-font-common-nowrap;
                 width: 145px;
-                white-space: nowrap;
                 color: var(--paper-grey-800);
                 padding-left: 9px;
                 margin-top: 6px;
@@ -79,10 +77,8 @@
 
             #author {
                 @apply --paper-font-caption;
-                text-overflow: ellipsis;
-                overflow: hidden;
+                @apply --paper-font-common-nowrap;
                 width: 150px;
-                white-space: nowrap;
                 color: var(--paper-grey-700);
                 padding-left: 9px;
             }
@@ -103,8 +99,9 @@
             #status.active {
                 background: var(--paper-green-400);
             }
-            #status-text{
-                color: var(--paper-grey-50);
+
+            #status-text {
+                color: var(--dark-theme-text-color);
                 margin: 0 auto;
             }
         </style>
