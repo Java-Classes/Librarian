@@ -19,42 +19,34 @@
   -->
 
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 
 <dom-module id="exlibris-book-details-redirect-link">
     <template>
         <style>
             :host {
-                @apply --paper-font-body1;
                 display: flex;
                 margin: 5px 0 5px 0;
-
             }
 
-            #code-type {
-                padding-right: 5px;
-            }
-
-            #title {
+            #link {
+                @apply --paper-font-body1;
                 display: flex;
-                color: var(--exlibris-app-primary-color);
-                font-weight: 700;
+                text-decoration: none;
+                color: var(--paper-blue-600);
             }
 
+            #link:hover {
+                text-decoration: underline;
+            }
         </style>
 
-        <a id="title" target="_blank" href="[[redirectValues.href]]">
-            <div id="code-type" hidden="[[!redirectValues.codeType.length]]">
-                [[redirectValues.codeType]]
-            </div>
+        <a id="link" target="_blank" href="[[redirectValues.href]]">
             [[redirectValues.title]]
         </a>
-        </div>
     </template>
 
     <script>
-        const BOOK_CODE_MATCHERS = {
+        const BOOK_CODE_PATTERNS = {
             ISBN_10: /^\d{10}$/g,
             ISBN_13: /^\d{13}$/g,
             ASIN: /^[\d, A-Z]{10}$/g
@@ -100,7 +92,6 @@
                     /**
                      * The book external link reference, title and the code type.
                      *
-                     * @property {string} codeType the detected book code type.
                      * @property {string} title  the reference title.
                      * @property {string} href  the link to open in the new tab.
                      */
@@ -115,42 +106,30 @@
              * Checks for the passed book code format.
              *
              * If the `bookCode` matches the `ISBN-10` or `ASIN` pattern, generates
-             * the Amazon book link.
+             * the Amazon book search link.
+             *
              * If the `bookCode` matches the `ISBN-13` pattern, generates the Google Play Books
-             * search by the `ISBN-13` link.
-             * If the `bookCode` does not match any patterns, generates the Google Play Books
-             * search by the `bookTitle`.
+             * search link.
              */
             _calculateReference(bookCode, bookTitle) {
                 if (bookCode && bookTitle) {
-                    if (bookCode.match(BOOK_CODE_MATCHERS.ISBN_10)) {
+                    if (bookCode.match(BOOK_CODE_PATTERNS.ISBN_10)) {
                         return {
-                            codeType: 'ISBN:',
-                            title: bookCode,
+                            title: 'ISBN: ' + bookCode,
                             href: EXTERNAL_SEARCH_LINKS.AMAZON.format(bookTitle, bookCode)
                         }
                     }
-
-                    if (bookCode.match(BOOK_CODE_MATCHERS.ISBN_13)) {
+                    if (bookCode.match(BOOK_CODE_PATTERNS.ISBN_13)) {
                         return {
-                            codeType: 'ISBN:',
-                            title: bookCode,
+                            title: 'ISBN: ' + bookCode,
                             href: EXTERNAL_SEARCH_LINKS.PLAY_BOOKS.format(bookCode)
                         }
                     }
-                    if (bookCode.match(BOOK_CODE_MATCHERS.ASIN)) {
+                    if (bookCode.match(BOOK_CODE_PATTERNS.ASIN)) {
                         return {
-                            codeType: 'ASIN:',
-                            title: bookCode,
+                            title: 'ASIN: ' + bookCode,
                             href: EXTERNAL_SEARCH_LINKS.AMAZON.format(bookTitle, bookCode)
                         }
-                    }
-                }
-                if (bookTitle) {
-                    return {
-                        codeType: '',
-                        title: 'Search on Google play',
-                        href: EXTERNAL_SEARCH_LINKS.PLAY_BOOKS.format(bookTitle)
                     }
                 }
             }
