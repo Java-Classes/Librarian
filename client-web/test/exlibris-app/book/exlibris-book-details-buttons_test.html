@@ -163,8 +163,8 @@
                 testElements.forEach(function (element, index) {
                     const wideScreenMessage = element.shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.WIDE_SCREEN_MESSAGE);
                     const narrowScreenMessage = element.shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.NARROW_SCREEN_MESSAGE);
-                    assert.equal(wideScreenMessage.innerHTML, BOOKS_AND_BUTTONS_COMBINATIONS[index].actionUnsupportedMessage);
-                    assert.equal(narrowScreenMessage.innerHTML, BOOKS_AND_BUTTONS_COMBINATIONS[index].actionUnsupportedMessage);
+                    assert.equal(wideScreenMessage.innerHTML.trim(), BOOKS_AND_BUTTONS_COMBINATIONS[index].actionUnsupportedMessage);
+                    assert.equal(narrowScreenMessage.innerHTML.trim(), BOOKS_AND_BUTTONS_COMBINATIONS[index].actionUnsupportedMessage);
                 });
                 done();
             });

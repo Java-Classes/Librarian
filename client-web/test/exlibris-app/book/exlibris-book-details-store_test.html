@@ -48,7 +48,10 @@
 <script>
     suite('exlibris-book-details', function () {
         const TEST_BOOK = ExlibrisAppTest.BOOKS[0];
-        const TEST_BOOK_ROUTE_DATA = {title: TEST_BOOK.title, id: TEST_BOOK.id};
+        const TEST_BOOK_ROUTE = {
+            prefix: '/book-details',
+            path: '/' + TEST_BOOK.title.replace(/\s/g, '_') + '/' + TEST_BOOK.id
+        };
         let mockStore;
 
         setup(() => {
@@ -72,7 +75,7 @@
             const expectedAction = {type: ExlibrisActions.FIND_BOOK_BY_ID, bookId: TEST_BOOK.id};
             mockStore.expects("dispatch").once().withArgs(expectedAction);
             const element = fixture('BasicTestFixture');
-            element.set('routeData', TEST_BOOK_ROUTE_DATA);
+            element.set('route', TEST_BOOK_ROUTE);
 
             mockStore.verify();
         });
