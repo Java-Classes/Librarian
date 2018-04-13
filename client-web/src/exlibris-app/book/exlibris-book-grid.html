@@ -39,6 +39,12 @@
                 color: var(--paper-grey-700);
             }
         </style>
+        <dom-if is="dom-if" if="[[!books.length]]">
+            <template>
+                <div class="center">[[message]]</div>
+            </template>
+        </dom-if>
+
         <slot></slot>
         <iron-list items="[[books]]" as="book" scroll-target="document" grid>
             <template>
@@ -47,6 +53,7 @@
                 </div>
             </template>
         </iron-list>
+
 
         <!-- this element loads more books when the user scrolls down and reached the lower threshold -->
         <iron-scroll-threshold id="scrollThreshold"
@@ -87,30 +94,8 @@
                 };
             }
 
-            static get observers() {
-                return [
-                    '_booksLengthChanged(books.length)'
-                ];
-            }
-
             _onLowerThreshold() {
                 //TODO:2018-53-11:yurii.haidamaka add data loading from the server
-            }
-
-            /**
-             * Adds the message to the shadow root if the books array is empty.
-             *
-             * @param {string} length the length of the `books` array
-             * @private
-             */
-            _booksLengthChanged(length) {
-                if (length === 0) {
-                    const div = document.createElement("div");
-                    const textContent = document.createTextNode(this.message);
-                    div.appendChild(textContent);
-                    div.className = "center";
-                    this.shadowRoot.appendChild(div);
-                }
             }
         }
 
