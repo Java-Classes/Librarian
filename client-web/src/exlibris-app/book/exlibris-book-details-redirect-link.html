@@ -26,10 +26,10 @@
     <template>
         <style>
             :host {
+                @apply --paper-font-body1;
                 display: flex;
-                font-size: 12px;
-                font-weight: lighter;
                 margin: 5px 0 5px 0;
+
             }
 
             #code-type {
@@ -38,22 +38,17 @@
 
             #title {
                 display: flex;
-                text-decoration-style: dotted;
+                color: var(--exlibris-app-primary-color);
+                font-weight: 700;
             }
 
-            #title iron-icon {
-                --iron-icon-width: 10px;
-                --iron-icon-height: 10px;
-                margin-top: -2px;
-            }
         </style>
 
-        <div id="code-type" hidden="[[!redirectValues.codeType.length]]">
-            [[redirectValues.codeType]]
-        </div>
         <a id="title" target="_blank" href="[[redirectValues.href]]">
+            <div id="code-type" hidden="[[!redirectValues.codeType.length]]">
+                [[redirectValues.codeType]]
+            </div>
             [[redirectValues.title]]
-            <iron-icon icon="open-in-new"></iron-icon>
         </a>
         </div>
     </template>
