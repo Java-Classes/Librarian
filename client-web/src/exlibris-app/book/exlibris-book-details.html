@@ -262,7 +262,7 @@
                      */
                     button: {
                         type: Object,
-                        computed: '_updateButton(book)',
+                        computed: '_chooseButton(book)',
                         value: null
                     },
 
@@ -271,7 +271,7 @@
                      */
                     statusMessage: {
                         type: String,
-                        computed: '_updateStatusMessage(book)'
+                        computed: '_calculateStatusMessage(book)'
                     },
 
                     /**
@@ -280,7 +280,7 @@
                      */
                     actionUnsupportedMessage: {
                         type: String,
-                        computed: '_updateActionUnsupportedMessage(book)'
+                        computed: '_calculateActionUnsupportedMessage(book)'
                     },
 
                     /**
@@ -319,7 +319,6 @@
              */
             _routeDataChanged(routeData) {
                 if (this.route && this.route.prefix === '/book-details' && this.routeData.id) {
-                    console.log('dispatch');
                     this.dispatch('findBookById', routeData.id);
                 }
             }
@@ -328,7 +327,7 @@
              * Sets the appropriate button title and click handler function
              * according to the passed book.
              */
-            _updateButton(book) {
+            _chooseButton(book) {
                 if (book) {
                     switch (book.status) {
                         case ExlibrisApp.BookStatus.EXPECTED_SOON:
@@ -368,7 +367,7 @@
              * Sets the appropriate status message
              * according to the passed book.
              */
-            _updateStatusMessage(book) {
+            _calculateStatusMessage(book) {
                 if (book) {
                     switch (book.status) {
                         case ExlibrisApp.BookStatus.AVAILABLE: {
@@ -404,9 +403,6 @@
                         case ExlibrisApp.BookStatus.SHOULD_RETURN_SOON: {
                             return book.dueDate ? 'Borrowed by you.\nReturn before ' + book.dueDate.toLocaleDateString() : '';
                         }
-
-                        default:
-                            return '';
                     }
                 }
             }
@@ -415,20 +411,12 @@
              * Sets the appropriate message if the button is not supported
              * for the passed book.
              */
-            _updateActionUnsupportedMessage(book) {
+            _calculateActionUnsupportedMessage(book) {
                 if (book) {
-                    switch (book.status) {
-                        case ExlibrisApp.BookStatus.BORROWED:
-                        case ExlibrisApp.BookStatus.SHOULD_RETURN_SOON:
-                        case ExlibrisApp.BookStatus.OVERDUE: {
-                            if (!book.isAllowedLoanExtension) {
-                                return 'RESERVED BY ANOTHER READER';
-                            }
-                            break;
-                        }
-                        default:
-                            return '';
-                    }
+                    if ([ExlibrisApp.BookStatus.BORROWED,
+                            ExlibrisApp.BookStatus.SHOULD_RETURN_SOON,
+                            ExlibrisApp.BookStatus.OVERDUE].includes(book.status) &&
+                        !book.isAllowedLoanExtension) return 'RESERVED BY ANOTHER READER';
                 }
             }
 
