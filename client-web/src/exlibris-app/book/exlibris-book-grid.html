@@ -39,13 +39,12 @@
                 color: var(--paper-grey-700);
             }
         </style>
+        <slot></slot>
         <dom-if is="dom-if" if="[[!books.length]]">
             <template>
                 <div class="center">[[message]]</div>
             </template>
         </dom-if>
-
-        <slot></slot>
         <iron-list items="[[books]]" as="book" scroll-target="document" grid>
             <template>
                 <div>
