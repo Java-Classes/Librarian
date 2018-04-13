@@ -686,21 +686,22 @@ const userTestBooks = {
             dueDate: new Date(new Date().getTime() + TWO_WEEKS * MILLISECONDS_IN_ONE_DAY),
             status: "BORROWED"
         }],
-        overdue: [{
-            id: "8535902722",
-            title: "Mastering Lambdas: Java Programming in a Multicore World",
-            image: "https://books.google.com/books/content/images/frontcover/Zw5oBAAAQBAJ?fife=w200-h300",
-            author: "Maurice Naftalin",
-            category: "Java Programming",
-            description: "In this exclusive eBook, preview excerpts from brand-new and forthcoming Oracle Press Java JDK 8 books. Written by leading Java experts, Oracle Press books offer the most definitive, complete, and up-to-date coverage of the latest Java release. Featuring an introduction by bestselling programming author Herb Schildt, this eBook includes chapters from the following Oracle Press books:\n" +
-            "Java: The Complete Reference, Ninth Edition by Herb Schildt\n" +
-            "Java: A Beginner’s Guide, Sixth Edition by Herb Schildt\n" +
-            "Mastering Lambdas: Java Programming in a Multicore World by Maurice Naftalin\n" +
-            "Quick Start Guide to JavaFX by J.F. DiMarzio\n" +
-            "Mastering JavaFX 8 Controls: Create Custom JavaFX 8 Controls for Cross-Platform Applications by Hendrik Ebbers",
-            dueDate: new Date(new Date().getTime() - TWO_DAYS * MILLISECONDS_IN_ONE_DAY),
-            status: "OVERDUE"
-        }],
+        overdue: [],
+        // overdue: [{
+        //     id: "8535902722",
+        //     title: "Mastering Lambdas: Java Programming in a Multicore World",
+        //     image: "https://books.google.com/books/content/images/frontcover/Zw5oBAAAQBAJ?fife=w200-h300",
+        //     author: "Maurice Naftalin",
+        //     category: "Java Programming",
+        //     description: "In this exclusive eBook, preview excerpts from brand-new and forthcoming Oracle Press Java JDK 8 books. Written by leading Java experts, Oracle Press books offer the most definitive, complete, and up-to-date coverage of the latest Java release. Featuring an introduction by bestselling programming author Herb Schildt, this eBook includes chapters from the following Oracle Press books:\n" +
+        //     "Java: The Complete Reference, Ninth Edition by Herb Schildt\n" +
+        //     "Java: A Beginner’s Guide, Sixth Edition by Herb Schildt\n" +
+        //     "Mastering Lambdas: Java Programming in a Multicore World by Maurice Naftalin\n" +
+        //     "Quick Start Guide to JavaFX by J.F. DiMarzio\n" +
+        //     "Mastering JavaFX 8 Controls: Create Custom JavaFX 8 Controls for Cross-Platform Applications by Hendrik Ebbers",
+        //     dueDate: new Date(new Date().getTime() - TWO_DAYS * MILLISECONDS_IN_ONE_DAY),
+        //     status: "OVERDUE"
+        // }],
         shouldReturnSoon: [{
             id: "8535902724",
             title: "Getting Started with Polymer",

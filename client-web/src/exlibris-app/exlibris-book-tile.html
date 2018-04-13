@@ -66,41 +66,46 @@
             }
 
             #title {
+                @apply --paper-font-body1;
                 text-overflow: ellipsis;
                 overflow: hidden;
                 width: 145px;
                 white-space: nowrap;
-                color: var(--paper-grey-900);
-                font-size: 14px;
+                color: var(--paper-grey-800);
                 padding-left: 9px;
-                margin-top: 10px;
+                margin-top: 6px;
 
             }
 
             #author {
+                @apply --paper-font-caption;
                 text-overflow: ellipsis;
                 overflow: hidden;
                 width: 150px;
                 white-space: nowrap;
                 color: var(--paper-grey-700);
-                font-size: 12px;
                 padding-left: 9px;
             }
 
-            #status-text {
+            #status {
+                @apply --layout-horizontal;
+                @apply --layout-center;
                 background: var(--exlibris-app-primary-color);
-                color: var(--paper-grey-50);
                 font-size: 12px;
-                text-align: center;
                 margin-top: 5px;
+                height: 30px;
             }
 
-            #status-text.warn {
+            #status.warn {
                 background: var(--paper-red-400);
             }
 
-            #status-text.active {
+            #status.active {
                 background: var(--paper-green-400);
+            }
+            #status-text{
+                color: var(--paper-grey-50);
+                margin: 0 auto;
             }
         </style>
         <a href="[[link]]">
@@ -110,7 +115,9 @@
             <div id="synopsis">
                 <div id="title" title="[[book.title]]">[[book.title]]</div>
                 <div id="author" title="[[book.author]]">[[book.author]]</div>
-                <div id="status-text" class$="[[statusClass]]">[[statusMessage]]</div>
+                <div id="status" class$="[[statusClass]]">
+                    <div id="status-text">[[statusMessage]]</div>
+                </div>
             </div>
         </a>
     </template>
