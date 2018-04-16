@@ -99,7 +99,7 @@
         </style>
 
         <app-location route="{{route}}"
-                      use-hash-as-path></app-location>
+                      use-hash-as-path query-params="{{queryParams}}"></app-location>
 
         <app-route
                 route="{{route}}"
@@ -277,7 +277,8 @@
                     },
                     messageForEmptyAllBooks: {
                         type: String
-                    }
+                    },
+                    queryParams: Object
                 };
             }
 
@@ -293,6 +294,11 @@
                         return {
                             type: ExlibrisActions.SEARCH_BY_QUERY,
                             query: query
+                        };
+                    },
+                    resetFilters() {
+                        return {
+                            type: ExlibrisActions.RESET_FILTERS,
                         };
                     }
                 };
@@ -322,6 +328,9 @@
                 if (!this.route.path) {
                     this.set('route.path', '/all-books');
                 }
+                if (this.route.path === '/all-books') {
+                    this.dispatch("resetFilters")
+                }
             }
 
             /**
@@ -345,7 +354,9 @@
                 if (query) {
                     this.messageForEmptyAllBooks = "We couldn't find anything for your search - " + query + ".";
                 }
-                this.dispatch('searchByQuery', query);
+                if(query!==undefined){
+                    this.dispatch('searchByQuery', query);
+                }
             }
 
 

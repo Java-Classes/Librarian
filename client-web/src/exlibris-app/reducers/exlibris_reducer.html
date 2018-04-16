@@ -60,6 +60,10 @@
                             b.author.toLowerCase().includes(query) || b.description.toLowerCase().includes(query));
                     return Object.assign({}, state, {allBooks: filteredBooks});
                 }
+                case ExlibrisActions.RESET_FILTERS: {
+                    const allBooks = [...state.overdueBooks, ...libraryTestBooks]
+                    return Object.assign({}, state, {allBooks: allBooks});
+                }
                 case ExlibrisActions.FIND_BOOK_BY_ID: {
                     // sleep(1000);
                     const id = action.bookId;
