@@ -130,7 +130,7 @@
                                            drawer-toggle></paper-icon-button>
                         <span drawer-toggle>[[appHeaderTitle]]</span>
                         <exlibris-book-search
-                                on-exlibris-book-search-search="_handleSearch"></exlibris-book-search>
+                                on-exlibris-book-search-query-changed="_handleQueryChanged"></exlibris-book-search>
                     </app-toolbar>
                 </app-header>
 
@@ -381,12 +381,12 @@
 
 
             /**
-             * Handles the exlibris-book-search-search event.
+             * Handles the exlibris-book-query-changed event.
              *
              * @param e
              * @private
              */
-            _handleSearch(e) {
+            _handleQueryChanged(e) {
                 this.set('route.path', '/all-books/search/' + e.detail.query);
                 e.stopPropagation();
             }
