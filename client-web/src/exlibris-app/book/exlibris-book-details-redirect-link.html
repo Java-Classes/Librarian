@@ -41,8 +41,8 @@
             }
         </style>
 
-        <a id="link" target="_blank" href="[[redirectValues.href]]">
-            [[redirectValues.title]]
+        <a id="link" target="_blank" href="[[reference.value]]">
+            [[reference.title]]
         </a>
     </template>
 
@@ -54,8 +54,8 @@
         /**
          * The book external link component.
          *
-         * Generates the link to the one of global book services and
-         * opens it in the new tab. The external service choice depends
+         * Generates the link to the one of the global book services to
+         * open it in the new tab. The external service choice depends
          * on the book code format.
          *
          * @customElement
@@ -80,12 +80,12 @@
                     bookTitle: String,
 
                     /**
-                     * The book external link reference, title and the code type.
+                     * The book external link reference and its title.
                      *
-                     * @property {string} title  the reference title.
-                     * @property {string} href  the link to open in the new tab.
+                     * @property {string} title the reference title.
+                     * @property {string} value  the link to open in the new tab.
                      */
-                    redirectValues: {
+                    reference: {
                         type: Object,
                         computed: "_calculateReference(bookCode, bookTitle)"
                     }
@@ -100,28 +100,30 @@
              *
              * If the `bookCode` matches the `ISBN-13` pattern, generates the Google Play Books
              * search link.
+             *
              * @param {string} bookCode the book unique code (ISBN, ASIN).
              * @param {string} bookTitle the book title.
              * @returns {Object} the title and the value of link.
+             * @private
              */
             _calculateReference(bookCode, bookTitle) {
                 if (bookCode && bookTitle) {
                     if (bookCode.match(ExlibrisApp.BookCodePatterns.ISBN_10)) {
                         return {
                             title: 'ISBN: ' + bookCode,
-                            href: ExlibrisApp.ExternalLinkTemplates.AMAZON.format(bookTitle, bookCode)
+                            value: ExlibrisApp.ExternalLinkTemplates.AMAZON.format(bookTitle, bookCode)
                         }
                     }
                     if (bookCode.match(ExlibrisApp.BookCodePatterns.ISBN_13)) {
                         return {
                             title: 'ISBN: ' + bookCode,
-                            href: ExlibrisApp.ExternalLinkTemplates.PLAY_BOOKS.format(bookCode)
+                            value: ExlibrisApp.ExternalLinkTemplates.PLAY_BOOKS.format(bookCode)
                         }
                     }
                     if (bookCode.match(ExlibrisApp.BookCodePatterns.ASIN)) {
                         return {
                             title: 'ASIN: ' + bookCode,
-                            href: ExlibrisApp.ExternalLinkTemplates.AMAZON.format(bookTitle, bookCode)
+                            value: ExlibrisApp.ExternalLinkTemplates.AMAZON.format(bookTitle, bookCode)
                         }
                     }
                 }
