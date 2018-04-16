@@ -62,12 +62,13 @@
             mockStore.restore();
         });
 
-        test('should receive the selectedBook from the store.', function () {
-            const testState = {bookDetails: {book: TEST_BOOK}};
+        test('should receive the selected book from the store.', function () {
+            const testState = {bookDetails: {book: TEST_BOOK, loadingStatus: ExlibrisApp.LoadingStatus.COMPLETED}};
             mockStore.expects("getState").returns(testState);
             const element = fixture('BasicTestFixture');
 
             assert.deepEqual(element.book, TEST_BOOK);
+            assert.equal(element.loadingStatus, ExlibrisApp.LoadingStatus.COMPLETED);
             mockStore.verify();
         });
 
@@ -78,6 +79,20 @@
             element.set('route', TEST_BOOK_ROUTE);
 
             mockStore.verify();
+        });
+
+        test('should react on `loadingStatus` change and dispatch the custom event when the value is `LoadingStatus.NOT_FOUND`.', function (done) {
+            const testState = {bookDetails: {book: {}, loadingStatus: ExlibrisApp.LoadingStatus.NOT_FOUND}};
+            const stub = sinon.stub(ExlibrisApp.store, "getState");
+            stub.onFirstCall().returns({}).onSecondCall().returns(testState);
+
+            const element = fixture('BasicTestFixture');
+            element.addEventListener('exlibris-book-details-not-found', () => {
+                done();
+            });
+            element.set('route', TEST_BOOK_ROUTE);
+
+            stub.restore();
         });
     });
 </script>
