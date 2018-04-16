@@ -45,7 +45,7 @@
     suite('exlibris-menu-drawer', function () {
         let element;
         const SELECTED_DATA_PAGE = 'all-books';
-        const SELECTED_LINK = '#/' + SELECTED_DATA_PAGE;
+        const SELECTED_LINK = '/#/' + SELECTED_DATA_PAGE;
 
         const MENU_SELECTORS = {
             MENU_LIST: '#menu-selector',
@@ -54,12 +54,12 @@
         };
 
         const MENU_REFERENCES = [
-            '#/all-books',
-            '#/expected-soon',
-            '#/borrowed-books',
-            '#/reserved-books',
-            '#/should-return-books',
-            '#/overdue-books'];
+            '/#/all-books',
+            '/#/expected-soon',
+            '/#/borrowed-books',
+            '/#/reserved-books',
+            '/#/should-return-books',
+            '/#/overdue-books'];
 
         setup(() => {
             element = fixture('BasicTestFixture');

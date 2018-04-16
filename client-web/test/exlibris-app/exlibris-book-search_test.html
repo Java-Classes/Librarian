@@ -25,7 +25,7 @@
     <meta name="viewport"
           content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>book-search test</title>
+    <title>exlibris-book-search test</title>
 
     <script src="./../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="./../../bower_components/web-component-tester/browser.js"></script>
@@ -43,18 +43,21 @@
 </test-fixture>
 
 <script>
-    suite('book-search', function () {
+    suite('exlibris-book-search', function () {
         let bookSearch;
+        const TEST_QUERY = "TEST_QUERY";
         setup(() => {
             bookSearch = fixture('BasicTestFixture');
         });
 
-        test('should dispatch book-search-search event after press enter on the input', function (done) {
-            const input = bookSearch.shadowRoot.querySelector("#input");
-            bookSearch.addEventListener('exlibris-book-search-search', function () {
+
+        test('should dispatch book-search-search event after 500 milliseconds' +
+            ' as the query was changed', function (done) {
+            bookSearch.addEventListener('exlibris-book-search-query-changed', function (e) {
+                assert.equal(e.detail.query, TEST_QUERY);
                 done();
             });
-            MockInteractions.pressEnter(input);
+            bookSearch.query = TEST_QUERY;
         });
     });
 </script>
