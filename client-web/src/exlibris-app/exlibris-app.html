@@ -38,7 +38,7 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
 
 <link rel="import" href="./menu/exlibris-menu-drawer.html">
 <link rel="import" href="./shell/redux-store.html">
@@ -110,6 +110,8 @@
                 route="[[route]]"
                 pattern="/all-books/category/:name"
                 data="{{categoryData}}"></app-route>
+
+        <paper-progress indeterminateclass="slow red"></paper-progress>
 
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
@@ -271,9 +273,17 @@
                         type: Array,
                         statePath: 'categories'
                     },
+
+                    /**
+                     * The message that will be displayed in case of empty `allBooks` array.
+                     */
                     messageForEmptyAllBooks: {
                         type: String
                     },
+
+                    /**
+                     * The query parameters from url.
+                     */
                     queryParams: Object
                 };
             }
