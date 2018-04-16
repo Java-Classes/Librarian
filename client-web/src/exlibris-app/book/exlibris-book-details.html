@@ -226,6 +226,17 @@
 
     <script>
 
+        /**
+         * The book details page component.
+         *
+         * This component allows to display book details page with the book
+         * specific messages and the button when it is supported.
+         * The book is specified by the route which contains the book Id.
+         *
+         * @customElement
+         * @polymer
+         * @appliesMixin ExlibrisApp.ReduxMixin
+         */
         class ExlibrisBookDetails extends ExlibrisApp.ReduxMixin(Polymer.Element) {
             static get is() {
                 return 'exlibris-book-details';
@@ -233,6 +244,12 @@
 
             static get properties() {
                 return {
+                    /**
+                     * Fired when the book loading process has completed with failure.
+                     *
+                     * @event exlibris-book-details-not-found
+                     * @param {detail.path} the route which caused the book loading failure.
+                     */
 
                     /**
                      * The book object to display.
@@ -254,6 +271,11 @@
                         statePath: 'bookDetails.book'
                     },
 
+                    /**
+                     * The book loading status.
+                     *
+                     * @typedef {ExlibrisApp.LoadingStatus}
+                     */
                     loadingStatus: {
                         type: Object,
                         statePath: "bookDetails.loadingStatus",
@@ -313,7 +335,7 @@
                 return {
                     findBookById(bookId) {
                         return {
-                            type: ExlibrisActions.FIND_BOOK_BY_ID,
+                            type: ExlibrisApp.ExlibrisActions.FIND_BOOK_BY_ID,
                             bookId: bookId
                         }
                     }
@@ -324,6 +346,7 @@
              * Dispatches action to find book by Id specified by the `routeData`.
              *
              * @param {Object} routeData the resolved route parameters. Contains book Id and the book title.
+             * @private
              */
             _routeDataChanged(routeData) {
                 if (this.route && this.route.prefix === '/book-details' && routeData.id) {
@@ -337,6 +360,7 @@
              *
              * @param {Book} book the book object to choose a button.
              * @returns {Object} the title and the click function of the button for the specified book.
+             * @private
              */
             _chooseButton(book) {
                 if (book) {
@@ -377,6 +401,10 @@
             /**
              * Sets the appropriate status message
              * according to the passed book.
+             *
+             * @param {Book} book the book object.
+             * @returns {string} the status message for the specified book.
+             * @private
              */
             _calculateStatusMessage(book) {
                 if (book) {
@@ -421,6 +449,11 @@
             /**
              * Sets the appropriate message if the button is not supported
              * for the passed book.
+             *
+             * @param {Book} book the book object.
+             * @returns {string} the message to show when the action button is not supported
+             *                   for the specified book.
+             * @private
              */
             _calculateActionUnsupportedMessage(book) {
                 if (book) {
@@ -431,10 +464,17 @@
                 }
             }
 
+            /**
+             * Observes the loading status of the book to choose the appropriate
+             * way to display book details page.
+             *
+             * @param {ExlibrisApp.LoadingStatus} loadingStatus the status of the book loading.
+             * @private
+             */
             _loadingStatusChanged(loadingStatus) {
                 switch (loadingStatus) {
                     case ExlibrisApp.LoadingStatus.NOT_FOUND: {
-                        this.dispatchEvent(new CustomEvent('exlibris-book-details-not-found', {detail: {message: 'Book not found.'}}));
+                        this.dispatchEvent(new CustomEvent('exlibris-book-details-not-found', {detail: {path: this.route.path}}));
                         break;
                     }
                     case ExlibrisApp.LoadingStatus.IN_PROGRESS: {

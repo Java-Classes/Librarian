@@ -41,7 +41,7 @@
 
         ExlibrisApp.reducer = (state = initialState, action) => {
             switch (action.type) {
-                case ExlibrisActions.FIND_BOOK_BY_ID: {
+                case ExlibrisApp.ExlibrisActions.FIND_BOOK_BY_ID: {
                     const id = action.bookId;
                     const book = findElement(id, state.allBooks, state.expectedSoonBooks, state.borrowedBooks, state.reservedBooks);
                     if (book) {

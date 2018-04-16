@@ -73,7 +73,7 @@
         });
 
         test('should react on routeData change and dispatch action to the store.', function () {
-            const expectedAction = {type: ExlibrisActions.FIND_BOOK_BY_ID, bookId: TEST_BOOK.id};
+            const expectedAction = {type: ExlibrisApp.ExlibrisActions.FIND_BOOK_BY_ID, bookId: TEST_BOOK.id};
             mockStore.expects("dispatch").once().withArgs(expectedAction);
             const element = fixture('BasicTestFixture');
             element.set('route', TEST_BOOK_ROUTE);
