@@ -31,8 +31,9 @@
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="./book_values.html">
 <link rel="import" href="../actions/exlibris_action.html">
-
 <link rel="import" href="./exlibris-book-details-redirect-link.html">
+
+<script src="../reducers/loading-status.js"></script>
 
 <dom-module id="exlibris-book-details">
     <template>
@@ -188,7 +189,6 @@
                 route="{{route}}"
                 pattern="/:title/:id"
                 data="{{routeData}}"></app-route>
-
         <div class="book-card">
             <div class="head-region">
                 <iron-image src="[[book.image]]"></iron-image>
@@ -251,7 +251,13 @@
                      */
                     book: {
                         type: Object,
-                        statePath: 'selectedBook'
+                        statePath: 'bookDetails.book'
+                    },
+
+                    loadingStatus: {
+                        type: Object,
+                        statePath: "bookDetails.loadingStatus",
+                        observer: "_loadingStatusChanged"
                     },
 
                     /**
@@ -417,6 +423,24 @@
                             || ExlibrisApp.BookStatus.SHOULD_RETURN_SOON === book.status
                             || ExlibrisApp.BookStatus.OVERDUE === book.status) &&
                         !book.isAllowedLoanExtension) return 'RESERVED BY ANOTHER READER';
+                }
+            }
+
+            _loadingStatusChanged(loadingStatus) {
+                console.log(loadingStatus);
+                switch (loadingStatus) {
+                    case ExlibrisApp.LoadingStatus.NOT_FOUND: {
+                        this.dispatchEvent(new CustomEvent('exlibris-book-details-not-found', {detail: {message: 'Book not found.'}}));
+                        break;
+                    }
+                    case ExlibrisApp.LoadingStatus.IN_PROGRESS: {
+                        //TODO:2018-35-16:yegor.udovchenko: Show loading progress
+                        break;
+                    }
+                    case ExlibrisApp.LoadingStatus.COMPLETED: {
+                        //TODO:2018-36-16:yegor.udovchenko: End display `loading in progress` view
+                        break;
+                    }
                 }
             }
 

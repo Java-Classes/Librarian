@@ -63,7 +63,7 @@
         });
 
         test('should receive the selectedBook from the store.', function () {
-            const testState = {selectedBook: TEST_BOOK};
+            const testState = {bookDetails: {book: TEST_BOOK}};
             mockStore.expects("getState").returns(testState);
             const element = fixture('BasicTestFixture');
 
