@@ -102,18 +102,18 @@
                       use-hash-as-path query-params="{{queryParams}}"></app-location>
 
         <app-route
-                route="{{route}}"
+                route="[[route]]"
                 pattern="/:page"
                 data="{{routeData}}"
                 tail="{{subRoute}}"></app-route>
         <app-route
-                route="{{route}}"
-                pattern="/all-books/category/:name"
-                data="{{categoryData}}"></app-route>
-        <app-route
-                route="{{route}}"
-                pattern="/all-books/search/:query"
-                data="{{searchData}}"></app-route>
+        route="[[route]]"
+        pattern="/all-books/category/:name"
+        data="{{categoryData}}"></app-route>
+        <!--<app-route-->
+                <!--route="[[route]]"-->
+                <!--pattern="/all-books/search/:query"-->
+                <!--data="{{searchData}}"></app-route>-->
 
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
@@ -308,7 +308,7 @@
                 return [
                     '_routePageChanged(routeData.page)',
                     '_categoryDataChanged(categoryData.name)',
-                    '_searchDataChanged(searchData.query)'
+                    '_queryParamsChanged(queryParams)'
                 ];
             }
 
@@ -329,7 +329,12 @@
                     this.set('route.path', '/all-books');
                 }
                 if (this.route.path === '/all-books') {
-                    this.dispatch("resetFilters")
+                    if (this.queryParams.q !== undefined) {
+                        this.messageForEmptyAllBooks = "We couldn't find anything for your search - " + this.queryParams.q + "."
+                        this.dispatch('searchByQuery', this.queryParams.q);
+                    } else {
+                        this.dispatch("resetFilters")
+                    }
                 }
             }
 
@@ -339,24 +344,16 @@
              * @private
              */
             _categoryDataChanged(name) {
+                console.log(12);
                 if (name) {
                     this.messageForEmptyAllBooks = "There are no books in this category.";
                     this.dispatch('filterByCategory', name);
                 }
             }
 
-            /**
-             * Creates the 'SEARCH_BY_QUERY' redux action.
-             * @param {string} query the search request
-             * @private
-             */
-            _searchDataChanged(query) {
-                if (query) {
-                    this.messageForEmptyAllBooks = "We couldn't find anything for your search - " + query + ".";
-                }
-                if(query!==undefined){
-                    this.dispatch('searchByQuery', query);
-                }
+
+            _queryParamsChanged(queryParams) {
+                console.log(queryParams);
             }
 
 
@@ -390,7 +387,6 @@
                 }
             }
 
-
             /**
              * Handles the exlibris-book-query-changed event.
              *
@@ -398,7 +394,8 @@
              * @private
              */
             _handleQueryChanged(e) {
-                this.set('route.path', '/all-books/search/' + e.detail.query);
+                this.set('route.path', '/all-books');
+                this.queryParams = {q: e.detail.query};
                 e.stopPropagation();
             }
         }

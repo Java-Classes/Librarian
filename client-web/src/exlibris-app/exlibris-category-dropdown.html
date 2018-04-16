@@ -58,8 +58,7 @@
         </style>
 
         <paper-dropdown-menu label="Category" vertical-offset="60">
-            <paper-listbox slot="dropdown-content" class="dropdown-content"
-                           on-selected-changed="_changeCategory">
+            <paper-listbox slot="dropdown-content" class="dropdown-content">
                 <template is="dom-repeat" items="[[categories]]">
                     <a href="#/all-books/category/[[item]]">
                         <paper-item>[[item]]</paper-item>
