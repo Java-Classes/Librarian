@@ -110,10 +110,6 @@
         route="[[route]]"
         pattern="/all-books/category/:name"
         data="{{categoryData}}"></app-route>
-        <!--<app-route-->
-                <!--route="[[route]]"-->
-                <!--pattern="/all-books/search/:query"-->
-                <!--data="{{searchData}}"></app-route>-->
 
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
@@ -308,7 +304,6 @@
                 return [
                     '_routePageChanged(routeData.page)',
                     '_categoryDataChanged(categoryData.name)',
-                    '_queryParamsChanged(queryParams)'
                 ];
             }
 
@@ -344,18 +339,11 @@
              * @private
              */
             _categoryDataChanged(name) {
-                console.log(12);
                 if (name) {
                     this.messageForEmptyAllBooks = "There are no books in this category.";
                     this.dispatch('filterByCategory', name);
                 }
             }
-
-
-            _queryParamsChanged(queryParams) {
-                console.log(queryParams);
-            }
-
 
             /**
              * Computes the title of the app header.
