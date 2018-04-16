@@ -34,7 +34,6 @@
 
     <link rel="import" href="../../../src/exlibris-app/book/exlibris-book-details.html">
     <link rel="import" href="../../../src/exlibris-app/book/book_values.html">
-
 </head>
 <body>
 
@@ -46,6 +45,7 @@
 
 <script>
     suite('exlibris-book-details', function () {
+
 
         const BUTTON_TITLES = {
             RESERVE: 'RESERVE',
@@ -62,7 +62,11 @@
             NARROW_SCREEN_MESSAGE: '.book-card .button-narrow-screen .button-place-message'
         };
 
-        const BOOKS_AND_BUTTONS_COMBINATIONS = [
+        let booksAndButtonsCombinations;
+        let testElements;
+
+        setup(() => {
+         booksAndButtonsCombinations = [
             {
                 book: {status: ExlibrisApp.BookStatus.EXPECTED},
                 button: BUTTON_TITLES.RESERVE,
@@ -137,13 +141,13 @@
                 actionUnsupportedMessage: ''
             }
         ];
+            testElements = [];
 
-        const testElements = [];
-
-        BOOKS_AND_BUTTONS_COMBINATIONS.forEach(function (combination) {
-            const element = fixture('BasicTestFixture');
-            element.set('book', combination.book);
-            testElements.push(element);
+            booksAndButtonsCombinations.forEach(function (combination) {
+                const element = fixture('BasicTestFixture');
+                element.set('book', combination.book);
+                testElements.push(element);
+            });
         });
 
         test('should display book action button with appropriate title.', function (done) {
@@ -151,8 +155,8 @@
                 testElements.forEach(function (element, index) {
                     const wideScreenButton = element.shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.WIDE_SCREEN_BUTTON);
                     const narrowScreenButton = element.shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.NARROW_SCREEN_BUTTON);
-                    assert.equal(wideScreenButton.innerHTML.trim(), BOOKS_AND_BUTTONS_COMBINATIONS[index].button);
-                    assert.equal(narrowScreenButton.innerHTML.trim(), BOOKS_AND_BUTTONS_COMBINATIONS[index].button);
+                    assert.equal(wideScreenButton.innerHTML.trim(), booksAndButtonsCombinations[index].button);
+                    assert.equal(narrowScreenButton.innerHTML.trim(), booksAndButtonsCombinations[index].button);
                 });
                 done();
             });
@@ -163,8 +167,8 @@
                 testElements.forEach(function (element, index) {
                     const wideScreenMessage = element.shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.WIDE_SCREEN_MESSAGE);
                     const narrowScreenMessage = element.shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.NARROW_SCREEN_MESSAGE);
-                    assert.equal(wideScreenMessage.innerHTML.trim(), BOOKS_AND_BUTTONS_COMBINATIONS[index].actionUnsupportedMessage);
-                    assert.equal(narrowScreenMessage.innerHTML.trim(), BOOKS_AND_BUTTONS_COMBINATIONS[index].actionUnsupportedMessage);
+                    assert.equal(wideScreenMessage.innerHTML.trim(), booksAndButtonsCombinations[index].actionUnsupportedMessage);
+                    assert.equal(narrowScreenMessage.innerHTML.trim(), booksAndButtonsCombinations[index].actionUnsupportedMessage);
                 });
                 done();
             });

@@ -413,9 +413,9 @@
              */
             _calculateActionUnsupportedMessage(book) {
                 if (book) {
-                    if ([ExlibrisApp.BookStatus.BORROWED,
-                            ExlibrisApp.BookStatus.SHOULD_RETURN_SOON,
-                            ExlibrisApp.BookStatus.OVERDUE].includes(book.status) &&
+                    if ((ExlibrisApp.BookStatus.BORROWED === book.status
+                            || ExlibrisApp.BookStatus.SHOULD_RETURN_SOON === book.status
+                            || ExlibrisApp.BookStatus.OVERDUE === book.status) &&
                         !book.isAllowedLoanExtension) return 'RESERVED BY ANOTHER READER';
                 }
             }
