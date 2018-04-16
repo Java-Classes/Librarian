@@ -24,7 +24,7 @@
 
 <script>
     /* exported reducer */
-    /*global userTestBooks libraryTestBooks expectedSoonLibraryBooks*/
+    /*global userTestBooks libraryTestBooks expectedSoonLibraryBooks testCategories*/
     {
         const initialState = {
             overdueBooks: userTestBooks.overdue,
@@ -63,7 +63,6 @@
                 }
                 case ExlibrisApp.ExlibrisActions.FILTER_BY_CATEGORY: {
                     //TODO:2018-51-27:yurii.haidamaka Add requests to the server
-                    console.log("New filter data from the server should be received.");
 
                     /*for now we filter the test data*/
                     const category = action.category;
@@ -73,7 +72,6 @@
                 }
                 case ExlibrisApp.ExlibrisActions.SEARCH_BY_QUERY: {
                     //TODO:2018-51-27:yurii.haidamaka Add requests to the server
-                    console.log("New search data by query from the server should be received.");
 
                     /*for now we sort the test data*/
                     const query = action.query.toLowerCase();

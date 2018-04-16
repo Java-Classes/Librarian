@@ -138,9 +138,10 @@
              * @private
              */
             _queryChanged() {
+                const MILLISECONDS_IN_HALF_A_SECOND = 500;
                 this._debouncer = Polymer.Debouncer.debounce(
                     this._debouncer,
-                    Polymer.Async.timeOut.after(500),
+                    Polymer.Async.timeOut.after(MILLISECONDS_IN_HALF_A_SECOND),
                     () => this._dispatchQueryChangedEvent());
             }
         }

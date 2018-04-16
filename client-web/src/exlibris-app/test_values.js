@@ -756,5 +756,6 @@ const userTestBooks = {
     }
 ;
 
+/*exported testCategories*/
 const testCategories = ["Java Programming", "Web Design", "Business", "JavaScript", "Programming", "Biography", "Fiction", "C++"].sort();
 
