@@ -19,6 +19,7 @@
   -->
 
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="./book_values.html">
 
 <dom-module id="exlibris-book-details-redirect-link">
     <template>
@@ -46,17 +47,6 @@
     </template>
 
     <script>
-        const BOOK_CODE_PATTERNS = {
-            ISBN_10: /^\d{10}$/g,
-            ISBN_13: /^\d{13}$/g,
-            ASIN: /^[\d, A-Z]{10}$/g
-        };
-
-        const EXTERNAL_SEARCH_LINKS = {
-            AMAZON: 'https://www.amazon.com/%s/dp/%s/',
-            PLAY_BOOKS: 'https://play.google.com/store/search?q=%s&c=books'
-        };
-
         String.prototype.format = function () {
             return [...arguments].reduce((p, c) => p.replace(/%s/, c), this);
         };
@@ -113,22 +103,22 @@
              */
             _calculateReference(bookCode, bookTitle) {
                 if (bookCode && bookTitle) {
-                    if (bookCode.match(BOOK_CODE_PATTERNS.ISBN_10)) {
+                    if (bookCode.match(ExlibrisApp.BookCodePatterns.ISBN_10)) {
                         return {
                             title: 'ISBN: ' + bookCode,
-                            href: EXTERNAL_SEARCH_LINKS.AMAZON.format(bookTitle, bookCode)
+                            href: ExlibrisApp.ExternalLinkTemplates.AMAZON.format(bookTitle, bookCode)
                         }
                     }
-                    if (bookCode.match(BOOK_CODE_PATTERNS.ISBN_13)) {
+                    if (bookCode.match(ExlibrisApp.BookCodePatterns.ISBN_13)) {
                         return {
                             title: 'ISBN: ' + bookCode,
-                            href: EXTERNAL_SEARCH_LINKS.PLAY_BOOKS.format(bookCode)
+                            href: ExlibrisApp.ExternalLinkTemplates.PLAY_BOOKS.format(bookCode)
                         }
                     }
-                    if (bookCode.match(BOOK_CODE_PATTERNS.ASIN)) {
+                    if (bookCode.match(ExlibrisApp.BookCodePatterns.ASIN)) {
                         return {
                             title: 'ASIN: ' + bookCode,
-                            href: EXTERNAL_SEARCH_LINKS.AMAZON.format(bookTitle, bookCode)
+                            href: ExlibrisApp.ExternalLinkTemplates.AMAZON.format(bookTitle, bookCode)
                         }
                     }
                 }
