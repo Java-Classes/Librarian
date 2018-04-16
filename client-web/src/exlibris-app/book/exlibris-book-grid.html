@@ -18,12 +18,11 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
-<link rel="import" href="../../../bower_components/iron-list/iron-list.html">
-<link rel="import" href="exlibris-book-tile.html">
-<link rel="import" href="book_values.html">
-
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="./exlibris-book-tile.html">
+<link rel="import" href="./book_values.html">
 
 <dom-module id="exlibris-book-grid">
     <template>
@@ -31,7 +30,20 @@
             :host {
                 display: block;
             }
+
+            .center {
+                @apply --paper-font-subhead;
+                margin-top: 250px;
+                text-align: center;
+                color: var(--paper-grey-700);
+            }
         </style>
+        <dom-if is="dom-if" if="[[!books.length]]">
+            <template>
+                <div class="center">[[message]]</div>
+            </template>
+        </dom-if>
+
         <iron-list items="[[books]]" as="book" scroll-target="document" grid>
             <template>
                 <div>
@@ -46,12 +58,11 @@
                                on-lower-threshold="_onLowerThreshold"
                                scroll-target="document">
         </iron-scroll-threshold>
-
     </template>
 
     <script>
         /**
-         * `<book-grid>` components displays grid of books with picture, synopsis and status.
+         * `<book-grid>` component displays grid of books with picture, synopsis and status.
          *
          * @customElement
          * @polymer
@@ -65,13 +76,18 @@
                 return {
                     /**
                      * The array of  the next objects:
-                     *  @typedef {Object} Book
+                     * @typedef {Object} Book
                      * @property {string} title the title of a book
                      * @property {string} authors string with authors of the book
                      * @property {string} status  one of the following values: "overdue", "borrowed", "should-return-soon",
                      * "available", "reserved", "expected","ready-to-pick-up"
                      */
-                    books: Array
+                    books: Array,
+
+                    /**
+                     * The text that will be shown in the case of an empty books array.
+                     */
+                    message: String
                 };
             }
 

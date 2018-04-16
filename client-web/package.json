@@ -1,8 +1,7 @@
 {
   "name": "exlibris",
   "version": "1.0.0",
-  "private": true,
-  "description": "Test",
+  "description": "A packaged exlibris app",
   "scripts": {
     "test": "polymer test",
     "postinstall": "bower install"
