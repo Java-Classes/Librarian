@@ -48,7 +48,7 @@
 <link rel="import" href="./exlibris-category-dropdown.html">
 <link rel="import" href="./menu/exlibris-menu-drawer.html">
 <link rel="import" href="./book/exlibris-book-grid.html">
-<link rel="import" href="./book/book_values.html">
+<link rel="import" href="./book/book-values.html">
 
 <dom-module id="exlibris-app">
     <template>
@@ -163,7 +163,7 @@
                                         message="[[bookMessage.SHOULD_RETURN_SOON]]"></exlibris-book-grid>
                     <exlibris-book-details data-page="book-details"
                                            route="[[subRoute]]"
-                                            on-exlibris-book-details-not-found="_showView404"></exlibris-book-details>
+                                           on-exlibris-book-details-not-found="_showView404"></exlibris-book-details>
                     <div data-page="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
@@ -284,7 +284,8 @@
                     /**
                      * The query parameters from url.
                      */
-                    queryParams: Object
+                    queryParams: Object,
+                    categoryData: Object
                 };
             }
 
@@ -386,7 +387,7 @@
                 }
             }
 
-            _showView404(){
+            _showView404() {
                 this.$.pages.select('view404');
             }
 
