@@ -147,23 +147,23 @@
                         </div>
                     </exlibris-book-grid>
                     <exlibris-book-grid data-page="overdue-books"
-                                        books="[[overdueBooks]]" type-of-books="overdue"
+                                        books="[[overdueBooks]]"
                                         message="[[bookMessage.OVERDUE]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="borrowed-books"
-                                        books="[[borrowedBooks]]" type-of-books="borrowed"
+                                        books="[[borrowedBooks]]"
                                         message="[[bookMessage.BORROWED]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="reserved-books"
-                                        books="[[reservedBooks]]" type-of-books="reserved"
+                                        books="[[reservedBooks]]"
                                         message="[[bookMessage.RESERVED]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="expected-soon"
-                                        books="[[expectedSoonBooks]]" type-of-books="expected"
+                                        books="[[expectedSoonBooks]]"
                                         message="[[bookMessage.EXPECTED_SOON]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="should-return-books"
                                         books="[[shouldReturnBooks]]"
-                                        type-of-books="should return soon"
                                         message="[[bookMessage.SHOULD_RETURN_SOON]]"></exlibris-book-grid>
                     <exlibris-book-details data-page="book-details"
-                                           route="[[subRoute]]"></exlibris-book-details>
+                                           route="[[subRoute]]"
+                                            on-exlibris-book-details-not-found="_showView404"></exlibris-book-details>
                     <div data-page="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
@@ -384,6 +384,10 @@
                 if (this.narrow) {
                     this.$.drawer.toggle();
                 }
+            }
+
+            _showView404(){
+                this.$.pages.select('view404');
             }
 
             /**

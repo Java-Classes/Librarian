@@ -19,7 +19,9 @@
   -->
 <script src="../test_values.js"></script>
 <link rel="import" href="../actions/exlibris_actions.html">
-<link rel="import" href="../book/book_values.html">
+<link rel="import" href="../book/book-values.html">
+<script src="./loading-status.js"></script>
+<link rel="import" href="../actions/exlibris-action.html">
 
 <script>
     /* exported reducer */
@@ -32,7 +34,10 @@
             reservedBooks: userTestBooks.reserved,
             allBooks: [...userTestBooks.overdue, ...libraryTestBooks],
             expectedSoonBooks: expectedSoonLibraryBooks,
-            selectedBook: {},
+            bookDetails: {
+                book: {},
+                loadingStatus: {}
+            },
             categories: testCategories
 
         };
@@ -65,29 +70,42 @@
                     return Object.assign({}, state, {allBooks: allBooks});
                 }
                 case ExlibrisActions.FIND_BOOK_BY_ID: {
-                    // sleep(1000);
                     const id = action.bookId;
-                    const book =
-                        state.allBooks.find(x => x.id === id)
-                        || state.expectedSoonBooks.find(x => x.id === id)
-                        || state.overdueBooks.find(x => x.id === id)
-                        || state.shouldReturnBooks.find(x => x.id === id)
-                        || state.borrowedBooks.find(x => x.id === id)
-                        || state.reservedBooks.find(x => x.id === id);
-                    return Object.assign({}, state, {selectedBook: book});
+                    const book = findElement(id, state.allBooks, state.expectedSoonBooks, state.borrowedBooks, state.reservedBooks);
+                    if (book) {
+                        return Object.assign({}, state, {
+                            bookDetails: {
+                                book: book,
+                                loadingStatus: ExlibrisApp.LoadingStatus.COMPLETED
+                            }
+                        });
+                    }
+                    return Object.assign({}, state, {
+                        bookDetails: {
+                            book: {},
+                            loadingStatus: ExlibrisApp.LoadingStatus.NOT_FOUND
+                        }
+                    });
                 }
                 default:
                     return state;
             }
         };
 
-        function sleep(milliseconds) {
-            const start = new Date().getTime();
-            for (let i = 0; i < 1e7; i++) {
-                if ((new Date().getTime() - start) > milliseconds) {
-                    break;
+        function findElement(id) {
+            let element;
+            let i = 1;
+            while (!element && i < arguments.length) {
+                if (Array.isArray(arguments[i])) {
+                    const filteredArray = arguments[i].filter(x => x.id === id);
+                    if (filteredArray.length > 0) {
+                        element = filteredArray[0];
+                    }
                 }
+                i++;
             }
+            return element;
         }
+
     }
 </script>

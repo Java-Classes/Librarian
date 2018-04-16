@@ -21,9 +21,10 @@
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="../../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="./exlibris-book-tile.html">
+<link rel="import" href="book-values.html">
 <link rel="import" href="../../../bower_components/paper-styles/typography.html">
 <link rel="import" href="./exlibris-book-tile.html">
-<link rel="import" href="./book_values.html">
 
 <dom-module id="exlibris-book-grid">
     <template>
@@ -52,7 +53,6 @@
                 </div>
             </template>
         </iron-list>
-
 
         <!-- this element loads more books when the user scrolls down and reached the lower threshold -->
         <iron-scroll-threshold id="scrollThreshold"
