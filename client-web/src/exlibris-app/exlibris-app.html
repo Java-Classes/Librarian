@@ -86,7 +86,7 @@
                     display: flex;
                 }
 
-                .custom {
+                #dropdown {
                     margin: 0 auto;
                 }
             }
@@ -107,9 +107,9 @@
                 data="{{routeData}}"
                 tail="{{subRoute}}"></app-route>
         <app-route
-        route="[[route]]"
-        pattern="/all-books/category/:name"
-        data="{{categoryData}}"></app-route>
+                route="[[route]]"
+                pattern="/all-books/category/:name"
+                data="{{categoryData}}"></app-route>
 
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
@@ -140,7 +140,7 @@
                                         books="[[allBooks]]"
                                         message="[[messageForEmptyAllBooks]]">
                         <div class="category">
-                            <exlibris-category-dropdown class="custom"
+                            <exlibris-category-dropdown id="dropdown"
                                                         categories="[[categories]]"></exlibris-category-dropdown>
                         </div>
                     </exlibris-book-grid>
@@ -328,6 +328,7 @@
                         this.messageForEmptyAllBooks = "We couldn't find anything for your search - " + this.queryParams.q + "."
                         this.dispatch('searchByQuery', this.queryParams.q);
                     } else {
+                        this.$.dropdown.reset();
                         this.dispatch("resetFilters")
                     }
                 }

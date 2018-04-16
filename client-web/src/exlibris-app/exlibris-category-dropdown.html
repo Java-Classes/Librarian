@@ -44,10 +44,12 @@
                     color: var(--paper-grey-600);
                 };
             }
+
             a {
                 text-decoration: none !important;
                 color: var(--paper-grey-900);
             }
+
             a:visited {
                 color: var(--paper-grey-900);
             }
@@ -58,7 +60,8 @@
         </style>
 
         <paper-dropdown-menu label="Category" vertical-offset="60">
-            <paper-listbox slot="dropdown-content" class="dropdown-content">
+            <paper-listbox id="content" slot="dropdown-content" class="dropdown-content"
+                           selected="[[selectedItem]]">
                 <template is="dom-repeat" items="[[categories]]">
                     <a href="/#/all-books/category/[[item]]">
                         <paper-item>[[item]]</paper-item>
@@ -91,9 +94,19 @@
                     categories: {
                         type: Array,
                         value: []
-                    }
+                    },
+
+                    /**
+                     * The number of the selected item in the paper-listbox.
+                     */
+                    selectedItem: Object
                 };
             }
+
+            reset() {
+                this.$.content.selected = null;
+            }
+
 
         }
 
