@@ -27,12 +27,12 @@
     /*global userTestBooks libraryTestBooks expectedSoonLibraryBooks*/
     {
         const initialState = {
-            overdueBooks: userTestBooks.overdue,
+            overdueBooks: [...userTestBooks.overdue],
             borrowedBooks: [...userTestBooks.overdue, ...userTestBooks.borrowed],
-            shouldReturnBooks: userTestBooks.shouldReturnSoon,
-            reservedBooks: userTestBooks.reserved,
+            shouldReturnBooks: [...userTestBooks.shouldReturnSoon],
+            reservedBooks: [...userTestBooks.reserved],
             allBooks: [...userTestBooks.overdue, ...libraryTestBooks],
-            expectedSoonBooks: expectedSoonLibraryBooks,
+            expectedSoonBooks: [...expectedSoonLibraryBooks],
             bookDetails: {
                 book: {},
                 loadingStatus: {}
@@ -43,13 +43,7 @@
             switch (action.type) {
                 case ExlibrisActions.FIND_BOOK_BY_ID: {
                     const id = action.bookId;
-                    const book =
-                        state.allBooks.find(x => x.id === id)
-                        || state.expectedSoonBooks.find(x => x.id === id)
-                        || state.overdueBooks.find(x => x.id === id)
-                        || state.shouldReturnBooks.find(x => x.id === id)
-                        || state.borrowedBooks.find(x => x.id === id)
-                        || state.reservedBooks.find(x => x.id === id);
+                    const book = findElement(id, state.allBooks, state.expectedSoonBooks, state.borrowedBooks, state.reservedBooks);
                     if (book) {
                         return Object.assign({}, state, {
                             bookDetails: {
@@ -69,5 +63,21 @@
                     return state;
             }
         };
+
+        function findElement(id) {
+            let element;
+            let i = 1;
+            while (!element && i < arguments.length) {
+                if (Array.isArray(arguments[i])) {
+                    const filteredArray = arguments[i].filter(x => x.id === id);
+                    if (filteredArray.length > 0) {
+                        element = filteredArray[0];
+                    }
+                }
+                i++;
+            }
+            return element;
+        }
+
     }
 </script>

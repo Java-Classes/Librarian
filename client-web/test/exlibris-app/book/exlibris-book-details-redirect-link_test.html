@@ -1,0 +1,99 @@
+<!doctype html>
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>exlibris-book-details-redirect-link test</title>
+
+    <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../../../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import"
+          href="../../../src/exlibris-app/book/exlibris-book-details-redirect-link.html">
+    <link rel="import" href="../../../src/exlibris-app/book/book_values.html">
+</head>
+<body>
+
+<test-fixture id="BasicTestFixture">
+    <template>
+        <exlibris-book-details-redirect-link></exlibris-book-details-redirect-link>
+    </template>
+</test-fixture>
+
+<script>
+    suite('exlibris-book-details-redirect-link', function () {
+        let element;
+
+        const TEST_BOOK_CODES = {
+            ISBN_10: '1234567890',
+            ISBN_13: '1234567890000',
+            ASIN: 'A12345678A',
+            INVALID: 'CODE'
+        };
+        const TEST_BOOK_TITLE = 'TITLE';
+        const LINK_SELECTOR = '#link';
+
+        setup(() => {
+            element = fixture('BasicTestFixture');
+        });
+
+        test('should contain Amazon redirect link when code matches the `ISBN_10` pattern.', function () {
+            element.bookCode = TEST_BOOK_CODES.ISBN_10;
+            element.bookTitle = TEST_BOOK_TITLE;
+            const expectedLink = ExlibrisApp.ExternalLinkTemplates.AMAZON.format(TEST_BOOK_TITLE, TEST_BOOK_CODES.ISBN_10);
+
+            const link = element.shadowRoot.querySelector(LINK_SELECTOR);
+            assert.equal(link.href, expectedLink);
+        });
+
+        test('should contain Play Books redirect link when code matches the `ISBN_13` pattern.', function () {
+            element.bookCode = TEST_BOOK_CODES.ISBN_13;
+            element.bookTitle = TEST_BOOK_TITLE;
+            const expectedLink = ExlibrisApp.ExternalLinkTemplates.PLAY_BOOKS.format(TEST_BOOK_CODES.ISBN_13);
+
+            const link = element.shadowRoot.querySelector(LINK_SELECTOR);
+            assert.equal(link.href, expectedLink);
+        });
+
+        test('should contain Amazon redirect link when code matches the `ASIN` pattern.', function () {
+            element.bookCode = TEST_BOOK_CODES.ASIN;
+            element.bookTitle = TEST_BOOK_TITLE;
+            const expectedLink = ExlibrisApp.ExternalLinkTemplates.AMAZON.format(TEST_BOOK_TITLE, TEST_BOOK_CODES.ASIN);
+
+            const link = element.shadowRoot.querySelector(LINK_SELECTOR);
+            assert.equal(link.href, expectedLink);
+        });
+
+        test('should not contain link when the passed code does not match any pattern.', function () {
+            element.bookCode = TEST_BOOK_CODES.INVALID;
+            element.bookTitle = TEST_BOOK_TITLE;
+
+            const link = element.shadowRoot.querySelector(LINK_SELECTOR);
+            assert.equal(link.href, '');
+        });
+    });
+</script>
+</body>
+</html>
