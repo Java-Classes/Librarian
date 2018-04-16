@@ -100,6 +100,9 @@
              *
              * If the `bookCode` matches the `ISBN-13` pattern, generates the Google Play Books
              * search link.
+             * @param {string} bookCode the book unique code (ISBN, ASIN).
+             * @param {string} bookTitle the book title.
+             * @returns {Object} the title and the value of link.
              */
             _calculateReference(bookCode, bookTitle) {
                 if (bookCode && bookTitle) {

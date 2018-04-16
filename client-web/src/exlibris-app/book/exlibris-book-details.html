@@ -322,16 +322,21 @@
 
             /**
              * Dispatches action to find book by Id specified by the `routeData`.
+             *
+             * @param {Object} routeData the resolved route parameters. Contains book Id and the book title.
              */
             _routeDataChanged(routeData) {
-                if (this.route && this.route.prefix === '/book-details' && this.routeData.id) {
+                if (this.route && this.route.prefix === '/book-details' && routeData.id) {
                     this.dispatch('findBookById', routeData.id);
                 }
             }
 
             /**
-             * Sets the appropriate button title and click handler function
+             * Sets the appropriate button title and the click handler function
              * according to the passed book.
+             *
+             * @param {Book} book the book object to choose a button.
+             * @returns {Object} the title and the click function of the button for the specified book.
              */
             _chooseButton(book) {
                 if (book) {
