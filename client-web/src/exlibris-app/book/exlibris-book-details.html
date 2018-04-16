@@ -225,12 +225,11 @@
     </template>
 
     <script>
-
         /**
          * The book details page component.
          *
-         * This component allows to display book details page with the book
-         * specific messages and the button when it is supported.
+         * This component allows to display the book details page with the book
+         * specific messages, the book cover  and the button when it is supported.
          * The book is specified by the route which contains the book Id.
          *
          * @customElement
@@ -248,7 +247,7 @@
                      * Fired when the book loading process has completed with failure.
                      *
                      * @event exlibris-book-details-not-found
-                     * @param {detail.path} the route which caused the book loading failure.
+                     * @param {detail.path} the route path which caused the book loading failure.
                      */
 
                     /**
@@ -258,10 +257,10 @@
                      * @property {string} id
                      * @property {string} title the title of a book
                      * @property {string} image the book cover URL
-                     * @property {string} author string with authors of the book
+                     * @property {string} author authors of the book
                      * @property {string} category the book category
                      * @property {number} availableCount the number of items available for borrowing.
-                     * @property {boolean} isAllowedLoanExtension is loan extension provided.
+                     * @property {boolean} isAllowedLoanExtension true if the loan extension is provided.
                      * @property {Date} date the date when the book is expected to become available.
                      * @property {Date} dueDate the date when the book should be returned.
                      * @property {BookStatus} status  one of the BookStatus values.
@@ -283,15 +282,14 @@
                     },
 
                     /**
-                     * The button title and click handler.
+                     * The book details button.
                      *
                      * @property {string} title the button title
                      * @property {function} clickHandler the button click handler function
                      */
                     button: {
                         type: Object,
-                        computed: '_chooseButton(book)',
-                        value: null
+                        computed: '_chooseButton(book)'
                     },
 
                     /**
@@ -304,7 +302,7 @@
 
                     /**
                      * The message about the status of the book.
-                     * Shown when the button is not supported for the book.
+                     * Shown instead of the button when it is not supported for the book.
                      */
                     actionUnsupportedMessage: {
                         type: String,
@@ -314,15 +312,14 @@
                     /**
                      * The URL part that defines the book Id.
                      * Should match the pattern `/:title/:id`
-                     *
                      */
                     route: String,
 
                     /**
-                     * Contains the book Id passed in the URL.
+                     * Contains the book Id passed in the route.
                      *
                      * @property {string} title the title of the book
-                     * @property {function} id the Id of the book
+                     * @property {string} id the Id of the book
                      */
                     routeData: {
                         type: Object,
@@ -343,9 +340,9 @@
             }
 
             /**
-             * Dispatches action to find book by Id specified by the `routeData`.
+             * Dispatches the action to find the book by Id.
              *
-             * @param {Object} routeData the resolved route parameters. Contains book Id and the book title.
+             * @param {Object} routeData the resolved route parameters.
              * @private
              */
             _routeDataChanged(routeData) {
@@ -399,7 +396,7 @@
             }
 
             /**
-             * Sets the appropriate status message
+             * Calculates the appropriate status message
              * according to the passed book.
              *
              * @param {Book} book the book object.
@@ -447,7 +444,7 @@
             }
 
             /**
-             * Sets the appropriate message if the button is not supported
+             * Calculates the appropriate message if the button is not supported
              * for the passed book.
              *
              * @param {Book} book the book object.
