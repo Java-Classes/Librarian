@@ -40,6 +40,7 @@
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
 
+<link rel="import" href="./actions/exlibris-action.html">
 <link rel="import" href="./menu/exlibris-menu-drawer.html">
 <link rel="import" href="./shell/redux-store.html">
 <link rel="import" href="./global-style.html">
@@ -293,19 +294,19 @@
                 return {
                     filterByCategory(category) {
                         return {
-                            type: ExlibrisActions.FILTER_BY_CATEGORY,
+                            type: ExlibrisApp.ExlibrisActions.FILTER_BY_CATEGORY,
                             category: category
                         };
                     },
                     searchByQuery(query) {
                         return {
-                            type: ExlibrisActions.SEARCH_BY_QUERY,
+                            type: ExlibrisApp.ExlibrisActions.SEARCH_BY_QUERY,
                             query: query
                         };
                     },
                     resetFilters() {
                         return {
-                            type: ExlibrisActions.RESET_FILTERS,
+                            type: ExlibrisApp.ExlibrisActions.RESET_FILTERS,
                         };
                     }
                 };
