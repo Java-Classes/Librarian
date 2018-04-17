@@ -38,10 +38,12 @@
                 text-align: center;
                 color: var(--paper-grey-700);
             }
+
+            .hidden {
+                display: none;
+            }
         </style>
-        <template is="dom-if" if="[[!books.length]]">
-            <div class="center">[[message]]</div>
-        </template>
+        <div class$="[[_isBooksEmpty(books)]]">[[message]]</div>
 
         <iron-list items="[[books]]" as="book" scroll-target="document" grid>
             <template>
@@ -93,6 +95,10 @@
 
             _onLowerThreshold() {
                 this.dispatchEvent(new CustomEvent('exlibris-book-grid-lower-threshold'));
+            }
+
+            _isBooksEmpty(books) {
+                return books.length === 0 ? 'center' : 'hidden';
             }
         }
 
