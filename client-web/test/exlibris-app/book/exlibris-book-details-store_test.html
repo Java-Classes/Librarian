@@ -52,33 +52,16 @@
             prefix: '/book-details',
             path: '/' + TEST_BOOK.title.replace(/\s/g, '_') + '/' + TEST_BOOK.id
         };
-        let mockStore;
 
-        setup(() => {
-            mockStore = sinon.mock(ExlibrisApp.store);
-        });
-
-        teardown(() => {
-            mockStore.restore();
-        });
-
-        test('should receive the selected book from the store.', function () {
-            const testState = {bookDetails: {book: TEST_BOOK, loadingStatus: ExlibrisApp.LoadingStatus.COMPLETED}};
-            mockStore.expects("getState").returns(testState);
-            const element = fixture('BasicTestFixture');
-
-            assert.deepEqual(element.book, TEST_BOOK);
-            assert.equal(element.loadingStatus, ExlibrisApp.LoadingStatus.COMPLETED);
-            mockStore.verify();
-        });
-
-        test('should react on routeData change and dispatch action to the store.', function () {
+        test('should react on route change and dispatch `FIND_BOOK_BY_ID` action to the store.', function () {
+            const mockStore = sinon.mock(ExlibrisApp.store);
             const expectedAction = {type: ExlibrisApp.ExlibrisActions.FIND_BOOK_BY_ID, bookId: TEST_BOOK.id};
             mockStore.expects("dispatch").once().withArgs(expectedAction);
             const element = fixture('BasicTestFixture');
             element.set('route', TEST_BOOK_ROUTE);
 
             mockStore.verify();
+            mockStore.restore();
         });
 
         test('should react on `loadingStatus` change and dispatch the custom event when the value is `LoadingStatus.NOT_FOUND`.', function (done) {

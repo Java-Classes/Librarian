@@ -59,7 +59,7 @@
             element = fixture('BasicTestFixture');
         });
 
-        test('should contain Amazon redirect link when code matches the `ISBN_10` pattern.', function () {
+        test('should generate Amazon redirect link when code matches the `ISBN_10` pattern.', function () {
             element.bookCode = TEST_BOOK_CODES.ISBN_10;
             element.bookTitle = TEST_BOOK_TITLE;
             const expectedLink = ExlibrisApp.ExternalLinkTemplates.AMAZON.format(TEST_BOOK_TITLE, TEST_BOOK_CODES.ISBN_10);
@@ -68,7 +68,7 @@
             assert.equal(link.href, expectedLink);
         });
 
-        test('should contain Play Books redirect link when code matches the `ISBN_13` pattern.', function () {
+        test('should generate Play Books redirect link when code matches the `ISBN_13` pattern.', function () {
             element.bookCode = TEST_BOOK_CODES.ISBN_13;
             element.bookTitle = TEST_BOOK_TITLE;
             const expectedLink = ExlibrisApp.ExternalLinkTemplates.PLAY_BOOKS.format(TEST_BOOK_CODES.ISBN_13);
@@ -77,7 +77,7 @@
             assert.equal(link.href, expectedLink);
         });
 
-        test('should contain Amazon redirect link when code matches the `ASIN` pattern.', function () {
+        test('should generate Amazon redirect link when code matches the `ASIN` pattern.', function () {
             element.bookCode = TEST_BOOK_CODES.ASIN;
             element.bookTitle = TEST_BOOK_TITLE;
             const expectedLink = ExlibrisApp.ExternalLinkTemplates.AMAZON.format(TEST_BOOK_TITLE, TEST_BOOK_CODES.ASIN);
@@ -86,7 +86,7 @@
             assert.equal(link.href, expectedLink);
         });
 
-        test('should not contain link when the passed code does not match any pattern.', function () {
+        test('should not generate link when the passed code does not match to any pattern.', function () {
             element.bookCode = TEST_BOOK_CODES.INVALID;
             element.bookTitle = TEST_BOOK_TITLE;
 

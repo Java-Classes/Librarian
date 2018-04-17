@@ -30,8 +30,8 @@
     <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../../bower_components/web-component-tester/browser.js"></script>
     <script src="../../../node_modules/redux/dist/redux.js"></script>
-    <script src="../test_variables.js"></script>
 
+    <script src="../test_variables.js"></script>
     <link rel="import" href="../../../src/exlibris-app/book/exlibris-book-details.html">
     <link rel="import" href="../../../src/exlibris-app/book/book-values.html">
 </head>
@@ -46,7 +46,6 @@
 <script>
     suite('exlibris-book-details', function () {
 
-
         const BUTTON_TITLES = {
             RESERVE: 'RESERVE',
             CANCEL_RESERVATION: 'CANCEL RESERVATION',
@@ -56,91 +55,91 @@
         const ACTION_UNSUPPORTED_MESSAGE = 'RESERVED BY ANOTHER READER';
 
         const BOOK_DETAILS_SELECTORS = {
-            WIDE_SCREEN_BUTTON: '.book-card .head-region .head-info .button-wide-screen paper-button',
-            NARROW_SCREEN_BUTTON: '.book-card .button-narrow-screen paper-button',
-            WIDE_SCREEN_MESSAGE: '.book-card .head-region .head-info .button-wide-screen .button-place-message',
-            NARROW_SCREEN_MESSAGE: '.book-card .button-narrow-screen .button-place-message'
+            WIDE_SCREEN_BUTTON: '.book-card .head-part .book-details .details-action-part paper-button',
+            NARROW_SCREEN_BUTTON: '.book-card .narrow-screen-action-part paper-button',
+            WIDE_SCREEN_MESSAGE: '.book-card .head-part .book-details .details-action-part .action-part-message',
+            NARROW_SCREEN_MESSAGE: '.book-card .narrow-screen-action-part .action-part-message'
         };
 
         let booksAndButtonsCombinations;
         let testElements;
 
         setup(() => {
-         booksAndButtonsCombinations = [
-            {
-                book: {status: ExlibrisApp.BookStatus.EXPECTED},
-                button: BUTTON_TITLES.RESERVE,
-                actionUnsupportedMessage: ''
-            },
-            {
-                book: {status: ExlibrisApp.BookStatus.EXPECTED_SOON},
-                button: BUTTON_TITLES.RESERVE,
-                actionUnsupportedMessage: ''
-            },
-            {
-                book: {status: ExlibrisApp.BookStatus.AVAILABLE},
-                button: '',
-                actionUnsupportedMessage: ''
-            },
-            {
-                book: {
-                    status: ExlibrisApp.BookStatus.BORROWED,
-                    isAllowedLoanExtension: true
+            booksAndButtonsCombinations = [
+                {
+                    book: {status: ExlibrisApp.BookStatus.EXPECTED},
+                    button: BUTTON_TITLES.RESERVE,
+                    actionUnsupportedMessage: ''
                 },
-                button: BUTTON_TITLES.EXTEND_LOAN_PERIOD,
-                actionUnsupportedMessage: ''
-            },
-            {
-                book: {
-                    status: ExlibrisApp.BookStatus.OVERDUE,
-                    isAllowedLoanExtension: true
+                {
+                    book: {status: ExlibrisApp.BookStatus.EXPECTED_SOON},
+                    button: BUTTON_TITLES.RESERVE,
+                    actionUnsupportedMessage: ''
                 },
-                button: BUTTON_TITLES.EXTEND_LOAN_PERIOD,
-                actionUnsupportedMessage: ''
-            },
-            {
-                book: {
-                    status: ExlibrisApp.BookStatus.SHOULD_RETURN_SOON,
-                    isAllowedLoanExtension: true
+                {
+                    book: {status: ExlibrisApp.BookStatus.AVAILABLE},
+                    button: '',
+                    actionUnsupportedMessage: ''
                 },
-                button: BUTTON_TITLES.EXTEND_LOAN_PERIOD,
-                actionUnsupportedMessage: ''
-            },
-            {
-                book: {
-                    status: ExlibrisApp.BookStatus.BORROWED,
-                    isAllowedLoanExtension: false
+                {
+                    book: {
+                        status: ExlibrisApp.BookStatus.BORROWED,
+                        isAllowedLoanExtension: true
+                    },
+                    button: BUTTON_TITLES.EXTEND_LOAN_PERIOD,
+                    actionUnsupportedMessage: ''
                 },
-                button: '',
-                actionUnsupportedMessage: ACTION_UNSUPPORTED_MESSAGE
-            },
-            {
-                book: {
-                    status: ExlibrisApp.BookStatus.OVERDUE,
-                    isAllowedLoanExtension: false
+                {
+                    book: {
+                        status: ExlibrisApp.BookStatus.OVERDUE,
+                        isAllowedLoanExtension: true
+                    },
+                    button: BUTTON_TITLES.EXTEND_LOAN_PERIOD,
+                    actionUnsupportedMessage: ''
                 },
-                button: '',
-                actionUnsupportedMessage: ACTION_UNSUPPORTED_MESSAGE
-            },
-            {
-                book: {
-                    status: ExlibrisApp.BookStatus.SHOULD_RETURN_SOON,
-                    isAllowedLoanExtension: false
+                {
+                    book: {
+                        status: ExlibrisApp.BookStatus.SHOULD_RETURN_SOON,
+                        isAllowedLoanExtension: true
+                    },
+                    button: BUTTON_TITLES.EXTEND_LOAN_PERIOD,
+                    actionUnsupportedMessage: ''
                 },
-                button: '',
-                actionUnsupportedMessage: ACTION_UNSUPPORTED_MESSAGE
-            },
-            {
-                book: {status: ExlibrisApp.BookStatus.RESERVED},
-                button: BUTTON_TITLES.CANCEL_RESERVATION,
-                actionUnsupportedMessage: ''
-            },
-            {
-                book: {status: ExlibrisApp.BookStatus.READY_TO_PICK_UP},
-                button: BUTTON_TITLES.CANCEL_RESERVATION,
-                actionUnsupportedMessage: ''
-            }
-        ];
+                {
+                    book: {
+                        status: ExlibrisApp.BookStatus.BORROWED,
+                        isAllowedLoanExtension: false
+                    },
+                    button: '',
+                    actionUnsupportedMessage: ACTION_UNSUPPORTED_MESSAGE
+                },
+                {
+                    book: {
+                        status: ExlibrisApp.BookStatus.OVERDUE,
+                        isAllowedLoanExtension: false
+                    },
+                    button: '',
+                    actionUnsupportedMessage: ACTION_UNSUPPORTED_MESSAGE
+                },
+                {
+                    book: {
+                        status: ExlibrisApp.BookStatus.SHOULD_RETURN_SOON,
+                        isAllowedLoanExtension: false
+                    },
+                    button: '',
+                    actionUnsupportedMessage: ACTION_UNSUPPORTED_MESSAGE
+                },
+                {
+                    book: {status: ExlibrisApp.BookStatus.RESERVED},
+                    button: BUTTON_TITLES.CANCEL_RESERVATION,
+                    actionUnsupportedMessage: ''
+                },
+                {
+                    book: {status: ExlibrisApp.BookStatus.READY_TO_PICK_UP},
+                    button: BUTTON_TITLES.CANCEL_RESERVATION,
+                    actionUnsupportedMessage: ''
+                }
+            ];
             testElements = [];
 
             booksAndButtonsCombinations.forEach(function (combination) {
@@ -151,7 +150,7 @@
         });
 
         test('should display book action button with appropriate title.', function (done) {
-            flush(function () {
+            flush(() => {
                 testElements.forEach(function (element, index) {
                     const wideScreenButton = element.shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.WIDE_SCREEN_BUTTON);
                     const narrowScreenButton = element.shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.NARROW_SCREEN_BUTTON);
@@ -163,7 +162,7 @@
         });
 
         test('should display appropriate message when actions with book are unsupported.', function (done) {
-            flush(function () {
+            flush(() => {
                 testElements.forEach(function (element, index) {
                     const wideScreenMessage = element.shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.WIDE_SCREEN_MESSAGE);
                     const narrowScreenMessage = element.shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.NARROW_SCREEN_MESSAGE);
