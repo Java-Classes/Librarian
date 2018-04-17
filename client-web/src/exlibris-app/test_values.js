@@ -759,3 +759,54 @@ const userTestBooks = {
 /*exported testCategories*/
 const testCategories = ["Java Programming", "Web Design", "Business", "JavaScript", "Programming", "Biography", "Fiction", "C++"].sort();
 
+/*exported testInventoryItems*/
+const testInventoryItem = [{
+    id: {
+        bookId: "1491904240",
+        itemNumber: 1
+    },
+    title: "You Don't Know JS: ES6 & Beyond",
+    image: "https://books.google.com/books/content/images/frontcover/iOc6CwAAQBAJ?fife=w200-h300",
+    authors: "Kyle Simpson",
+    userId: {
+        email: "yurii.haidamaka@teamdev.com"
+    },
+    status: "AVAILABLE"
+}, {
+    id: {
+        bookId: "8535902723",
+        itemNumber: 2
+    },
+    title: "Elon Musk: How the Billionaire CEO of SpaceX and Tesla is Shaping our Future",
+    image: "https://books.google.com/books/content/images/frontcover/_LFSBgAAQBAJ?fife=w200-h300",
+    author: "Ashlee Vance",
+    userId: {
+        email: "yurii.haidamaka@teamdev.com"
+    },
+    status: "BORROWED"
+}, {
+    id: {
+        bookId: "9781491931776",
+        itemNumber: 3
+    },
+    title: "React.js. Быстрый старт",
+    image: "https://books.google.com/books/content/images/frontcover/g79TDgAAQBAJ?fife=w200-h300",
+    author: "Стоян Стефанов",
+    userId: {
+        email: "yurii.haidamaka@teamdev.com"
+    },
+    status: "RESERVED"
+}, {
+    id: {
+        bookId: "1484228073",
+        itemNumber: 3
+    },
+    title: "Pro Spring 5: An In-Depth Guide to the Spring Framework and Its Tools, Edition 5",
+    image: "https://books.google.com/books/content/images/frontcover/N-U5DwAAQBAJ?fife=w200-h300",
+    author: "Iuliana CosminaRob HarropChris SchaeferClarence Ho",
+    userId: {
+        email: "yegor.udovchenko@teamdev.com"
+    },
+    status: "RESERVED"
+}];
+
