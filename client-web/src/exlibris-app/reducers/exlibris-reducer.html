@@ -23,7 +23,6 @@
 <link rel="import" href="../actions/exlibris-action.html">
 
 <script>
-    /* exported reducer */
     /*global userTestBooks libraryTestBooks expectedSoonLibraryBooks*/
     {
         const initialState = {
@@ -58,6 +57,10 @@
                             loadingStatus: ExlibrisApp.LoadingStatus.NOT_FOUND
                         }
                     });
+                }
+                case ExlibrisApp.ExlibrisActions.DOWNLOAD_MORE_BOOKS: {
+                    //TODO:2018-55-17:yurii.haidamaka add data loading from the server
+                    return state;
                 }
                 default:
                     return state;

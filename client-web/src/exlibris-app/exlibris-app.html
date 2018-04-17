@@ -104,7 +104,8 @@
                         role="main">
                     <exlibris-book-grid data-page="all-books"
                                         books="[[allBooks]]"
-                                        message="[[bookMessage.ALL]]"></exlibris-book-grid>
+                                        message="[[bookMessage.ALL]]"
+                                        on-exlibris-book-grid-lower-threshold="_handleLowerThreshold"></exlibris-book-grid>
                     <exlibris-book-grid data-page="overdue-books"
                                         books="[[overdueBooks]]"
                                         message="[[bookMessage.OVERDUE]]"></exlibris-book-grid>
@@ -208,7 +209,7 @@
                     },
 
                     /**
-                     * The enum of book messages tht will be shown in the case
+                     * The enum of book messages that will be shown in the case
                      * of an empty books array.
                      */
                     bookMessage: {
@@ -231,6 +232,16 @@
                 return [
                     '_routePageChanged(routeData.page)'
                 ];
+            }
+
+            static get actions() {
+                return {
+                    downloadMoreBooks() {
+                        return {
+                            type: ExlibrisApp.ExlibrisActions.DOWNLOAD_MORE_BOOKS
+                        };
+                    }
+                };
             }
 
             _computeCountBadges(overdueCount, shouldReturnCount, reservedCount, borrowedCount) {
@@ -279,6 +290,14 @@
                 if (this.narrow) {
                     this.$.drawer.toggle();
                 }
+            }
+
+            /**
+             * Dispatch the `DOWNLOAD_MORE_BOOKS` action to the redux store.
+             * @private
+             */
+            _handleLowerThreshold() {
+                this.dispatch('downloadMoreBooks');
             }
 
             _showView404(){

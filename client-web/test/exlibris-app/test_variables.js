@@ -19,8 +19,8 @@
  */
 {
     window.ExlibrisAppTest = {} || ExlibrisAppTest;
-    const threeWeeks = 21;
-    const millisecondsInOneDay = 86400000;
+    const THREE_WEEKS = 21;
+    const MILLISECONDS_IN_ONE_DAY = 86400000;
 
     ExlibrisAppTest.BOOKS = [{
         id: "123456789",
@@ -40,6 +40,6 @@
         category: "Biography",
         description: "Уолтер Айзексон, автор знаменитой биографии Стивена Джобса, написал книгу об одном из самых известных ученых XX века, Альберте Эйнштейне. Он не только подробно и доступно изложил суть научных концепций и открытий автора теории относительности, но и увлекательно рассказал об Эйнштейне-человеке. В книге приводится множество документальных материалов – письма, воспоминания, дневниковые записи. Перед нами встает образ удивительно талантливого человека, мечтателя и бунтаря, гуманиста и мыслителя.",
         status: "RESERVED",
-        date: new Date(new Date().getTime() + threeWeeks * millisecondsInOneDay)
+        date: new Date(new Date().getTime() + THREE_WEEKS * MILLISECONDS_IN_ONE_DAY)
     }];
 }

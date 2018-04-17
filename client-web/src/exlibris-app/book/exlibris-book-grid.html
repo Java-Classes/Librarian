@@ -22,7 +22,7 @@
 <link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="../../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="./exlibris-book-tile.html">
-<link rel="import" href="book-values.html">
+<link rel="import" href="./book-values.html">
 
 <dom-module id="exlibris-book-grid">
     <template>
@@ -37,12 +37,12 @@
                 text-align: center;
                 color: var(--paper-grey-700);
             }
+
+            .hidden {
+                display: none;
+            }
         </style>
-        <dom-if is="dom-if" if="[[!books.length]]">
-            <template>
-                <div class="center">[[message]]</div>
-            </template>
-        </dom-if>
+        <div class$="[[_isBooksEmpty(books)]]">[[message]]</div>
 
         <iron-list items="[[books]]" as="book" scroll-target="document" grid>
             <template>
@@ -53,8 +53,7 @@
         </iron-list>
 
         <!-- this element loads more books when the user scrolls down and reached the lower threshold -->
-        <iron-scroll-threshold id="scrollThreshold"
-                               lower-threshold="30"
+        <iron-scroll-threshold lower-threshold="30"
                                on-lower-threshold="_onLowerThreshold"
                                scroll-target="document">
         </iron-scroll-threshold>
@@ -92,7 +91,11 @@
             }
 
             _onLowerThreshold() {
-                //TODO:2018-53-11:yurii.haidamaka add data loading from the server
+                this.dispatchEvent(new CustomEvent('exlibris-book-grid-lower-threshold'));
+            }
+
+            _isBooksEmpty(books) {
+                return books.length === 0 ? 'center' : 'hidden';
             }
         }
 
