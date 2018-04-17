@@ -40,7 +40,7 @@
             }
         </style>
         <template is="dom-if" if="[[!books.length]]">
-                <div class="center">[[message]]</div>
+            <div class="center">[[message]]</div>
         </template>
 
         <iron-list items="[[books]]" as="book" scroll-target="document" grid>
@@ -92,7 +92,7 @@
             }
 
             _onLowerThreshold() {
-                //TODO:2018-53-11:yurii.haidamaka add data loading from the server
+                this.dispatchEvent(new CustomEvent('exlibris-book-grid-lower-threshold'));
             }
         }
 
