@@ -39,7 +39,7 @@
 
         test('should display one tile with synopsis and image', function (done) {
             bookTile.book = ExlibrisAppTest.BOOKS[0];
-            flush(function () {
+            flush(() => {
                 const title = bookTile.shadowRoot.querySelector(BookTileSelector.TITLE_SELECTOR);
                 assert.equal(ExlibrisAppTest.BOOKS[0].title, title.innerHTML);
                 const author = bookTile.shadowRoot.querySelector(BookTileSelector.AUTHOR_SELECTOR);

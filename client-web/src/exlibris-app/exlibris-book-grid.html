@@ -23,7 +23,7 @@
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../exlibris-app/exlibris-book-tile.html">
-<link rel="import" href="book-values.html">
+<link rel="import" href="./book-values.html">
 
 <dom-module id="exlibris-book-grid">
     <template>
@@ -47,9 +47,9 @@
 
         <iron-list items="[[books]]" as="book" scroll-target="document" grid>
             <template>
-                <div>
+                <!--<div>-->
                     <exlibris-book-tile book="[[book]]"></exlibris-book-tile>
-                </div>
+                <!--</div>-->
             </template>
         </iron-list>
 
