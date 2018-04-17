@@ -39,17 +39,15 @@
                 color: var(--paper-grey-700);
             }
         </style>
-        <dom-if is="dom-if" if="[[!books.length]]">
-            <template>
+        <template is="dom-if" if="[[!books.length]]">
                 <div class="center">[[message]]</div>
-            </template>
-        </dom-if>
+        </template>
 
         <iron-list items="[[books]]" as="book" scroll-target="document" grid>
             <template>
-                <!--<div>-->
+                <div>
                     <exlibris-book-tile book="[[book]]"></exlibris-book-tile>
-                <!--</div>-->
+                </div>
             </template>
         </iron-list>
 
