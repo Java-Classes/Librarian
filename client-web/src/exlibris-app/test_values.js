@@ -760,7 +760,7 @@ const userTestBooks = {
 const testCategories = ["Java Programming", "Web Design", "Business", "JavaScript", "Programming", "Biography", "Fiction", "C++"].sort();
 
 /*exported testInventoryItems*/
-const testInventoryItem = [{
+const testInventoryItems = [{
     id: {
         bookId: "1491904240",
         itemNumber: 1

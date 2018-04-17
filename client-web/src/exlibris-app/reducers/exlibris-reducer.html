@@ -37,8 +37,8 @@
                 book: {},
                 loadingStatus: {}
             },
-            categories: testCategories
-
+            categories: testCategories,
+            currentInventoryItem: {}
         };
 
         ExlibrisApp.reducer = (state = initialState, action) => {
@@ -83,6 +83,12 @@
                 case ExlibrisApp.ExlibrisActions.RESET_FILTERS: {
                     const allBooks = [...state.overdueBooks, ...libraryTestBooks]
                     return Object.assign({}, state, {allBooks: allBooks});
+                }
+                case ExlibrisApp.ExlibrisActions.FIND_INVENTORY_ITEM_BY_ID: {
+                    const bookId = action.id.bookId;
+                    const itemNumber = action.id.itemNumber;
+                    const inventoryItem = testInventoryItems.find(b => b.id.bookId === bookId && b.id.itemNumber == itemNumber);
+                    return Object.assign({}, state, {currentInventoryItem: inventoryItem});
                 }
                 default:
                     return state;

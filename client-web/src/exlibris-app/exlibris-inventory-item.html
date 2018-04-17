@@ -1,0 +1,90 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<link rel="import" href="./shell/exlibris-app-namespace.html">
+<link rel="import" href="./../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="./../../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="./shell/redux-store.html">
+
+<dom-module id="exlibris-inventory-item">
+    <template>
+
+        <app-route
+                route="{{route}}"
+                pattern="/:title/:author/:bookId/:itemNumber"
+                data="{{routeData}}"></app-route>
+    </template>
+
+    <script>
+        /**
+         *
+         * @customElement
+         * @polymer
+         * @appliesMixin ExlibrisApp.ReduxMixin
+         */
+        class ExlibrisInventoryItem extends ExlibrisApp.ReduxMixin(Polymer.Element) {
+            static get is() {
+                return 'exlibris-inventory-item';
+            }
+
+            static get properties() {
+                return {
+                    inventoryItem: {
+                        type: Object,
+                        statePath: 'currentInventoryItem'
+                    },
+                    routeData: {
+                        type: Object,
+                        observer: "_routeDataChanged"
+                    }
+                };
+            }
+
+            static get actions() {
+                return {
+                    findInventoryItemById(bookId, itemNumber) {
+                        return {
+                            type: ExlibrisApp.ExlibrisActions.FIND_INVENTORY_ITEM_BY_ID,
+                            id: {
+                                bookId: bookId,
+                                itemNumber: itemNumber
+                            }
+                        }
+                    }
+                }
+            }
+
+            /**
+             * Dispatches the action to find the inventory item by ID.
+             *
+             * @param {Object} routeData the resolved route parameters.
+             * @private
+             */
+            _routeDataChanged(routeData) {
+                if (this.route && this.route.prefix === '/inventory-item') {
+                    this.dispatch('findInventoryItemById', routeData.bookId, routeData.itemNumber);
+                }
+            }
+
+        }
+
+        window.customElements.define(ExlibrisInventoryItem.is, ExlibrisInventoryItem);
+    </script>
+</dom-module>

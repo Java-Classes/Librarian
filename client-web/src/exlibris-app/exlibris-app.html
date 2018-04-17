@@ -45,6 +45,7 @@
 <link rel="import" href="./shell/redux-store.html">
 <link rel="import" href="./global-style.html">
 <link rel="import" href="./book/exlibris-book-details.html">
+<link rel="import" href="./exlibris-inventory-item.html">
 <link rel="import" href="./exlibris-book-search.html">
 <link rel="import" href="./exlibris-category-dropdown.html">
 <link rel="import" href="./menu/exlibris-menu-drawer.html">
@@ -165,6 +166,8 @@
                     <exlibris-book-details data-page="book-details"
                                            route="[[subRoute]]"
                                            on-exlibris-book-details-not-found="_showView404"></exlibris-book-details>
+                    <exlibris-inventory-item data-page="inventory-item"
+                                           route="[[subRoute]]"></exlibris-inventory-item>
                     <div data-page="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
