@@ -22,6 +22,7 @@
 <link rel="import" href="../../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
+
 <link rel="import" href="../exlibris-app/exlibris-book-tile.html">
 <link rel="import" href="./book-values.html">
 
@@ -55,8 +56,7 @@
 
 
         <!-- this element loads more books when the user scrolls down and reached the lower threshold -->
-        <iron-scroll-threshold id="scrollThreshold"
-                               lower-threshold="30"
+        <iron-scroll-threshold lower-threshold="30"
                                on-lower-threshold="_onLowerThreshold"
                                scroll-target="document">
         </iron-scroll-threshold>
