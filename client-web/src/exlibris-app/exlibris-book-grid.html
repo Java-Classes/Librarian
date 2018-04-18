@@ -39,12 +39,8 @@
                 text-align: center;
                 color: var(--paper-grey-700);
             }
-
-            .hidden {
-                display: none;
-            }
         </style>
-        <div class$="[[_isBooksEmpty(books)]]">[[message]]</div>
+        <div class="center" hidden="[[books.length]]">[[message]]</div>
 
         <iron-list items="[[books]]" as="book" scroll-target="document" grid>
             <template>
