@@ -63,20 +63,30 @@
             const title = elementShadowRoot.querySelector(MENU_ITEM_SELECTORS.TITLE);
             const badge = elementShadowRoot.querySelector(MENU_ITEM_SELECTORS.COUNT_BADGE);
 
-            assert.equal(title.innerHTML, TITLE);
-            assert.equal(badge.innerHTML, COUNT);
+            assert.equal(title.innerHTML.trim(), TITLE);
+            assert.equal(badge.innerHTML.trim(), COUNT);
+            assert.isFalse(badge.hidden);
+        });
+
+        test('should not display count badge for 0 value.', function () {
+            element.set('count', 0);
+
+            const elementShadowRoot = element.shadowRoot;
+            const badgeForZero = elementShadowRoot.querySelector(MENU_ITEM_SELECTORS.COUNT_BADGE);
+            assert.isTrue(badgeForZero.hidden);
         });
 
         test('should reflect on attribute change.', function () {
             const elementShadowRoot = element.shadowRoot;
             const badge = elementShadowRoot.querySelector(MENU_ITEM_SELECTORS.COUNT_BADGE);
             assert.isUndefined(element.count);
-            assert.equal(badge.innerHTML, ' ');
+            assert.equal(badge.innerHTML.trim(), '');
 
             element.set('count', COUNT);
 
             assert.equal(element.count, COUNT);
-            assert.equal(badge.innerHTML, COUNT);
+            assert.equal(badge.innerHTML.trim(), COUNT);
+            assert.isFalse(badge.hidden);
         });
     });
 </script>

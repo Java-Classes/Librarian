@@ -88,28 +88,28 @@
             <exlibris-menu-item link="#/borrowed-books"
                                 title="Borrowed Books"
                                 data-page="borrowed-books"
-                                count="[[countBadges.borrowed]]">
+                                count="[[borrowedCount]]">
                 <iron-icon icon="shopping-basket"></iron-icon>
             </exlibris-menu-item>
 
             <exlibris-menu-item link="#/reserved-books"
                                 title="Reserved Books"
                                 data-page="reserved-books"
-                                count="[[countBadges.reserved]]">
+                                count="[[reservedCount]]">
                 <iron-icon icon="lock"></iron-icon>
             </exlibris-menu-item>
 
             <exlibris-menu-item link="#/should-return-books"
                                 title="Should Return Soon"
                                 data-page="should-return-books"
-                                count="[[countBadges.shouldReturnSoon]]">
+                                count="[[shouldReturnSoonCount]]">
                 <iron-icon icon="query-builder"></iron-icon>
             </exlibris-menu-item>
 
             <exlibris-menu-item link="#/overdue-books"
                                 title="Overdue"
                                 data-page="overdue-books"
-                                count="[[countBadges.overdue]]">
+                                count="[[overdueCount]]">
                 <iron-icon icon="warning"
                            class="overdue"></iron-icon>
             </exlibris-menu-item>
@@ -139,15 +139,24 @@
                     selected: String,
 
                     /**
-                     * The state of the menu items count badges.
-                     *
-                     * @typedef {Object} User's books count badges.
-                     * @property {number} overdue the overdue books count.
-                     * @property {number} shouldReturnSoon the should be returned books count.
-                     * @property {number} reserved the reserved books count.
-                     * @property {number} borrowed the borrowed books count.
+                     * The `Overdue` menu item count badge.
                      */
-                    countBadges: Object
+                    overdueCount: Number,
+
+                    /**
+                     * The `Should Return Soon` menu item count badge.
+                     */
+                    shouldReturnSoonCount: Number,
+
+                    /**
+                     * The `Reserved Books` menu item count badge.
+                     */
+                    reservedCount: Number,
+
+                    /**
+                     * The `Borrowed Books` menu item count badge.
+                     */
+                    borrowedCount: Number
                 }
             }
         }
