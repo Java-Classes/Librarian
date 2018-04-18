@@ -24,7 +24,17 @@ import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
 import javaclasses.exlibris.AllBooksListId;
 import javaclasses.exlibris.BookDetails;
+import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.c.BookAdded;
+import javaclasses.exlibris.c.BookBorrowed;
+import javaclasses.exlibris.c.BookRemoved;
+import javaclasses.exlibris.c.BookReturned;
+import javaclasses.exlibris.c.InventoryAppended;
+import javaclasses.exlibris.c.InventoryDecreased;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * A projection state of all books.
@@ -57,6 +67,7 @@ public class AllBooksListViewProjection extends Projection<AllBooksListId, AllBo
         final BookDetails bookDetails = event.getDetails();
         BookItem bookItem = BookItem.newBuilder()
                                     .setBookId(event.getBookId())
+                                    .setIsbn(bookDetails.getIsbn())
                                     .setTitle(bookDetails.getTitle())
                                     .setAuthors(bookDetails.getAuthor())
                                     .setCoverUrl(bookDetails.getBookCoverUrl())
@@ -67,5 +78,99 @@ public class AllBooksListViewProjection extends Projection<AllBooksListId, AllBo
                                     .build();
 
         getBuilder().addBookItem(bookItem);
+    }
+
+    @Subscribe
+    public void on(BookRemoved event) {
+        final BookId id = event.getBookId();
+
+        final List<BookItem> items = new ArrayList<>(getBuilder().getBookItem());
+
+        final int index = IntStream.range(0, items.size())
+                                   .filter(i -> items.get(i)
+                                                     .getBookId()
+                                                     .equals(id))
+                                   .findFirst()
+                                   .getAsInt();
+        items.remove(index);
+        getBuilder().addAllBookItem(items);
+    }
+
+    @Subscribe
+    public void on(InventoryAppended event) {
+        final BookId id = event.getInventoryId()
+                               .getBookId();
+        final List<BookItem> items = getBuilder().getBookItem();
+        final int index = getIndexByBookId(items, id);
+        final BookItem oldBookItem = items.get(index);
+        final int availableCount = oldBookItem.getAvailableCount();
+        BookItem newBookItem = BookItem.newBuilder(oldBookItem)
+                                       .setAvailableCount(availableCount + 1)
+                                       .setStatus(BookItemStatus.AVAILABLE)
+                                       .build();
+        items.remove(index);
+        items.add(newBookItem);
+    }
+
+    @Subscribe
+    public void on(InventoryDecreased event) {
+        final BookId id = event.getInventoryId()
+                               .getBookId();
+        final List<BookItem> items = getBuilder().getBookItem();
+        final int index = getIndexByBookId(items, id);
+        final BookItem oldBookItem = items.get(index);
+        final int availableCount = oldBookItem.getAvailableCount();
+        final BookItemStatus status =
+                availableCount == 1 ? BookItemStatus.EXPECTED : BookItemStatus.AVAILABLE;
+        BookItem newBookItem = BookItem.newBuilder(oldBookItem)
+                                       .setAvailableCount(availableCount - 1)
+                                       .setStatus(status)
+                                       .build();
+        items.remove(index);
+        items.add(newBookItem);
+    }
+
+    @Subscribe
+    public void on(BookBorrowed event) {
+        final BookId id = event.getInventoryId()
+                               .getBookId();
+        final List<BookItem> items = getBuilder().getBookItem();
+        final int index = getIndexByBookId(items, id);
+        final BookItem oldBookItem = items.get(index);
+        final int availableCount = oldBookItem.getAvailableCount();
+        final BookItemStatus status =
+                availableCount == 1 ? BookItemStatus.EXPECTED : BookItemStatus.AVAILABLE;
+        BookItem newBookItem = BookItem.newBuilder(oldBookItem)
+                                       .setAvailableCount(availableCount - 1)
+                                       .setStatus(status)
+                                       .build();
+        items.remove(index);
+        items.add(newBookItem);
+    }
+
+    @Subscribe
+    public void on(BookReturned event) {
+        final BookId id = event.getInventoryId()
+                               .getBookId();
+        final List<BookItem> items = getBuilder().getBookItem();
+        final int index = getIndexByBookId(items, id);
+        final BookItem oldBookItem = items.get(index);
+        final int availableCount = oldBookItem.getAvailableCount();
+        BookItem newBookItem = BookItem.newBuilder(oldBookItem)
+                                       .setAvailableCount(availableCount + 1)
+                                       .setStatus(BookItemStatus.AVAILABLE)
+                                       .build();
+        items.remove(index);
+        items.add(newBookItem);
+    }
+
+    private int getIndexByBookId(List<BookItem> items, BookId id) {
+        final int index = IntStream.range(0, items.size())
+                                   .filter(i -> items.get(i)
+                                                     .getBookId()
+                                                     .equals(id))
+                                   .findFirst()
+                                   .getAsInt();
+        return index;
     }
 }
