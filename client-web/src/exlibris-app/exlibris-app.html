@@ -82,7 +82,10 @@
             <!-- Drawer content -->
             <app-drawer id="drawer" swipe-open="[[narrow]]" slot="drawer" on-click="_toggleDrawer">
                 <exlibris-menu-drawer selected="[[routeData.page]]"
-                                      count-badges="[[countBadges]]"></exlibris-menu-drawer>
+                                      overdue-count="[[overdueBooks.length]]"
+                                      should-return-soon-count="[[shouldReturnBooks.length]]"
+                                      reserved-count="[[reservedBooks.length]]"
+                                      borrowed-count="[[borrowedBooks.length]]"></exlibris-menu-drawer>
             </app-drawer>
             <!-- Main content -->
             <app-header-layout has-scrolling-region>
@@ -144,14 +147,6 @@
 
             static get properties() {
                 return {
-
-                    /**
-                     * Defines count badges of the menu items.
-                     */
-                    countBadges: {
-                        type: Object,
-                        computed: '_computeCountBadges(overdueBooks.length, shouldReturnBooks.length, reservedBooks.length, borrowedBooks.length)'
-                    },
 
                     /**
                      * The array of all books from library.
@@ -235,15 +230,6 @@
                         };
                     }
                 };
-            }
-
-            _computeCountBadges(overdueCount, shouldReturnCount, reservedCount, borrowedCount) {
-                return {
-                    overdue: overdueCount !== 0 ? overdueCount : '',
-                    shouldReturnSoon: shouldReturnCount !== 0 ? shouldReturnCount : '',
-                    reserved: reservedCount !== 0 ? reservedCount : '',
-                    borrowed: borrowedCount !== 0 ? borrowedCount : ''
-                }
             }
 
             /**

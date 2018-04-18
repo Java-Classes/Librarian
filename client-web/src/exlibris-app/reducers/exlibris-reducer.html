@@ -25,7 +25,7 @@
     /*global userTestBooks libraryTestBooks expectedSoonLibraryBooks*/
     {
         const initialState = {
-            overdueBooks: userTestBooks.overdue,
+            overdueBooks: [],
             borrowedBooks: [...userTestBooks.overdue, ...userTestBooks.borrowed],
             shouldReturnBooks: userTestBooks.shouldReturnSoon,
             reservedBooks: userTestBooks.reserved,
