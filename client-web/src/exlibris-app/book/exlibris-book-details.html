@@ -334,6 +334,24 @@
                             type: ExlibrisApp.ExlibrisActions.FIND_BOOK_BY_ID,
                             bookId: bookId
                         }
+                    },
+                    reserveBook(bookId) {
+                        return {
+                            type: ExlibrisApp.ExlibrisActions.RESERVE_BOOK,
+                            bookId: bookId
+                        }
+                    },
+                    cancelBookReservation(bookId) {
+                        return {
+                            type: ExlibrisApp.ExlibrisActions.CANCEL_BOOK_RESERVATION,
+                            bookId: bookId
+                        }
+                    },
+                    extendBookLoanPeriod(bookId) {
+                        return {
+                            type: ExlibrisApp.ExlibrisActions.EXTEND_LOAN_PERIOD,
+                            bookId: bookId
+                        }
                     }
                 }
             }
@@ -365,7 +383,7 @@
                         case ExlibrisApp.BookStatus.EXPECTED: {
                             return {
                                 title: 'RESERVE',
-                                clickHandler: this._requestReservation
+                                clickHandler: this._requestReservation.bind(this)
                             };
                         }
 
@@ -375,7 +393,7 @@
                             if (book.isAllowedLoanExtension) {
                                 return {
                                     title: 'EXTEND LOAN PERIOD',
-                                    clickHandler: this._requestLoanExtension
+                                    clickHandler: this._requestLoanExtension.bind(this)
                                 };
                             }
                             break;
@@ -385,7 +403,7 @@
                         case ExlibrisApp.BookStatus.READY_TO_PICK_UP: {
                             return {
                                 title: 'CANCEL RESERVATION',
-                                clickHandler: this._requestCancelReservation
+                                clickHandler: this._requestCancelReservation.bind(this)
                             };
                         }
                         default:
@@ -500,8 +518,7 @@
              * @private
              */
             _requestCancelReservation() {
-                alert('Reservation canceled!');
-                //Request someone to cancel reservation
+                this.dispatch('cancelBookReservation', this.book.id);
             }
 
             /**
@@ -510,18 +527,16 @@
              * @private
              */
             _requestReservation() {
-                alert('Book reserved!');
-                //Request someone to make reservation
+                this.dispatch('reserveBook', this.book.id);
             }
 
             /**
-             * Handles the `EXTEND FOR TWO WEEKS` button click.
+             * Handles the `EXTEND LOAN PERIOD` button click.
              *
              * @private
              */
             _requestLoanExtension() {
-                alert('Loan period extended!');
-                //Request someone to extend loan period
+                this.dispatch('extendBookLoanPeriod', this.book.id);
             }
         }
 

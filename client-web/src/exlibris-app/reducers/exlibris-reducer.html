@@ -58,10 +58,27 @@
                         }
                     });
                 }
+
+                case ExlibrisApp.ExlibrisActions.RESERVE_BOOK: {
+                    //TODO:2018-21-18:yegor.udovchenko: request reservation
+                    return state;
+                }
+
+                case ExlibrisApp.ExlibrisActions.CANCEL_BOOK_RESERVATION: {
+                    //TODO:2018-21-18:yegor.udovchenko: request cancel reservation
+                    return state;
+                }
+
+                case ExlibrisApp.ExlibrisActions.EXTEND_LOAN_PERIOD: {
+                    //TODO:2018-22-18:yegor.udovchenko: request loan extension
+                    return state;
+                }
+
                 case ExlibrisApp.ExlibrisActions.DOWNLOAD_MORE_BOOKS: {
                     //TODO:2018-55-17:yurii.haidamaka add data loading from the server
                     return state;
                 }
+
                 default:
                     return state;
             }
@@ -81,6 +98,5 @@
             }
             return element;
         }
-
     }
 </script>
