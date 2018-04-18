@@ -45,6 +45,13 @@ message AllBooksView {
     repeated BookItem book_item = 1;
 }
 
+// The projection state of book that are expected in the library.
+//
+message ExpectedSoonBooksView {
+
+    // All information about one book that is expected in the library.
+    repeated ExpectedSoonItem book_item = 2;
+}
 
 // The projection state of borrowed books in the library.
 //
@@ -83,7 +90,7 @@ message OverdueBooksView {
 //
 // After scaning the OR code, the user sees information about one inventory item.
 //
-message inventoryItemView {
+message InventoryItemView {
 
     // The identifier of an inventory item.
     InventoryItemId inventory_item_id = 1;
@@ -100,5 +107,6 @@ message inventoryItemView {
     // The book cover.
     spine.net.Url cover_url = 5;
 
+    // The status of the inventory item.
     InventoryItemStatus status = 6;
 }

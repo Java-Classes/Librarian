@@ -35,7 +35,7 @@ import "spine/net/url.proto";
 import "javaclasses/exlibris/identifiers.proto";
 import "javaclasses/exlibris/values.proto";
 
-// Al Information about a book from the library.
+// All Information about a book from the library.
 //
 message BookItem {
 
@@ -77,6 +77,44 @@ enum BookItemStatus {
     AVAILABLE = 1;
 
     EXPECTED = 2;
+}
+
+// Al Information about a book that is expected in the library.
+//
+message ExpectedSoonItem {
+    // The identifier of a book.
+    BookId book_id = 1;
+
+    // The International Standard Book Number.
+    Isbn isbn = 2;
+
+    // The book title.
+    BookTitle title = 3;
+
+    // Authors’ full names.
+    AuthorName authors = 4;
+
+    // The book cover.
+    spine.net.Url cover_url = 5;
+
+    // A list of book categories.
+    repeated Category categories = 6;
+
+    // The DTO of a book synopsis.
+    BookSynopsis synopsis = 7;
+
+    // The status of a book that is expected soon.
+    ExpectedSoonItemStatus status = 10;
+}
+
+// A status of the book that is expected soon in the library.
+//
+enum ExpectedSoonItemStatus {
+
+    // Used as an undefined value marker.
+    BIS_UNDEFINED = 0;
+
+    EXPECTED_SOON = 1;
 }
 
 // Al Information about borrowed book.
