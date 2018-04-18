@@ -88,28 +88,28 @@
             <exlibris-menu-item link="#/borrowed-books"
                                 title="Borrowed Books"
                                 data-page="borrowed-books"
-                                count="[[_getDisplayBadge(borrowedCount)]]">
+                                count="[[borrowedCount]]">
                 <iron-icon icon="shopping-basket"></iron-icon>
             </exlibris-menu-item>
 
             <exlibris-menu-item link="#/reserved-books"
                                 title="Reserved Books"
                                 data-page="reserved-books"
-                                count="[[_getDisplayBadge(reservedCount)]]">
+                                count="[[reservedCount]]">
                 <iron-icon icon="lock"></iron-icon>
             </exlibris-menu-item>
 
             <exlibris-menu-item link="#/should-return-books"
                                 title="Should Return Soon"
                                 data-page="should-return-books"
-                                count="[[_getDisplayBadge(shouldReturnSoonCount)]]">
+                                count="[[shouldReturnSoonCount]]">
                 <iron-icon icon="query-builder"></iron-icon>
             </exlibris-menu-item>
 
             <exlibris-menu-item link="#/overdue-books"
                                 title="Overdue"
                                 data-page="overdue-books"
-                                count="[[_getDisplayBadge(overdueCount)]]">
+                                count="[[overdueCount]]">
                 <iron-icon icon="warning"
                            class="overdue"></iron-icon>
             </exlibris-menu-item>
@@ -158,10 +158,6 @@
                      */
                     borrowedCount: Number
                 }
-            }
-
-            _getDisplayBadge(number) {
-                return number && +number !== 0 ? number : null;
             }
         }
 
