@@ -112,7 +112,7 @@ message ExpectedSoonItem {
 enum ExpectedSoonItemStatus {
 
     // Used as an undefined value marker.
-    BIS_UNDEFINED = 0;
+    ESIS_UNDEFINED = 0;
 
     EXPECTED_SOON = 1;
 }
@@ -163,6 +163,10 @@ enum BorrowedBookItemStatus {
     BBIS_UNDEFINED = 0;
 
     BORROWED = 1;
+
+    OVERDUE = 2;
+
+    SHOULD_RETURN_SOON = 3;
 }
 
 // Al Information about reserved book.
@@ -206,54 +210,6 @@ enum ReservedBookItemStatus {
     READY_TO_PICK_UP = 1;
 
     RESERVED = 2;
-}
-
-// Al Information about reserved book.
-//
-message OverdueBookItem {
-
-    // The identifier of a loan.
-    LoanId loan_id = 1;
-
-    // The identifier of a book.
-    BookId book_id = 2;
-
-    // The International Standard Book Number.
-    Isbn isbn = 3;
-
-    // The book title.
-    BookTitle title = 4;
-
-    // Authors’ full names.
-    AuthorName authors = 5;
-
-    // The book cover.
-    spine.net.Url cover_url = 6;
-
-    // A list of book categories.
-    repeated Category categories = 7;
-
-    // The DTO of a book synopsis.
-    BookSynopsis synopsis = 8;
-
-    // The last day of the loan period.
-    spine.time.LocalDate due_date = 9;
-
-    // The overdue book status.
-    OverdueBookItemStatus status = 10;
-
-    // Shows whether there is a reservation for this book or not.
-    bool is_allowed_loan_extension = 11;
-}
-
-// Overdue book item status values.
-//
-enum OverdueBookItemStatus {
-
-    // Used as an undefined value marker.
-    OBIS_UNDEFINED = 0;
-
-    OVERDUE = 1;
 }
 
 // An inventoty item status values.
