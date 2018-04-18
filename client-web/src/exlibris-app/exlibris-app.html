@@ -124,6 +124,15 @@
         </app-drawer-layout>
     </template>
     <script>
+        const EmptyArrayMessage = {
+            OVERDUE: "You don't have any overdue books yet.",
+            BORROWED: "You haven't borrowed any books yet.",
+            SHOULD_RETURN_SOON: "You don't have books that you should return soon",
+            RESERVED: "You haven't reserved any books yet",
+            EXPECTED_SOON: "In the near future, the supply of new books to the library is not expected.",
+            ALL: "There are no books in the library."
+        };
+
         /**
          * Library application. The polymer-based single page app.
          *
@@ -207,7 +216,7 @@
                      */
                     bookMessage: {
                         type: Object,
-                        value: ExlibrisApp.EmptyArrayMessage
+                        value: EmptyArrayMessage
                     },
 
                     /**
@@ -229,11 +238,7 @@
 
             static get actions() {
                 return {
-                    downloadMoreBooks() {
-                        return {
-                            type: ExlibrisApp.ExlibrisActions.DOWNLOAD_MORE_BOOKS
-                        };
-                    }
+                    fetchBooks: () => ({type: ExlibrisApp.ExlibrisActions.FETCH_BOOKS})
                 };
             }
 
@@ -286,11 +291,11 @@
             }
 
             /**
-             * Dispatch the `DOWNLOAD_MORE_BOOKS` action to the redux store.
+             * Dispatch the `FETCH_BOOKS` action to the redux store.
              * @private
              */
             _handleLowerThreshold() {
-                this.dispatch('downloadMoreBooks');
+                this.dispatch('fetchBooks');
             }
         }
 

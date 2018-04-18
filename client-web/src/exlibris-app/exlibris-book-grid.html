@@ -77,17 +77,18 @@
             static get properties() {
                 return {
                     /**
-                     * The array of  the next objects:
+                     * The array of the next objects:
                      * @typedef {Object} Book
                      * @property {string} title the title of a book
                      * @property {string} authors string with authors of the book
-                     * @property {string} status  one of the following values: "overdue", "borrowed", "should-return-soon",
+                     * @property {string} status  one of the following values: "overdue",
+                     * "borrowed", "should-return-soon",
                      * "available", "reserved", "expected","ready-to-pick-up"
                      */
                     books: Array,
 
                     /**
-                     * The text that will be shown in the case of an empty books array.
+                     * The text is shown in the case of an empty books array.
                      */
                     message: String
                 };
