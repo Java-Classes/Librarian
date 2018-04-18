@@ -270,14 +270,20 @@
              * @private
              */
             _getTitle(page) {
-                let title;
-                if (page) {
-                    const unDashedString = page.replace(/-/g, ' ');
-                    title = unDashedString.replace(/\w\S*/g, function (txt) {
-                        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-                    });
+                switch (page) {
+                    case "all-books":
+                        return "All Books";
+                    case"expected-soon":
+                        return "Expected Soon";
+                    case "borrowed-books":
+                        return "Borrowed Books";
+                    case "reserved-books":
+                        return "Reserved Books";
+                    case "should-return-soon":
+                        return "Should Return Soon";
+                    case"overdue-books":
+                        return "Overdue Books";
                 }
-                return title ? title : 'All Books';
             }
 
             /**
