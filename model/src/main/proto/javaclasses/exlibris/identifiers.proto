@@ -84,18 +84,9 @@ message LoanId {
     int64 value = 1;
 }
 
-// An all books list identifier.
+// A books list identifier.
 //
-message AllBooksListId {
-
-    // String representation of UUID.
-    //
-    string value = 1;
-}
-
-// An identifier of the list of books that are expected in the library.
-//
-message ExpectedSoonBooksListId {
+message BooksListId {
 
     // String representation of UUID.
     //

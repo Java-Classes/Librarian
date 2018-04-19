@@ -22,9 +22,9 @@ package javaclasses.exlibris.q;
 
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
-import javaclasses.exlibris.AllBooksListId;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookId;
+import javaclasses.exlibris.BooksListId;
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookRemoved;
@@ -43,7 +43,7 @@ import java.util.stream.IntStream;
  *
  * @author Yurii Haidamaka
  */
-public class AllBooksListViewProjection extends Projection<AllBooksListId, AllBooksListView, AllBooksListViewVBuilder> {
+public class AllBooksListViewProjection extends Projection<BooksListId, AllBooksListView, AllBooksListViewVBuilder> {
 
     /**
      * The {@link AllBooksListViewProjection} is a singleton.
@@ -51,14 +51,14 @@ public class AllBooksListViewProjection extends Projection<AllBooksListId, AllBo
      * <p>The {@code ID} value should be the same for all JVMs
      * to support work with the same projection from execution to execution.
      */
-    public static final AllBooksListId ID = AllBooksListId.newBuilder()
-                                                          .setValue("AllBooksListViewProjection")
-                                                          .build();
+    public static final BooksListId ID = BooksListId.newBuilder()
+                                                    .setValue("AllBooksListViewProjection")
+                                                    .build();
 
     /**
      * @see Projection#Projection(Object)
      */
-    public AllBooksListViewProjection(AllBooksListId id) {
+    public AllBooksListViewProjection(BooksListId id) {
         super(id);
     }
 
