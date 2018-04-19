@@ -214,17 +214,4 @@ enum ReservedBookItemStatus {
     RESERVED = 2;
 }
 
-// An inventoty item status values.
-//
-enum InventoryItemStatus {
-
-    // Used as an undefined value marker.
-    IIS_UNDEFINED = 0;
-
-    ITEM_AVAILABLE = 1;
-
-    ITEM_BORROWED = 2;
-
-    ITEM_RESERVED = 3;
-}
 
