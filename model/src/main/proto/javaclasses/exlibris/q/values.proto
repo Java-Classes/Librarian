@@ -342,6 +342,7 @@ message BookInventory {
     // Authors' names.
     AuthorName author = 4;
 
+    // The collection of inventory items.
     repeated InventoryItemState item_state = 5;
 }
 
@@ -391,4 +392,35 @@ message LoanDetails {
 
     // The loan status.
     bool overdue = 6;
+}
+
+// The single item of a book inventory view.
+//
+// Represents the inventory item state.
+// Indicates the inventory item is in library, lost
+// or borrowed by user. Contains loan details if borrowed.
+//
+message InventoryItemFullState {
+
+    // The identifier of an inventory item.
+    InventoryItemId item_id = 1;
+
+    // The item could have one of the following statuses.
+    oneof item_status {
+
+        // When the book stays in a library.
+        bool in_library = 2;
+
+        // When the book is borrowed by smb.
+        LoanDetails loan_details = 3;
+
+        // When the book is lost.
+        bool lost = 4;
+    }
+
+    // The QR code URL.
+    spine.net.Url qr_code_url = 5;
+
+    // The radio-frequency identification mark of an item.
+    Rfid rfid = 6;
 }

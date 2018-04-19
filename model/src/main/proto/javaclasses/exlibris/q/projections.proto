@@ -145,3 +145,25 @@ message InventoryListView {
     // The collection of all library book inventory.
     repeated BookInventory inventory = 2;
 }
+
+// The projection state of a book.
+//
+message BookDetailsView {
+
+    // The identifier of a book.
+    BookId id = 1;
+
+    // Book details.
+    BookDetails book_details = 2;
+}
+
+// The projection state of a book inventory.
+//
+message BookInventoryView {
+
+    // The identifier of a book.
+    BookId id = 1;
+
+    // The collection of inventory items.
+    repeated InventoryItemFullState item_state = 2;
+}
