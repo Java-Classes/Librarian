@@ -231,7 +231,7 @@ enum InventoryItemStatus {
     ITEM_RESERVED = 3;
 }
 
-// The item of the readers list view.
+// The single item of a readers list view.
 //
 message ReaderBooksCountItem {
 
@@ -278,7 +278,7 @@ message ReaderLoanItem {
 //
 message ReaderEventLogItem {
 
-    // The identifier of a book item.
+    // The identifier of an inventory item.
     InventoryItemId item_id = 1;
 
     // The book title.
@@ -321,4 +321,24 @@ enum ReaderEventLogItemType {
     READER_EVENT_LOAN_PERIOD_EXTENDED = 10;
 
     READER_EVENT_BOOK_LOST = 11;
+}
+
+// The single item of a lost books list view.
+//
+message LostBookItem {
+
+    // The identifier of an inventory item.
+    InventoryItemId item_id = 1;
+
+    // The book title.
+    BookTitle title = 2;
+
+    // The name of a reader who lost.
+    spine.people.PersonName user_name = 3;
+
+    // The email address of a reader who lost.
+    spine.net.EmailAddress email = 4;
+
+    // The date when reported.
+    spine.time.LocalDate when_reported = 5;
 }

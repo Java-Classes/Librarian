@@ -137,3 +137,18 @@ message ReaderHistoryView {
     // The collection of all reader's events.
     repeated ReaderEventLogItem event = 3;
 }
+
+// The projection state of a lost books list view.
+//
+// Sorting:
+//
+//     // most recent on top.
+//
+message LostBooksListView {
+
+    // The identifier of a list of lost books.
+    BooksListId id = 1;
+
+    // The collection of all library lost books.
+    repeated LostBookItem lost_book = 2;
+}
