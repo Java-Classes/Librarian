@@ -24,7 +24,7 @@ import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookId;
-import javaclasses.exlibris.BooksListId;
+import javaclasses.exlibris.ListViewId;
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookRemoved;
@@ -43,7 +43,7 @@ import java.util.stream.IntStream;
  *
  * @author Yurii Haidamaka
  */
-public class AllBooksListViewProjection extends Projection<BooksListId, AllBooksListView, AllBooksListViewVBuilder> {
+public class AllBooksListViewProjection extends Projection<ListViewId, AllBooksListView, AllBooksListViewVBuilder> {
 
     /**
      * The {@link AllBooksListViewProjection} is a singleton.
@@ -51,31 +51,31 @@ public class AllBooksListViewProjection extends Projection<BooksListId, AllBooks
      * <p>The {@code ID} value should be the same for all JVMs
      * to support work with the same projection from execution to execution.
      */
-    public static final BooksListId ID = BooksListId.newBuilder()
+    public static final ListViewId ID = ListViewId.newBuilder()
                                                     .setValue("AllBooksListViewProjection")
                                                     .build();
 
     /**
      * @see Projection#Projection(Object)
      */
-    public AllBooksListViewProjection(BooksListId id) {
+    public AllBooksListViewProjection(ListViewId id) {
         super(id);
     }
 
     @Subscribe
     public void on(BookAdded event) {
         final BookDetails bookDetails = event.getDetails();
-        BookItem bookItem = BookItem.newBuilder()
-                                    .setBookId(event.getBookId())
-                                    .setIsbn(bookDetails.getIsbn())
-                                    .setTitle(bookDetails.getTitle())
-                                    .setAuthors(bookDetails.getAuthor())
-                                    .setCoverUrl(bookDetails.getBookCoverUrl())
-                                    .addAllCategories(bookDetails.getCategoriesList())
-                                    .setSynopsis(bookDetails.getSynopsis())
-                                    .setAvailableCount(0)
-                                    .setStatus(BookItemStatus.EXPECTED)
-                                    .build();
+        final BookItem bookItem = BookItem.newBuilder()
+                                          .setBookId(event.getBookId())
+                                          .setIsbn(bookDetails.getIsbn())
+                                          .setTitle(bookDetails.getTitle())
+                                          .setAuthors(bookDetails.getAuthor())
+                                          .setCoverUrl(bookDetails.getBookCoverUrl())
+                                          .addAllCategories(bookDetails.getCategoriesList())
+                                          .setSynopsis(bookDetails.getSynopsis())
+                                          .setAvailableCount(0)
+                                          .setStatus(BookItemStatus.EXPECTED)
+                                          .build();
 
         getBuilder().addBookItem(bookItem);
     }
@@ -92,24 +92,22 @@ public class AllBooksListViewProjection extends Projection<BooksListId, AllBooks
                                                      .equals(id))
                                    .findFirst()
                                    .getAsInt();
-        items.remove(index);
-        getBuilder().addAllBookItem(items);
+        getBuilder().removeBookItem(index);
     }
 
     @Subscribe
     public void on(InventoryAppended event) {
         final BookId id = event.getInventoryId()
                                .getBookId();
-        final List<BookItem> items = getBuilder().getBookItem();
+        final List<BookItem> items = new ArrayList<>(getBuilder().getBookItem());
         final int index = getIndexByBookId(items, id);
         final BookItem oldBookItem = items.get(index);
         final int availableCount = oldBookItem.getAvailableCount();
-        BookItem newBookItem = BookItem.newBuilder(oldBookItem)
-                                       .setAvailableCount(availableCount + 1)
-                                       .setStatus(BookItemStatus.AVAILABLE)
-                                       .build();
-        items.remove(index);
-        items.add(newBookItem);
+        final BookItem newBookItem = BookItem.newBuilder(oldBookItem)
+                                             .setAvailableCount(availableCount + 1)
+                                             .setStatus(BookItemStatus.AVAILABLE)
+                                             .build();
+        getBuilder().setBookItem(index, newBookItem);
     }
 
     @Subscribe
@@ -122,12 +120,11 @@ public class AllBooksListViewProjection extends Projection<BooksListId, AllBooks
         final int availableCount = oldBookItem.getAvailableCount();
         final BookItemStatus status =
                 availableCount == 1 ? BookItemStatus.EXPECTED : BookItemStatus.AVAILABLE;
-        BookItem newBookItem = BookItem.newBuilder(oldBookItem)
-                                       .setAvailableCount(availableCount - 1)
-                                       .setStatus(status)
-                                       .build();
-        items.remove(index);
-        items.add(newBookItem);
+        final BookItem newBookItem = BookItem.newBuilder(oldBookItem)
+                                             .setAvailableCount(availableCount - 1)
+                                             .setStatus(status)
+                                             .build();
+        getBuilder().setBookItem(index, newBookItem);
     }
 
     @Subscribe
@@ -140,12 +137,11 @@ public class AllBooksListViewProjection extends Projection<BooksListId, AllBooks
         final int availableCount = oldBookItem.getAvailableCount();
         final BookItemStatus status =
                 availableCount == 1 ? BookItemStatus.EXPECTED : BookItemStatus.AVAILABLE;
-        BookItem newBookItem = BookItem.newBuilder(oldBookItem)
-                                       .setAvailableCount(availableCount - 1)
-                                       .setStatus(status)
-                                       .build();
-        items.remove(index);
-        items.add(newBookItem);
+        final BookItem newBookItem = BookItem.newBuilder(oldBookItem)
+                                             .setAvailableCount(availableCount - 1)
+                                             .setStatus(status)
+                                             .build();
+        getBuilder().setBookItem(index, newBookItem);
     }
 
     @Subscribe
@@ -156,12 +152,11 @@ public class AllBooksListViewProjection extends Projection<BooksListId, AllBooks
         final int index = getIndexByBookId(items, id);
         final BookItem oldBookItem = items.get(index);
         final int availableCount = oldBookItem.getAvailableCount();
-        BookItem newBookItem = BookItem.newBuilder(oldBookItem)
-                                       .setAvailableCount(availableCount + 1)
-                                       .setStatus(BookItemStatus.AVAILABLE)
-                                       .build();
-        items.remove(index);
-        items.add(newBookItem);
+        final BookItem newBookItem = BookItem.newBuilder(oldBookItem)
+                                             .setAvailableCount(availableCount + 1)
+                                             .setStatus(BookItemStatus.AVAILABLE)
+                                             .build();
+        getBuilder().setBookItem(index, newBookItem);
     }
 
     private int getIndexByBookId(List<BookItem> items, BookId id) {

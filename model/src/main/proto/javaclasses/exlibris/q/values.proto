@@ -173,7 +173,7 @@ enum BorrowedBookItemStatus {
     SHOULD_RETURN_SOON = 3;
 }
 
-// Al Information about reserved book.
+// All Information about reserved book.
 //
 message ReservedBookItem {
 
@@ -217,19 +217,6 @@ enum ReservedBookItemStatus {
     RESERVED = 2;
 }
 
-// An inventoty item status values.
-//
-enum InventoryItemStatus {
-
-    // Used as an undefined value marker.
-    IIS_UNDEFINED = 0;
-
-    ITEM_AVAILABLE = 1;
-
-    ITEM_BORROWED = 2;
-
-    ITEM_RESERVED = 3;
-}
 
 // The single item of a readers list view.
 //
