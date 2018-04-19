@@ -84,9 +84,9 @@ message LoanId {
     int64 value = 1;
 }
 
-// A books list identifier.
+// A list identifier.
 //
-message BooksListId {
+message ListViewId {
 
     // String representation of UUID.
     //
