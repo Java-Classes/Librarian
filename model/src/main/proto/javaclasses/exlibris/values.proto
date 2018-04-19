@@ -56,20 +56,23 @@ message Isbn62 {
 //
 message BookDetails {
 
+    // The International Standard Book Number.
+    Isbn isbn = 1;
+
     // The URL of a book cover.
-    spine.net.Url book_cover_url = 1;
+    spine.net.Url book_cover_url = 2;
 
     // The DTO of a book title.
-    BookTitle title = 2;
+    BookTitle title = 3;
 
     // Authors' names.
-    AuthorName author = 3;
+    AuthorName author = 4;
 
     // The DTO of a book synopsis.
-    BookSynopsis synopsis = 4;
+    BookSynopsis synopsis = 5;
 
     // A list of book categories.
-    repeated Category categories = 5;
+    repeated Category categories = 6;
 }
 
 // The URL of a book cover.

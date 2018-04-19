@@ -30,8 +30,8 @@ option java_outer_classname = "ValuesProjectionsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-import "google/protobuf/timestamp.proto";
 import "spine/net/url.proto";
+import "spine/time/time.proto";
 import "javaclasses/exlibris/identifiers.proto";
 import "javaclasses/exlibris/values.proto";
 
@@ -82,6 +82,7 @@ enum BookItemStatus {
 // Al Information about a book that is expected in the library.
 //
 message ExpectedSoonItem {
+
     // The identifier of a book.
     BookId book_id = 1;
 
@@ -172,6 +173,7 @@ enum BorrowedBookItemStatus {
 // Al Information about reserved book.
 //
 message ReservedBookItem {
+
     // The identifier of a book.
     BookId book_id = 1;
 
@@ -215,13 +217,14 @@ enum ReservedBookItemStatus {
 // An inventoty item status values.
 //
 enum InventoryItemStatus {
+
     // Used as an undefined value marker.
     IIS_UNDEFINED = 0;
 
-    AVAILABLE = 1;
+    ITEM_AVAILABLE = 1;
 
-    BORROWED = 2;
+    ITEM_BORROWED = 2;
 
-    RESERVED = 3;
+    ITEM_RESERVED = 3;
 }
 

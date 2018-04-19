@@ -39,39 +39,45 @@ import "javaclasses/exlibris/q/values.proto";
 
 // The projection state of all books in the library.
 //
-message AllBooksView {
+message AllBooksListView {
 
-    // All information about one book from the library.
-    repeated BookItem book_item = 1;
+    // The identifier of a list of all books.
+    AllBooksListId id = 1;
+
+    // A list of all books from the library.
+    repeated BookItem book_item = 2;
 }
 
 // The projection state of book that are expected in the library.
 //
-message ExpectedSoonBooksView {
+message ExpectedSoonBooksListView {
 
-    // All information about one book that is expected in the library.
+    // The identifier of a list of books that are expected in the library.
+    ExpectedSoonBooksListId id = 1;
+
+    // A list of book that is expected in the library.
     repeated ExpectedSoonItem book_item = 2;
 }
 
 // The projection state of borrowed books in the library.
 //
-message BorrowedBooksView {
+message BorrowedBooksListView {
 
     // The identifier of a user.
     UserId user_id = 1;
 
-    // All information about one borrowed book.
+    // A list of borrowed book.
     repeated BorrowedBookItem book_item = 2;
 }
 
 // The projection state of borrowed books in the library.
 //
-message ReservedBooksView {
+message ReservedBooksListView {
 
     // The identifier of a user.
     UserId user_id = 1;
 
-    // All information about one reserved book.
+    // A list of reserved book.
     repeated ReservedBookItem book_item = 2;
 }
 
