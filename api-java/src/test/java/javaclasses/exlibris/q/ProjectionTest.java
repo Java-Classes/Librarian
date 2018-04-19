@@ -20,31 +20,32 @@
 
 package javaclasses.exlibris.q;
 
-import io.spine.server.projection.ProjectionRepository;
+import com.google.protobuf.Message;
+import io.spine.core.Event;
+import io.spine.server.command.TestEventFactory;
+import io.spine.server.event.EventFactory;
 import javaclasses.exlibris.ListViewId;
 
-import static java.util.Collections.singleton;
-import static javaclasses.exlibris.q.AllBooksListViewProjection.ID;
+import static io.spine.Identifier.newUuid;
 
 /**
- * Repository for the {@link AllBooksListViewProjection}.
+ * The parent class for the projection test classes.
+ * Provides the common methods for testing.
  *
  * @author Yurii Haidamaka
  */
-public class AllBoksListViewRepository extends ProjectionRepository<ListViewId, AllBooksListViewProjection, AllBooksListView> {
-    @Override
-    public void onRegistered() {
-        super.onRegistered();
-        setUpEventRoute();
+abstract class ProjectionTest {
+
+    private final EventFactory eventFactory = TestEventFactory.newInstance(getClass());
+
+    Event createEvent(Message messageOrAny) {
+        final Event event = eventFactory.createEvent(messageOrAny, null);
+        return event;
     }
 
-    /**
-     * Adds the {@link io.spine.server.route.EventRoute EventRoute}s to the repository.
-     *
-     * <p>Override this method in successor classes, otherwise all successors will use
-     * {@code AllBooksListViewProjection.ID}.
-     */
-    protected void setUpEventRoute() {
-        getEventRouting().replaceDefault(((message, context) -> singleton(ID)));
+    ListViewId createBookListId() {
+        return ListViewId.newBuilder()
+                         .setValue(newUuid())
+                         .build();
     }
 }
