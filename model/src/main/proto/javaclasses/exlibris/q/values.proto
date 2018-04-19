@@ -242,7 +242,7 @@ message ReaderBooksCountItem {
 
 // The single item of a reader's compact history view.
 //
-message LoanItem {
+message ReaderLoanItem {
 
     // The identifier of an inventory item.
     InventoryItemId item_id = 1;
@@ -274,7 +274,7 @@ message ReaderEventLogItem {
     ReaderEventLogItemType event_type = 3;
 
     // The time when event was emitted.
-    google.protobuf.Timestamp when_returned = 4;
+    google.protobuf.Timestamp when_emitted = 4;
 }
 
 // A reader's log event type values.
@@ -440,4 +440,74 @@ message ReservationItem {
 
     // The time when a book was reserved.
     google.protobuf.Timestamp when_reserved = 4;
+}
+
+// The single item of a reader's compact history view.
+//
+message BookLoanItem {
+
+    // The identifier of an inventory item.
+    InventoryItemId item_id = 1;
+
+    // The name of a reader.
+    spine.people.PersonName user_name = 2;
+
+    // The email address of a reader.
+    spine.net.EmailAddress email = 3;
+
+    // The date when a book was borrowed.
+    spine.time.LocalDate when_taken = 4;
+
+    // The date when a book should be returned.
+    spine.time.LocalDate when_due = 5;
+}
+
+// The single item of a reader's full history view.
+//
+message BookEventLogItem {
+
+    // The identifier of an inventory item.
+    InventoryItemId item_id = 1;
+
+    // The name of a reader.
+    spine.people.PersonName user_name = 2;
+
+    // The email address of a reader.
+    spine.net.EmailAddress email = 3;
+
+    // The type of an event.
+    BookEventLogItemType event_type = 4;
+
+    // The time when event was emitted.
+    google.protobuf.Timestamp when_emitted = 5;
+}
+
+// A book log event type values.
+//
+// Contains value for each event related to the specific book.
+//
+enum BookEventLogItemType {
+
+    // Used as an undefined value marker.
+    BELIT_UNDEFINED = 0;
+
+    BOOK_EVENT_INVENTORY_APPENDED = 1;
+
+    BOOK_EVENT_BECAME_AVAILABLE = 2;
+
+    BOOK_EVENT_BECAME_READY_TO_PICK_UP = 3;
+
+    BOOK_EVENT_BORROWED = 4;
+
+    BOOK_EVENT_LOAN_BECAME_OVERDUE = 5;
+
+    BOOK_EVENT_LOAN_PERIOD_EXTENDED = 6;
+
+    BOOK_EVENT_RETURNED = 7;
+
+    BOOK_EVENT_LOST = 8;
+
+    BOOK_EVENT_INVENTOR_DECREASED = 9;
+
+    BOOK_EVENT_REMOVED = 10;
 }

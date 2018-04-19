@@ -109,7 +109,7 @@ message ReaderHistoryView {
     UserId user_id = 1;
 
     // The collection of all reader's loans.
-    repeated LoanItem loan = 2;
+    repeated ReaderLoanItem loan = 2;
 
     // The collection of all reader's events.
     repeated ReaderEventLogItem event = 3;
@@ -185,4 +185,22 @@ message BookReservationsView {
 
     // The collection of book reservations.
     repeated ReservationItem reservation = 2;
+}
+
+// The projection state of a book history.
+//
+// Sorting:
+//
+//     // most recent on top;
+//
+message BookHistoryView {
+
+    // The identifier of a book.
+    BookId id = 1;
+
+    // The collection of all book loans.
+    repeated BookLoanItem reservation = 2;
+
+    // The collection of all book events.
+    repeated BookEventLogItem event = 3;
 }
