@@ -21,7 +21,7 @@
 package javaclasses.exlibris.q;
 
 import io.spine.server.projection.ProjectionRepository;
-import javaclasses.exlibris.BooksListId;
+import javaclasses.exlibris.ListViewId;
 
 import static java.util.Collections.singleton;
 import static javaclasses.exlibris.q.AllBooksListViewProjection.ID;
@@ -31,7 +31,7 @@ import static javaclasses.exlibris.q.AllBooksListViewProjection.ID;
  *
  * @author Yurii Haidamaka
  */
-public class AllBoksListViewRepository extends ProjectionRepository<BooksListId, AllBooksListViewProjection, AllBooksListView> {
+public class AllBoksListViewRepository extends ProjectionRepository<ListViewId, AllBooksListViewProjection, AllBooksListView> {
     @Override
     public void onRegistered() {
         super.onRegistered();
