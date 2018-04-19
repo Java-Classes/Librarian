@@ -42,7 +42,7 @@ import "javaclasses/exlibris/q/values.proto";
 message AllBooksListView {
 
     // The identifier of a list of all books.
-    BooksListId id = 1;
+    ListViewId id = 1;
 
     // A list of all books from the library.
     repeated BookItem book_item = 2;
@@ -53,7 +53,7 @@ message AllBooksListView {
 message ExpectedSoonBooksListView {
 
     // The identifier of a list of books that are expected in the library.
-    BooksListId id = 1;
+    ListViewId id = 1;
 
     // A list of book that is expected in the library.
     repeated ExpectedSoonItem book_item = 2;
