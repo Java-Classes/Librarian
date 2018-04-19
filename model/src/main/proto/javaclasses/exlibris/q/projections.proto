@@ -106,12 +106,14 @@ message InventoryItemView {
     InventoryItemStatus status = 6;
 }
 
+// **** Projections for the UI role Admin. ****
+
 // The projection state of a readers list view.
 //
 message ReadersListView {
 
     // The identifier of a list of library readers.
-    ReadersListViewId id = 1;
+    ListViewId id = 1;
 
     // The collection of all library readers with books count.
     repeated ReaderBooksCountItem reader = 2;
@@ -147,7 +149,7 @@ message ReaderHistoryView {
 message LostBooksListView {
 
     // The identifier of a list of lost books.
-    BooksListId id = 1;
+    ListViewId id = 1;
 
     // The collection of all library lost books.
     repeated LostBookItem lost_book = 2;

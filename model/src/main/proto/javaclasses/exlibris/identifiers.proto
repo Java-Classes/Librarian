@@ -92,12 +92,3 @@ message ListViewId {
     //
     string value = 1;
 }
-
-// The identifier of a readers list.
-//
-message ReadersListViewId {
-
-    // String representation of UUID.
-    //
-    string value = 1;
-}
