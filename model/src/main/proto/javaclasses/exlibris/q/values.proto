@@ -34,6 +34,7 @@ import "spine/net/url.proto";
 import "spine/net/email_address.proto";
 import "spine/time/time.proto";
 import "spine/people/person_name.proto";
+import "google/protobuf/timestamp.proto";
 import "javaclasses/exlibris/identifiers.proto";
 import "javaclasses/exlibris/values.proto";
 
@@ -251,4 +252,73 @@ message ReaderBooksCountItem {
 
     // The reader's overdue loans count.
     int32 overdue_count = 6;
+}
+
+// The single item of a reader's compact history view.
+//
+message ReaderLoanItem {
+
+    // The identifier of an inventory item.
+    InventoryItemId item_id = 1;
+
+    // The book title.
+    BookTitle title = 2;
+
+    // The date when a book was borrowed.
+    spine.time.LocalDate when_taken = 3;
+
+    // The date when a book should be returned.
+    spine.time.LocalDate when_due = 4;
+
+    // The time when a book was returned.
+    google.protobuf.Timestamp when_returned = 5;
+}
+
+// The single item of a reader's full history view.
+//
+message ReaderEventLogItem {
+
+    // The identifier of a book item.
+    InventoryItemId item_id = 1;
+
+    // The book title.
+    BookTitle title = 2;
+
+    // The type of an event.
+    ReaderEventLogItemType event_type = 3;
+
+    // The time when event was emitted.
+    google.protobuf.Timestamp when_returned = 4;
+}
+
+// A reader's log event type values.
+//
+// Contains value for each event related to the specific user.
+//
+enum ReaderEventLogItemType {
+
+    // Used as an undefined value marker.
+    RELIT_UNDEFINED = 0;
+
+    READER_EVENT_BORROWED = 1;
+
+    READER_EVENT_RETURNED = 2;
+
+    READER_EVENT_RESERVED = 3;
+
+    READER_EVENT_RESERVATION_CANCELED = 4;
+
+    READER_EVENT_RESERVATION_READY_TO_PICK_UP = 5;
+
+    READER_EVENT_RESERVATION_PICK_UP_PERIOD_EXPIRED = 6;
+
+    READER_EVENT_RESERVATION_BECAME_LOAN = 7;
+
+    READER_EVENT_LOAN_BECAME_OVERDUE = 8;
+
+    READER_EVENT_LOAN_BECAME_SHOULD_RETURN_SOON = 9;
+
+    READER_EVENT_LOAN_PERIOD_EXTENDED = 10;
+
+    READER_EVENT_BOOK_LOST = 11;
 }

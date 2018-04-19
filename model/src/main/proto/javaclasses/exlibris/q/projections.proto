@@ -116,3 +116,24 @@ message ReadersListView {
     // The collection of all library readers with books count.
     repeated ReaderBooksCountItem reader = 2;
 }
+
+// The projection state of a reader's history view.
+//
+// This projection includes the reader's event log for the full history view
+// and the reader's loans list for the compact history view.
+//
+// Sorting:
+//
+//     // most recent on top.
+//
+message ReaderHistoryView {
+
+    // The identifier of a reader.
+    UserId user_id = 1;
+
+    // The collection of all reader's loans.
+    repeated ReaderLoanItem loan = 2;
+
+    // The collection of all reader's events.
+    repeated ReaderEventLogItem event = 3;
+}
