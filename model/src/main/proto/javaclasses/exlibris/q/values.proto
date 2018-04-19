@@ -242,7 +242,7 @@ message ReaderBooksCountItem {
 
 // The single item of a reader's compact history view.
 //
-message ReaderLoanItem {
+message LoanItem {
 
     // The identifier of an inventory item.
     InventoryItemId item_id = 1;
@@ -337,13 +337,13 @@ message BookInventory {
     InventoryId inventory_id = 1;
 
     // The book title.
-    BookTitle title = 3;
+    BookTitle title = 2;
 
     // Authors' names.
-    AuthorName author = 4;
+    AuthorName author = 3;
 
     // The collection of inventory items.
-    repeated InventoryItemState item_state = 5;
+    repeated InventoryItemState item_state = 4;
 }
 
 // The single item of a book inventory.
@@ -423,4 +423,21 @@ message InventoryItemFullState {
 
     // The radio-frequency identification mark of an item.
     Rfid rfid = 6;
+}
+
+// The single item of a book reservations view.
+//
+message ReservationItem {
+
+    // The user who reserved a book.
+    UserId who_reserved = 1;
+
+    // The name of a reader.
+    spine.people.PersonName user_name = 2;
+
+    // The email address of a reader.
+    spine.net.EmailAddress email = 3;
+
+    // The time when a book was reserved.
+    google.protobuf.Timestamp when_reserved = 4;
 }
