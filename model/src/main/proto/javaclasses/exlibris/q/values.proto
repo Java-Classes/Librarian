@@ -217,7 +217,6 @@ enum ReservedBookItemStatus {
     RESERVED = 2;
 }
 
-
 // The single item of a readers list view.
 //
 message ReaderBooksCountItem {
@@ -328,4 +327,68 @@ message LostBookItem {
 
     // The date when reported.
     spine.time.LocalDate when_reported = 5;
+}
+
+// The single item of an inventory list view.
+//
+message BookInventory {
+
+    // The identifier of an inventory.
+    InventoryId inventory_id = 1;
+
+    // The book title.
+    BookTitle title = 3;
+
+    // Authors' names.
+    AuthorName author = 4;
+
+    repeated InventoryItemState item_state = 5;
+}
+
+// The single item of a book inventory.
+//
+// Represents the inventory item state.
+// Indicates the inventory item is in library, lost
+// or borrowed by user. Contains loan details if borrowed.
+//
+message InventoryItemState {
+
+    // The identifier of an inventory item.
+    InventoryItemId item_id = 1;
+
+    // The item could have one of the following statuses.
+    oneof item_status {
+
+        // When the book stays in a library.
+        bool in_library = 2;
+
+        // When the book is borrowed by smb.
+        LoanDetails loan_details = 3;
+
+        // When the book is lost.
+        bool lost = 4;
+    }
+}
+
+// The inventory item loan details.
+//
+message LoanDetails {
+
+    // The identifier of a reader.
+    UserId user_id = 1;
+
+    // The name of a reader.
+    spine.people.PersonName user_name = 2;
+
+    // The email address of a reader.
+    spine.net.EmailAddress email = 3;
+
+    // The date when a book was borrowed.
+    spine.time.LocalDate when_taken = 4;
+
+    // The date when a book should be returned.
+    spine.time.LocalDate when_due = 5;
+
+    // The loan status.
+    bool overdue = 6;
 }

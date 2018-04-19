@@ -81,31 +81,6 @@ message ReservedBooksListView {
     repeated ReservedBookItem book_item = 2;
 }
 
-// The projection state of inventory item.
-//
-// After scaning the OR code, the user sees information about one inventory item.
-//
-message InventoryItemView {
-
-    // The identifier of an inventory item.
-    InventoryItemId inventory_item_id = 1;
-
-    // the identifier of a user.
-    UserId user_id = 2;
-
-    // The book title.
-    BookTitle title = 3;
-
-    // Authors’ full names.
-    AuthorName authors = 4;
-
-    // The book cover.
-    spine.net.Url cover_url = 5;
-
-    // The status of the inventory item.
-    InventoryItemStatus status = 6;
-}
-
 // **** Projections for the UI role Admin. ****
 
 // The projection state of a readers list view.
@@ -126,7 +101,7 @@ message ReadersListView {
 //
 // Sorting:
 //
-//     // most recent on top.
+//     // most recent on top;
 //
 message ReaderHistoryView {
 
@@ -144,7 +119,7 @@ message ReaderHistoryView {
 //
 // Sorting:
 //
-//     // most recent on top.
+//     // most recent on top;
 //
 message LostBooksListView {
 
@@ -153,4 +128,20 @@ message LostBooksListView {
 
     // The collection of all library lost books.
     repeated LostBookItem lost_book = 2;
+}
+
+// The projection state of an inventory list view.
+//
+// Sorting:
+//
+//     // with overdue loans on top;
+//     // by title alphabetically;
+//
+message InventoryListView {
+
+    // The identifier of a inventory list.
+    ListViewId id = 1;
+
+    // The collection of all library book inventory.
+    repeated BookInventory inventory = 2;
 }
