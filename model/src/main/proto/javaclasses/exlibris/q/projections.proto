@@ -105,3 +105,14 @@ message InventoryItemView {
     // The status of the inventory item.
     InventoryItemStatus status = 6;
 }
+
+// The projection state of a readers list view.
+//
+message ReadersListView {
+
+    // The identifier of a list of library readers.
+    ReadersListViewId id = 1;
+
+    // The collection of all library readers with books count.
+    repeated ReaderBooksCountItem reader = 2;
+}

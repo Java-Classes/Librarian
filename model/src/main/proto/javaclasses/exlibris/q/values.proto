@@ -31,7 +31,9 @@ option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
 import "spine/net/url.proto";
+import "spine/net/email_address.proto";
 import "spine/time/time.proto";
+import "spine/people/person_name.proto";
 import "javaclasses/exlibris/identifiers.proto";
 import "javaclasses/exlibris/values.proto";
 
@@ -228,3 +230,25 @@ enum InventoryItemStatus {
     ITEM_RESERVED = 3;
 }
 
+// The item of the readers list view.
+//
+message ReaderBooksCountItem {
+
+    // The identifier of a reader.
+    UserId user_id = 1;
+
+    // The name of a reader.
+    spine.people.PersonName user_name = 2;
+
+    // The email address of a reader.
+    spine.net.EmailAddress email = 3;
+
+    // The reader's currently reading books count.
+    int32 currently_reading_count = 4;
+
+    // The reader's reserved books count.
+    int32 reservations_count = 5;
+
+    // The reader's overdue loans count.
+    int32 overdue_count = 6;
+}
