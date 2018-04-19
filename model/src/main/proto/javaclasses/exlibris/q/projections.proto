@@ -90,7 +90,7 @@ message InventoryItemView {
     // The identifier of an inventory item.
     InventoryItemId inventory_item_id = 1;
 
-    // the identifier of a user.
+    // The identifier of a user.
     UserId user_id = 2;
 
     // The book title.
