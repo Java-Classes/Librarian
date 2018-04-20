@@ -44,39 +44,166 @@ message AllBooksListView {
     // The identifier of a list of all books.
     ListViewId id = 1;
 
-    // A list of all books from the library.
+    // The list of all books in the library.
     repeated BookItem book_item = 2;
 }
 
-// The projection state of book that are expected in the library.
+// The projection state of books that are expected in the library.
 //
 message ExpectedSoonBooksListView {
 
     // The identifier of a list of books that are expected in the library.
     ListViewId id = 1;
 
-    // A list of book that is expected in the library.
+    // The list of books that are expected in the library.
     repeated ExpectedSoonItem book_item = 2;
 }
 
-// The projection state of borrowed books in the library.
+// The projection state of user's borrowed books.
 //
 message BorrowedBooksListView {
 
     // The identifier of a user.
     UserId user_id = 1;
 
-    // A list of borrowed book.
+    // The list of user's borrowed book.
     repeated BorrowedBookItem book_item = 2;
 }
 
-// The projection state of borrowed books in the library.
+// The projection state of user's reserved books.
 //
 message ReservedBooksListView {
 
     // The identifier of a user.
     UserId user_id = 1;
 
-    // A list of reserved book.
+    // The list of user's reserved book.
     repeated ReservedBookItem book_item = 2;
+}
+
+// **** Projections for the UI role Admin. ****
+
+// The projection state of a readers list view.
+//
+message ReadersListView {
+
+    // The identifier of a list of library readers.
+    ListViewId id = 1;
+
+    // The collection of all library readers with books count.
+    repeated ReaderBooksCountItem reader = 2;
+}
+
+// The projection state of a reader's history view.
+//
+// Includes the reader's event log for the full history view
+// and the reader's loans list for the compact history view.
+//
+// Sorting:
+//
+//     // most recent on top;
+//
+message ReaderHistoryView {
+
+    // The identifier of a reader.
+    UserId user_id = 1;
+
+    // The collection of all reader's loans.
+    repeated ReaderLoanItem loan = 2;
+
+    // The collection of all reader's events.
+    repeated ReaderEventLogItem event = 3;
+}
+
+// The projection state of a list of lost books view.
+//
+// Sorting:
+//
+//     // most recent on top;
+//
+message LostBooksListView {
+
+    // The identifier of a list of lost books.
+    ListViewId id = 1;
+
+    // The collection of library lost books.
+    repeated LostBookItem lost_book = 2;
+}
+
+// The projection state of an inventory list view.
+//
+// Sorting:
+//
+//     // with overdue loans on top;
+//     // by title alphabetically;
+//
+message InventoryListView {
+
+    // The identifier of an inventory list.
+    ListViewId id = 1;
+
+    // The collection of all library book inventories.
+    repeated BookInventory inventory = 2;
+}
+
+// The projection state of a book details view.
+//
+message BookDetailsView {
+
+    // The identifier of a book.
+    BookId id = 1;
+
+    // Book details.
+    BookDetails book_details = 2;
+}
+
+// The projection state of a book inventory view.
+//
+// Sorting:
+//
+//     // with overdue loans on top;
+//
+message BookInventoryView {
+
+    // The identifier of a book.
+    BookId id = 1;
+
+    // The collection of inventory items.
+    repeated InventoryItemFullState item_state = 2;
+}
+
+// The projection state of a book reservations view.
+//
+// Sorting:
+//
+//     // most recent on top;
+//
+message BookReservationsView {
+
+    // The identifier of a book.
+    BookId id = 1;
+
+    // The collection of book reservations.
+    repeated ReservationItem reservation = 2;
+}
+
+// The projection state of a book history.
+//
+// Includes the book event log for the full history view
+// and the book loans list for the compact history view.
+//
+// Sorting:
+//
+//     // most recent on top;
+//
+message BookHistoryView {
+
+    // The identifier of a book.
+    BookId id = 1;
+
+    // The collection of all book loans.
+    repeated BookLoanItem reservation = 2;
+
+    // The collection of all book events.
+    repeated BookEventLogItem event = 3;
 }

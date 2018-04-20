@@ -31,11 +31,14 @@ option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
 import "spine/net/url.proto";
+import "spine/net/email_address.proto";
 import "spine/time/time.proto";
+import "spine/people/person_name.proto";
+import "google/protobuf/timestamp.proto";
 import "javaclasses/exlibris/identifiers.proto";
 import "javaclasses/exlibris/values.proto";
 
-// All Information about a book from the library.
+// All book data without reference to a user.
 //
 message BookItem {
 
@@ -54,20 +57,20 @@ message BookItem {
     // The book cover.
     spine.net.Url cover_url = 5;
 
-    // A list of book categories.
+    // The list of book categories.
     repeated Category categories = 6;
 
-    // The DTO of a book synopsis.
+    // The book synopsis.
     BookSynopsis synopsis = 7;
 
-    // Number of available books.
+    // The number of available exemplars.
     int32 available_count = 8;
 
     // The book item status.
     BookItemStatus status = 9;
 }
 
-// A book item status values.
+// A library book status without reference to a user.
 //
 enum BookItemStatus {
 
@@ -79,7 +82,7 @@ enum BookItemStatus {
     EXPECTED = 2;
 }
 
-// Al Information about a book that is expected in the library.
+// All information about a book that is expected in the library.
 //
 message ExpectedSoonItem {
 
@@ -98,17 +101,17 @@ message ExpectedSoonItem {
     // The book cover.
     spine.net.Url cover_url = 5;
 
-    // A list of book categories.
+    // The list of book categories.
     repeated Category categories = 6;
 
-    // The DTO of a book synopsis.
+    // The book synopsis.
     BookSynopsis synopsis = 7;
 
-    // The status of a book that is expected soon.
-    ExpectedSoonItemStatus status = 10;
+    // The status of a book that is expected in the library.
+    ExpectedSoonItemStatus status = 8;
 }
 
-// A status of the book that is expected soon in the library.
+// A status of a book that is expected soon in the library.
 //
 enum ExpectedSoonItemStatus {
 
@@ -118,7 +121,7 @@ enum ExpectedSoonItemStatus {
     EXPECTED_SOON = 1;
 }
 
-// Al Information about borrowed book.
+// All information about a user's borrowed book.
 //
 message BorrowedBookItem {
 
@@ -140,20 +143,23 @@ message BorrowedBookItem {
     // The book cover.
     spine.net.Url cover_url = 6;
 
-    // A list of book categories.
+    // The list of book categories.
     repeated Category categories = 7;
 
-    // The DTO of a book synopsis.
+    // The book synopsis.
     BookSynopsis synopsis = 8;
 
-    // The last day of the loan period.
-    spine.time.LocalDate due_date = 9;
+    // The first day of a loan period.
+    spine.time.LocalDate when_borrowed = 9;
+
+    // The last day of a loan period.
+    spine.time.LocalDate due_date = 10;
 
     // The borrowed book status.
-    BorrowedBookItemStatus status = 10;
+    BorrowedBookItemStatus status = 11;
 
     // Shows whether there is a reservation for this book or not.
-    bool is_allowed_loan_extension = 11;
+    bool is_allowed_loan_extension = 12;
 }
 
 // A borrowed book item status values.
@@ -170,7 +176,7 @@ enum BorrowedBookItemStatus {
     SHOULD_RETURN_SOON = 3;
 }
 
-// All Information about reserved book.
+// All information about a user's reserved book.
 //
 message ReservedBookItem {
 
@@ -189,20 +195,20 @@ message ReservedBookItem {
     // The book cover.
     spine.net.Url cover_url = 5;
 
-    // A list of book categories.
-    repeated Category categories = 6;
+    // The list of book categories.
+    repeated Category categorie = 6;
 
-    // The DTO of a book synopsis.
+    // The book synopsis.
     BookSynopsis synopsis = 7;
 
-    // Estimated date when the book becomes available.
-    spine.time.LocalDate when_available = 8;
+    // Estimated date when the book becomes ready to pick up.
+    spine.time.LocalDate when_ready_to_pick_up = 8;
 
     // The reserved book status.
     ReservedBookItemStatus status = 9;
 }
 
-// A borrowed book item status values.
+// A reserved book item status values.
 //
 enum ReservedBookItemStatus {
 
@@ -214,4 +220,315 @@ enum ReservedBookItemStatus {
     RESERVED = 2;
 }
 
+// The single item of a readers list view.
+//
+message ReaderBooksCountItem {
 
+    // The identifier of a reader.
+    UserId user_id = 1;
+
+    // The name of a reader.
+    spine.people.PersonName user_name = 2;
+
+    // The email address of a reader.
+    spine.net.EmailAddress email = 3;
+
+    // The reader's currently reading books count.
+    int32 currently_reading_count = 4;
+
+    // The reader's reserved books count.
+    int32 reservations_count = 5;
+
+    // The reader's overdue loans count.
+    int32 overdue_count = 6;
+}
+
+// The single item of a reader's compact history view.
+//
+message ReaderLoanItem {
+
+    // The identifier of an inventory item.
+    InventoryItemId item_id = 1;
+
+    // The book title.
+    BookTitle title = 2;
+
+    // Authors’ full names.
+    AuthorName authors = 3;
+
+    // The date when a book was borrowed.
+    spine.time.LocalDate when_taken = 4;
+
+    // The date when a book should be returned.
+    spine.time.LocalDate when_due = 5;
+
+    // The time when a book was returned.
+    google.protobuf.Timestamp when_returned = 6;
+}
+
+// The single item of a reader's full history view.
+//
+// The event target identifier choise depends on the type of the event.
+// For the events between a user and an inventory item - the inventory item Id is chosen.
+// For the events between a user and a book - the book Id is chosen.
+//
+message ReaderEventLogItem {
+
+    // The item could have one of the following identifiers.
+    oneof event_target_id {
+
+        // The identifier of an inventory item.
+        InventoryItemId item_id = 1;
+
+        // The identifier of a book.
+        BookId book_id = 2;
+    }
+
+    // The book title.
+    BookTitle title = 3;
+
+    // Authors’ full names.
+    AuthorName authors = 4;
+
+    // The type of an event.
+    ReaderEventLogItemType event_type = 5;
+
+    // The time when an event was emitted.
+    google.protobuf.Timestamp when_emitted = 6;
+}
+
+// A reader's log event type values.
+//
+// Contains value for each event related to the specific reader.
+//
+enum ReaderEventLogItemType {
+
+    // Used as an undefined value marker.
+    RELIT_UNDEFINED = 0;
+
+    READER_EVENT_BORROWED = 1;
+
+    READER_EVENT_RETURNED = 2;
+
+    READER_EVENT_RESERVED = 3;
+
+    READER_EVENT_RESERVATION_CANCELED = 4;
+
+    READER_EVENT_RESERVATION_READY_TO_PICK_UP = 5;
+
+    READER_EVENT_RESERVATION_PICK_UP_PERIOD_EXPIRED = 6;
+
+    READER_EVENT_RESERVATION_BECAME_LOAN = 7;
+
+    READER_EVENT_LOAN_BECAME_OVERDUE = 8;
+
+    READER_EVENT_LOAN_BECAME_SHOULD_RETURN_SOON = 9;
+
+    READER_EVENT_LOAN_PERIOD_EXTENDED = 10;
+
+    READER_EVENT_BOOK_LOST = 11;
+}
+
+// The single item of a list of lost books.
+//
+message LostBookItem {
+
+    // The identifier of an inventory item.
+    InventoryItemId item_id = 1;
+
+    // The book title.
+    BookTitle title = 2;
+
+    // The name of a reader who lost.
+    spine.people.PersonName user_name = 3;
+
+    // The email address of a reader who lost.
+    spine.net.EmailAddress email = 4;
+
+    // The date when reported.
+    spine.time.LocalDate when_reported = 5;
+}
+
+// The single item of an inventory list view.
+//
+message BookInventory {
+
+    // The identifier of an inventory.
+    InventoryId inventory_id = 1;
+
+    // The book title.
+    BookTitle title = 2;
+
+    // Authors' names.
+    AuthorName author = 3;
+
+    // The collection of inventory items.
+    repeated InventoryItemState item_state = 4;
+}
+
+// The single item of a book inventory.
+//
+// Represents the inventory item state.
+// Indicates the inventory item is in library, lost
+// or borrowed by a user. Contains loan details if borrowed.
+//
+message InventoryItemState {
+
+    // The identifier of an inventory item.
+    InventoryItemId item_id = 1;
+
+    // The item could have one of the following statuses.
+    oneof item_status {
+
+        // When the book stays in a library.
+        bool in_library = 2;
+
+        // When the book is borrowed by smb.
+        LoanDetails loan_details = 3;
+
+        // When the book is lost.
+        bool lost = 4;
+    }
+}
+
+// The inventory item loan details.
+//
+message LoanDetails {
+
+    // The identifier of a reader.
+    UserId user_id = 1;
+
+    // The name of a reader.
+    spine.people.PersonName user_name = 2;
+
+    // The email address of a reader.
+    spine.net.EmailAddress email = 3;
+
+    // The date when a book was borrowed.
+    spine.time.LocalDate when_taken = 4;
+
+    // The date when a book should be returned.
+    spine.time.LocalDate when_due = 5;
+
+    // The loan status.
+    bool overdue = 6;
+}
+
+// The single item of a book inventory view.
+//
+// Represents the inventory item state.
+// Indicates the inventory item is in library, lost
+// or borrowed by user. Contains loan details if borrowed.
+// Contains the QR code and RFID mark of an item.
+//
+message InventoryItemFullState {
+
+    // The identifier of an inventory item.
+    InventoryItemId item_id = 1;
+
+    // The item could have one of the following statuses.
+    oneof item_status {
+
+        // When the book stays in a library.
+        bool in_library = 2;
+
+        // When the book is borrowed by smb.
+        LoanDetails loan_details = 3;
+
+        // When the book is lost.
+        bool lost = 4;
+    }
+
+    // The QR code URL.
+    spine.net.Url qr_code_url = 5;
+
+    // The radio-frequency identification mark of an item.
+    Rfid rfid = 6;
+}
+
+// The single item of a book reservations view.
+//
+message ReservationItem {
+
+    // The user who reserved a book.
+    UserId who_reserved = 1;
+
+    // The name of a reader.
+    spine.people.PersonName user_name = 2;
+
+    // The email address of a reader.
+    spine.net.EmailAddress email = 3;
+
+    // The time when a book was reserved.
+    google.protobuf.Timestamp when_reserved = 4;
+}
+
+// The single item of a book compact history view.
+//
+message BookLoanItem {
+
+    // The identifier of an inventory item.
+    InventoryItemId item_id = 1;
+
+    // The name of a reader.
+    spine.people.PersonName user_name = 2;
+
+    // The email address of a reader.
+    spine.net.EmailAddress email = 3;
+
+    // The date when a book was borrowed.
+    spine.time.LocalDate when_taken = 4;
+
+    // The date when a book should be returned.
+    spine.time.LocalDate when_due = 5;
+}
+
+// The single item of a book full history view.
+//
+message BookEventLogItem {
+
+    // The identifier of an inventory item.
+    InventoryItemId item_id = 1;
+
+    // The name of a reader.
+    spine.people.PersonName user_name = 2;
+
+    // The email address of a reader.
+    spine.net.EmailAddress email = 3;
+
+    // The type of an event.
+    BookEventLogItemType event_type = 4;
+
+    // The time when an event was emitted.
+    google.protobuf.Timestamp when_emitted = 5;
+}
+
+// A book log event type values.
+//
+// Contains value for each event related to the specific book.
+//
+enum BookEventLogItemType {
+
+    // Used as an undefined value marker.
+    BELIT_UNDEFINED = 0;
+
+    BOOK_EVENT_INVENTORY_APPENDED = 1;
+
+    BOOK_EVENT_BECAME_AVAILABLE = 2;
+
+    BOOK_EVENT_BECAME_READY_TO_PICK_UP = 3;
+
+    BOOK_EVENT_BORROWED = 4;
+
+    BOOK_EVENT_LOAN_BECAME_OVERDUE = 5;
+
+    BOOK_EVENT_LOAN_PERIOD_EXTENDED = 6;
+
+    BOOK_EVENT_RETURNED = 7;
+
+    BOOK_EVENT_LOST = 8;
+
+    BOOK_EVENT_INVENTOR_DECREASED = 9;
+
+    BOOK_EVENT_REMOVED = 10;
+}
