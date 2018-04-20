@@ -96,7 +96,7 @@ message ReadersListView {
 
 // The projection state of a reader's history view.
 //
-// This projection includes the reader's event log for the full history view
+// Includes the reader's event log for the full history view
 // and the reader's loans list for the compact history view.
 //
 // Sorting:

@@ -253,36 +253,53 @@ message ReaderLoanItem {
     // The book title.
     BookTitle title = 2;
 
+    // Authors’ full names.
+    AuthorName authors = 3;
+
     // The date when a book was borrowed.
-    spine.time.LocalDate when_taken = 3;
+    spine.time.LocalDate when_taken = 4;
 
     // The date when a book should be returned.
-    spine.time.LocalDate when_due = 4;
+    spine.time.LocalDate when_due = 5;
 
     // The time when a book was returned.
-    google.protobuf.Timestamp when_returned = 5;
+    google.protobuf.Timestamp when_returned = 6;
 }
 
 // The single item of a reader's full history view.
 //
+// The event target identifier choise depends on the type of the event.
+// For the events between a user and an inventory item - the inventory item Id is chosen.
+// For the events between a user and a book - the book Id is chosen.
+//
 message ReaderEventLogItem {
 
-    // The identifier of an inventory item.
-    InventoryItemId item_id = 1;
+    // The item could have one of the following identifiers.
+    oneof event_target_id {
+
+        // The identifier of an inventory item.
+        InventoryItemId item_id = 1;
+
+        // The identifier of a book.
+        BookId book_id = 2;
+    }
 
     // The book title.
-    BookTitle title = 2;
+    BookTitle title = 3;
+
+    // Authors’ full names.
+    AuthorName authors = 4;
 
     // The type of an event.
-    ReaderEventLogItemType event_type = 3;
+    ReaderEventLogItemType event_type = 5;
 
     // The time when event was emitted.
-    google.protobuf.Timestamp when_emitted = 4;
+    google.protobuf.Timestamp when_emitted = 6;
 }
 
 // A reader's log event type values.
 //
-// Contains value for each event related to the specific user.
+// Contains value for each event related to the specific reader.
 //
 enum ReaderEventLogItemType {
 
