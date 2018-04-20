@@ -37,6 +37,5 @@ import "javaclasses/exlibris/model.proto";
 message BookEnrichment {
     option (enrichment_for) = "javaclasses.exlibris.c.BookBorrowed";
 
-    // A task.
     Book book = 1 [(by) = "inventory_id"];
 }

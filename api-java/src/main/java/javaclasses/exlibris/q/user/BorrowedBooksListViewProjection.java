@@ -32,17 +32,19 @@ import javaclasses.exlibris.LoanId;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookEnrichment;
-import javaclasses.exlibris.q.BookItem;
+import javaclasses.exlibris.c.BookLost;
+import javaclasses.exlibris.c.BookReturned;
+import javaclasses.exlibris.c.LoanBecameOverdue;
+import javaclasses.exlibris.c.LoanPeriodExtended;
+import javaclasses.exlibris.q.BorrowedBookItem;
 import javaclasses.exlibris.q.BorrowedBookItemStatus;
 import javaclasses.exlibris.q.BorrowedBooksListView;
 import javaclasses.exlibris.q.BorrowedBooksListViewVBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.TimeZone;
+import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 import static io.spine.time.Timestamps2.toDate;
@@ -70,43 +72,99 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
         final BookId bookId = event.getInventoryId()
                                    .getBookId();
         final BorrowedBookItemStatus status = BorrowedBookItemStatus.BORROWED;
-        final boolean isAllowedLoanExtension = false;
         final BookEnrichment enrichment = getEnrichment(BookEnrichment.class, context);
         final BookDetails bookDetails = enrichment.getBook()
                                                   .getBookDetails();
-        final Timestamp whenBorrowed = event.getWhenBorrowed();
-        final GregorianCalendar calendar = new GregorianCalendar(TimeZone.getDefault());
-        calendar.setGregorianChange(toDate(whenBorrowed));
+        final Timestamp whenBorrowedTimeStamp = event.getWhenBorrowed();
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(toDate(whenBorrowedTimeStamp));
+        final LocalDate whenBorrowed = toLocalDate(calendar);
+        calendar.add(Calendar.DATE, 14);
+        final LocalDate dueDate = toLocalDate(calendar);
+        final BorrowedBookItem bookItem = BorrowedBookItem.newBuilder()
+                                                          .setLoanId(loanId)
+                                                          .setBookId(bookId)
+                                                          .setIsbn(bookDetails.getIsbn())
+                                                          .setTitle(bookDetails.getTitle())
+                                                          .setAuthors(bookDetails.getAuthor())
+                                                          .setCoverUrl(
+                                                                  bookDetails.getBookCoverUrl())
+                                                          .addAllCategories(
+                                                                  bookDetails.getCategoriesList())
+                                                          .setSynopsis(bookDetails.getSynopsis())
+                                                          .setDueDate(dueDate)
+                                                          .setWhenBorrowed(whenBorrowed)
+                                                          .setStatus(status)
+                                                          .setIsAllowedLoanExtension(false)
+                                                          .build();
+        getBuilder().addBookItem(bookItem);
+    }
+
+    @Subscribe
+    public void on(LoanBecameOverdue event) {
+        final List<BorrowedBookItem> items = new ArrayList<>(getBuilder().getBookItem());
+        final int index = getIndexByBookId(items, event.getInventoryId()
+                                                       .getBookId());
+        final BorrowedBookItem bookItem = items.get(index);
+        final BorrowedBookItem newBookItem = BorrowedBookItem.newBuilder(bookItem)
+                                                             .setStatus(
+                                                                     BorrowedBookItemStatus.OVERDUE)
+                                                             .build();
+        getBuilder().setBookItem(index, newBookItem);
+    }
+
+    @Subscribe
+    public void on(LoanPeriodExtended event) {
+        final Timestamp newDueDateTimestamp = event.getNewDueDate();
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(toDate(newDueDateTimestamp));
+        final LocalDate newDueDate = toLocalDate(calendar);
+        final List<BorrowedBookItem> items = new ArrayList<>(getBuilder().getBookItem());
+        final int index = getIndexByBookId(items, event.getInventoryId()
+                                                       .getBookId());
+        final BorrowedBookItem bookItem = items.get(index);
+        final BorrowedBookItem newBookItem = BorrowedBookItem.newBuilder(bookItem)
+                                                             .setStatus(
+                                                                     BorrowedBookItemStatus.BORROWED)
+                                                             .setIsAllowedLoanExtension(false)
+                                                             .setDueDate(newDueDate)
+                                                             .build();
+        getBuilder().setBookItem(index, newBookItem);
+    }
+
+    @Subscribe
+    public void on(BookReturned event) {
+        final List<BorrowedBookItem> items = new ArrayList<>(getBuilder().getBookItem());
+        final int index = getIndexByBookId(items, event.getInventoryId()
+                                                       .getBookId());
+        getBuilder().removeBookItem(index);
+    }
+
+    @Subscribe
+    public void on(BookLost event) {
+        final List<BorrowedBookItem> items = new ArrayList<>(getBuilder().getBookItem());
+        final int index = getIndexByBookId(items, event.getInventoryId()
+                                                       .getBookId());
+        getBuilder().removeBookItem(index);
+    }
+
+    private int getIndexByBookId(List<BorrowedBookItem> items, BookId id) {
+        final OptionalInt index = IntStream.range(0, items.size())
+                                           .filter(i -> items.get(i)
+                                                             .getBookId()
+                                                             .equals(id))
+                                           .findFirst();
+        return index.isPresent() ? index.getAsInt() : -1;
+    }
+
+    private LocalDate toLocalDate(Calendar calendar) {
         final LocalDate date = LocalDate.newBuilder()
-                                  .setDay(calendar.get(Calendar.DAY_OF_MONTH))
-                                  .setMonth(
-                                          MonthOfYear.valueOf(calendar.get(Calendar.MONTH)))
-                                  .setYear(calendar.get(Calendar.YEAR))
-                                  .build();
-        log().info("{}", date);
-        log().info("{}", calendar.get(Calendar.YEAR));
-        log().info("{}", calendar.get(Calendar.MONTH));
-        log().info("{}", calendar.get(Calendar.DAY_OF_MONTH));
-
-    }
-
-    private int getIndexByBookId(List<BookItem> items, BookId id) {
-        final int index = IntStream.range(0, items.size())
-                                   .filter(i -> items.get(i)
-                                                     .getBookId()
-                                                     .equals(id))
-                                   .findFirst()
-                                   .getAsInt();
-        return index;
-    }
-
-    private static Logger log() {
-        return LogSingleton.INSTANCE.value;
-    }
-
-    private enum LogSingleton {
-        INSTANCE;
-        @SuppressWarnings("NonSerializableFieldInSerializableClass")
-        private final Logger value = LoggerFactory.getLogger(BorrowedBooksListViewProjection.class);
+                                        .setDay(calendar.get(Calendar.DAY_OF_MONTH))
+                                        .setMonth(
+                                                MonthOfYear.valueOf(
+                                                        calendar.get(Calendar.MONTH) + 1))
+                                        .setYear(calendar.get(Calendar.YEAR))
+                                        .build();
+        return date;
     }
 }

@@ -34,6 +34,7 @@ import javaclasses.exlibris.q.ExpectedSoonItemStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 /**
@@ -92,13 +93,12 @@ public class ExpectedSoonBooksListViewProjection extends Projection<ListViewId, 
     }
 
     private int getIndexByBookId(List<ExpectedSoonItem> items, BookId id) {
-        final int index = IntStream.range(0, items.size())
-                                   .filter(i -> items.get(i)
-                                                     .getBookId()
-                                                     .equals(id))
-                                   .findFirst()
-                                   .getAsInt();
-        return index;
+        final OptionalInt index = IntStream.range(0, items.size())
+                                           .filter(i -> items.get(i)
+                                                             .getBookId()
+                                                             .equals(id))
+                                           .findFirst();
+        return index.isPresent() ? index.getAsInt() : -1;
     }
 
 }
