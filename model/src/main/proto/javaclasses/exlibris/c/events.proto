@@ -169,11 +169,37 @@ message LoanBecameOverdue {
     // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
-    // The identifier of a loan.
-    LoanId loan_id = 2;
+    // The identifier of an item.
+    InventoryItemId inventory_item_id = 2;
 
-    // The date when a book was expected, so an overdue period can be calculated.
-    google.protobuf.Timestamp when_expected = 3;
+    // The loan owner.
+    UserId user_id = 3;
+
+    // The identifier of a loan.
+    LoanId loan_id = 4;
+
+    // The time when a loan became overdue.
+    google.protobuf.Timestamp when_became_overdue = 5;
+}
+
+// An event fired when a user's loan period time runs out.
+//
+message LoanBecameShouldReturnSoon {
+
+    // The identifier of an inventory.
+    InventoryId inventory_id = 1;
+
+    // The identifier of an item.
+    InventoryItemId inventory_item_id = 2;
+
+    // The loan owner.
+    UserId user_id = 3;
+
+    // The identifier of a loan.
+    LoanId loan_id = 4;
+
+    // The time when a loan became overdue.
+    google.protobuf.Timestamp when_became_should_return_soon = 5;
 }
 
 // An event fired when user successfully extended his loan period.
@@ -189,11 +215,14 @@ message LoanPeriodExtended {
     // Who extended.
     UserId user_id = 3;
 
+    // The identifier of an item.
+    InventoryItemId inventory_item_id = 4;
+
     // The timestamp of a previous due date.
-    google.protobuf.Timestamp previous_due_date = 4;
+    google.protobuf.Timestamp previous_due_date = 5;
 
     // The timestamp of a new due date.
-    google.protobuf.Timestamp new_due_date = 5;
+    google.protobuf.Timestamp new_due_date = 6;
 }
 
 // An event fired when a user returns a book.
