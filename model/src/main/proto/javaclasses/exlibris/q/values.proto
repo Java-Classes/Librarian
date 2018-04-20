@@ -293,7 +293,7 @@ message ReaderEventLogItem {
     // The type of an event.
     ReaderEventLogItemType event_type = 5;
 
-    // The time when event was emitted.
+    // The time when an event was emitted.
     google.protobuf.Timestamp when_emitted = 6;
 }
 
@@ -370,7 +370,7 @@ message BookInventory {
 //
 // Represents the inventory item state.
 // Indicates the inventory item is in library, lost
-// or borrowed by user. Contains loan details if borrowed.
+// or borrowed by a user. Contains loan details if borrowed.
 //
 message InventoryItemState {
 
@@ -419,6 +419,7 @@ message LoanDetails {
 // Represents the inventory item state.
 // Indicates the inventory item is in library, lost
 // or borrowed by user. Contains loan details if borrowed.
+// Contains the QR code and RFID mark of an item.
 //
 message InventoryItemFullState {
 
@@ -462,7 +463,7 @@ message ReservationItem {
     google.protobuf.Timestamp when_reserved = 4;
 }
 
-// The single item of a reader's compact history view.
+// The single item of a book compact history view.
 //
 message BookLoanItem {
 
@@ -482,7 +483,7 @@ message BookLoanItem {
     spine.time.LocalDate when_due = 5;
 }
 
-// The single item of a reader's full history view.
+// The single item of a book full history view.
 //
 message BookEventLogItem {
 
@@ -498,7 +499,7 @@ message BookEventLogItem {
     // The type of an event.
     BookEventLogItemType event_type = 4;
 
-    // The time when event was emitted.
+    // The time when an event was emitted.
     google.protobuf.Timestamp when_emitted = 5;
 }
 
