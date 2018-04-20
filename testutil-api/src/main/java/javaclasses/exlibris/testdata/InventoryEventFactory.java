@@ -25,7 +25,6 @@ import io.spine.net.EmailAddress;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.InventoryItemId;
-import javaclasses.exlibris.Isbn;
 import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.LoanId;
 import javaclasses.exlibris.Rfid;
@@ -44,10 +43,6 @@ import static io.spine.time.Time.getCurrentTime;
  * @author Yurii Haidamaka
  */
 public class InventoryEventFactory {
-
-    public static final Isbn ISBN = Isbn.newBuilder()
-                                        .setValue("0201485672")
-                                        .build();
 
     public static final Isbn62 ISBN_62 = Isbn62.newBuilder()
                                                .setValue("2mBSCRqZ")

@@ -22,9 +22,12 @@ package javaclasses.exlibris.q;
 
 import com.google.protobuf.Message;
 import io.spine.core.Event;
+import io.spine.core.EventEnvelope;
 import io.spine.server.command.TestEventFactory;
+import io.spine.server.event.EventEnricher;
 import io.spine.server.event.EventFactory;
 import javaclasses.exlibris.ListViewId;
+import javaclasses.exlibris.testdata.EventEnricherFactory;
 
 import static io.spine.Identifier.newUuid;
 
@@ -37,10 +40,16 @@ import static io.spine.Identifier.newUuid;
 abstract class ProjectionTest {
 
     private final EventFactory eventFactory = TestEventFactory.newInstance(getClass());
+    private final EventEnricher enricher = EventEnricherFactory.eventEnricherInstance();
 
     Event createEvent(Message messageOrAny) {
         final Event event = eventFactory.createEvent(messageOrAny, null);
-        return event;
+        final EventEnvelope envelope = EventEnvelope.of(event);
+        if (!enricher.canBeEnriched(envelope)) {
+            return event;
+        }
+
+        return enricher.enrich(envelope).getOuterObject();
     }
 
     ListViewId createBookListId() {
@@ -49,3 +58,4 @@ abstract class ProjectionTest {
                          .build();
     }
 }
+
