@@ -18,11 +18,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.exlibris.q;
+package javaclasses.exlibris.q.user;
 
 import javaclasses.exlibris.ListViewId;
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.InventoryAppended;
+import javaclasses.exlibris.q.ExpectedSoonItem;
+import javaclasses.exlibris.q.ExpectedSoonItemStatus;
+import javaclasses.exlibris.q.ProjectionTest;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -73,7 +77,7 @@ class ExpectedSoonBooksListViewProjectionTest extends ProjectionTest {
             assertEquals(COVER_URL, bookItem.getCoverUrl());
             assertEquals(CATEGORY, bookItem.getCategories(0));
             assertEquals(SYNOPSIS, bookItem.getSynopsis());
-            assertEquals(ExpectedSoonItemStatus.EXPECTED_SOON, bookItem.getStatus());
+            Assertions.assertEquals(ExpectedSoonItemStatus.EXPECTED_SOON, bookItem.getStatus());
         }
     }
 

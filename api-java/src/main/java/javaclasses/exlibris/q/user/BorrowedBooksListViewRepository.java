@@ -18,11 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.exlibris.q;
+package javaclasses.exlibris.q.user;
 
 import io.spine.server.projection.ProjectionRepository;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.BookBorrowed;
+import javaclasses.exlibris.q.BorrowedBooksListView;
 
 import java.util.Collections;
 

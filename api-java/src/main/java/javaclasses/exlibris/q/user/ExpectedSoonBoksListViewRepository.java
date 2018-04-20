@@ -18,13 +18,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.exlibris.q;
+package javaclasses.exlibris.q.user;
 
 import io.spine.server.projection.ProjectionRepository;
 import javaclasses.exlibris.ListViewId;
+import javaclasses.exlibris.q.ExpectedSoonBooksListView;
 
 import static java.util.Collections.singleton;
-import static javaclasses.exlibris.q.ExpectedSoonBooksListViewProjection.ID;
+import static javaclasses.exlibris.q.user.ExpectedSoonBooksListViewProjection.ID;
 
 /**
  * Repository for the {@link AllBooksListViewProjection}.

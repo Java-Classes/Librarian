@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.exlibris.q;
+package javaclasses.exlibris.q.user;
 
 import com.google.protobuf.Timestamp;
 import io.spine.core.EventContext;
@@ -32,6 +32,10 @@ import javaclasses.exlibris.LoanId;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookEnrichment;
+import javaclasses.exlibris.q.BookItem;
+import javaclasses.exlibris.q.BorrowedBookItemStatus;
+import javaclasses.exlibris.q.BorrowedBooksListView;
+import javaclasses.exlibris.q.BorrowedBooksListViewVBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

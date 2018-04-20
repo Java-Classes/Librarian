@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.exlibris.q;
+package javaclasses.exlibris.q.user;
 
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
@@ -27,6 +27,10 @@ import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.ListViewId;
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.InventoryAppended;
+import javaclasses.exlibris.q.ExpectedSoonBooksListView;
+import javaclasses.exlibris.q.ExpectedSoonBooksListViewVBuilder;
+import javaclasses.exlibris.q.ExpectedSoonItem;
+import javaclasses.exlibris.q.ExpectedSoonItemStatus;
 
 import java.util.ArrayList;
 import java.util.List;

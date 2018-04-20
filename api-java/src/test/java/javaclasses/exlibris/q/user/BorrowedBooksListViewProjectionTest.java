@@ -18,10 +18,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.exlibris.q;
+package javaclasses.exlibris.q.user;
 
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.BookBorrowed;
+import javaclasses.exlibris.q.BorrowedBookItem;
+import javaclasses.exlibris.q.ProjectionTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -55,7 +57,7 @@ class BorrowedBooksListViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(bookBorrowed));
 
             final List<BorrowedBookItem> books = projection.getState()
-                                                   .getBookItemList();
+                                                           .getBookItemList();
             assertEquals(1, books.size());
         }
     }

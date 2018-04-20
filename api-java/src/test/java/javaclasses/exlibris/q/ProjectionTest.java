@@ -37,12 +37,12 @@ import static io.spine.Identifier.newUuid;
  *
  * @author Yurii Haidamaka
  */
-abstract class ProjectionTest {
+public abstract class ProjectionTest {
 
     private final EventFactory eventFactory = TestEventFactory.newInstance(getClass());
     private final EventEnricher enricher = EventEnricherFactory.eventEnricherInstance();
 
-    Event createEvent(Message messageOrAny) {
+    public Event createEvent(Message messageOrAny) {
         final Event event = eventFactory.createEvent(messageOrAny, null);
         final EventEnvelope envelope = EventEnvelope.of(event);
         if (!enricher.canBeEnriched(envelope)) {
@@ -52,7 +52,7 @@ abstract class ProjectionTest {
         return enricher.enrich(envelope).getOuterObject();
     }
 
-    ListViewId createBookListId() {
+    public ListViewId createBookListId() {
         return ListViewId.newBuilder()
                          .setValue(newUuid())
                          .build();

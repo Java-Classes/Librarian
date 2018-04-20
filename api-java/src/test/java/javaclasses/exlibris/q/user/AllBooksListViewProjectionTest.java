@@ -18,7 +18,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.exlibris.q;
+package javaclasses.exlibris.q.user;
 
 import javaclasses.exlibris.ListViewId;
 import javaclasses.exlibris.c.BookAdded;
@@ -27,6 +27,10 @@ import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.c.InventoryDecreased;
+import javaclasses.exlibris.q.BookItem;
+import javaclasses.exlibris.q.BookItemStatus;
+import javaclasses.exlibris.q.ProjectionTest;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -82,7 +86,7 @@ class AllBooksListViewProjectionTest extends ProjectionTest {
             assertEquals(CATEGORY, bookItem.getCategories(0));
             assertEquals(SYNOPSIS, bookItem.getSynopsis());
             assertEquals(0, bookItem.getAvailableCount());
-            assertEquals(BookItemStatus.EXPECTED, bookItem.getStatus());
+            Assertions.assertEquals(BookItemStatus.EXPECTED, bookItem.getStatus());
         }
     }
 
