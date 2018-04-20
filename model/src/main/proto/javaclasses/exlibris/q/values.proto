@@ -329,7 +329,7 @@ enum ReaderEventLogItemType {
     READER_EVENT_BOOK_LOST = 11;
 }
 
-// The single item of a lost books list view.
+// The single item of a list of lost books.
 //
 message LostBookItem {
 
