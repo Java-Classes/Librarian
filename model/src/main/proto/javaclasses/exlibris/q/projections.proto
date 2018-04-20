@@ -44,40 +44,40 @@ message AllBooksListView {
     // The identifier of a list of all books.
     ListViewId id = 1;
 
-    // A list of all books from the library.
+    // The list of all books in the library.
     repeated BookItem book_item = 2;
 }
 
-// The projection state of book that are expected in the library.
+// The projection state of books that are expected in the library.
 //
 message ExpectedSoonBooksListView {
 
     // The identifier of a list of books that are expected in the library.
     ListViewId id = 1;
 
-    // A list of book that is expected in the library.
+    // The list of books that are expected in the library.
     repeated ExpectedSoonItem book_item = 2;
 }
 
-// The projection state of borrowed books in the library.
+// The projection state of user's borrowed books.
 //
 message BorrowedBooksListView {
 
     // The identifier of a user.
     UserId user_id = 1;
 
-    // A list of borrowed book.
+    // The list of user's borrowed book.
     repeated BorrowedBookItem book_item = 2;
 }
 
-// The projection state of borrowed books in the library.
+// The projection state of user's reserved books.
 //
 message ReservedBooksListView {
 
     // The identifier of a user.
     UserId user_id = 1;
 
-    // A list of reserved book.
+    // The list of user's reserved book.
     repeated ReservedBookItem book_item = 2;
 }
 

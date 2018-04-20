@@ -38,7 +38,7 @@ import "google/protobuf/timestamp.proto";
 import "javaclasses/exlibris/identifiers.proto";
 import "javaclasses/exlibris/values.proto";
 
-// All Information about a book from the library.
+// All book data without reference to a user.
 //
 message BookItem {
 
@@ -57,20 +57,20 @@ message BookItem {
     // The book cover.
     spine.net.Url cover_url = 5;
 
-    // A list of book categories.
+    // The list of book categories.
     repeated Category categories = 6;
 
-    // The DTO of a book synopsis.
+    // The book synopsis.
     BookSynopsis synopsis = 7;
 
-    // Number of available books.
+    // The number of available exemplars.
     int32 available_count = 8;
 
     // The book item status.
     BookItemStatus status = 9;
 }
 
-// A book item status values.
+// A library book status without reference to a user.
 //
 enum BookItemStatus {
 
@@ -82,7 +82,7 @@ enum BookItemStatus {
     EXPECTED = 2;
 }
 
-// Al Information about a book that is expected in the library.
+// All information about a book that is expected in the library.
 //
 message ExpectedSoonItem {
 
@@ -101,17 +101,17 @@ message ExpectedSoonItem {
     // The book cover.
     spine.net.Url cover_url = 5;
 
-    // A list of book categories.
+    // The list of book categories.
     repeated Category categories = 6;
 
-    // The DTO of a book synopsis.
+    // The book synopsis.
     BookSynopsis synopsis = 7;
 
-    // The status of a book that is expected soon.
-    ExpectedSoonItemStatus status = 10;
+    // The status of a book that is expected in the library.
+    ExpectedSoonItemStatus status = 8;
 }
 
-// A status of the book that is expected soon in the library.
+// A status of a book that is expected soon in the library.
 //
 enum ExpectedSoonItemStatus {
 
@@ -121,7 +121,7 @@ enum ExpectedSoonItemStatus {
     EXPECTED_SOON = 1;
 }
 
-// Al Information about borrowed book.
+// All information about a user's borrowed book.
 //
 message BorrowedBookItem {
 
@@ -143,20 +143,23 @@ message BorrowedBookItem {
     // The book cover.
     spine.net.Url cover_url = 6;
 
-    // A list of book categories.
+    // The list of book categories.
     repeated Category categories = 7;
 
-    // The DTO of a book synopsis.
+    // The book synopsis.
     BookSynopsis synopsis = 8;
 
-    // The last day of the loan period.
-    spine.time.LocalDate due_date = 9;
+    // The first day of a loan period.
+    spine.time.LocalDate when_borrowed = 9;
+
+    // The last day of a loan period.
+    spine.time.LocalDate due_date = 10;
 
     // The borrowed book status.
-    BorrowedBookItemStatus status = 10;
+    BorrowedBookItemStatus status = 11;
 
     // Shows whether there is a reservation for this book or not.
-    bool is_allowed_loan_extension = 11;
+    bool is_allowed_loan_extension = 12;
 }
 
 // A borrowed book item status values.
@@ -173,7 +176,7 @@ enum BorrowedBookItemStatus {
     SHOULD_RETURN_SOON = 3;
 }
 
-// All Information about reserved book.
+// All information about a user's reserved book.
 //
 message ReservedBookItem {
 
@@ -192,20 +195,20 @@ message ReservedBookItem {
     // The book cover.
     spine.net.Url cover_url = 5;
 
-    // A list of book categories.
-    repeated Category categories = 6;
+    // The list of book categories.
+    repeated Category categorie = 6;
 
-    // The DTO of a book synopsis.
+    // The book synopsis.
     BookSynopsis synopsis = 7;
 
-    // Estimated date when the book becomes available.
-    spine.time.LocalDate when_available = 8;
+    // Estimated date when the book becomes ready to pick up.
+    spine.time.LocalDate when_ready_to_pick_up = 8;
 
     // The reserved book status.
     ReservedBookItemStatus status = 9;
 }
 
-// A borrowed book item status values.
+// A reserved book item status values.
 //
 enum ReservedBookItemStatus {
 
