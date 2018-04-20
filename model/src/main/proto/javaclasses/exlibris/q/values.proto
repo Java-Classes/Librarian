@@ -269,8 +269,8 @@ message ReaderLoanItem {
 // The single item of a reader's full history view.
 //
 // The event target identifier choise depends on the type of the event.
-// For the events between a user and an inventory item - the inventory item Id is chosen.
-// For the events between a user and a book - the book Id is chosen.
+// For the events between a user and an inventory item - the inventory item ID is chosen.
+// For the events between a user and a book - the book ID is chosen.
 //
 message ReaderEventLogItem {
 
@@ -339,14 +339,17 @@ message LostBookItem {
     // The book title.
     BookTitle title = 2;
 
+    // Authors’ full names.
+    AuthorName authors = 3;
+
     // The name of a reader who lost.
-    spine.people.PersonName user_name = 3;
+    spine.people.PersonName user_name = 4;
 
     // The email address of a reader who lost.
-    spine.net.EmailAddress email = 4;
+    spine.net.EmailAddress email = 5;
 
     // The date when reported.
-    spine.time.LocalDate when_reported = 5;
+    spine.time.LocalDate when_reported = 6;
 }
 
 // The single item of an inventory list view.
@@ -450,17 +453,14 @@ message InventoryItemFullState {
 //
 message ReservationItem {
 
-    // The user who reserved a book.
-    UserId who_reserved = 1;
-
     // The name of a reader.
-    spine.people.PersonName user_name = 2;
+    spine.people.PersonName user_name = 1;
 
     // The email address of a reader.
-    spine.net.EmailAddress email = 3;
+    spine.net.EmailAddress email = 2;
 
     // The time when a book was reserved.
-    google.protobuf.Timestamp when_reserved = 4;
+    google.protobuf.Timestamp when_reserved = 3;
 }
 
 // The single item of a book compact history view.

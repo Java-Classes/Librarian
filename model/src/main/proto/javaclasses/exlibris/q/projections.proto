@@ -90,7 +90,7 @@ message ReadersListView {
     // The identifier of a list of library readers.
     ListViewId id = 1;
 
-    // The collection of all library readers with books count.
+    // The collection of all readers with books count.
     repeated ReaderBooksCountItem reader = 2;
 }
 
