@@ -118,7 +118,7 @@ message Loan {
     UserId who_borrowed = 3;
 
     // The loan status.
-    bool overdue = 4;
+    LoanStatus status = 4;
 
     // The time when a book was borrowed.
     google.protobuf.Timestamp when_taken = 5;
