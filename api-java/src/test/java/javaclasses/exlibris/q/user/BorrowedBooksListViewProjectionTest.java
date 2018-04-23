@@ -92,9 +92,7 @@ class BorrowedBooksListViewProjectionTest extends ProjectionTest {
             assertEquals(DEFAULT_DATE1, bookItem.getWhenBorrowed());
             assertEquals(DEFAULT_DUE_DATE, bookItem.getDueDate());
             assertEquals(BorrowedBookItemStatus.BORROWED, bookItem.getStatus());
-
         }
-
     }
 
     @Nested
@@ -114,7 +112,6 @@ class BorrowedBooksListViewProjectionTest extends ProjectionTest {
             final BorrowedBookItem bookItem = books.get(0);
             assertEquals(BorrowedBookItemStatus.OVERDUE, bookItem.getStatus());
         }
-
     }
 
     @Nested

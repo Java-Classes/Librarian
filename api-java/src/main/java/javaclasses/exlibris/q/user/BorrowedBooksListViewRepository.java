@@ -23,6 +23,10 @@ package javaclasses.exlibris.q.user;
 import io.spine.server.projection.ProjectionRepository;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.BookBorrowed;
+import javaclasses.exlibris.c.BookLost;
+import javaclasses.exlibris.c.BookReturned;
+import javaclasses.exlibris.c.LoanBecameOverdue;
+import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.q.BorrowedBooksListView;
 
 import java.util.Collections;
@@ -50,6 +54,22 @@ public class BorrowedBooksListViewRepository extends ProjectionRepository<UserId
             if (message instanceof BookBorrowed) {
                 BookBorrowed event = (BookBorrowed) message;
                 return Collections.singleton(event.getWhoBorrowed());
+            }
+            if (message instanceof LoanBecameOverdue) {
+                LoanBecameOverdue event = (LoanBecameOverdue) message;
+                return Collections.singleton(event.getUserId());
+            }
+            if (message instanceof LoanPeriodExtended) {
+                LoanPeriodExtended event = (LoanPeriodExtended) message;
+                return Collections.singleton(event.getUserId());
+            }
+            if (message instanceof BookReturned) {
+                BookReturned event = (BookReturned) message;
+                return Collections.singleton(event.getWhoReturned());
+            }
+            if (message instanceof BookLost) {
+                BookLost event = (BookLost) message;
+                return Collections.singleton(event.getWhoLost());
             }
             return null;
         }));
