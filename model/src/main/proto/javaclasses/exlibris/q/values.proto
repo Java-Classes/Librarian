@@ -38,41 +38,9 @@ import "google/protobuf/timestamp.proto";
 import "javaclasses/exlibris/identifiers.proto";
 import "javaclasses/exlibris/values.proto";
 
-// All book data without reference to a user.
-//
-message BookItem {
-
-    // The identifier of a book.
-    BookId book_id = 1;
-
-    // The International Standard Book Number.
-    Isbn isbn = 2;
-
-    // The book title.
-    BookTitle title = 3;
-
-    // Authors’ full names.
-    AuthorName authors = 4;
-
-    // The book cover.
-    spine.net.Url cover_url = 5;
-
-    // The list of book categories.
-    repeated Category categories = 6;
-
-    // The book synopsis.
-    BookSynopsis synopsis = 7;
-
-    // The number of available exemplars.
-    int32 available_count = 8;
-
-    // The book item status.
-    BookItemStatus status = 9;
-}
-
 // A library book status without reference to a user.
 //
-enum BookItemStatus {
+enum BookStatus {
 
     // Used as an undefined value marker.
     BIS_UNDEFINED = 0;
@@ -291,42 +259,10 @@ message ReaderEventLogItem {
     AuthorName authors = 4;
 
     // The type of an event.
-    ReaderEventLogItemType event_type = 5;
+    string event_type = 5;
 
     // The time when an event was emitted.
     google.protobuf.Timestamp when_emitted = 6;
-}
-
-// A reader's log event type values.
-//
-// Contains value for each event related to the specific reader.
-//
-enum ReaderEventLogItemType {
-
-    // Used as an undefined value marker.
-    RELIT_UNDEFINED = 0;
-
-    READER_EVENT_BORROWED = 1;
-
-    READER_EVENT_RETURNED = 2;
-
-    READER_EVENT_RESERVED = 3;
-
-    READER_EVENT_RESERVATION_CANCELED = 4;
-
-    READER_EVENT_RESERVATION_READY_TO_PICK_UP = 5;
-
-    READER_EVENT_RESERVATION_PICK_UP_PERIOD_EXPIRED = 6;
-
-    READER_EVENT_RESERVATION_BECAME_LOAN = 7;
-
-    READER_EVENT_LOAN_BECAME_OVERDUE = 8;
-
-    READER_EVENT_LOAN_BECAME_SHOULD_RETURN_SOON = 9;
-
-    READER_EVENT_LOAN_PERIOD_EXTENDED = 10;
-
-    READER_EVENT_BOOK_LOST = 11;
 }
 
 // The single item of a list of lost books.
@@ -497,38 +433,8 @@ message BookEventLogItem {
     spine.net.EmailAddress email = 3;
 
     // The type of an event.
-    BookEventLogItemType event_type = 4;
+    string event_type = 4;
 
     // The time when an event was emitted.
     google.protobuf.Timestamp when_emitted = 5;
-}
-
-// A book log event type values.
-//
-// Contains value for each event related to the specific book.
-//
-enum BookEventLogItemType {
-
-    // Used as an undefined value marker.
-    BELIT_UNDEFINED = 0;
-
-    BOOK_EVENT_INVENTORY_APPENDED = 1;
-
-    BOOK_EVENT_BECAME_AVAILABLE = 2;
-
-    BOOK_EVENT_BECAME_READY_TO_PICK_UP = 3;
-
-    BOOK_EVENT_BORROWED = 4;
-
-    BOOK_EVENT_LOAN_BECAME_OVERDUE = 5;
-
-    BOOK_EVENT_LOAN_PERIOD_EXTENDED = 6;
-
-    BOOK_EVENT_RETURNED = 7;
-
-    BOOK_EVENT_LOST = 8;
-
-    BOOK_EVENT_INVENTOR_DECREASED = 9;
-
-    BOOK_EVENT_REMOVED = 10;
 }

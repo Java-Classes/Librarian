@@ -37,23 +37,45 @@ import "javaclasses/exlibris/q/values.proto";
 
 // **** Projections for the UI role User. ****
 
-// The projection state of all books in the library.
+// The projection state of one book from the library.
 //
-message AllBooksListView {
+message BookView {
 
-    // The identifier of a list of all books.
-    ListViewId id = 1;
+    // The identifier of a book.
+    BookId book_id = 1;
 
-    // The list of all books in the library.
-    repeated BookItem book_item = 2;
+    // The International Standard Book Number.
+    Isbn isbn = 2;
+
+    // The book title.
+    BookTitle title = 3;
+
+    // Authors’ full names.
+    AuthorName authors = 4;
+
+    // The book cover.
+    spine.net.Url cover_url = 5;
+
+    // The list of book categories.
+    repeated Category categories = 6;
+
+    // The book synopsis.
+    BookSynopsis synopsis = 7;
+
+    // The number of available exemplars.
+    int32 available_count = 8;
+
+    // The book status.
+    BookStatus status = 9;
 }
+
 
 // The projection state of books that are expected in the library.
 //
 message ExpectedSoonBooksListView {
 
     // The identifier of a list of books that are expected in the library.
-    ListViewId id = 1;
+    ExpectedSoonBooksListViewId id = 1;
 
     // The list of books that are expected in the library.
     repeated ExpectedSoonItem book_item = 2;
@@ -82,17 +104,6 @@ message ReservedBooksListView {
 }
 
 // **** Projections for the UI role Admin. ****
-
-// The projection state of a readers list view.
-//
-message ReadersListView {
-
-    // The identifier of a list of library readers.
-    ListViewId id = 1;
-
-    // The collection of all readers with books count.
-    repeated ReaderBooksCountItem reader = 2;
-}
 
 // The projection state of a reader's history view.
 //
@@ -124,7 +135,7 @@ message ReaderHistoryView {
 message LostBooksListView {
 
     // The identifier of a list of lost books.
-    ListViewId id = 1;
+    LostBooksListViewId id = 1;
 
     // The collection of library lost books.
     repeated LostBookItem lost_book = 2;
@@ -140,7 +151,7 @@ message LostBooksListView {
 message InventoryListView {
 
     // The identifier of an inventory list.
-    ListViewId id = 1;
+    InventoryListViewId id = 1;
 
     // The collection of all library book inventories.
     repeated BookInventory inventory = 2;

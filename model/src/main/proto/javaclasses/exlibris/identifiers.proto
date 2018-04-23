@@ -84,11 +84,33 @@ message LoanId {
     int64 value = 1;
 }
 
-// A list identifier.
+// The identifier of books that are expected in the library.
 //
-message ListViewId {
+message ExpectedSoonBooksListViewId {
 
     // String representation of UUID.
     //
     string value = 1;
 }
+
+// The identifier of a list of lost books.
+//
+message LostBooksListViewId {
+
+    // String representation of UUID.
+    //
+    string value = 1;
+}
+
+// The identifier of an inventory list.
+//
+message InventoryListViewId {
+
+    // String representation of UUID.
+    //
+    string value = 1;
+}
+
+
+
+
