@@ -40,7 +40,7 @@ import java.util.stream.IntStream;
 /**
  * A projection state of books that are expected in the library.
  *
- * <p>Contains the list of all books.
+ * <p>Contains the list of books.
  *
  * @author Yurii Haidamaka
  */

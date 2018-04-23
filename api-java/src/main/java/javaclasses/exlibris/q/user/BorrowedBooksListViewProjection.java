@@ -56,7 +56,7 @@ import static javaclasses.exlibris.EnrichmentHelper.getEnrichment;
 /**
  * A projection state of all books that are borrowed by user.
  *
- * <p>Contains the list of all books.
+ * <p>Contains the list of borrowed books.
  *
  * @author Yurii Haidamaka
  */
