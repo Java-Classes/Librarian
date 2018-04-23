@@ -161,3 +161,17 @@ message Isbn {
     // The string value that contains an ISBN.
     string value = 1;
 }
+
+// A book item loan status values.
+//
+enum LoanStatus {
+
+    // Used as an undefined value marker.
+    LOAN_UNDEFINED = 0;
+
+    LOAN_RECENT = 1;
+
+    LOAN_OVERDUE = 2;
+
+    LOAN_SOULD_RETURN_SOON = 3;
+}

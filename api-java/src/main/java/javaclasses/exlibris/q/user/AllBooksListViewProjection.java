@@ -38,6 +38,7 @@ import javaclasses.exlibris.q.BookItemStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 /**
@@ -164,12 +165,11 @@ public class AllBooksListViewProjection extends Projection<ListViewId, AllBooksL
     }
 
     private int getIndexByBookId(List<BookItem> items, BookId id) {
-        final int index = IntStream.range(0, items.size())
-                                   .filter(i -> items.get(i)
-                                                     .getBookId()
-                                                     .equals(id))
-                                   .findFirst()
-                                   .getAsInt();
-        return index;
+        final OptionalInt index = IntStream.range(0, items.size())
+                                           .filter(i -> items.get(i)
+                                                             .getBookId()
+                                                             .equals(id))
+                                           .findFirst();
+        return index.isPresent() ? index.getAsInt() : -1;
     }
 }
