@@ -20,7 +20,7 @@
 
 package javaclasses.exlibris.q.user;
 
-import javaclasses.exlibris.ListViewId;
+import javaclasses.exlibris.ExpectedSoonBooksListViewId;
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.q.ExpectedSoonItem;
@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static io.spine.Identifier.newUuid;
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
 import static javaclasses.exlibris.testdata.BookEventFactory.AUTHOR;
 import static javaclasses.exlibris.testdata.BookEventFactory.BOOK_ID;
@@ -52,7 +53,10 @@ class ExpectedSoonBooksListViewProjectionTest extends ProjectionTest {
 
     @BeforeEach
     void setUp() {
-        final ListViewId bookListId = createBookListId();
+        final ExpectedSoonBooksListViewId bookListId = ExpectedSoonBooksListViewId.newBuilder()
+                                                                                  .setValue(
+                                                                                          newUuid())
+                                                                                  .build();
         projection = new ExpectedSoonBooksListViewProjection(bookListId);
     }
 
@@ -96,7 +100,7 @@ class ExpectedSoonBooksListViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(inventoryAppended));
 
             final List<ExpectedSoonItem> books = projection.getState()
-                                                   .getBookItemList();
+                                                           .getBookItemList();
             assertEquals(0, books.size());
         }
     }

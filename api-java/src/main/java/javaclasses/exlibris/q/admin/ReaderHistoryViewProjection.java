@@ -42,18 +42,6 @@ import javaclasses.exlibris.q.ReaderEventLogItem;
 import javaclasses.exlibris.q.ReaderHistoryView;
 import javaclasses.exlibris.q.ReaderHistoryViewVBuilder;
 
-import static javaclasses.exlibris.q.ReaderEventLogItemType.READER_EVENT_BOOK_LOST;
-import static javaclasses.exlibris.q.ReaderEventLogItemType.READER_EVENT_BORROWED;
-import static javaclasses.exlibris.q.ReaderEventLogItemType.READER_EVENT_LOAN_BECAME_OVERDUE;
-import static javaclasses.exlibris.q.ReaderEventLogItemType.READER_EVENT_LOAN_BECAME_SHOULD_RETURN_SOON;
-import static javaclasses.exlibris.q.ReaderEventLogItemType.READER_EVENT_LOAN_PERIOD_EXTENDED;
-import static javaclasses.exlibris.q.ReaderEventLogItemType.READER_EVENT_RESERVATION_BECAME_LOAN;
-import static javaclasses.exlibris.q.ReaderEventLogItemType.READER_EVENT_RESERVATION_CANCELED;
-import static javaclasses.exlibris.q.ReaderEventLogItemType.READER_EVENT_RESERVATION_PICK_UP_PERIOD_EXPIRED;
-import static javaclasses.exlibris.q.ReaderEventLogItemType.READER_EVENT_RESERVATION_READY_TO_PICK_UP;
-import static javaclasses.exlibris.q.ReaderEventLogItemType.READER_EVENT_RESERVED;
-import static javaclasses.exlibris.q.ReaderEventLogItemType.READER_EVENT_RETURNED;
-
 /**
  * The projection state of a reader's history view.
  *
@@ -79,7 +67,8 @@ public class ReaderHistoryViewProjection extends Projection<UserId, ReaderHistor
         final ReaderEventLogItem logItem = ReaderEventLogItem.newBuilder()
                                                              .setItemId(inventoryItemId)
                                                              .setWhenEmitted(whenBorrowed)
-                                                             .setEventType(READER_EVENT_BORROWED)
+                                                             .setEventType(event.getClass()
+                                                                                .getSimpleName())
                                                              .build();
         getBuilder().addEvent(logItem);
     }
@@ -92,7 +81,8 @@ public class ReaderHistoryViewProjection extends Projection<UserId, ReaderHistor
         final ReaderEventLogItem logItem = ReaderEventLogItem.newBuilder()
                                                              .setItemId(inventoryItemId)
                                                              .setWhenEmitted(whenReturned)
-                                                             .setEventType(READER_EVENT_RETURNED)
+                                                             .setEventType(event.getClass()
+                                                                                .getSimpleName())
                                                              .build();
         getBuilder().addEvent(logItem);
     }
@@ -106,7 +96,8 @@ public class ReaderHistoryViewProjection extends Projection<UserId, ReaderHistor
         final ReaderEventLogItem logItem = ReaderEventLogItem.newBuilder()
                                                              .setBookId(bookId)
                                                              .setWhenEmitted(whenCreated)
-                                                             .setEventType(READER_EVENT_RESERVED)
+                                                             .setEventType(event.getClass()
+                                                                                .getSimpleName())
                                                              .build();
         getBuilder().addEvent(logItem);
     }
@@ -121,7 +112,8 @@ public class ReaderHistoryViewProjection extends Projection<UserId, ReaderHistor
                 .newBuilder()
                 .setBookId(bookId)
                 .setWhenEmitted(whenCanceled)
-                .setEventType(READER_EVENT_RESERVATION_CANCELED)
+                .setEventType(event.getClass()
+                                   .getSimpleName())
                 .build();
         getBuilder().addEvent(logItem);
     }
@@ -135,7 +127,8 @@ public class ReaderHistoryViewProjection extends Projection<UserId, ReaderHistor
                 .newBuilder()
                 .setItemId(inventoryItemId)
                 .setWhenEmitted(whenBecameReadyToPickup)
-                .setEventType(READER_EVENT_RESERVATION_READY_TO_PICK_UP)
+                .setEventType(event.getClass()
+                                   .getSimpleName())
                 .build();
         getBuilder().addEvent(logItem);
     }
@@ -150,7 +143,8 @@ public class ReaderHistoryViewProjection extends Projection<UserId, ReaderHistor
                 .newBuilder()
                 .setBookId(bookId)
                 .setWhenEmitted(whenExpired)
-                .setEventType(READER_EVENT_RESERVATION_PICK_UP_PERIOD_EXPIRED)
+                .setEventType(event.getClass()
+                                   .getSimpleName())
                 .build();
         getBuilder().addEvent(logItem);
     }
@@ -165,7 +159,8 @@ public class ReaderHistoryViewProjection extends Projection<UserId, ReaderHistor
                 .newBuilder()
                 .setBookId(bookId)
                 .setWhenEmitted(whenBecameLoan)
-                .setEventType(READER_EVENT_RESERVATION_BECAME_LOAN)
+                .setEventType(event.getClass()
+                                   .getSimpleName())
                 .build();
         getBuilder().addEvent(logItem);
     }
@@ -179,7 +174,8 @@ public class ReaderHistoryViewProjection extends Projection<UserId, ReaderHistor
                 .newBuilder()
                 .setItemId(inventoryItemId)
                 .setWhenEmitted(whenBecameOverdue)
-                .setEventType(READER_EVENT_LOAN_BECAME_OVERDUE)
+                .setEventType(event.getClass()
+                                   .getSimpleName())
                 .build();
         getBuilder().addEvent(logItem);
     }
@@ -193,7 +189,8 @@ public class ReaderHistoryViewProjection extends Projection<UserId, ReaderHistor
                 .newBuilder()
                 .setItemId(inventoryItemId)
                 .setWhenEmitted(whenBecameShouldReturnSoon)
-                .setEventType(READER_EVENT_LOAN_BECAME_SHOULD_RETURN_SOON)
+                .setEventType(event.getClass()
+                                   .getSimpleName())
                 .build();
         getBuilder().addEvent(logItem);
     }
@@ -207,7 +204,8 @@ public class ReaderHistoryViewProjection extends Projection<UserId, ReaderHistor
                 .newBuilder()
                 .setItemId(inventoryItemId)
                 .setWhenEmitted(whenExtended)
-                .setEventType(READER_EVENT_LOAN_PERIOD_EXTENDED)
+                .setEventType(event.getClass()
+                                   .getSimpleName())
                 .build();
         getBuilder().addEvent(logItem);
     }
@@ -221,7 +219,8 @@ public class ReaderHistoryViewProjection extends Projection<UserId, ReaderHistor
                 .newBuilder()
                 .setItemId(inventoryItemId)
                 .setWhenEmitted(whenReported)
-                .setEventType(READER_EVENT_BOOK_LOST)
+                .setEventType(event.getClass()
+                                   .getSimpleName())
                 .build();
         getBuilder().addEvent(logItem);
     }

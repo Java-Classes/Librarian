@@ -29,7 +29,7 @@ import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import javaclasses.exlibris.c.book.BookRepository;
 import javaclasses.exlibris.c.inventory.InventoryRepository;
-import javaclasses.exlibris.q.user.AllBooksListViewRepository;
+import javaclasses.exlibris.q.user.BookViewRepository;
 import javaclasses.exlibris.q.user.BorrowedBooksListViewRepository;
 import javaclasses.exlibris.q.user.ExpectedSoonBooksListViewRepository;
 
@@ -77,7 +77,7 @@ public final class BoundedContexts {
         final BookRepository bookRepository = new BookRepository();
         final InventoryRepository inventoryRepository = new InventoryRepository();
 
-        final AllBooksListViewRepository allBooksRepo = new AllBooksListViewRepository();
+        final BookViewRepository allBooksRepo = new BookViewRepository();
         final ExpectedSoonBooksListViewRepository expectedSoonRepo = new ExpectedSoonBooksListViewRepository();
         final BorrowedBooksListViewRepository borrowedRepo = new BorrowedBooksListViewRepository();
 

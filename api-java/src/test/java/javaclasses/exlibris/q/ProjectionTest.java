@@ -26,10 +26,7 @@ import io.spine.core.EventEnvelope;
 import io.spine.server.command.TestEventFactory;
 import io.spine.server.event.EventEnricher;
 import io.spine.server.event.EventFactory;
-import javaclasses.exlibris.ListViewId;
 import javaclasses.exlibris.testdata.EventEnricherFactory;
-
-import static io.spine.Identifier.newUuid;
 
 /**
  * The parent class for the projection test classes.
@@ -49,13 +46,8 @@ public abstract class ProjectionTest {
             return event;
         }
 
-        return enricher.enrich(envelope).getOuterObject();
-    }
-
-    public ListViewId createBookListId() {
-        return ListViewId.newBuilder()
-                         .setValue(newUuid())
-                         .build();
+        return enricher.enrich(envelope)
+                       .getOuterObject();
     }
 }
 

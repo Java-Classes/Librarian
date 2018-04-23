@@ -21,18 +21,18 @@
 package javaclasses.exlibris.q.user;
 
 import io.spine.server.projection.ProjectionRepository;
-import javaclasses.exlibris.ListViewId;
+import javaclasses.exlibris.ExpectedSoonBooksListViewId;
 import javaclasses.exlibris.q.ExpectedSoonBooksListView;
 
 import static java.util.Collections.singleton;
 import static javaclasses.exlibris.q.user.ExpectedSoonBooksListViewProjection.ID;
 
 /**
- * Repository for the {@link AllBooksListViewProjection}.
+ * Repository for the {@link BookViewProjection}.
  *
  * @author Yurii Haidamaka
  */
-public class ExpectedSoonBooksListViewRepository extends ProjectionRepository<ListViewId, ExpectedSoonBooksListViewProjection, ExpectedSoonBooksListView> {
+public class ExpectedSoonBooksListViewRepository extends ProjectionRepository<ExpectedSoonBooksListViewId, ExpectedSoonBooksListViewProjection, ExpectedSoonBooksListView> {
     @Override
     public void onRegistered() {
         super.onRegistered();

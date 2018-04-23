@@ -24,7 +24,7 @@ import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookId;
-import javaclasses.exlibris.ListViewId;
+import javaclasses.exlibris.ExpectedSoonBooksListViewId;
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.q.ExpectedSoonBooksListView;
@@ -44,7 +44,8 @@ import java.util.stream.IntStream;
  *
  * @author Yurii Haidamaka
  */
-public class ExpectedSoonBooksListViewProjection extends Projection<ListViewId, ExpectedSoonBooksListView, ExpectedSoonBooksListViewVBuilder> {
+public class ExpectedSoonBooksListViewProjection extends Projection<ExpectedSoonBooksListViewId,
+        ExpectedSoonBooksListView, ExpectedSoonBooksListViewVBuilder> {
 
     /**
      * The {@link ExpectedSoonBooksListViewProjection} is a singleton.
@@ -52,14 +53,14 @@ public class ExpectedSoonBooksListViewProjection extends Projection<ListViewId, 
      * <p>The {@code ID} value should be the same for all JVMs
      * to support work with the same projection from execution to execution.
      */
-    public static final ListViewId ID = ListViewId.newBuilder()
+    public static final ExpectedSoonBooksListViewId ID = ExpectedSoonBooksListViewId.newBuilder()
                                                   .setValue("ExpectedSoonBooksListViewProjection")
                                                   .build();
 
     /**
      * @see Projection#Projection(Object)
      */
-    public ExpectedSoonBooksListViewProjection(ListViewId id) {
+    public ExpectedSoonBooksListViewProjection(ExpectedSoonBooksListViewId id) {
         super(id);
     }
 

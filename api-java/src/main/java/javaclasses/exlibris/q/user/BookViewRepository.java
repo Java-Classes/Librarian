@@ -21,22 +21,23 @@
 package javaclasses.exlibris.q.user;
 
 import io.spine.server.projection.ProjectionRepository;
-import javaclasses.exlibris.UserId;
+import javaclasses.exlibris.BookId;
+import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookLost;
-import javaclasses.exlibris.c.BookReturned;
-import javaclasses.exlibris.c.LoanBecameOverdue;
-import javaclasses.exlibris.c.LoanPeriodExtended;
-import javaclasses.exlibris.q.BorrowedBooksListView;
+import javaclasses.exlibris.c.BookRemoved;
+import javaclasses.exlibris.c.InventoryAppended;
+import javaclasses.exlibris.c.InventoryDecreased;
+import javaclasses.exlibris.q.BookView;
 
 import java.util.Collections;
 
 /**
- * Repository for the {@link BorrowedBooksListViewProjection}.
+ * Repository for the {@link BookViewProjection}.
  *
  * @author Yurii Haidamaka
  */
-public class BorrowedBooksListViewRepository extends ProjectionRepository<UserId, BorrowedBooksListViewProjection, BorrowedBooksListView> {
+public class BookViewRepository extends ProjectionRepository<BookId, BookViewProjection, BookView> {
     @Override
     public void onRegistered() {
         super.onRegistered();
@@ -51,25 +52,33 @@ public class BorrowedBooksListViewRepository extends ProjectionRepository<UserId
      */
     protected void setUpEventRoute() {
         getEventRouting().replaceDefault(((message, context) -> {
+            if (message instanceof BookAdded) {
+                final BookAdded event = (BookAdded) message;
+                return Collections.singleton(event.getBookId());
+            }
+            if (message instanceof BookRemoved) {
+                final BookRemoved event = (BookRemoved) message;
+                return Collections.singleton(event.getBookId());
+            }
+            if (message instanceof InventoryAppended) {
+                final InventoryAppended event = (InventoryAppended) message;
+                return Collections.singleton(event.getInventoryId()
+                                                  .getBookId());
+            }
+            if (message instanceof InventoryDecreased) {
+                final InventoryDecreased event = (InventoryDecreased) message;
+                return Collections.singleton(event.getInventoryId()
+                                                  .getBookId());
+            }
             if (message instanceof BookBorrowed) {
                 final BookBorrowed event = (BookBorrowed) message;
-                return Collections.singleton(event.getWhoBorrowed());
-            }
-            if (message instanceof LoanBecameOverdue) {
-                final LoanBecameOverdue event = (LoanBecameOverdue) message;
-                return Collections.singleton(event.getUserId());
-            }
-            if (message instanceof LoanPeriodExtended) {
-                final LoanPeriodExtended event = (LoanPeriodExtended) message;
-                return Collections.singleton(event.getUserId());
-            }
-            if (message instanceof BookReturned) {
-                final BookReturned event = (BookReturned) message;
-                return Collections.singleton(event.getWhoReturned());
+                return Collections.singleton(event.getInventoryId()
+                                                  .getBookId());
             }
             if (message instanceof BookLost) {
                 final BookLost event = (BookLost) message;
-                return Collections.singleton(event.getWhoLost());
+                return Collections.singleton(event.getInventoryId()
+                                                  .getBookId());
             }
             return null;
         }));
