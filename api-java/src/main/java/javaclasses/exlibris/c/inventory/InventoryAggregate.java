@@ -57,8 +57,10 @@ import javaclasses.exlibris.c.InventoryCreated;
 import javaclasses.exlibris.c.InventoryDecreased;
 import javaclasses.exlibris.c.InventoryRemoved;
 import javaclasses.exlibris.c.LoanBecameOverdue;
+import javaclasses.exlibris.c.LoanBecameShouldReturnSoon;
 import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.c.MarkLoanOverdue;
+import javaclasses.exlibris.c.MarkLoanShouldReturnSoon;
 import javaclasses.exlibris.c.MarkReservationExpired;
 import javaclasses.exlibris.c.ReportLostBook;
 import javaclasses.exlibris.c.ReservationAdded;
@@ -83,6 +85,9 @@ import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 import static io.spine.time.Time.getCurrentTime;
+import static javaclasses.exlibris.LoanStatus.LOAN_OVERDUE;
+import static javaclasses.exlibris.LoanStatus.LOAN_RECENT;
+import static javaclasses.exlibris.LoanStatus.LOAN_SOULD_RETURN_SOON;
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.BorrowBookRejection.bookAlreadyBorrowed;
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.BorrowBookRejection.nonAvailableBook;
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.ReserveBookRejection.bookAlreadyBorrowed;
@@ -374,11 +379,46 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     LoanBecameOverdue handle(MarkLoanOverdue cmd) {
         final InventoryId inventoryId = cmd.getInventoryId();
         final LoanId loanId = cmd.getLoanId();
+        final int loanPosition = getLoanPositionByLoanId(loanId);
+        final Loan loan = getState().getLoans(loanPosition);
+        final UserId whoBorrowed = loan.getWhoBorrowed();
+        final InventoryItemId inventoryItemId = loan.getInventoryItemId();
+
         final LoanBecameOverdue result = LoanBecameOverdue.newBuilder()
                                                           .setInventoryId(inventoryId)
+                                                          .setInventoryItemId(inventoryItemId)
                                                           .setLoanId(loanId)
-                                                          .setWhenExpected(getCurrentTime())
+                                                          .setUserId(whoBorrowed)
+                                                          .setWhenBecameOverdue(getCurrentTime())
                                                           .build();
+        return result;
+    }
+
+    /**
+     * Handles a {@code MarkLoanShouldReturnSoon} command.
+     *
+     * <p>For details see {@link MarkLoanShouldReturnSoon}.
+     *
+     * @param cmd command from system that marks the loan as should be returned soon.
+     * @return a {@code LoanBecameShouldReturnSoon} event.
+     */
+    @Assign
+    LoanBecameShouldReturnSoon handle(MarkLoanShouldReturnSoon cmd) {
+        final InventoryId inventoryId = cmd.getInventoryId();
+        final LoanId loanId = cmd.getLoanId();
+        final int loanPosition = getLoanPositionByLoanId(loanId);
+        final Loan loan = getState().getLoans(loanPosition);
+        final UserId whoBorrowed = loan.getWhoBorrowed();
+        final InventoryItemId inventoryItemId = loan.getInventoryItemId();
+
+        final LoanBecameShouldReturnSoon result =
+                LoanBecameShouldReturnSoon.newBuilder()
+                                          .setInventoryId(inventoryId)
+                                          .setInventoryItemId(inventoryItemId)
+                                          .setLoanId(loanId)
+                                          .setUserId(whoBorrowed)
+                                          .setWhenBecameShouldReturnSoon(getCurrentTime())
+                                          .build();
         return result;
     }
 
@@ -404,8 +444,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final LoanId loanId = cmd.getLoanId();
 
         final int loanPosition = getLoanPositionByLoanId(loanId);
-        final Timestamp previousDueDate = getState().getLoans(loanPosition)
-                                                    .getWhenDue();
+        final Loan loan = getState().getLoans(loanPosition);
+        final Timestamp previousDueDate = loan.getWhenDue();
+        final InventoryItemId inventoryItemId = loan.getInventoryItemId();
 
         final long newDueDateInSeconds = previousDueDate.getSeconds() +
                 LOAN_PERIOD;
@@ -415,6 +456,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
         final LoanPeriodExtended result = LoanPeriodExtended.newBuilder()
                                                             .setInventoryId(inventoryId)
+                                                            .setInventoryItemId(inventoryItemId)
                                                             .setLoanId(loanId)
                                                             .setUserId(userId)
                                                             .setPreviousDueDate(previousDueDate)
@@ -763,7 +805,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final Loan loan = Loan.newBuilder()
                               .setLoanId(event.getLoanId())
                               .setInventoryItemId(inventoryItemId)
-                              .setOverdue(false)
+                              .setStatus(LOAN_RECENT)
                               .setWhoBorrowed(event.getWhoBorrowed())
                               .setWhenTaken(getCurrentTime())
                               .setWhenDue(whenDue)
@@ -810,7 +852,24 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
         final int loanPosition = getLoanPositionByLoanId(event.getLoanId());
         getBuilder().setLoans(loanPosition, Loan.newBuilder(loans.get(loanPosition))
-                                                .setOverdue(true)
+                                                .setStatus(LOAN_OVERDUE)
+                                                .build());
+    }
+
+    /**
+     * Handles a {@code LoanBecameShouldReturnSoon} event.
+     *
+     * <p>For details see {@link LoanBecameShouldReturnSoon}.
+     *
+     * @param event a {@code LoanBecameShouldReturnSoon} event message.
+     */
+    @Apply
+    void loanBecameShouldReturnSoon(LoanBecameShouldReturnSoon event) {
+        final List<Loan> loans = getBuilder().getLoans();
+
+        final int loanPosition = getLoanPositionByLoanId(event.getLoanId());
+        getBuilder().setLoans(loanPosition, Loan.newBuilder(loans.get(loanPosition))
+                                                .setStatus(LOAN_SOULD_RETURN_SOON)
                                                 .build());
     }
 
@@ -831,7 +890,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
         final Loan loan = Loan.newBuilder(previousLoan)
                               .setWhenDue(event.getNewDueDate())
-                              .setOverdue(false)
+                              .setStatus(LOAN_RECENT)
                               .build();
 
         getBuilder().setLoans(loanPosition, loan);
