@@ -223,6 +223,9 @@ message LoanPeriodExtended {
 
     // The timestamp of a new due date.
     google.protobuf.Timestamp new_due_date = 6;
+
+    // The time when a loan period was extended.
+    google.protobuf.Timestamp when_extended = 7;
 }
 
 // An event fired when a user returns a book.

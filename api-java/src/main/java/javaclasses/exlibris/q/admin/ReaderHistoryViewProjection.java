@@ -32,6 +32,7 @@ import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookReadyToPickup;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.LoanBecameOverdue;
+import javaclasses.exlibris.c.LoanBecameShouldReturnSoon;
 import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.c.ReservationAdded;
 import javaclasses.exlibris.c.ReservationBecameLoan;
@@ -43,6 +44,9 @@ import javaclasses.exlibris.q.ReaderHistoryViewVBuilder;
 
 import static javaclasses.exlibris.q.ReaderEventLogItemType.READER_EVENT_BOOK_LOST;
 import static javaclasses.exlibris.q.ReaderEventLogItemType.READER_EVENT_BORROWED;
+import static javaclasses.exlibris.q.ReaderEventLogItemType.READER_EVENT_LOAN_BECAME_OVERDUE;
+import static javaclasses.exlibris.q.ReaderEventLogItemType.READER_EVENT_LOAN_BECAME_SHOULD_RETURN_SOON;
+import static javaclasses.exlibris.q.ReaderEventLogItemType.READER_EVENT_LOAN_PERIOD_EXTENDED;
 import static javaclasses.exlibris.q.ReaderEventLogItemType.READER_EVENT_RESERVATION_BECAME_LOAN;
 import static javaclasses.exlibris.q.ReaderEventLogItemType.READER_EVENT_RESERVATION_CANCELED;
 import static javaclasses.exlibris.q.ReaderEventLogItemType.READER_EVENT_RESERVATION_PICK_UP_PERIOD_EXPIRED;
@@ -168,17 +172,44 @@ public class ReaderHistoryViewProjection extends Projection<UserId, ReaderHistor
 
     @Subscribe
     public void on(LoanBecameOverdue event) {
-        // TODO 4/20/2018[yegor.udovchenko]: refactor LoanBecameOverdue event. Add InventoryItemId and UserId
+        final InventoryItemId inventoryItemId = event.getInventoryItemId();
+        final Timestamp whenBecameOverdue = event.getWhenBecameOverdue();
+
+        final ReaderEventLogItem logItem = ReaderEventLogItem
+                .newBuilder()
+                .setItemId(inventoryItemId)
+                .setWhenEmitted(whenBecameOverdue)
+                .setEventType(READER_EVENT_LOAN_BECAME_OVERDUE)
+                .build();
+        getBuilder().addEvent(logItem);
     }
 
-    // TODO 4/23/2018[yegor.udovchenko]: Add LoanBecameShouldReturnSoon event and proper command.
-//    @Subscribe
-//    public void on(LoanBecameShouldReturnSoon event) {
-//    }
+    @Subscribe
+    public void on(LoanBecameShouldReturnSoon event) {
+        final InventoryItemId inventoryItemId = event.getInventoryItemId();
+        final Timestamp whenBecameShouldReturnSoon = event.getWhenBecameShouldReturnSoon();
+
+        final ReaderEventLogItem logItem = ReaderEventLogItem
+                .newBuilder()
+                .setItemId(inventoryItemId)
+                .setWhenEmitted(whenBecameShouldReturnSoon)
+                .setEventType(READER_EVENT_LOAN_BECAME_SHOULD_RETURN_SOON)
+                .build();
+        getBuilder().addEvent(logItem);
+    }
 
     @Subscribe
     public void on(LoanPeriodExtended event) {
-        // TODO 4/23/2018[yegor.udovchenko]: Add InventoryItemId to the event.
+        final InventoryItemId inventoryItemId = event.getInventoryItemId();
+        final Timestamp whenExtended = event.getWhenExtended();
+
+        final ReaderEventLogItem logItem = ReaderEventLogItem
+                .newBuilder()
+                .setItemId(inventoryItemId)
+                .setWhenEmitted(whenExtended)
+                .setEventType(READER_EVENT_LOAN_PERIOD_EXTENDED)
+                .build();
+        getBuilder().addEvent(logItem);
     }
 
     @Subscribe
