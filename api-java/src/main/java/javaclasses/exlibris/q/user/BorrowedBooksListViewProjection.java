@@ -25,7 +25,6 @@ import io.spine.core.EventContext;
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
 import io.spine.time.LocalDate;
-import io.spine.time.MonthOfYear;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.Inventory;
@@ -45,13 +44,13 @@ import javaclasses.exlibris.q.BorrowedBooksListView;
 import javaclasses.exlibris.q.BorrowedBooksListViewVBuilder;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
-import static io.spine.time.Timestamps2.toDate;
 import static javaclasses.exlibris.EnrichmentHelper.getEnrichment;
+import static javaclasses.exlibris.Timestamps.toLocalDate;
+import static javaclasses.exlibris.Timestamps.toLocalDateAfterPeriod;
 
 /**
  * A projection state of all books that are borrowed by user.
@@ -79,11 +78,9 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
         final BookDetails bookDetails = enrichment.getBook()
                                                   .getBookDetails();
         final Timestamp whenBorrowedTimeStamp = event.getWhenBorrowed();
-        final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(toDate(whenBorrowedTimeStamp));
-        final LocalDate whenBorrowed = toLocalDate(calendar);
-        calendar.add(Calendar.DATE, 14);
-        final LocalDate dueDate = toLocalDate(calendar);
+
+        final LocalDate whenBorrowed = toLocalDate(whenBorrowedTimeStamp);
+        final LocalDate dueDate = toLocalDateAfterPeriod(whenBorrowedTimeStamp, 14);
         final BorrowedBookItem bookItem = BorrowedBookItem.newBuilder()
                                                           .setLoanId(loanId)
                                                           .setBookId(bookId)
@@ -140,9 +137,7 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
     @Subscribe
     public void on(LoanPeriodExtended event) {
         final Timestamp newDueDateTimestamp = event.getNewDueDate();
-        final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(toDate(newDueDateTimestamp));
-        final LocalDate newDueDate = toLocalDate(calendar);
+        final LocalDate newDueDate = toLocalDate(newDueDateTimestamp);
         final List<BorrowedBookItem> items = new ArrayList<>(getBuilder().getBookItem());
         final int index = getIndexByBookId(items, event.getInventoryId()
                                                        .getBookId());
@@ -181,14 +176,4 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
         return index.isPresent() ? index.getAsInt() : -1;
     }
 
-    private LocalDate toLocalDate(Calendar calendar) {
-        final LocalDate date = LocalDate.newBuilder()
-                                        .setDay(calendar.get(Calendar.DAY_OF_MONTH))
-                                        .setMonth(
-                                                MonthOfYear.valueOf(
-                                                        calendar.get(Calendar.MONTH) + 1))
-                                        .setYear(calendar.get(Calendar.YEAR))
-                                        .build();
-        return date;
-    }
 }
