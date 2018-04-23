@@ -22,17 +22,17 @@ package javaclasses.exlibris.q.user;
 
 import io.spine.server.projection.ProjectionRepository;
 import javaclasses.exlibris.ListViewId;
-import javaclasses.exlibris.q.ExpectedSoonBooksListView;
+import javaclasses.exlibris.q.AllBooksListView;
 
 import static java.util.Collections.singleton;
-import static javaclasses.exlibris.q.user.ExpectedSoonBooksListViewProjection.ID;
+import static javaclasses.exlibris.q.user.AllBooksListViewProjection.ID;
 
 /**
  * Repository for the {@link AllBooksListViewProjection}.
  *
  * @author Yurii Haidamaka
  */
-public class ExpectedSoonBoksListViewRepository extends ProjectionRepository<ListViewId, ExpectedSoonBooksListViewProjection, ExpectedSoonBooksListView> {
+public class AllBooksListViewRepository extends ProjectionRepository<ListViewId, AllBooksListViewProjection, AllBooksListView> {
     @Override
     public void onRegistered() {
         super.onRegistered();
@@ -43,7 +43,7 @@ public class ExpectedSoonBoksListViewRepository extends ProjectionRepository<Lis
      * Adds the {@link io.spine.server.route.EventRoute EventRoute}s to the repository.
      *
      * <p>Override this method in successor classes, otherwise all successors will use
-     * {@code ExpectedSoonBooksListViewProjection.ID}.
+     * {@code AllBooksListViewProjection.ID}.
      */
     protected void setUpEventRoute() {
         getEventRouting().replaceDefault(((message, context) -> singleton(ID)));

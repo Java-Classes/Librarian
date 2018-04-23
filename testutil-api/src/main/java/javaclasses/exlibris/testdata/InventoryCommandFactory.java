@@ -53,7 +53,7 @@ import static io.spine.time.Time.getCurrentTime;
 public class InventoryCommandFactory {
 
     public static final Isbn62 isbn62 = Isbn62.newBuilder()
-                                              .setValue("123456789")
+                                              .setValue("0201485672")
                                               .build();
 
     public static final EmailAddress userEmailAddress1 = EmailAddress.newBuilder()

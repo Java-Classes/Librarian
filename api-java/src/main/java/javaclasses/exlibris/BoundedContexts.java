@@ -24,11 +24,14 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import io.spine.server.BoundedContext;
 import io.spine.server.event.EventBus;
+import io.spine.server.event.EventEnricher;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import javaclasses.exlibris.c.book.BookRepository;
 import javaclasses.exlibris.c.inventory.InventoryRepository;
+import javaclasses.exlibris.q.user.AllBooksListViewRepository;
 import javaclasses.exlibris.q.user.BorrowedBooksListViewRepository;
+import javaclasses.exlibris.q.user.ExpectedSoonBooksListViewRepository;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -73,20 +76,35 @@ public final class BoundedContexts {
 
         final BookRepository bookRepository = new BookRepository();
         final InventoryRepository inventoryRepository = new InventoryRepository();
-        final BorrowedBooksListViewRepository borrowedBooksListViewRepository = new BorrowedBooksListViewRepository();
 
-        final EventBus.Builder eventBus = createEventBus(storageFactory);
+        final AllBooksListViewRepository allBooksRepo = new AllBooksListViewRepository();
+        final ExpectedSoonBooksListViewRepository expectedSoonRepo = new ExpectedSoonBooksListViewRepository();
+        final BorrowedBooksListViewRepository borrowedRepo = new BorrowedBooksListViewRepository();
+
+        final EventBus.Builder eventBus = createEventBus(storageFactory, bookRepository,
+                                                         inventoryRepository);
 
         final BoundedContext boundedContext = createBoundedContext(eventBus);
-        boundedContext.register(bookRepository);
 
+        boundedContext.register(bookRepository);
         boundedContext.register(inventoryRepository);
-        boundedContext.register(borrowedBooksListViewRepository);
+
+        boundedContext.register(allBooksRepo);
+        boundedContext.register(expectedSoonRepo);
+        boundedContext.register(borrowedRepo);
         return boundedContext;
     }
 
-    private static EventBus.Builder createEventBus(StorageFactory storageFactory) {
+    private static EventBus.Builder createEventBus(StorageFactory storageFactory,
+                                                   BookRepository bookRepo,
+                                                   InventoryRepository inventoryRepo) {
+        final EventEnricher enricher = ExlibrisEnrichments.newBuilder()
+                                                          .setBookRepository(bookRepo)
+                                                          .setInventoryRepository(inventoryRepo)
+                                                          .build()
+                                                          .createEnricher();
         final EventBus.Builder eventBus = EventBus.newBuilder()
+                                                  .setEnricher(enricher)
                                                   .setStorageFactory(storageFactory);
         return eventBus;
     }

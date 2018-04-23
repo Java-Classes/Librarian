@@ -151,13 +151,13 @@ public class FlowTest extends InventoryCommandTest<Message> {
         boundedContext.getRejectionBus()
                       .register(inventoryRejectionsSubscriber);
         commandBus.post(addBook, observer);
-//        commandBus.post(updateBook, observer);
+        commandBus.post(updateBook, observer);
         commandBus.post(appendInventory, observer);
         commandBus.post(borrowBook, observer);
-//        commandBus.post(reserveBook2, observer);
-//        commandBus.post(returnBook, observer);
-//        commandBus.post(borrowBook2, observer);
-//        commandBus.post(returnBook2, observer);
+        commandBus.post(reserveBook2, observer);
+        commandBus.post(returnBook, observer);
+        commandBus.post(borrowBook2, observer);
+        commandBus.post(returnBook2, observer);
         assertFalse(bookRejectionsSubscriber.wasCalled());
         assertFalse(inventoryRejectionsSubscriber.wasCalled());
     }

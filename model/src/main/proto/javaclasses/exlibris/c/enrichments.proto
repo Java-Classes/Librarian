@@ -39,3 +39,9 @@ message BookEnrichment {
 
     Book book = 1 [(by) = "inventory_id"];
 }
+
+message InventoryEnrichment {
+    option (enrichment_for) = "javaclasses.exlibris.c.LoanBecameShouldReturnSoon";
+
+    Inventory inventory = 1 [(by) = "inventory_id"];
+}

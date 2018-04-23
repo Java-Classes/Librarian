@@ -28,13 +28,16 @@ import io.spine.time.LocalDate;
 import io.spine.time.MonthOfYear;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookId;
+import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.LoanId;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookEnrichment;
 import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookReturned;
+import javaclasses.exlibris.c.InventoryEnrichment;
 import javaclasses.exlibris.c.LoanBecameOverdue;
+import javaclasses.exlibris.c.LoanBecameShouldReturnSoon;
 import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.q.BorrowedBookItem;
 import javaclasses.exlibris.q.BorrowedBookItemStatus;
@@ -110,6 +113,27 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
                                                              .setStatus(
                                                                      BorrowedBookItemStatus.OVERDUE)
                                                              .build();
+        getBuilder().setBookItem(index, newBookItem);
+    }
+
+    @Subscribe
+    public void on(LoanBecameShouldReturnSoon event, EventContext context) {
+        final InventoryEnrichment enrichment = getEnrichment(InventoryEnrichment.class, context);
+        final Inventory inventory = enrichment.getInventory();
+        final boolean isAllowedLoanExtension = inventory.getReservationsList()
+                                                        .isEmpty();
+        final List<BorrowedBookItem> items = new ArrayList<>(getBuilder().getBookItem());
+
+        final int index = getIndexByBookId(items, event.getInventoryId()
+                                                       .getBookId());
+        final BorrowedBookItem bookItem = items.get(index);
+        final BorrowedBookItem newBookItem =
+                BorrowedBookItem.newBuilder(bookItem)
+                                .setStatus(
+                                        BorrowedBookItemStatus.SHOULD_RETURN_SOON)
+                                .setIsAllowedLoanExtension(
+                                        isAllowedLoanExtension)
+                                .build();
         getBuilder().setBookItem(index, newBookItem);
     }
 
