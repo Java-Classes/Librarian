@@ -40,3 +40,16 @@ message BookEnrichment {
     // A task.
     Book book = 1 [(by) = "inventory_id"];
 }
+
+// Enrichment for the events which required the book title and authors.
+//
+message BookTitleEnrichment {
+
+    option (enrichment_for) = "javaclasses.exlibris.c.BookBorrowed,";
+
+    // The book title.
+    BookTitle title = 1 [(by) = "inventory_id"];
+
+    // Authors’ full names.
+    AuthorName authors = 2 [(by) = "inventory_id"];
+}
