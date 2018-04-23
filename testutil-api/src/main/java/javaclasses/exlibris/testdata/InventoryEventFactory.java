@@ -37,6 +37,7 @@ import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.c.InventoryDecreased;
 import javaclasses.exlibris.c.LoanBecameOverdue;
+import javaclasses.exlibris.c.LoanBecameShouldReturnSoon;
 import javaclasses.exlibris.c.LoanPeriodExtended;
 
 import static io.spine.time.Time.getCurrentTime;
@@ -93,13 +94,13 @@ public class InventoryEventFactory {
     public static final LocalDate DEFAULT_DATE1 = LocalDate.newBuilder()
                                                            .setDay(1)
                                                            .setMonth(
-                                                                  MonthOfYear.valueOf(1))
+                                                                   MonthOfYear.valueOf(1))
                                                            .setYear(1970)
                                                            .build();
     public static final LocalDate DEFAULT_DATE2 = LocalDate.newBuilder()
                                                            .setDay(6)
                                                            .setMonth(
-                                                                  MonthOfYear.valueOf(10))
+                                                                   MonthOfYear.valueOf(10))
                                                            .setYear(1976)
                                                            .build();
     public static final LocalDate DEFAULT_DUE_DATE = LocalDate.newBuilder()
@@ -255,25 +256,70 @@ public class InventoryEventFactory {
      * @return the {@link LoanBecameOverdue} instance
      */
     public static LoanBecameOverdue loanBecameOverdueInstance() {
-        return loanBecameOverdueInstance(INVENTORY_ID, LOAN_ID, DEFAULT_TIMESTAMP1);
+        return loanBecameOverdueInstance(INVENTORY_ID, INVENTORY_ITEM_ID, LOAN_ID,
+                                         DEFAULT_TIMESTAMP1, USER_ID);
     }
 
     /**
      * Provides the {@link LoanBecameOverdue} event by inventory ID, inventory item ID, user ID and time.
      *
-     * @param inventoryId  the identifier of an inventory
-     * @param loanId       the identifier of a loan
-     * @param whenExpected time when book was returned
+     * @param inventoryId     the identifier of an inventory
+     * @param inventoryItemId the identifier of an inventory item
+     * @param loanId          the identifier of a loan
+     * @param whenOverdue     time when loan became overdue
+     * @param userId          the identifier of a user
      * @return the {@code LoanBecameOverdue} instance
      */
     public static LoanBecameOverdue loanBecameOverdueInstance(InventoryId inventoryId,
+                                                              InventoryItemId inventoryItemId,
                                                               LoanId loanId,
-                                                              Timestamp whenExpected) {
+                                                              Timestamp whenOverdue,
+                                                              UserId userId) {
         final LoanBecameOverdue result = LoanBecameOverdue.newBuilder()
                                                           .setInventoryId(inventoryId)
+                                                          .setInventoryItemId(inventoryItemId)
                                                           .setLoanId(loanId)
-                                                          .setWhenExpected(whenExpected)
+                                                          .setUserId(userId)
+                                                          .setWhenBecameOverdue(whenOverdue)
                                                           .build();
+        return result;
+    }
+
+    /**
+     * Provides a pre-configured {@link LoanBecameShouldReturnSoon} event instance.
+     *
+     * @return the {@link LoanBecameShouldReturnSoon} instance
+     */
+    public static LoanBecameShouldReturnSoon loanBecameShouldReturnSoonInstance() {
+        return loanBecameShouldReturnSoonInstance(INVENTORY_ID, INVENTORY_ITEM_ID, LOAN_ID,
+                                                  DEFAULT_TIMESTAMP1, USER_ID);
+    }
+
+    /**
+     * Provides the {@link LoanBecameShouldReturnSoon} event by inventory ID,
+     * inventory item ID, loan ID, user ID and time.
+     *
+     * @param inventoryId     the identifier of an inventory
+     * @param inventoryItemId the identifier of an inventory item
+     * @param loanId          the identifier of a loan
+     * @param whenBecame      time when loan became overdue
+     * @param userId          the identifier of a user
+     * @return the {@code LoanBecameShouldReturnSoon} instance
+     */
+    public static LoanBecameShouldReturnSoon loanBecameShouldReturnSoonInstance(
+            InventoryId inventoryId,
+            InventoryItemId inventoryItemId,
+            LoanId loanId,
+            Timestamp whenBecame,
+            UserId userId) {
+        final LoanBecameShouldReturnSoon result =
+                LoanBecameShouldReturnSoon.newBuilder()
+                                          .setInventoryId(inventoryId)
+                                          .setInventoryItemId(inventoryItemId)
+                                          .setLoanId(loanId)
+                                          .setUserId(userId)
+                                          .setWhenBecameShouldReturnSoon(whenBecame)
+                                          .build();
         return result;
     }
 
@@ -283,7 +329,8 @@ public class InventoryEventFactory {
      * @return the {@link LoanPeriodExtended} instance
      */
     public static LoanPeriodExtended loanPeriodExtendedInstance() {
-        return loanPeriodExtendedInstance(INVENTORY_ID, LOAN_ID, USER_ID, DEFAULT_TIMESTAMP1,
+        return loanPeriodExtendedInstance(INVENTORY_ID, INVENTORY_ITEM_ID, LOAN_ID, USER_ID,
+                                          DEFAULT_TIMESTAMP1,
                                           DEFAULT_TIMESTAMP2);
     }
 
@@ -298,17 +345,19 @@ public class InventoryEventFactory {
      * @return the {@code LoanPeriodExtended} instance
      */
     public static LoanPeriodExtended loanPeriodExtendedInstance(InventoryId inventoryId,
+                                                                InventoryItemId inventoryItemId,
                                                                 LoanId loanId,
                                                                 UserId userId,
                                                                 Timestamp previousDueDate,
                                                                 Timestamp newDueDate) {
         final LoanPeriodExtended result = LoanPeriodExtended.newBuilder()
                                                             .setInventoryId(inventoryId)
+                                                            .setInventoryItemId(inventoryItemId)
                                                             .setLoanId(loanId)
+                                                            .setUserId(userId)
                                                             .setPreviousDueDate(previousDueDate)
                                                             .setNewDueDate(newDueDate)
                                                             .build();
         return result;
     }
-
 }
