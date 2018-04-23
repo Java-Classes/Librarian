@@ -40,13 +40,11 @@
                 color: var(--paper-grey-700);
             }
         </style>
-        <div class="center" hidden="[[books.length]]">[[message]]</div>
+        <div class="center" hidden="[[books.length]]">[[noBooksMessage]]</div>
 
         <iron-list items="[[books]]" as="book" scroll-target="document" grid>
             <template>
-                <div>
                     <exlibris-book-tile book="[[book]]"></exlibris-book-tile>
-                </div>
             </template>
         </iron-list>
 
@@ -86,16 +84,12 @@
                     /**
                      * The text is shown in the case of an empty books array.
                      */
-                    message: String
+                    noBooksMessage: String
                 };
             }
 
             _onLowerThreshold() {
                 this.dispatchEvent(new CustomEvent('exlibris-book-grid-lower-threshold'));
-            }
-
-            _isBooksEmpty(books) {
-                return books.length === 0 ? 'center' : 'hidden';
             }
         }
 

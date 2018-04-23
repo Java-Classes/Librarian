@@ -97,6 +97,7 @@
                     </app-toolbar>
                 </app-header>
 
+
                 <iron-pages
                         selected="[[routeData.page]]"
                         attr-for-selected="data-page"
@@ -104,193 +105,197 @@
                         role="main">
                     <exlibris-book-grid data-page="all-books"
                                         books="[[allBooks]]"
-                                        message="[[bookMessage.ALL]]"
+                                        no-books-message="[[noBooksMessage.ALL]]"
                                         on-exlibris-book-grid-lower-threshold="_handleLowerThreshold"></exlibris-book-grid>
                     <exlibris-book-grid data-page="overdue-books"
                                         books="[[overdueBooks]]"
-                                        message="[[bookMessage.OVERDUE]]"></exlibris-book-grid>
+                                        no-books-message="[[noBooksMessage.OVERDUE]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="borrowed-books"
                                         books="[[borrowedBooks]]"
-                                        message="[[bookMessage.BORROWED]]"></exlibris-book-grid>
+                                        no-books-message="[[noBooksMessage.BORROWED]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="reserved-books"
                                         books="[[reservedBooks]]"
-                                        message="[[bookMessage.RESERVED]]"></exlibris-book-grid>
+                                        no-books-message="[[noBooksMessage.RESERVED]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="expected-soon"
                                         books="[[expectedSoonBooks]]"
-                                        message="[[bookMessage.EXPECTED_SOON]]"></exlibris-book-grid>
+                                        no-books-message="[[noBooksMessage.EXPECTED_SOON]]"></exlibris-book-grid>
                     <exlibris-book-grid data-page="should-return-books"
                                         books="[[shouldReturnBooks]]"
-                                        message="[[bookMessage.SHOULD_RETURN_SOON]]"></exlibris-book-grid>
+                                        no-books-message="[[noBooksMessage.SHOULD_RETURN_SOON]]"></exlibris-book-grid>
                     <div data-page="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
     </template>
     <script>
-        const EmptyArrayMessage = {
-            OVERDUE: "You don't have any overdue books yet.",
-            BORROWED: "You haven't borrowed any books yet.",
-            SHOULD_RETURN_SOON: "You don't have books that you should return soon",
-            RESERVED: "You haven't reserved any books yet",
-            EXPECTED_SOON: "In the near future, the supply of new books to the library is not expected.",
-            ALL: "There are no books in the library."
-        };
-
-        /**
-         * Library application. The polymer-based single page app.
-         *
-         * How to use `<exlibris-app>` component.
-         * In typical use, just add `<exlibris-app>` to the top of your body:
-         * <body>
-         *   <exlibris-app></exlibris-app>
-         * </body>
-         *
-         * @customElement
-         * @polymer
-         * @appliesMixin ExlibrisApp.ReduxMixin
-         */
-        class ExlibrisMainApp extends ExlibrisApp.ReduxMixin(Polymer.Element) {
-            static get is() {
-                return 'exlibris-app';
-            }
-
-            static get properties() {
-                return {
-
-                    /**
-                     * The array of all books from library.
-                     */
-                    allBooks: {
-                        type: Array,
-                        statePath: 'allBooks'
-                    },
-
-                    /**
-                     * The array of borrowed  user books.
-                     */
-                    borrowedBooks: {
-                        type: Array,
-                        statePath: 'borrowedBooks'
-                    },
-
-                    /**
-                     * The array of reserved user books.
-                     */
-                    reservedBooks: {
-                        type: Array,
-                        statePath: 'reservedBooks'
-                    },
-
-                    /**
-                     * The array of books the user should return soon.
-                     */
-                    shouldReturnBooks: {
-                        type: Array,
-                        statePath: 'shouldReturnBooks'
-                    },
-
-                    /**
-                     * The array of overdue user books.
-                     */
-                    overdueBooks: {
-                        type: Array,
-                        statePath: 'overdueBooks'
-                    },
-
-                    /**
-                     * The array of books that will soon appear in the library.
-                     */
-                    expectedSoonBooks: {
-                        type: Array,
-                        statePath: 'expectedSoonBooks'
-                    },
-
-                    /**
-                     * The enum of book messages that will be shown in the case
-                     * of an empty books array.
-                     */
-                    bookMessage: {
-                        type: Object,
-                        value: EmptyArrayMessage
-                    },
-
-                    /**
-                     * The title of the app header.
-                     * Computed from `routeData.page` value.
-                     */
-                    appHeaderTitle: {
-                        type: String,
-                        computed: '_getTitle(routeData.page)'
-                    }
-                };
-            }
-
-            static get observers() {
-                return [
-                    '_routePageChanged(routeData.page)'
-                ];
-            }
-
-            static get actions() {
-                return {
-                    fetchBooks: () => ({type: ExlibrisApp.ExlibrisActions.FETCH_BOOKS})
-                };
-            }
+        {
+            const EmptyArrayMessage = {
+                OVERDUE: "You don't have any overdue books yet.",
+                BORROWED: "You haven't borrowed any books yet.",
+                SHOULD_RETURN_SOON: "You don't have books that you should return soon",
+                RESERVED: "You haven't reserved any books yet",
+                EXPECTED_SOON: "In the near future, the supply of new books to the library is not expected.",
+                ALL: "There are no books in the library."
+            };
 
             /**
-             * Checks for an empty route passed to redirect user to the default app view.
-             */
-            _routePageChanged() {
-                if (!this.route.path) {
-                    this.set('route.path', '/all-books');
-                }
-            }
-
-            /**
-             * Computes the title of the app header.
-             * Removes dashes from the `routeData.page` value and
-             * capitalizes each word first letter.
+             * Library application. The polymer-based single page app.
              *
-             * @param {string} page the current page.
-             * @returns {string} capitalized page value without dashes.
-             * @private
+             * How to use `<exlibris-app>` component.
+             * In typical use, just add `<exlibris-app>` to the top of your body:
+             * <body>
+             *   <exlibris-app></exlibris-app>
+             * </body>
+             *
+             * @customElement
+             * @polymer
+             * @appliesMixin ExlibrisApp.ReduxMixin
              */
-            _getTitle(page) {
-                switch (page) {
-                    case "all-books":
-                        return "All Books";
-                    case"expected-soon":
-                        return "Expected Soon";
-                    case "borrowed-books":
-                        return "Borrowed Books";
-                    case "reserved-books":
-                        return "Reserved Books";
-                    case "should-return-soon":
-                        return "Should Return Soon";
-                    case"overdue-books":
-                        return "Overdue Books";
+            class ExlibrisMainApp extends ExlibrisApp.ReduxMixin(Polymer.Element) {
+                static get is() {
+                    return 'exlibris-app';
+                }
+
+                static get properties() {
+                    return {
+
+                        /**
+                         * The array of all books from library.
+                         */
+                        allBooks: {
+                            type: Array,
+                            statePath: 'allBooks'
+                        },
+
+                        /**
+                         * The array of borrowed  user books.
+                         */
+                        borrowedBooks: {
+                            type: Array,
+                            statePath: 'borrowedBooks'
+                        },
+
+                        /**
+                         * The array of reserved user books.
+                         */
+                        reservedBooks: {
+                            type: Array,
+                            statePath: 'reservedBooks'
+                        },
+
+                        /**
+                         * The array of books the user should return soon.
+                         */
+                        shouldReturnBooks: {
+                            type: Array,
+                            statePath: 'shouldReturnBooks'
+                        },
+
+                        /**
+                         * The array of overdue user books.
+                         */
+                        overdueBooks: {
+                            type: Array,
+                            statePath: 'overdueBooks'
+                        },
+
+                        /**
+                         * The array of books that will soon appear in the library.
+                         */
+                        expectedSoonBooks: {
+                            type: Array,
+                            statePath: 'expectedSoonBooks'
+                        },
+
+                        /**
+                         * The enum of book messages that will be shown in the case
+                         * of an empty books array.
+                         */
+                        noBooksMessage: {
+                            type: Object,
+                            value: EmptyArrayMessage
+                        },
+
+                        /**
+                         * The title of the app header.
+                         * Computed from `routeData.page` value.
+                         */
+                        appHeaderTitle: {
+                            type: String,
+                            computed: '_getTitle(routeData.page)'
+                        },
+
+                        /**
+                         * The application title values:
+                         * key - routeData.page
+                         * value - title
+                         */
+                        titles: {
+                            type: Object,
+                            value: {
+                                ['all-books']: 'All Books',
+                                ['expected-soon']: 'Expected Soon',
+                                ['borrowed-books']: 'Borrowed Books',
+                                ['reserved-books']: 'Reserved Books',
+                                ['should-return-books']: 'Should Return Books',
+                                ['overdue-books']: 'Overdue Books'
+                            }
+                        }
+                    };
+                }
+
+                static get observers() {
+                    return [
+                        '_routePageChanged(routeData.page)'
+                    ];
+                }
+
+                static get actions() {
+                    return {
+                        fetchBooks: () => ({type: ExlibrisApp.ExlibrisActions.FETCH_BOOKS})
+                    };
+                }
+
+                /**
+                 * Checks for an empty route passed to redirect user to the default app view.
+                 */
+                _routePageChanged() {
+                    if (!this.route.path) {
+                        this.set('route.path', '/all-books');
+                    }
+                }
+
+                /**
+                 * Computes the title of the app header.
+                 *
+                 * @param {string} page the current page.
+                 * @returns {string} capitalized page value without dashes.
+                 * @private
+                 */
+                _getTitle(page) {
+                    return this.titles[page];
+                }
+
+                /**
+                 * Closes drawer on click in the narrow mode.
+                 * @private
+                 */
+                _toggleDrawer() {
+                    if (this.narrow) {
+                        this.$.drawer.toggle();
+                    }
+                }
+
+                /**
+                 * Dispatch the `FETCH_BOOKS` action to the redux store.
+                 * @private
+                 */
+                _handleLowerThreshold() {
+                    this.dispatch('fetchBooks');
                 }
             }
 
-            /**
-             * Closes drawer on click in the narrow mode.
-             * @private
-             */
-            _toggleDrawer() {
-                if (this.narrow) {
-                    this.$.drawer.toggle();
-                }
-            }
-
-            /**
-             * Dispatch the `FETCH_BOOKS` action to the redux store.
-             * @private
-             */
-            _handleLowerThreshold() {
-                this.dispatch('fetchBooks');
-            }
+            window.customElements.define(ExlibrisMainApp.is, ExlibrisMainApp);
         }
-
-        window.customElements.define(ExlibrisMainApp.is, ExlibrisMainApp);
     </script>
 </dom-module>

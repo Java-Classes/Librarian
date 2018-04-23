@@ -31,20 +31,22 @@
     <template>
         <style>
             :host {
-                @apply --shadow-elevation-8dp;
                 display: block;
+            }
+
+            :host([hidden]) {
+                display: none;
+            }
+
+            a {
+                @apply --layout-vertical;
+                @apply --shadow-elevation-8dp;
                 border-radius: 3px;
                 background-color: var(--paper-grey-900);
                 width: 160px;
                 height: 300px;
                 margin: 20px;
-            }
-
-            a {
-                @apply --layout-vertical;
                 text-decoration: none;
-                width: 100%;
-                height: 100%;
             }
 
             iron-image {
@@ -63,7 +65,7 @@
                 bottom: 0;
                 left: 0;
                 right: 0;
-                background: var( --light-theme-background-color);
+                background: var(--light-theme-background-color);
             }
 
             #title {
@@ -226,7 +228,7 @@
              * @private
              */
             _computeLink(book) {
-                return '#/book-details/' + book.title.replace(/\s/g, '_') + '/' + book.id;
+                return '#/book-details/' + book.id + '/' + book.title.replace(/\s/g, '_');
             }
         }
 
