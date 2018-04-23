@@ -125,4 +125,10 @@ message Loan {
 
     // The time when a book should be returned.
     google.protobuf.Timestamp when_due = 6;
+
+    // Shows whether it is allowed to extend loan period.
+    //
+    // Depends on the state of the reservations query in the inventory aggregate.
+    //
+    bool is_allowed_extension = 7;
 }

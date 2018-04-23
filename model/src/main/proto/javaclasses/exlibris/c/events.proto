@@ -228,6 +228,39 @@ message LoanPeriodExtended {
     google.protobuf.Timestamp when_extended = 7;
 }
 
+// An event fired when the book was reserved and this reservation was the first in the list.
+//
+// All recent loans of the specified book become not allowed for extension.
+//
+message LoansBecameNotAllowedForExtension {
+
+    // The identifier of an inventory.
+    InventoryId inventory_id = 1;
+
+    // The collection of users' identifiers whos loans became not allowed for an extension.
+    repeated UserId borrowers = 3;
+
+    // The time when became not allowed.
+    google.protobuf.Timestamp when_became = 7;
+}
+
+// An event fired when the book reservations become satisfied or canceled
+// and there are no more active reservations for this book.
+//
+// All recent loans of the specified book become allowed for extension.
+//
+message LoansBecameExtensionAllowed {
+
+    // The identifier of an inventory.
+    InventoryId inventory_id = 1;
+
+    // The collection of users' identifiers whos loans became allowed for an extension.
+    repeated UserId borrowers = 3;
+
+    // The time when became allowed.
+    google.protobuf.Timestamp when_became = 7;
+}
+
 // An event fired when a user returns a book.
 //
 // User's loan is finished and the book becomes:
