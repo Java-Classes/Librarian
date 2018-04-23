@@ -33,6 +33,7 @@ import javaclasses.exlibris.Rfid;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.BookBorrowed;
+import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.c.InventoryDecreased;
@@ -247,6 +248,38 @@ public class InventoryEventFactory {
                                                 .setWhoReturned(userId)
                                                 .setWhenReturned(whenReturned)
                                                 .build();
+        return result;
+    }
+
+    /**
+     * Provides a pre-configured {@link BookLost} event instance.
+     *
+     * @return the {@link BookLost} instance
+     */
+    public static BookLost bookLostInstance() {
+        return bookLostInstance(INVENTORY_ID, INVENTORY_ITEM_ID, USER_ID,
+                                getCurrentTime());
+    }
+
+    /**
+     * Provides the {@link BookReturned} event by inventory ID, inventory item ID, user ID and time.
+     *
+     * @param inventoryId     the identifier of an inventory
+     * @param inventoryItemId the identifier of an inventory item that was lost
+     * @param userId          the identifier of a user who lost a book
+     * @param whenReported    time when information was reported
+     * @return the {@code BookLost} instance
+     */
+    public static BookLost bookLostInstance(InventoryId inventoryId,
+                                            InventoryItemId inventoryItemId,
+                                            UserId userId,
+                                            Timestamp whenReported) {
+        final BookLost result = BookLost.newBuilder()
+                                        .setInventoryId(inventoryId)
+                                        .setInventoryItemId(inventoryItemId)
+                                        .setWhoLost(userId)
+                                        .setWhenReported(whenReported)
+                                        .build();
         return result;
     }
 

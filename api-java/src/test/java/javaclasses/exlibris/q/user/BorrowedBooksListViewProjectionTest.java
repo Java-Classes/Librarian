@@ -22,8 +22,10 @@ package javaclasses.exlibris.q.user;
 
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.BookBorrowed;
+import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.LoanBecameOverdue;
+import javaclasses.exlibris.c.LoanBecameShouldReturnSoon;
 import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.q.BorrowedBookItem;
 import javaclasses.exlibris.q.BorrowedBookItemStatus;
@@ -49,8 +51,10 @@ import static javaclasses.exlibris.testdata.InventoryEventFactory.DEFAULT_DATE2;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.DEFAULT_DUE_DATE;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.LOAN_ID;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookBorrowedInstance;
+import static javaclasses.exlibris.testdata.InventoryEventFactory.bookLostInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookReturnedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loanBecameOverdueInstance;
+import static javaclasses.exlibris.testdata.InventoryEventFactory.loanBecameShouldReturnSoonInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loanPeriodExtendedInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -120,7 +124,7 @@ class BorrowedBooksListViewProjectionTest extends ProjectionTest {
 
         @Test
         @DisplayName("change status to BORROWED, set new dueDate and set false to IsAllowedLoanExtension")
-        void changeStatus(){
+        void changeStatus() {
             final BookBorrowed bookBorrowed = bookBorrowedInstance();
             dispatch(projection, createEvent(bookBorrowed));
             final LoanPeriodExtended loanPeriodExtended = loanPeriodExtendedInstance();
@@ -140,7 +144,7 @@ class BorrowedBooksListViewProjectionTest extends ProjectionTest {
 
         @Test
         @DisplayName("delete book from the list of borrowed books")
-        void deleteBook(){
+        void deleteBook() {
             final BookBorrowed bookBorrowed = bookBorrowedInstance();
             dispatch(projection, createEvent(bookBorrowed));
             final BookReturned bookReturned = bookReturnedInstance();
@@ -148,6 +152,43 @@ class BorrowedBooksListViewProjectionTest extends ProjectionTest {
             final List<BorrowedBookItem> books = projection.getState()
                                                            .getBookItemList();
             assertEquals(0, books.size());
+        }
+    }
+
+    @Nested
+    @DisplayName("BookLost event should be interpreted by BorrowedBooksListViewProjection and")
+    class BookLostEvent {
+
+        @Test
+        @DisplayName("delete book from the list of borrowed books")
+        void deleteBook() {
+            final BookBorrowed bookBorrowed = bookBorrowedInstance();
+            dispatch(projection, createEvent(bookBorrowed));
+            final BookLost bookLost = bookLostInstance();
+            dispatch(projection, createEvent(bookLost));
+            final List<BorrowedBookItem> books = projection.getState()
+                                                           .getBookItemList();
+            assertEquals(0, books.size());
+        }
+    }
+
+    @Nested
+    @DisplayName("LoanBecameShouldReturnSoon event should be interpreted by BorrowedBooksListViewProjection and")
+    class LoanBecameShouldReturnSoonEvent {
+
+        @Test
+        @DisplayName("change status to SHOULD_RETURN_SOON and allow extension in case of no reservation")
+        void deleteBook() {
+            final BookBorrowed bookBorrowed = bookBorrowedInstance();
+            dispatch(projection, createEvent(bookBorrowed));
+            final LoanBecameShouldReturnSoon loanBecameShouldReturnSoon = loanBecameShouldReturnSoonInstance();
+            dispatch(projection, createEvent(loanBecameShouldReturnSoon));
+            final List<BorrowedBookItem> books = projection.getState()
+                                                           .getBookItemList();
+            assertEquals(1, books.size());
+            final BorrowedBookItem bookItem = books.get(0);
+            assertEquals(BorrowedBookItemStatus.SHOULD_RETURN_SOON, bookItem.getStatus());
+            assertEquals(true, bookItem.getIsAllowedLoanExtension());
         }
     }
 }

@@ -29,6 +29,7 @@ import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookSynopsis;
 import javaclasses.exlibris.BookTitle;
 import javaclasses.exlibris.Category;
+import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.Isbn;
 
@@ -82,8 +83,11 @@ public class EventEnricherFactory {
     private static final Book BOOK = Book.newBuilder()
                                          .setBookDetails(DETAILS)
                                          .build();
+    private static final Inventory INVENTORY = Inventory.getDefaultInstance();
 
     private static final Function<InventoryId, Book> INVENTORY_ID_TO_BOOK = inventoryId -> BOOK;
+
+    private static final Function<InventoryId, Inventory> INVENTORY_ID_TO_INVENTORY = inventoryId -> INVENTORY;
 
     private EventEnricherFactory() {
     }
@@ -98,6 +102,8 @@ public class EventEnricherFactory {
                                                   .add(InventoryId.class,
                                                        Book.class,
                                                        INVENTORY_ID_TO_BOOK::apply)
+                                                  .add(InventoryId.class, Inventory.class,
+                                                       INVENTORY_ID_TO_INVENTORY::apply)
                                                   .build();
         return result;
     }
