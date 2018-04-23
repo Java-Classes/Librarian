@@ -459,6 +459,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                             .setInventoryItemId(inventoryItemId)
                                                             .setLoanId(loanId)
                                                             .setUserId(userId)
+                                                            .setWhenExtended(getCurrentTime())
                                                             .setPreviousDueDate(previousDueDate)
                                                             .setNewDueDate(newDueDate)
                                                             .build();
