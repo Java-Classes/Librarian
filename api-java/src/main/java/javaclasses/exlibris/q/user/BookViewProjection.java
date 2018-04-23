@@ -66,13 +66,22 @@ public class BookViewProjection extends Projection<BookId, BookView, BookViewVBu
 
     @Subscribe
     public void on(BookRemoved event) {
-        getBuilder().clear();
+        getBuilder().clearBookId()
+                    .clearIsbn()
+                    .clearTitle()
+                    .clearAuthors()
+                    .clearCoverUrl()
+                    .clearCategories()
+                    .clearSynopsis()
+                    .clearAvailableCount()
+                    .clearStatus();
     }
 
     @Subscribe
     public void on(InventoryAppended event) {
         final int availableCount = getBuilder().getAvailableCount();
-        getBuilder().setAvailableCount(availableCount + 1);
+        getBuilder().setAvailableCount(availableCount + 1)
+                    .setStatus(BookStatus.AVAILABLE);
     }
 
     @Subscribe
