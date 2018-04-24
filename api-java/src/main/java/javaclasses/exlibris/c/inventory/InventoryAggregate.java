@@ -145,7 +145,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     // @formatter:off
-
     /**
      * Handles a {@code AppendInventory} command.
      *
@@ -153,15 +152,15 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * <p>Returns the following event combinations:
      *
      * <ul>
-     * <li>{@code InventoryAppended, BookBecameAvailable, null} - when the reservations
-     * list is empty.
-     * <li>{@code InventoryAppended, BookReadyToPickup, null} - when the added item
-     * becomes ready to pick up for the first in the reservations queue and other
-     * readers still have reservations.
-     * <li>{@code InventoryAppended, BookReadyToPickup, LoansBecameExtensionAllowed} - when the
-     * added item becomes ready to pick up for the first in the reservations queue and there aro no
-     * readers in the queue except him. In that case all recent loans of this book
-     * become allowed for extension.
+     *      <li>{@code InventoryAppended, BookBecameAvailable, null} - when the reservations
+     *           list is empty.
+     *      <li>{@code InventoryAppended, BookReadyToPickup, null} - when the added item
+     *          becomes ready to pick up for the first in the reservations queue and other
+     *          readers still have reservations.
+     *      <li>{@code InventoryAppended, BookReadyToPickup, LoansBecameExtensionAllowed} - when the
+     *          added item becomes ready to pick up for the first in the reservations queue and there aro no
+     *          readers in the queue except him. In that case all recent loans of this book
+     *          become allowed for extension.
      * </ul>
      *
      * @param cmd command with the identifier of a specific item.
@@ -192,12 +191,11 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         if (isBookReservedBySingleUser() && isBookBorrowed()) {
             final LoansBecameExtensionAllowed loansBecameExtensionAllowed
                     = createLoansBecameExtensionAllowedEvent();
-            final Triplet result = Triplet.of(
-                    inventoryAppended, bookReadyToPickup,
-                    loansBecameExtensionAllowed);
+            final Triplet result = Triplet.of(inventoryAppended,
+                                              bookReadyToPickup,
+                                              loansBecameExtensionAllowed);
             return result;
         }
-
         Triplet result = Triplet.withNullable(inventoryAppended, bookReadyToPickup, null);
         return result;
     }
