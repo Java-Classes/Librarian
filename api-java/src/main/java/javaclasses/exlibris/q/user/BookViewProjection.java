@@ -26,6 +26,7 @@ import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.BookBorrowed;
+import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.InventoryAppended;
@@ -86,6 +87,15 @@ public class BookViewProjection extends Projection<BookId, BookView, BookViewVBu
 
     @Subscribe
     public void on(InventoryDecreased event) {
+        final int availableCount = getBuilder().getAvailableCount();
+        final BookStatus status =
+                availableCount == 1 ? BookStatus.EXPECTED : BookStatus.AVAILABLE;
+        getBuilder().setAvailableCount(availableCount - 1)
+                    .setStatus(status);
+    }
+
+    @Subscribe
+    public void on(BookLost event) {
         final int availableCount = getBuilder().getAvailableCount();
         final BookStatus status =
                 availableCount == 1 ? BookStatus.EXPECTED : BookStatus.AVAILABLE;

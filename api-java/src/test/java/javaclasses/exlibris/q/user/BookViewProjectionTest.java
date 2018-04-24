@@ -22,6 +22,7 @@ package javaclasses.exlibris.q.user;
 
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.BookBorrowed;
+import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.InventoryAppended;
@@ -46,6 +47,7 @@ import static javaclasses.exlibris.testdata.BookEventFactory.TITLE;
 import static javaclasses.exlibris.testdata.BookEventFactory.bookAddedInstance;
 import static javaclasses.exlibris.testdata.BookEventFactory.bookRemovedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookBorrowedInstance;
+import static javaclasses.exlibris.testdata.InventoryEventFactory.bookLostInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookReturnedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.inventoryAppendedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.inventoryDecreasedInstance;
@@ -134,6 +136,27 @@ class BookViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(bookAdded));
             dispatch(projection, createEvent(inventoryAppended));
             dispatch(projection, createEvent(inventoryDecreased));
+
+            final BookView bookView = projection.getState();
+            assertEquals(0, bookView.getAvailableCount());
+            assertEquals(BookStatus.EXPECTED, bookView.getStatus());
+        }
+    }
+
+    @Nested
+    @DisplayName("BookLost event should be interpreted by BookViewProjection and")
+    class BookLostEvent {
+
+        @Test
+        @DisplayName("decrease the number of available books and change book status")
+        void decreaseNumberOfAvailableBooks() {
+            final BookAdded bookAdded = bookAddedInstance();
+            final InventoryAppended inventoryAppended = inventoryAppendedInstance();
+            final BookLost bookLost = bookLostInstance();
+
+            dispatch(projection, createEvent(bookAdded));
+            dispatch(projection, createEvent(inventoryAppended));
+            dispatch(projection, createEvent(bookLost));
 
             final BookView bookView = projection.getState();
             assertEquals(0, bookView.getAvailableCount());
