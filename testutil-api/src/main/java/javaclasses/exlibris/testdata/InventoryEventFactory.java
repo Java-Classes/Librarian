@@ -40,6 +40,7 @@ import javaclasses.exlibris.c.InventoryDecreased;
 import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanBecameShouldReturnSoon;
 import javaclasses.exlibris.c.LoanPeriodExtended;
+import javaclasses.exlibris.c.ReservationAdded;
 
 import static io.spine.time.Time.getCurrentTime;
 
@@ -391,6 +392,34 @@ public class InventoryEventFactory {
                                                             .setPreviousDueDate(previousDueDate)
                                                             .setNewDueDate(newDueDate)
                                                             .build();
+        return result;
+    }
+
+    /**
+     * Provides a pre-configured {@link ReservationAdded} event instance.
+     *
+     * @return the {@link ReservationAdded} instance
+     */
+    public static ReservationAdded reservationAddedInstance() {
+        return reservationAddedInstance(INVENTORY_ID, USER_ID, DEFAULT_TIMESTAMP1);
+    }
+
+    /**
+     * Provides the {@link ReservationAdded} event by inventory ID, inventory item ID, user ID and time.
+     *
+     * @param inventoryId the identifier of an inventory
+     * @param userId      the identifier of a user
+     * @param whenCreated the time when the reservation was added
+     * @return the {@code ReservationAdded} instance
+     */
+    public static ReservationAdded reservationAddedInstance(InventoryId inventoryId,
+                                                            UserId userId,
+                                                            Timestamp whenCreated) {
+        final ReservationAdded result = ReservationAdded.newBuilder()
+                                                        .setInventoryId(inventoryId)
+                                                        .setForWhomReserved(userId)
+                                                        .setWhenCreated(whenCreated)
+                                                        .build();
         return result;
     }
 }
