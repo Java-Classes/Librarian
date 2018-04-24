@@ -24,13 +24,11 @@ import io.spine.core.EventContext;
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
 import io.spine.time.LocalDate;
-import io.spine.time.MonthOfYear;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.BookEnrichment;
 import javaclasses.exlibris.c.BookReadyToPickup;
-import javaclasses.exlibris.c.RemoveBook;
 import javaclasses.exlibris.c.ReservationAdded;
 import javaclasses.exlibris.c.ReservationBecameLoan;
 import javaclasses.exlibris.c.ReservationCanceled;
@@ -40,7 +38,6 @@ import javaclasses.exlibris.q.ReservedBooksListView;
 import javaclasses.exlibris.q.ReservedBooksListViewVBuilder;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
@@ -111,15 +108,6 @@ public class ReservedBooksListViewProjection extends Projection<UserId, Reserved
     }
 
     @Subscribe
-    public void on(RemoveBook event) {
-        final List<ReservedBookItem> items = new ArrayList<>(getBuilder().getBookItem());
-        final int index = getIndexByBookId(items, event.getBookId());
-        if (index != -1) {
-            getBuilder().removeBookItem(index);
-        }
-    }
-
-    @Subscribe
     public void on(BookReadyToPickup event) {
         final List<ReservedBookItem> items = new ArrayList<>(getBuilder().getBookItem());
         final int index = getIndexByBookId(items, event.getInventoryId()
@@ -141,16 +129,5 @@ public class ReservedBooksListViewProjection extends Projection<UserId, Reserved
                                                              .equals(id))
                                            .findFirst();
         return index.isPresent() ? index.getAsInt() : -1;
-    }
-
-    private LocalDate toLocalDate(Calendar calendar) {
-        final LocalDate date = LocalDate.newBuilder()
-                                        .setDay(calendar.get(Calendar.DAY_OF_MONTH))
-                                        .setMonth(
-                                                MonthOfYear.valueOf(
-                                                        calendar.get(Calendar.MONTH) + 1))
-                                        .setYear(calendar.get(Calendar.YEAR))
-                                        .build();
-        return date;
     }
 }

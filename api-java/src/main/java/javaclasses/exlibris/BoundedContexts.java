@@ -32,6 +32,7 @@ import javaclasses.exlibris.c.inventory.InventoryRepository;
 import javaclasses.exlibris.q.user.BookViewRepository;
 import javaclasses.exlibris.q.user.BorrowedBooksListViewRepository;
 import javaclasses.exlibris.q.user.ExpectedSoonBooksListViewRepository;
+import javaclasses.exlibris.q.user.ReservedBooksListViewRepository;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -80,6 +81,7 @@ public final class BoundedContexts {
         final BookViewRepository allBooksRepo = new BookViewRepository();
         final ExpectedSoonBooksListViewRepository expectedSoonRepo = new ExpectedSoonBooksListViewRepository();
         final BorrowedBooksListViewRepository borrowedRepo = new BorrowedBooksListViewRepository();
+        final ReservedBooksListViewRepository reservedRepo = new ReservedBooksListViewRepository();
 
         final EventBus.Builder eventBus = createEventBus(storageFactory, bookRepository,
                                                          inventoryRepository);
@@ -92,6 +94,7 @@ public final class BoundedContexts {
         boundedContext.register(allBooksRepo);
         boundedContext.register(expectedSoonRepo);
         boundedContext.register(borrowedRepo);
+        boundedContext.register(reservedRepo);
         return boundedContext;
     }
 

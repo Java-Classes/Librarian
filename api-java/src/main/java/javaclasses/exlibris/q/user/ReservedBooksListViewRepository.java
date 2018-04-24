@@ -22,21 +22,20 @@ package javaclasses.exlibris.q.user;
 
 import io.spine.server.projection.ProjectionRepository;
 import javaclasses.exlibris.UserId;
-import javaclasses.exlibris.c.BookBorrowed;
-import javaclasses.exlibris.c.BookLost;
-import javaclasses.exlibris.c.BookReturned;
-import javaclasses.exlibris.c.LoanBecameOverdue;
-import javaclasses.exlibris.c.LoanPeriodExtended;
-import javaclasses.exlibris.q.BorrowedBooksListView;
+import javaclasses.exlibris.c.BookReadyToPickup;
+import javaclasses.exlibris.c.ReservationAdded;
+import javaclasses.exlibris.c.ReservationBecameLoan;
+import javaclasses.exlibris.c.ReservationCanceled;
+import javaclasses.exlibris.q.ReservedBooksListView;
 
 import java.util.Collections;
 
 /**
- * Repository for the {@link BorrowedBooksListViewProjection}.
+ * Repository for the {@link ReservedBooksListViewProjection}.
  *
  * @author Yurii Haidamaka
  */
-public class BorrowedBooksListViewRepository extends ProjectionRepository<UserId, BorrowedBooksListViewProjection, BorrowedBooksListView> {
+public class ReservedBooksListViewRepository extends ProjectionRepository<UserId, ReservedBooksListViewProjection, ReservedBooksListView> {
     @Override
     public void onRegistered() {
         super.onRegistered();
@@ -45,29 +44,24 @@ public class BorrowedBooksListViewRepository extends ProjectionRepository<UserId
 
     /**
      * Adds the {@link io.spine.server.route.EventRoute EventRoute}s to the repository.
-     *
      */
     protected void setUpEventRoute() {
         getEventRouting().replaceDefault(((message, context) -> {
-            if (message instanceof BookBorrowed) {
-                final BookBorrowed event = (BookBorrowed) message;
-                return Collections.singleton(event.getWhoBorrowed());
+            if (message instanceof ReservationAdded) {
+                final ReservationAdded event = (ReservationAdded) message;
+                return Collections.singleton(event.getForWhomReserved());
             }
-            if (message instanceof LoanBecameOverdue) {
-                final LoanBecameOverdue event = (LoanBecameOverdue) message;
+            if (message instanceof ReservationBecameLoan) {
+                final ReservationBecameLoan event = (ReservationBecameLoan) message;
                 return Collections.singleton(event.getUserId());
             }
-            if (message instanceof LoanPeriodExtended) {
-                final LoanPeriodExtended event = (LoanPeriodExtended) message;
-                return Collections.singleton(event.getUserId());
+            if (message instanceof ReservationCanceled) {
+                final ReservationCanceled event = (ReservationCanceled) message;
+                return Collections.singleton(event.getWhoCanceled());
             }
-            if (message instanceof BookReturned) {
-                final BookReturned event = (BookReturned) message;
-                return Collections.singleton(event.getWhoReturned());
-            }
-            if (message instanceof BookLost) {
-                final BookLost event = (BookLost) message;
-                return Collections.singleton(event.getWhoLost());
+            if (message instanceof BookReadyToPickup) {
+                final BookReadyToPickup event = (BookReadyToPickup) message;
+                return Collections.singleton(event.getForWhom());
             }
             return null;
         }));
