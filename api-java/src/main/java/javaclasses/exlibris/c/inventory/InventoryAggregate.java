@@ -212,30 +212,12 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     InventoryDecreased handle(WriteBookOff cmd) throws CannotWriteMissingBookOff {
         final List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
-
-        InventoryDecreased result = null;
-
-        for (InventoryItem inventoryItem : inventoryItems) {
-            if (inventoryItem.getInventoryItemId()
-                             .equals(cmd.getInventoryItemId())) {
-
-                final InventoryId inventoryId = cmd.getInventoryId();
-                final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
-                final UserId librarianId = cmd.getLibrarianId();
-                final WriteOffReason writeOffReason = cmd.getWriteBookOffReason();
-                result = InventoryDecreased.newBuilder()
-                                           .setInventoryId(inventoryId)
-                                           .setInventoryItemId(inventoryItemId)
-                                           .setWhenDecreased(getCurrentTime())
-                                           .setLibrarianId(librarianId)
-                                           .setWriteOffReason(writeOffReason)
-                                           .build();
-            }
-        }
-        if (result == null) {
+        final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
+        if (!inventoryItemExists(inventoryItemId)) {
             throw cannotWriteMissingBookOff(cmd);
         }
-        return result;
+        final InventoryDecreased inventoryDecreased = createInventoryDecreasedEvent(cmd);
+        return inventoryDecreased;
     }
 
     /**
@@ -1028,6 +1010,22 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                  .setLibrarianId(userId)
                                  .build();
         return inventoryAppended;
+    }
+
+    private InventoryDecreased createInventoryDecreasedEvent(WriteBookOff cmd) {
+        final InventoryId inventoryId = cmd.getInventoryId();
+        final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
+        final UserId librarianId = cmd.getLibrarianId();
+        final WriteOffReason writeOffReason = cmd.getWriteBookOffReason();
+        final InventoryDecreased inventoryDecreased =
+                InventoryDecreased.newBuilder()
+                                  .setInventoryId(inventoryId)
+                                  .setInventoryItemId(inventoryItemId)
+                                  .setWhenDecreased(getCurrentTime())
+                                  .setLibrarianId(librarianId)
+                                  .setWriteOffReason(writeOffReason)
+                                  .build();
+        return inventoryDecreased;
     }
 
     private boolean isBookReserved() {
