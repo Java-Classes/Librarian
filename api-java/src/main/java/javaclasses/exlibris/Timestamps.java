@@ -25,14 +25,12 @@ import io.spine.time.LocalDate;
 import io.spine.time.MonthOfYear;
 
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import static io.spine.time.Timestamps2.toDate;
 
 /**
- * Utilities for working with {@link Timestamp}.
- *
- * <p> This class provides a method that creates a {@link LocalDate} object
- * from the {@link Timestamp} object using the current timezone.
+ * Utility class for working with {@link Timestamp}.
  *
  * @author Yurii Haidamaka
  */
@@ -55,15 +53,11 @@ public class Timestamps {
 
     /**
      * Obtains a {@link LocalDate} from the {@link Timestamp} object
-     * and number of days after this time, using the current timezone.
-     *
-     * @param timestamp a point in time
-     * @param period    number of days after timestamp
+     * and {@link TimeZone}.
      */
-    public static LocalDate toLocalDateAfterPeriod(Timestamp timestamp, int period) {
-        final Calendar calendar = Calendar.getInstance();
+    public static LocalDate toLocalDate(Timestamp timestamp, TimeZone timeZone) {
+        final Calendar calendar = Calendar.getInstance(timeZone);
         calendar.setTime(toDate(timestamp));
-        calendar.add(Calendar.DATE, period);
         final LocalDate localDate = toLocalDate(calendar);
         return localDate;
     }
