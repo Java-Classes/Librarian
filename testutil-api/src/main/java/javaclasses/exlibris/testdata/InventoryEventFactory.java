@@ -34,6 +34,7 @@ import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookLost;
+import javaclasses.exlibris.c.BookReadyToPickup;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.c.InventoryDecreased;
@@ -41,6 +42,8 @@ import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanBecameShouldReturnSoon;
 import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.c.ReservationAdded;
+import javaclasses.exlibris.c.ReservationBecameLoan;
+import javaclasses.exlibris.c.ReservationCanceled;
 
 import static io.spine.time.Time.getCurrentTime;
 
@@ -126,7 +129,8 @@ public class InventoryEventFactory {
     }
 
     /**
-     * Provides the {@link InventoryAppended} event by inventory ID, inventory item ID, user ID and time.
+     * Provides the {@link InventoryAppended} event by inventory ID, inventory item ID, RFID,
+     * user ID and time.
      *
      * @param inventoryId     the identifier of an inventory
      * @param inventoryItemId the identifier of an inventory item that was added
@@ -161,7 +165,8 @@ public class InventoryEventFactory {
     }
 
     /**
-     * Provides the {@link InventoryDecreased} event by inventory ID, inventory item ID, user ID and time.
+     * Provides the {@link InventoryDecreased} event by inventory ID, inventory item ID,
+     * user ID, time and reason.
      *
      * @param inventoryId     the identifier of an inventory
      * @param inventoryItemId the identifier of an inventory item that was added
@@ -196,7 +201,8 @@ public class InventoryEventFactory {
     }
 
     /**
-     * Provides the {@link BookBorrowed} event by inventory ID, inventory item ID, user ID and time.
+     * Provides the {@link BookBorrowed} event by inventory ID, inventory item ID, user ID,
+     * loan ID and time.
      *
      * @param inventoryId     the identifier of an inventory
      * @param inventoryItemId the identifier of an inventory item that was added
@@ -295,7 +301,8 @@ public class InventoryEventFactory {
     }
 
     /**
-     * Provides the {@link LoanBecameOverdue} event by inventory ID, inventory item ID, user ID and time.
+     * Provides the {@link LoanBecameOverdue} event by inventory ID, inventory item ID, loan ID,
+     * user ID and time.
      *
      * @param inventoryId     the identifier of an inventory
      * @param inventoryItemId the identifier of an inventory item
@@ -369,7 +376,8 @@ public class InventoryEventFactory {
     }
 
     /**
-     * Provides the {@link LoanPeriodExtended} event by inventory ID, inventory item ID, user ID and time.
+     * Provides the {@link LoanPeriodExtended} event by inventory ID, inventory item ID, loan ID,
+     * user ID and time.
      *
      * @param inventoryId     the identifier of an inventory
      * @param loanId          the identifier of a loan
@@ -405,7 +413,7 @@ public class InventoryEventFactory {
     }
 
     /**
-     * Provides the {@link ReservationAdded} event by inventory ID, inventory item ID, user ID and time.
+     * Provides the {@link ReservationAdded} event by inventory ID, user ID and time.
      *
      * @param inventoryId the identifier of an inventory
      * @param userId      the identifier of a user
@@ -420,6 +428,98 @@ public class InventoryEventFactory {
                                                         .setForWhomReserved(userId)
                                                         .setWhenCreated(whenCreated)
                                                         .build();
+        return result;
+    }
+
+    /**
+     * Provides a pre-configured {@link ReservationBecameLoan} event instance.
+     *
+     * @return the {@link ReservationBecameLoan} instance
+     */
+    public static ReservationBecameLoan reservationBecameLoanInstance() {
+        return reservationBecameLoanInstance(INVENTORY_ID, USER_ID, DEFAULT_TIMESTAMP1);
+    }
+
+    /**
+     * Provides the {@link ReservationBecameLoan} event by inventory ID, user ID and time.
+     *
+     * @param inventoryId    the identifier of an inventory
+     * @param userId         the identifier of a user
+     * @param whenBecameLoan the time when the reservation became loan
+     * @return the {@code ReservationBecameLoan} instance
+     */
+    public static ReservationBecameLoan reservationBecameLoanInstance(InventoryId inventoryId,
+                                                                      UserId userId,
+                                                                      Timestamp whenBecameLoan) {
+        final ReservationBecameLoan result = ReservationBecameLoan.newBuilder()
+                                                                  .setInventoryId(inventoryId)
+                                                                  .setUserId(userId)
+                                                                  .setWhenBecameLoan(whenBecameLoan)
+                                                                  .build();
+        return result;
+    }
+
+    /**
+     * Provides a pre-configured {@link ReservationCanceled} event instance.
+     *
+     * @return the {@link ReservationCanceled} instance
+     */
+    public static ReservationCanceled reservationCanceledInstance() {
+        return reservationCanceledInstance(INVENTORY_ID, USER_ID, DEFAULT_TIMESTAMP1);
+    }
+
+    /**
+     * Provides the {@link ReservationCanceled} event by inventory ID, user ID and time.
+     *
+     * @param inventoryId  the identifier of an inventory
+     * @param userId       the identifier of a user
+     * @param whenCanceled the time when the reservation was canceled
+     * @return the {@code ReservationCanceled} instance
+     */
+    public static ReservationCanceled reservationCanceledInstance(InventoryId inventoryId,
+                                                                  UserId userId,
+                                                                  Timestamp whenCanceled) {
+        final ReservationCanceled result = ReservationCanceled.newBuilder()
+                                                              .setInventoryId(inventoryId)
+                                                              .setWhoCanceled(userId)
+                                                              .setWhenCanceled(whenCanceled)
+                                                              .build();
+        return result;
+    }
+
+    /**
+     * Provides a pre-configured {@link BookReadyToPickup} event instance.
+     *
+     * @return the {@link BookReadyToPickup} instance
+     */
+    public static BookReadyToPickup bookReadyToPickUpInstance() {
+        return bookReadyToPickUpInstance(INVENTORY_ID, INVENTORY_ITEM_ID, USER_ID,
+                                         DEFAULT_TIMESTAMP1, DEFAULT_TIMESTAMP2);
+    }
+
+    /**
+     * Provides the {@link BookReadyToPickup} event by inventory ID, inventory item ID,
+     * user ID and time.
+     *
+     * @param inventoryId             the identifier of an inventory
+     * @param userId                  the identifier of a user
+     * @param whenBecameReadyToPickUp the time when the book became ready to pick up.
+     * @param pickUpDeadline          the time when the book became ready to pick up.
+     * @return the {@code BookReadyToPickup} instance
+     */
+    public static BookReadyToPickup bookReadyToPickUpInstance(InventoryId inventoryId,
+                                                              InventoryItemId inventoryItemId,
+                                                              UserId userId,
+                                                              Timestamp whenBecameReadyToPickUp,
+                                                              Timestamp pickUpDeadline) {
+        final BookReadyToPickup result = BookReadyToPickup.newBuilder()
+                                                          .setInventoryId(inventoryId)
+                                                          .setInventoryItemId(inventoryItemId)
+                                                          .setForWhom(userId)
+                                                          .setWhenBecameReadyToPickup(
+                                                                  whenBecameReadyToPickUp)
+                                                          .setPickUpDeadline(pickUpDeadline)
+                                                          .build();
         return result;
     }
 }

@@ -21,7 +21,10 @@
 package javaclasses.exlibris.q.user;
 
 import javaclasses.exlibris.UserId;
+import javaclasses.exlibris.c.BookReadyToPickup;
 import javaclasses.exlibris.c.ReservationAdded;
+import javaclasses.exlibris.c.ReservationBecameLoan;
+import javaclasses.exlibris.c.ReservationCanceled;
 import javaclasses.exlibris.q.ProjectionTest;
 import javaclasses.exlibris.q.ReservedBookItem;
 import javaclasses.exlibris.q.ReservedBookItemStatus;
@@ -41,7 +44,10 @@ import static javaclasses.exlibris.testdata.BookEventFactory.SYNOPSIS;
 import static javaclasses.exlibris.testdata.BookEventFactory.TITLE;
 import static javaclasses.exlibris.testdata.BookEventFactory.USER_ID;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.BOOK_ID;
+import static javaclasses.exlibris.testdata.InventoryEventFactory.bookReadyToPickUpInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationAddedInstance;
+import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationBecameLoanInstance;
+import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationCanceledInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ReservedBooksListViewProjectionTest extends ProjectionTest {
@@ -78,6 +84,59 @@ class ReservedBooksListViewProjectionTest extends ProjectionTest {
             assertEquals(SYNOPSIS, bookItem.getSynopsis());
             assertEquals(ReservedBookItemStatus.RESERVED, bookItem.getStatus());
             // TODO: 4/23/2018 yurii.haidamaka: ADD CHECKING WHEN READY TO PICK UP DATE AFTER ADDING IT IN THE EVENT
+        }
+    }
+
+    @Nested
+    @DisplayName("ReservationBecameLoan event should be interpreted by ReservedBooksListViewProjection and")
+    class ReservationBecameLoanEvent {
+
+        @Test
+        @DisplayName("delete book from the list of reserved books")
+        void deleteBook() {
+            final ReservationAdded reservationAdded = reservationAddedInstance();
+            dispatch(projection, createEvent(reservationAdded));
+            final ReservationBecameLoan reservationBecameLoan = reservationBecameLoanInstance();
+            dispatch(projection, createEvent(reservationBecameLoan));
+            final List<ReservedBookItem> books = projection.getState()
+                                                           .getBookItemList();
+            assertEquals(0, books.size());
+        }
+    }
+
+    @Nested
+    @DisplayName("ReservationCanceled event should be interpreted by ReservedBooksListViewProjection and")
+    class ReservationCanceledEvent {
+
+        @Test
+        @DisplayName("delete book from the list of reserved books")
+        void deleteBook() {
+            final ReservationAdded reservationAdded = reservationAddedInstance();
+            dispatch(projection, createEvent(reservationAdded));
+            final ReservationCanceled reservationCanceled = reservationCanceledInstance();
+            dispatch(projection, createEvent(reservationCanceled));
+            final List<ReservedBookItem> books = projection.getState()
+                                                           .getBookItemList();
+            assertEquals(0, books.size());
+        }
+    }
+
+    @Nested
+    @DisplayName("BookReadyToPickUp event should be interpreted by ReservedBooksListViewProjection and")
+    class BookReadyToPickUpEvent {
+
+        @Test
+        @DisplayName("change book status to READY_TO_PICK_UP")
+        void changeBookStatus() {
+            final ReservationAdded reservationAdded = reservationAddedInstance();
+            dispatch(projection, createEvent(reservationAdded));
+            final BookReadyToPickup bookReadyToPickup = bookReadyToPickUpInstance();
+            dispatch(projection, createEvent(bookReadyToPickup));
+            final List<ReservedBookItem> books = projection.getState()
+                                                           .getBookItemList();
+            assertEquals(1, books.size());
+            final ReservedBookItem bookItem = books.get(0);
+            assertEquals(ReservedBookItemStatus.READY_TO_PICK_UP, bookItem.getStatus());
         }
     }
 }
