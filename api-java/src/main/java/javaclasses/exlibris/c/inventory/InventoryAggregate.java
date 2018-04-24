@@ -389,29 +389,43 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return loanPeriodExtendedEvent;
     }
 
+    // @formatter:off
     /**
      * Handles a {@code CancelReservation} command.
      *
      * <p>For details see {@link CancelReservation}.
+     * <p>Returns the following event combinations:
+     *
+     * <ul>
+     *      <li>{@code ReservationCanceled, null} - when the reservation can be canceled and it is
+     *          reserved by someone else or there are no more loans.
+     *      <li>{@code ReservationCanceled, LoansBecameExtensionAllowed} - when the reservation can
+     *          be canceled and this reservation was the last in the list and some users loans
+     *          should be set as allowed for extension.
+     * </ul>
      *
      * @param cmd command with the identifier of a reservation
      *            that a user is going to cancel.
-     * @return a {@code ReservationCanceled} event.
+     * @return the {@link Pair} of the events.
      * @throws CannotCancelMissingReservation if a reservation is missing.
      */
+    // @formatter:on
     @Assign
-    ReservationCanceled handle(CancelReservation cmd) throws CannotCancelMissingReservation {
+    Pair<ReservationCanceled,
+            Optional<LoansBecameExtensionAllowed>> handle(CancelReservation cmd)
+            throws CannotCancelMissingReservation {
         if (!isBookReservedByUser(cmd.getUserId())) {
             throw cannotCancelMissingReservation(cmd);
         }
 
-        final InventoryId inventoryId = cmd.getInventoryId();
-        final UserId userId = cmd.getUserId();
-        final ReservationCanceled result = ReservationCanceled.newBuilder()
-                                                              .setInventoryId(inventoryId)
-                                                              .setWhoCanceled(userId)
-                                                              .setWhenCanceled(getCurrentTime())
-                                                              .build();
+        final ReservationCanceled reservationCanceledEvent = createReservationCanceledEvent(cmd);
+        if (isBookReservedBySingleUser() && isBookBorrowed()) {
+            final LoansBecameExtensionAllowed loansBecameExtensionAllowedEvent =
+                    createLoansBecameExtensionAllowedEvent();
+            Pair result = Pair.of(reservationCanceledEvent, loansBecameExtensionAllowedEvent);
+            return result;
+        }
+        Pair result = Pair.withNullable(reservationCanceledEvent, null);
         return result;
     }
 
@@ -1065,6 +1079,18 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                   .setNewDueDate(newDueDate)
                                   .build();
         return loanExtended;
+    }
+
+    private ReservationCanceled createReservationCanceledEvent(CancelReservation cmd) {
+        final InventoryId inventoryId = cmd.getInventoryId();
+        final UserId userId = cmd.getUserId();
+        final ReservationCanceled reservationCanceledEvent =
+                ReservationCanceled.newBuilder()
+                                   .setInventoryId(inventoryId)
+                                   .setWhoCanceled(userId)
+                                   .setWhenCanceled(getCurrentTime())
+                                   .build();
+        return reservationCanceledEvent;
     }
 
     private boolean isBookReserved() {
