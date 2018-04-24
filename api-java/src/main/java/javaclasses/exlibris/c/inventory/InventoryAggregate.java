@@ -362,22 +362,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      */
     @Assign
     LoanBecameShouldReturnSoon handle(MarkLoanShouldReturnSoon cmd) {
-        final InventoryId inventoryId = cmd.getInventoryId();
-        final LoanId loanId = cmd.getLoanId();
-        final int loanPosition = getLoanIndexByLoanId(loanId);
-        final Loan loan = getState().getLoans(loanPosition);
-        final UserId whoBorrowed = loan.getWhoBorrowed();
-        final InventoryItemId inventoryItemId = loan.getInventoryItemId();
-
-        final LoanBecameShouldReturnSoon result =
-                LoanBecameShouldReturnSoon.newBuilder()
-                                          .setInventoryId(inventoryId)
-                                          .setInventoryItemId(inventoryItemId)
-                                          .setLoanId(loanId)
-                                          .setUserId(whoBorrowed)
-                                          .setWhenBecameShouldReturnSoon(getCurrentTime())
-                                          .build();
-        return result;
+        final LoanBecameShouldReturnSoon shouldReturnSoonEvent =
+                createLoanBecameShouldReturnSoonEvent(cmd);
+        return shouldReturnSoonEvent;
     }
 
     /**
@@ -392,36 +379,14 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      */
     @Assign
     LoanPeriodExtended handle(ExtendLoanPeriod cmd) throws CannotExtendLoanPeriod {
-        final UserId userId = cmd.getUserId();
+        final LoanId loanId = cmd.getLoanId();
 
-        if (isBookReserved() || !isBookBorrowedByUser(userId)) {
+        if (!loanExists(loanId) || !isLoanAllowedForExtension(loanId)) {
             throw cannotExtendLoanPeriod(cmd);
         }
 
-        final InventoryId inventoryId = cmd.getInventoryId();
-        final LoanId loanId = cmd.getLoanId();
-
-        final int loanPosition = getLoanIndexByLoanId(loanId);
-        final Loan loan = getState().getLoans(loanPosition);
-        final Timestamp previousDueDate = loan.getWhenDue();
-        final InventoryItemId inventoryItemId = loan.getInventoryItemId();
-
-        final long newDueDateInSeconds = previousDueDate.getSeconds() +
-                LOAN_PERIOD;
-        final Timestamp newDueDate = Timestamp.newBuilder()
-                                              .setSeconds(newDueDateInSeconds)
-                                              .build();
-
-        final LoanPeriodExtended result = LoanPeriodExtended.newBuilder()
-                                                            .setInventoryId(inventoryId)
-                                                            .setInventoryItemId(inventoryItemId)
-                                                            .setLoanId(loanId)
-                                                            .setUserId(userId)
-                                                            .setWhenExtended(getCurrentTime())
-                                                            .setPreviousDueDate(previousDueDate)
-                                                            .setNewDueDate(newDueDate)
-                                                            .build();
-        return result;
+        final LoanPeriodExtended loanPeriodExtendedEvent = createLoanPeriodExtendedEvent(cmd);
+        return loanPeriodExtendedEvent;
     }
 
     /**
@@ -1056,6 +1021,52 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return becameOverdue;
     }
 
+    private LoanBecameShouldReturnSoon createLoanBecameShouldReturnSoonEvent(
+            MarkLoanShouldReturnSoon cmd) {
+        final InventoryId inventoryId = cmd.getInventoryId();
+        final LoanId loanId = cmd.getLoanId();
+        final int loanPosition = getLoanIndexByLoanId(loanId);
+        final Loan loan = getState().getLoans(loanPosition);
+        final UserId whoBorrowed = loan.getWhoBorrowed();
+        final InventoryItemId inventoryItemId = loan.getInventoryItemId();
+
+        final LoanBecameShouldReturnSoon result =
+                LoanBecameShouldReturnSoon.newBuilder()
+                                          .setInventoryId(inventoryId)
+                                          .setInventoryItemId(inventoryItemId)
+                                          .setLoanId(loanId)
+                                          .setUserId(whoBorrowed)
+                                          .setWhenBecameShouldReturnSoon(getCurrentTime())
+                                          .build();
+        return result;
+    }
+
+    private LoanPeriodExtended createLoanPeriodExtendedEvent(ExtendLoanPeriod cmd) {
+        final InventoryId inventoryId = cmd.getInventoryId();
+        final LoanId loanId = cmd.getLoanId();
+        final UserId userId = cmd.getUserId();
+        final int loanPosition = getLoanIndexByLoanId(loanId);
+        final Loan loan = getState().getLoans(loanPosition);
+        final InventoryItemId inventoryItemId = loan.getInventoryItemId();
+        final Timestamp previousDueDate = loan.getWhenDue();
+        final long newDueDateInSeconds = previousDueDate.getSeconds() +
+                LOAN_PERIOD;
+        final Timestamp newDueDate = Timestamp.newBuilder()
+                                              .setSeconds(newDueDateInSeconds)
+                                              .build();
+        final LoanPeriodExtended loanExtended =
+                LoanPeriodExtended.newBuilder()
+                                  .setInventoryId(inventoryId)
+                                  .setInventoryItemId(inventoryItemId)
+                                  .setLoanId(loanId)
+                                  .setUserId(userId)
+                                  .setWhenExtended(getCurrentTime())
+                                  .setPreviousDueDate(previousDueDate)
+                                  .setNewDueDate(newDueDate)
+                                  .build();
+        return loanExtended;
+    }
+
     private boolean isBookReserved() {
         final boolean reservationExists = getState().getReservationsCount() > 0;
         return reservationExists;
@@ -1103,6 +1114,13 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return any;
     }
 
+    private boolean loanExists(LoanId loanId) {
+        final List<Loan> loans = getState().getLoansList();
+        final boolean any = Iterables.any(loans, item -> item.getLoanId()
+                                                             .equals(loanId));
+        return any;
+    }
+
     private int getReservationIndexByUserId(UserId userId) {
         final List<Reservation> reservations = getState().getReservationsList();
         final int index = Iterables.indexOf(reservations, item -> item.getWhoReserved()
@@ -1144,6 +1162,14 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                              .map(Loan::getWhoBorrowed)
                                              .collect(Collectors.toList());
         return loanOwners;
+    }
+
+    private boolean isLoanAllowedForExtension(LoanId loanId) {
+        final List<Loan> loans = getState().getLoansList();
+        final int loanIndex = getLoanIndexByLoanId(loanId);
+        final Loan loan = loans.get(loanIndex);
+        final boolean isAllowed = loan.getIsAllowedExtension();
+        return isAllowed;
     }
 
     private int getInLibraryItemsCount() {
