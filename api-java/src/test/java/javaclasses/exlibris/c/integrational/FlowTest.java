@@ -46,7 +46,9 @@ import static javaclasses.exlibris.testdata.BookCommandFactory.removeBookInstanc
 import static javaclasses.exlibris.testdata.BookCommandFactory.updateBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.cancelReservationInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.extendLoanPeriodInstance;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.reportLostBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.reserveBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.returnBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.writeBookOffInstance;
@@ -103,6 +105,10 @@ public class FlowTest extends InventoryCommandTest<Message> {
             toMessage(reserveBookInstance(InventoryCommandFactory.userId2,
                                           InventoryCommandFactory.inventoryId)));
 
+    private final Command cancelReservation2 = requestFactory.createCommand(
+            toMessage(cancelReservationInstance(InventoryCommandFactory.inventoryId,
+                                                InventoryCommandFactory.userId2)));
+
     private final Command returnBook = requestFactory.createCommand(
             toMessage(returnBookInstance()));
 
@@ -132,6 +138,9 @@ public class FlowTest extends InventoryCommandTest<Message> {
                                                InventoryCommandFactory.loan.getLoanId(),
                                                InventoryCommandFactory.userId2)));
 
+    private final Command reportLostBook = requestFactory.createCommand(
+            toMessage(reportLostBookInstance()));
+
     @Override
     @BeforeEach
     public void setUp() {
@@ -158,6 +167,27 @@ public class FlowTest extends InventoryCommandTest<Message> {
         commandBus.post(returnBook, observer);
         commandBus.post(borrowBook2, observer);
         commandBus.post(returnBook2, observer);
+        assertFalse(bookRejectionsSubscriber.wasCalled());
+        assertFalse(inventoryRejectionsSubscriber.wasCalled());
+    }
+
+    @Test
+    @DisplayName("librarian adds book, appends inventory. User borrows book, another user reserve this book and cancel reservation")
+    void reservationUseCase() {
+        final BoundedContext boundedContext = BoundedContexts.create();
+        final CommandBus commandBus = boundedContext.getCommandBus();
+        final StreamObserver<Ack> observer = StreamObservers.noOpObserver();
+        final BookRejectionsSubscriber bookRejectionsSubscriber = new BookRejectionsSubscriber();
+        final InventoryRejectionsSubscriber inventoryRejectionsSubscriber = new InventoryRejectionsSubscriber();
+        boundedContext.getRejectionBus()
+                      .register(bookRejectionsSubscriber);
+        boundedContext.getRejectionBus()
+                      .register(inventoryRejectionsSubscriber);
+        commandBus.post(addBook, observer);
+        commandBus.post(appendInventory, observer);
+        commandBus.post(borrowBook, observer);
+        commandBus.post(reserveBook2, observer);
+        commandBus.post(cancelReservation2, observer);
         assertFalse(bookRejectionsSubscriber.wasCalled());
         assertFalse(inventoryRejectionsSubscriber.wasCalled());
     }
@@ -201,6 +231,9 @@ public class FlowTest extends InventoryCommandTest<Message> {
         assertFalse(InventoryRejectionsSubscriber.wasCalled());
 
         commandBus.post(borrowBook, observer);
+        assertFalse(InventoryRejectionsSubscriber.wasCalled());
+
+        commandBus.post(reportLostBook, observer);
         assertFalse(InventoryRejectionsSubscriber.wasCalled());
 
         commandBus.post(writeBookOff, observer);

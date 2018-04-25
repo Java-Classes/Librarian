@@ -130,4 +130,5 @@ public class ReservedBooksListViewProjection extends Projection<UserId, Reserved
                                            .findFirst();
         return index.isPresent() ? index.getAsInt() : -1;
     }
+    //TODO:2018-07-25:yurii.haidamaka ADD SUBSCRIBE ON  LoanBecameReservationAllowed and LoanBecameNotAllowedForReservation after adding this event
 }
