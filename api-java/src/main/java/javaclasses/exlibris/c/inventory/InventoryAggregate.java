@@ -623,7 +623,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final InventoryItem newInventoryItem = InventoryItem.newBuilder()
                                                             .setInLibrary(true)
                                                             .setInventoryItemId(inventoryItemId)
-                                                            .setInLibrary(true)
                                                             .build();
         getBuilder().addInventoryItems(newInventoryItem);
     }
