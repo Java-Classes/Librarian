@@ -100,8 +100,11 @@ message Reservation {
     // The user who reserved a book.
     UserId who_reserved = 2;
 
+    // Indicates is reserved book ready to pick up or not.
+    bool is_satisfied = 3;
+
     // The time when a book was reserved.
-    google.protobuf.Timestamp when_created = 3;
+    google.protobuf.Timestamp when_created = 4;
 }
 
 // The model of a loan.
