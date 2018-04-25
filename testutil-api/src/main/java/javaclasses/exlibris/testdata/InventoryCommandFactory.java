@@ -131,7 +131,7 @@ public class InventoryCommandFactory {
                                                 .setInventoryId(inventoryId)
                                                 .setInventoryItemId(inventoryItemId)
                                                 .setLibrarianId(userId)
-                                                .setRfid(rfid)
+//                                                .setRfid(rfid)
 
                                                 .build();
         return result;

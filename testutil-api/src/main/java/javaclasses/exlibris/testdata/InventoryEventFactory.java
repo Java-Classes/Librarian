@@ -29,7 +29,7 @@ import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.InventoryItemId;
 import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.LoanId;
-import javaclasses.exlibris.Rfid;
+import javaclasses.exlibris.QRcodeURL;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.BookBorrowed;
@@ -76,9 +76,9 @@ public class InventoryEventFactory {
                                                                            .setBookId(BOOK_ID)
                                                                            .setItemNumber(1)
                                                                            .build();
-    public static final Rfid RF_ID = Rfid.newBuilder()
-                                         .setValue("4321")
-                                         .build();
+    public static final QRcodeURL QR_CODE_URL = QRcodeURL.newBuilder()
+                                                         .setValue("exlibris/4321")
+                                                         .build();
     public static final WriteOffReason WRITE_OFF_REASON = WriteOffReason.newBuilder()
                                                                         .setCustomReason(
                                                                                 "Custom reason")
@@ -124,30 +124,30 @@ public class InventoryEventFactory {
      * @return the {@link InventoryAppended} instance
      */
     public static InventoryAppended inventoryAppendedInstance() {
-        return inventoryAppendedInstance(INVENTORY_ID, INVENTORY_ITEM_ID, RF_ID, USER_ID,
+        return inventoryAppendedInstance(INVENTORY_ID, INVENTORY_ITEM_ID, QR_CODE_URL, USER_ID,
                                          getCurrentTime());
     }
 
     /**
-     * Provides the {@link InventoryAppended} event by inventory ID, inventory item ID, RFID,
+     * Provides the {@link InventoryAppended} event by inventory ID, inventory item ID, Or code URL,
      * user ID and time.
      *
      * @param inventoryId     the identifier of an inventory
      * @param inventoryItemId the identifier of an inventory item that was added
-     * @param rfid            radio-frequency identification of the inventory item
+     * @param qRcodeURL       the url to QR code image
      * @param userId          the identifier of a user who added a book
      * @param whenAppended    time when inventory was appended
      * @return the {@code InventoryAppended} instance
      */
     public static InventoryAppended inventoryAppendedInstance(InventoryId inventoryId,
                                                               InventoryItemId inventoryItemId,
-                                                              Rfid rfid,
+                                                              QRcodeURL qRcodeURL,
                                                               UserId userId,
                                                               Timestamp whenAppended) {
         final InventoryAppended result = InventoryAppended.newBuilder()
                                                           .setInventoryId(inventoryId)
                                                           .setInventoryItemId(inventoryItemId)
-                                                          .setRfid(rfid)
+                                                          .setQrCodeUrl(qRcodeURL)
                                                           .setLibrarianId(userId)
                                                           .setWhenAppended(whenAppended)
                                                           .build();
