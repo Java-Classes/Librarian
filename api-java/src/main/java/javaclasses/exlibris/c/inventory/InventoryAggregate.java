@@ -425,7 +425,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * <p>For details see {@link MarkReservationExpired}.
      *
      * <p>Returns the following event combinations:
-     *
      * <ul>
      *      <li>{@code ReservationPickUpPeriodExpired, BookReadyToPickup} - when there is someone
      *          next in the reservations queue with unsatisfied reservation.
@@ -454,44 +453,68 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return result;
     }
 
+    // @formatter:off
     /**
      * Handles a {@code ReturnBook} command.
      *
      * <p>For details see {@link ReturnBook}.
+     * <p>Returns the following event combinations:
      *
-     * @param cmd command with an identifier of the book
-     *            that the user is going to return.
-     * @return a {@code InventoryAppended} event in pair with either {@code BookBecameAvailable} or
-     * {@code BookBecameAvailable} events.
+     * <ul>
+     *      <li>{@code BookReturned, BookBecameAvailable, null} - when there are no
+     *           unsatisfied reservations.
+     *      <li>{@code BookReturned, BookReadyToPickup, null} - when the returned item
+     *          becomes ready to pick up for the first in the reservations queue and other
+     *          readers still have reservations.
+     *      <li>{@code BookReturned, BookReadyToPickup, LoansBecameExtensionAllowed} - when the
+     *          added item becomes ready to pick up for the first in the reservations queue and there
+     *          are no unsatisfied reservations except this one.
+     *          In that case all recent loans of this book become allowed for extension.
+     * </ul>
+     *
+     * @param cmd command with an identifier of the book that the user is going to return.
+     * @return the {@link Triplet} of the events.
      * @throws CannotReturnNonBorrowedBook if a book isn’t borrowed by the user.
      * @throws CannotReturnMissingBook     if a book is missing.
      */
+    // @formatter:on
     @Assign
-    Pair<InventoryAppended, EitherOfTwo<BookBecameAvailable, BookReadyToPickup>> handle(
-            ReturnBook cmd) throws CannotReturnNonBorrowedBook,
-                                   CannotReturnMissingBook {
-        if (!inventoryItemExists(cmd.getInventoryItemId())) {
+    Triplet<BookReturned,
+            EitherOfTwo<BookBecameAvailable, BookReadyToPickup>,
+            Optional<LoansBecameExtensionAllowed>> handle(ReturnBook cmd) throws
+                                                                          CannotReturnNonBorrowedBook,
+                                                                          CannotReturnMissingBook {
+        final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
+        final UserId userId = cmd.getUserId();
+        if (!inventoryItemExists(inventoryItemId)) {
             throw throwCannotReturnMissingBook(cmd);
         }
-        if (!isBookBorrowedByUser(cmd.getUserId())) {
+        if (!isBookBorrowedByUser(userId)) {
             throw cannotReturnNonBorrowedBook(cmd);
         }
 
-        final InventoryId inventoryId = cmd.getInventoryId();
-        final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
-        final UserId userId = cmd.getUserId();
+        final BookReturned bookReturnedEvent = createBookReturnedEvent(cmd);
 
-        final BookReturned bookReturned = BookReturned.newBuilder()
-                                                      .setInventoryId(inventoryId)
-                                                      .setInventoryItemId(inventoryItemId)
-                                                      .setWhoReturned(userId)
-                                                      .setWhenReturned(getCurrentTime())
-                                                      .build();
+        if (!isThereUnsatisfiedReservations()) {
+            final BookBecameAvailable becameAvailable = createBookBecameAvailableEvent();
+            final Triplet result = Triplet.withNullable(bookReturnedEvent,
+                                                        becameAvailable,
+                                                        null);
+            return result;
+        }
 
-        final Pair result = Pair.withEither(bookReturned,
-                                            becameAvailableOrReadyToPickup(inventoryId,
-                                                                           inventoryItemId));
+        final BookReadyToPickup bookReadyToPickup = createBookReadyToPickupEvent();
 
+        if (isThereSingleUnsatisfiedReservation() && isBookBorrowed()) {
+            final LoansBecameExtensionAllowed loansBecameExtensionAllowed
+                    = createLoansBecameExtensionAllowedEvent();
+            final Triplet result = Triplet.of(bookReturnedEvent,
+                                              bookReadyToPickup,
+                                              loansBecameExtensionAllowed);
+            return result;
+        }
+
+        Triplet result = Triplet.withNullable(bookReturnedEvent, bookReadyToPickup, null);
         return result;
     }
 
@@ -1098,15 +1121,26 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             MarkReservationExpired cmd) {
         final UserId userId = cmd.getUserId();
         final InventoryId inventoryId = cmd.getInventoryId();
-        final ReservationPickUpPeriodExpired pickUpPeriodExpired = ReservationPickUpPeriodExpired.newBuilder()
-                                                                                                 .setInventoryId(
-                                                                                                         inventoryId)
-                                                                                                 .setUserId(
-                                                                                                         userId)
-                                                                                                 .setWhenExpired(
-                                                                                                         getCurrentTime())
-                                                                                                 .build();
+        final ReservationPickUpPeriodExpired pickUpPeriodExpired =
+                ReservationPickUpPeriodExpired.newBuilder()
+                                              .setInventoryId(inventoryId)
+                                              .setUserId(userId)
+                                              .setWhenExpired(getCurrentTime())
+                                              .build();
         return pickUpPeriodExpired;
+    }
+
+    private BookReturned createBookReturnedEvent(ReturnBook cmd) {
+        final InventoryId inventoryId = cmd.getInventoryId();
+        final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
+        final UserId userId = cmd.getUserId();
+        final BookReturned bookReturned = BookReturned.newBuilder()
+                                                      .setInventoryId(inventoryId)
+                                                      .setInventoryItemId(inventoryItemId)
+                                                      .setWhoReturned(userId)
+                                                      .setWhenReturned(getCurrentTime())
+                                                      .build();
+        return bookReturned;
     }
 
     private boolean isThereUnsatisfiedReservations() {
