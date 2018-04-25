@@ -25,11 +25,9 @@ import io.spine.server.projection.Projection;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.c.BookAdded;
+import javaclasses.exlibris.c.BookBecameAvailable;
 import javaclasses.exlibris.c.BookBorrowed;
-import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookRemoved;
-import javaclasses.exlibris.c.BookReturned;
-import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.c.InventoryDecreased;
 import javaclasses.exlibris.q.BookStatus;
 import javaclasses.exlibris.q.BookView;
@@ -78,30 +76,18 @@ public class BookViewProjection extends Projection<BookId, BookView, BookViewVBu
                     .clearStatus();
     }
 
-    // TODO: 4/25/2018 DELETE ON BOOK BECAME AVAILABLE
     @Subscribe
-    public void on(InventoryAppended event) {
-        final int availableCount = getBuilder().getAvailableCount();
-        getBuilder().setAvailableCount(availableCount + 1)
+    public void on(BookBecameAvailable event) {
+        getBuilder().setAvailableCount(event.getInLibraryCount())
                     .setStatus(BookStatus.AVAILABLE);
     }
 
     @Subscribe
     public void on(InventoryDecreased event) {
-        final int availableCount = getBuilder().getAvailableCount();
+        final int inLibraryCount = event.getInLibraryCount();
         final BookStatus status =
-                availableCount == 1 ? BookStatus.EXPECTED : BookStatus.AVAILABLE;
-        getBuilder().setAvailableCount(availableCount - 1)
-                    .setStatus(status);
-    }
-
-    // TODO: 4/25/2018 DELETE IT
-    @Subscribe
-    public void on(BookLost event) {
-        final int availableCount = getBuilder().getAvailableCount();
-        final BookStatus status =
-                availableCount == 1 ? BookStatus.EXPECTED : BookStatus.AVAILABLE;
-        getBuilder().setAvailableCount(availableCount - 1)
+                inLibraryCount == 0 ? BookStatus.EXPECTED : BookStatus.AVAILABLE;
+        getBuilder().setAvailableCount(inLibraryCount)
                     .setStatus(status);
     }
 
@@ -109,19 +95,10 @@ public class BookViewProjection extends Projection<BookId, BookView, BookViewVBu
     public void on(BookBorrowed event) {
         final BookId id = event.getInventoryId()
                                .getBookId();
-
-        final int availableCount = getBuilder().getAvailableCount();
+        final int inLibraryCount = event.getInLibraryCount();
         final BookStatus status =
-                availableCount == 1 ? BookStatus.EXPECTED : BookStatus.AVAILABLE;
-        getBuilder().setAvailableCount(availableCount - 1)
+                inLibraryCount == 0 ? BookStatus.EXPECTED : BookStatus.AVAILABLE;
+        getBuilder().setAvailableCount(inLibraryCount)
                     .setStatus(status);
-    }
-
-    // TODO: 4/25/2018 DELETE ON BOOK BECAME AVAILABLE
-    @Subscribe
-    public void on(BookReturned event) {
-        final int availableCount = getBuilder().getAvailableCount();
-        getBuilder().setAvailableCount(availableCount + 1)
-                    .setStatus(BookStatus.AVAILABLE);
     }
 }

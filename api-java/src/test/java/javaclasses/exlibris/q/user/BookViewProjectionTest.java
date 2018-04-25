@@ -21,11 +21,9 @@
 package javaclasses.exlibris.q.user;
 
 import javaclasses.exlibris.c.BookAdded;
+import javaclasses.exlibris.c.BookBecameAvailable;
 import javaclasses.exlibris.c.BookBorrowed;
-import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookRemoved;
-import javaclasses.exlibris.c.BookReturned;
-import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.c.InventoryDecreased;
 import javaclasses.exlibris.q.BookStatus;
 import javaclasses.exlibris.q.BookView;
@@ -46,10 +44,8 @@ import static javaclasses.exlibris.testdata.BookEventFactory.SYNOPSIS;
 import static javaclasses.exlibris.testdata.BookEventFactory.TITLE;
 import static javaclasses.exlibris.testdata.BookEventFactory.bookAddedInstance;
 import static javaclasses.exlibris.testdata.BookEventFactory.bookRemovedInstance;
+import static javaclasses.exlibris.testdata.InventoryEventFactory.bookBecameAvailableInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookBorrowedInstance;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.bookLostInstance;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.bookReturnedInstance;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.inventoryAppendedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.inventoryDecreasedInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -103,18 +99,17 @@ class BookViewProjectionTest extends ProjectionTest {
     }
 
     @Nested
-    @DisplayName("InventoryAppended event should be interpreted by BookViewProjection and")
-    class InventoryAppendedEvent {
+    @DisplayName("BookBecameAvailable event should be interpreted by BookViewProjection and")
+    class BookBecameAvailableEvent {
 
         @Test
-        @DisplayName("increase the number of available books and change book status")
-        void increaseNumberOfAvailableBooks() {
+        @DisplayName("change the number of available books and change book status")
+        void changeNumberOfAvailableBooks() {
             final BookAdded bookAdded = bookAddedInstance();
-
-            final InventoryAppended inventoryAppended = inventoryAppendedInstance();
+            final BookBecameAvailable bookBecameAvailable = bookBecameAvailableInstance();
 
             dispatch(projection, createEvent(bookAdded));
-            dispatch(projection, createEvent(inventoryAppended));
+            dispatch(projection, createEvent(bookBecameAvailable));
 
             final BookView bookView = projection.getState();
             assertEquals(1, bookView.getAvailableCount());
@@ -127,36 +122,15 @@ class BookViewProjectionTest extends ProjectionTest {
     class InventoryDecreasedEvent {
 
         @Test
-        @DisplayName("decrease the number of available books and change book status")
+        @DisplayName("change the number of available books and change book status")
         void decreaseNumberOfAvailableBooks() {
             final BookAdded bookAdded = bookAddedInstance();
-            final InventoryAppended inventoryAppended = inventoryAppendedInstance();
+            final BookBecameAvailable bookBecameAvailable = bookBecameAvailableInstance();
             final InventoryDecreased inventoryDecreased = inventoryDecreasedInstance();
 
             dispatch(projection, createEvent(bookAdded));
-            dispatch(projection, createEvent(inventoryAppended));
+            dispatch(projection, createEvent(bookBecameAvailable));
             dispatch(projection, createEvent(inventoryDecreased));
-
-            final BookView bookView = projection.getState();
-            assertEquals(0, bookView.getAvailableCount());
-            assertEquals(BookStatus.EXPECTED, bookView.getStatus());
-        }
-    }
-
-    @Nested
-    @DisplayName("BookLost event should be interpreted by BookViewProjection and")
-    class BookLostEvent {
-
-        @Test
-        @DisplayName("decrease the number of available books and change book status")
-        void decreaseNumberOfAvailableBooks() {
-            final BookAdded bookAdded = bookAddedInstance();
-            final InventoryAppended inventoryAppended = inventoryAppendedInstance();
-            final BookLost bookLost = bookLostInstance();
-
-            dispatch(projection, createEvent(bookAdded));
-            dispatch(projection, createEvent(inventoryAppended));
-            dispatch(projection, createEvent(bookLost));
 
             final BookView bookView = projection.getState();
             assertEquals(0, bookView.getAvailableCount());
@@ -169,14 +143,14 @@ class BookViewProjectionTest extends ProjectionTest {
     class BookBorrowedEvent {
 
         @Test
-        @DisplayName("decrease the number of available books and change book status")
+        @DisplayName("change the number of available books and change book status")
         void decreaseNumberOfAvailableBooks() {
             final BookAdded bookAdded = bookAddedInstance();
-            final InventoryAppended inventoryAppended = inventoryAppendedInstance();
+            final BookBecameAvailable bookBecameAvailable = bookBecameAvailableInstance();
             final BookBorrowed bookBorrowed = bookBorrowedInstance();
 
             dispatch(projection, createEvent(bookAdded));
-            dispatch(projection, createEvent(inventoryAppended));
+            dispatch(projection, createEvent(bookBecameAvailable));
             dispatch(projection, createEvent(bookBorrowed));
 
             final BookView bookView = projection.getState();
@@ -184,28 +158,4 @@ class BookViewProjectionTest extends ProjectionTest {
             assertEquals(BookStatus.EXPECTED, bookView.getStatus());
         }
     }
-
-    @Nested
-    @DisplayName("BookReturned event should be interpreted by BookViewProjection and")
-    class BookReturnedEvent {
-
-        @Test
-        @DisplayName("increase the number of available books and change book status")
-        void increaseNumberOfAvailableBooks() {
-            final BookAdded bookAdded = bookAddedInstance();
-            final InventoryAppended inventoryAppended = inventoryAppendedInstance();
-            final BookBorrowed bookBorrowed = bookBorrowedInstance();
-            final BookReturned bookReturned = bookReturnedInstance();
-
-            dispatch(projection, createEvent(bookAdded));
-            dispatch(projection, createEvent(inventoryAppended));
-            dispatch(projection, createEvent(bookBorrowed));
-            dispatch(projection, createEvent(bookReturned));
-
-            final BookView bookView = projection.getState();
-            assertEquals(1, bookView.getAvailableCount());
-            assertEquals(BookStatus.AVAILABLE, bookView.getStatus());
-        }
-    }
-
 }

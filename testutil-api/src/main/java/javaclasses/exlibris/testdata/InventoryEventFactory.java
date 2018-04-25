@@ -32,6 +32,7 @@ import javaclasses.exlibris.LoanId;
 import javaclasses.exlibris.QRcodeURL;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
+import javaclasses.exlibris.c.BookBecameAvailable;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookReadyToPickup;
@@ -255,6 +256,40 @@ public class InventoryEventFactory {
                                                 .setWhoReturned(userId)
                                                 .setWhenReturned(whenReturned)
                                                 .build();
+        return result;
+    }
+
+    /**
+     * Provides a pre-configured {@link BookBecameAvailable} event instance.
+     *
+     * @return the {@link BookBecameAvailable} instance
+     */
+    public static BookBecameAvailable bookBecameAvailableInstance() {
+        return bookBecameAvailableInstance(INVENTORY_ID, INVENTORY_ITEM_ID, 1,
+                                           getCurrentTime());
+    }
+
+    /**
+     * Provides the {@link BookBecameAvailable} event by inventory ID, inventory item ID,
+     * available count and time.
+     *
+     * @param inventoryId         the identifier of an inventory
+     * @param inventoryItemId     the identifier of an inventory item that was added
+     * @param count               available book count in the library
+     * @param whenBecameAvailable time when book became available
+     * @return the {@code BookBecameAvailable} instance
+     */
+    public static BookBecameAvailable bookBecameAvailableInstance(InventoryId inventoryId,
+                                                                  InventoryItemId inventoryItemId,
+                                                                  int count,
+                                                                  Timestamp whenBecameAvailable) {
+        final BookBecameAvailable result = BookBecameAvailable.newBuilder()
+                                                              .setInventoryId(inventoryId)
+                                                              .setInventoryItemId(inventoryItemId)
+                                                              .setInLibraryCount(count)
+                                                              .setWhenBecameAvailable(
+                                                                      whenBecameAvailable)
+                                                              .build();
         return result;
     }
 

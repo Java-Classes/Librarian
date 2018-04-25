@@ -23,10 +23,9 @@ package javaclasses.exlibris.q.user;
 import io.spine.server.projection.ProjectionRepository;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.c.BookAdded;
+import javaclasses.exlibris.c.BookBecameAvailable;
 import javaclasses.exlibris.c.BookBorrowed;
-import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookRemoved;
-import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.c.InventoryDecreased;
 import javaclasses.exlibris.q.BookView;
 
@@ -60,11 +59,6 @@ public class BookViewRepository extends ProjectionRepository<BookId, BookViewPro
                 final BookRemoved event = (BookRemoved) message;
                 return Collections.singleton(event.getBookId());
             }
-            if (message instanceof InventoryAppended) {
-                final InventoryAppended event = (InventoryAppended) message;
-                return Collections.singleton(event.getInventoryId()
-                                                  .getBookId());
-            }
             if (message instanceof InventoryDecreased) {
                 final InventoryDecreased event = (InventoryDecreased) message;
                 return Collections.singleton(event.getInventoryId()
@@ -75,8 +69,8 @@ public class BookViewRepository extends ProjectionRepository<BookId, BookViewPro
                 return Collections.singleton(event.getInventoryId()
                                                   .getBookId());
             }
-            if (message instanceof BookLost) {
-                final BookLost event = (BookLost) message;
+            if (message instanceof BookBecameAvailable) {
+                final BookBecameAvailable event = (BookBecameAvailable) message;
                 return Collections.singleton(event.getInventoryId()
                                                   .getBookId());
             }
