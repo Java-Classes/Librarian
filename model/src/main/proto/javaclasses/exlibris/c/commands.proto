@@ -108,11 +108,8 @@ message AppendInventory {
     // The identifier of an added item.
     InventoryItemId inventory_item_id = 2;
 
-    // Optional field: exists when book has a RFID mark.
-    Rfid rfid = 3;
-
     // Who tries to append.
-    UserId librarian_id = 4;
+    UserId librarian_id = 3;
 }
 
 // An attempt to borrow a book.

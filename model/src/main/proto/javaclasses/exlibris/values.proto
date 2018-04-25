@@ -83,6 +83,14 @@ message BookCoverURL {
     string value = 1;
 }
 
+// The URL of a book cover.
+//
+message QRcodeURL {
+
+    // The link to the QR-code storage place.
+    string value = 1;
+}
+
 // The book title.
 //
 message BookTitle {

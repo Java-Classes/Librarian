@@ -84,10 +84,16 @@ message InventoryItem {
         bool lost = 4;
     }
 
+    // The QR-code of an inventory item.
+    QRcodeURL qr_code_url = 5;
+
+    // The RFID mark of an inventory item.
+    Rfid rfid = 6;
+
     // The user who is related to the book.
     //
     // Is defined when a book is 'borrowed' or 'lost'
-    UserId user_id = 5;
+    UserId user_id = 7;
 }
 
 // The model of a reservation.
@@ -100,8 +106,11 @@ message Reservation {
     // The user who reserved a book.
     UserId who_reserved = 2;
 
+    // Indicates is reserved book ready to pick up or not.
+    bool is_satisfied = 3;
+
     // The time when a book was reserved.
-    google.protobuf.Timestamp when_created = 3;
+    google.protobuf.Timestamp when_created = 4;
 }
 
 // The model of a loan.
