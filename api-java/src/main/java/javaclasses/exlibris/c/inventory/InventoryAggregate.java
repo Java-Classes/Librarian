@@ -41,7 +41,6 @@ import javaclasses.exlibris.Loan;
 import javaclasses.exlibris.LoanId;
 import javaclasses.exlibris.LoanStatus;
 import javaclasses.exlibris.Reservation;
-import javaclasses.exlibris.Rfid;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.AppendInventory;
@@ -919,14 +918,12 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     private InventoryAppended createInventoryAppendedEvent(AppendInventory cmd) {
         final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
-        final Rfid rfid = cmd.getRfid();
         final UserId userId = cmd.getLibrarianId();
 
         final InventoryAppended inventoryAppended =
                 InventoryAppended.newBuilder()
                                  .setInventoryId(inventoryId)
                                  .setInventoryItemId(inventoryItemId)
-                                 .setRfid(rfid)
                                  .setWhenAppended(getCurrentTime())
                                  .setLibrarianId(userId)
                                  .build();
