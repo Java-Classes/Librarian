@@ -178,8 +178,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final InventoryAppended inventoryAppended = createInventoryAppendedEvent(cmd);
 
         if (!isThereUnsatisfiedReservations()) {
-            final BookBecameAvailable becameAvailable =
-                    createBookBecameAvailableEvent(inventoryId, inventoryItemId);
+            final BookBecameAvailable becameAvailable = createBookBecameAvailableEvent();
             final Triplet result = Triplet.withNullable(inventoryAppended,
                                                         becameAvailable,
                                                         null);
@@ -419,57 +418,39 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return result;
     }
 
-//    @Assign
-//    Triplet<InventoryAppended,
-//            EitherOfTwo<BookBecameAvailable, BookReadyToPickup>,
-//            Optional<LoansBecameExtensionAllowed>> handle(AppendInventory cmd) {
-//        final InventoryId inventoryId = cmd.getInventoryId();
-//        final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
-//
-//        final InventoryAppended inventoryAppended = createInventoryAppendedEvent(cmd);
-//
-//        if (!isThereUnsatisfiedReservations()) {
-//            final BookBecameAvailable becameAvailable =
-//                    createBookBecameAvailableEvent(inventoryId, inventoryItemId);
-//            final Triplet result = Triplet.withNullable(inventoryAppended,
-//                                                        becameAvailable,
-//                                                        null);
-//            return result;
-//        }
-//
-//        final BookReadyToPickup bookReadyToPickup =
-//                createBookReadyToPickupEvent(inventoryId, inventoryItemId);
-//
-//        if (isThereSingleUnsatisfiedReservation() && isBookBorrowed()) {
-//            final LoansBecameExtensionAllowed loansBecameExtensionAllowed
-//                    = createLoansBecameExtensionAllowedEvent();
-//            final Triplet result = Triplet.of(inventoryAppended,
-//                                              bookReadyToPickup,
-//                                              loansBecameExtensionAllowed);
-//            return result;
-//        }
-//        Triplet result = Triplet.withNullable(inventoryAppended, bookReadyToPickup, null);
-//        return result;
-//    }
-
+    // @formatter:off
     /**
      * Handles a {@code MarkReservationExpired} command.
      *
      * <p>For details see {@link MarkReservationExpired}.
      *
+     * <p>Returns the following event combinations:
+     *
+     * <ul>
+     *      <li>{@code ReservationPickUpPeriodExpired, BookReadyToPickup} - when there is someone
+     *          next in the reservations queue with unsatisfied reservation.
+     *      <li>{@code ReservationPickUpPeriodExpired, BookBecameAvailable} - when there are no
+     *          unsatisfied reservations.
+     * </ul>
+     *
      * @param cmd system command that contains the identifier of an expired reservation.
-     * @return a {@code ReservationPickUpPeriodExpired} event.
+     * @return the {@link Pair} of the events.
      */
+    // @formatter:on
     @Assign
-    ReservationPickUpPeriodExpired handle(MarkReservationExpired cmd) {
-        final InventoryId inventoryId = cmd.getInventoryId();
-        final UserId userId = cmd.getUserId();
-        final ReservationPickUpPeriodExpired result =
-                ReservationPickUpPeriodExpired.newBuilder()
-                                              .setInventoryId(inventoryId)
-                                              .setUserId(userId)
-                                              .setWhenExpired(getCurrentTime())
-                                              .build();
+    Pair<ReservationPickUpPeriodExpired,
+            EitherOfTwo<BookReadyToPickup,
+                    BookBecameAvailable>> handle(MarkReservationExpired cmd) {
+        final ReservationPickUpPeriodExpired reservationExpiredEvent =
+                createReservationPickUpPeriodExpiredEventEvent(cmd);
+
+        if (isThereUnsatisfiedReservations()) {
+            final BookReadyToPickup bookReadyToPickupEvent = createBookReadyToPickupEvent();
+            Pair result = Pair.of(reservationExpiredEvent, bookReadyToPickupEvent);
+            return result;
+        }
+        final BookBecameAvailable bookBecameAvailableEvent = createBookBecameAvailableEvent();
+        Pair result = Pair.of(reservationExpiredEvent, bookBecameAvailableEvent);
         return result;
     }
 
@@ -1111,6 +1092,21 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                    .setWhenCanceled(getCurrentTime())
                                    .build();
         return reservationCanceledEvent;
+    }
+
+    private ReservationPickUpPeriodExpired createReservationPickUpPeriodExpiredEventEvent(
+            MarkReservationExpired cmd) {
+        final UserId userId = cmd.getUserId();
+        final InventoryId inventoryId = cmd.getInventoryId();
+        final ReservationPickUpPeriodExpired pickUpPeriodExpired = ReservationPickUpPeriodExpired.newBuilder()
+                                                                                                 .setInventoryId(
+                                                                                                         inventoryId)
+                                                                                                 .setUserId(
+                                                                                                         userId)
+                                                                                                 .setWhenExpired(
+                                                                                                         getCurrentTime())
+                                                                                                 .build();
+        return pickUpPeriodExpired;
     }
 
     private boolean isThereUnsatisfiedReservations() {
