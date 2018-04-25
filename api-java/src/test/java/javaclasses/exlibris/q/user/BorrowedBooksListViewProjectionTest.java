@@ -27,6 +27,8 @@ import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanBecameShouldReturnSoon;
 import javaclasses.exlibris.c.LoanPeriodExtended;
+import javaclasses.exlibris.c.LoansBecameExtensionAllowed;
+import javaclasses.exlibris.c.LoansBecameNotAllowedForExtension;
 import javaclasses.exlibris.q.BorrowedBookItem;
 import javaclasses.exlibris.q.BorrowedBookItemStatus;
 import javaclasses.exlibris.q.ProjectionTest;
@@ -56,6 +58,8 @@ import static javaclasses.exlibris.testdata.InventoryEventFactory.bookReturnedIn
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loanBecameOverdueInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loanBecameShouldReturnSoonInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loanPeriodExtendedInstance;
+import static javaclasses.exlibris.testdata.InventoryEventFactory.loansBecameExtensionAllowedInstance;
+import static javaclasses.exlibris.testdata.InventoryEventFactory.loansBecameNotAllowedForExtensionInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BorrowedBooksListViewProjectionTest extends ProjectionTest {
@@ -189,6 +193,45 @@ class BorrowedBooksListViewProjectionTest extends ProjectionTest {
             final BorrowedBookItem bookItem = books.get(0);
             assertEquals(BorrowedBookItemStatus.SHOULD_RETURN_SOON, bookItem.getStatus());
             assertEquals(true, bookItem.getIsAllowedLoanExtension());
+        }
+    }
+
+    @Nested
+    @DisplayName("LoansBecameExtensionAllowed event should be interpreted by BorrowedBooksListViewProjection and")
+    class LoansBecameExtensionAllowedEvent {
+
+        @Test
+        @DisplayName("allow extension")
+        void allowExtension() {
+            final BookBorrowed bookBorrowed = bookBorrowedInstance();
+            dispatch(projection, createEvent(bookBorrowed));
+            final LoansBecameExtensionAllowed loansBecameExtensionAllowed = loansBecameExtensionAllowedInstance();
+            dispatch(projection, createEvent(loansBecameExtensionAllowed));
+            final List<BorrowedBookItem> books = projection.getState()
+                                                           .getBookItemList();
+            assertEquals(1, books.size());
+            final BorrowedBookItem bookItem = books.get(0);
+            assertEquals(true, bookItem.getIsAllowedLoanExtension());
+        }
+    }
+
+    @Nested
+    @DisplayName("LoansBecameNotAllowedForExtension event should be interpreted by BorrowedBooksListViewProjection and")
+    class LoansBecameNotAllowedForExtensionEvent {
+
+        @Test
+        @DisplayName("not allow extension")
+        void notAllowExtension() {
+            final BookBorrowed bookBorrowed = bookBorrowedInstance();
+            dispatch(projection, createEvent(bookBorrowed));
+            final LoansBecameNotAllowedForExtension loansBecameNotAllowedForExtension =
+                    loansBecameNotAllowedForExtensionInstance();
+            dispatch(projection, createEvent(loansBecameNotAllowedForExtension));
+            final List<BorrowedBookItem> books = projection.getState()
+                                                           .getBookItemList();
+            assertEquals(1, books.size());
+            final BorrowedBookItem bookItem = books.get(0);
+            assertEquals(false, bookItem.getIsAllowedLoanExtension());
         }
     }
 }

@@ -23,7 +23,6 @@ package javaclasses.exlibris.q.user;
 import io.spine.core.EventContext;
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
-import io.spine.time.LocalDate;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.UserId;
@@ -79,11 +78,9 @@ public class ReservedBooksListViewProjection extends Projection<UserId, Reserved
                                                           .addAllCategorie(
                                                                   bookDetails.getCategoriesList())
                                                           .setSynopsis(bookDetails.getSynopsis())
-                                                          .setWhenReadyToPickUp(
-                                                                  LocalDate.getDefaultInstance())
+                                                          .setWhenReadyToPickUp(event.getWhenExpected())
                                                           .setStatus(status)
                                                           .build();
-        // TODO: 4/23/2018 yurii.haidamaka: SET WHEN READY TO PICK UP DATE AFTER ADDING IT IN THE EVENT
         getBuilder().addBookItem(bookItem);
     }
 
@@ -130,5 +127,4 @@ public class ReservedBooksListViewProjection extends Projection<UserId, Reserved
                                            .findFirst();
         return index.isPresent() ? index.getAsInt() : -1;
     }
-    //TODO:2018-07-25:yurii.haidamaka ADD SUBSCRIBE ON  LoanBecameReservationAllowed and LoanBecameNotAllowedForReservation after adding this event
 }

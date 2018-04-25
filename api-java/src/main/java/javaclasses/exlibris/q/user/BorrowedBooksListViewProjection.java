@@ -38,6 +38,8 @@ import javaclasses.exlibris.c.InventoryEnrichment;
 import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanBecameShouldReturnSoon;
 import javaclasses.exlibris.c.LoanPeriodExtended;
+import javaclasses.exlibris.c.LoansBecameExtensionAllowed;
+import javaclasses.exlibris.c.LoansBecameNotAllowedForExtension;
 import javaclasses.exlibris.q.BorrowedBookItem;
 import javaclasses.exlibris.q.BorrowedBookItemStatus;
 import javaclasses.exlibris.q.BorrowedBooksListView;
@@ -165,6 +167,30 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
         final int index = getIndexByBookId(items, event.getInventoryId()
                                                        .getBookId());
         getBuilder().removeBookItem(index);
+    }
+
+    @Subscribe
+    public void on(LoansBecameExtensionAllowed event) {
+        final List<BorrowedBookItem> items = new ArrayList<>(getBuilder().getBookItem());
+        final int index = getIndexByBookId(items, event.getInventoryId()
+                                                       .getBookId());
+        final BorrowedBookItem bookItem = items.get(index);
+        final BorrowedBookItem newBookItem = BorrowedBookItem.newBuilder(bookItem)
+                                                             .setIsAllowedLoanExtension(true)
+                                                             .build();
+        getBuilder().setBookItem(index, newBookItem);
+    }
+
+    @Subscribe
+    public void on(LoansBecameNotAllowedForExtension event) {
+        final List<BorrowedBookItem> items = new ArrayList<>(getBuilder().getBookItem());
+        final int index = getIndexByBookId(items, event.getInventoryId()
+                                                       .getBookId());
+        final BorrowedBookItem bookItem = items.get(index);
+        final BorrowedBookItem newBookItem = BorrowedBookItem.newBuilder(bookItem)
+                                                             .setIsAllowedLoanExtension(false)
+                                                             .build();
+        getBuilder().setBookItem(index, newBookItem);
     }
 
     private int getIndexByBookId(List<BorrowedBookItem> items, BookId id) {

@@ -44,6 +44,7 @@ import static javaclasses.exlibris.testdata.BookEventFactory.SYNOPSIS;
 import static javaclasses.exlibris.testdata.BookEventFactory.TITLE;
 import static javaclasses.exlibris.testdata.BookEventFactory.USER_ID;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.BOOK_ID;
+import static javaclasses.exlibris.testdata.InventoryEventFactory.DEFAULT_DATE1;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookReadyToPickUpInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationAddedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationBecameLoanInstance;
@@ -82,8 +83,8 @@ class ReservedBooksListViewProjectionTest extends ProjectionTest {
             assertEquals(CATEGORY, bookItem.getCategorieList()
                                            .get(0));
             assertEquals(SYNOPSIS, bookItem.getSynopsis());
+            assertEquals(DEFAULT_DATE1, bookItem.getWhenReadyToPickUp());
             assertEquals(ReservedBookItemStatus.RESERVED, bookItem.getStatus());
-            // TODO: 4/23/2018 yurii.haidamaka: ADD CHECKING WHEN READY TO PICK UP DATE AFTER ADDING IT IN THE EVENT
         }
     }
 
