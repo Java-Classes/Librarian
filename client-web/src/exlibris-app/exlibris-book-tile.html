@@ -94,6 +94,7 @@
                 font-size: 12px;
                 margin-top: 5px;
                 height: 30px;
+                text-transform: uppercase
             }
 
             #status.warn {
@@ -199,25 +200,25 @@
                     case ExlibrisApp.BookStatus.OVERDUE: {
                         const MILLISECONDS_IN_ONE_DAY = 86400000;
                         const numberOfOverdueDays = Math.floor((new Date() - book.dueDate) / MILLISECONDS_IN_ONE_DAY);
-                        return numberOfOverdueDays + " DAYS OVERDUE";
+                        return numberOfOverdueDays + " days overdue";
                     }
                     case ExlibrisApp.BookStatus.BORROWED: {
-                        return "DUE ON " + book.dueDate.toLocaleDateString();
+                        return "due on " + book.dueDate.toLocaleDateString();
                     }
                     case ExlibrisApp.BookStatus.READY_TO_PICK_UP: {
-                        return "READY TO PICK UP";
+                        return "ready to pick up";
                     }
                     case ExlibrisApp.BookStatus.RESERVED: {
-                        return "EXPECTED ON " + book.date.toLocaleDateString();
+                        return "expected on " + book.date.toLocaleDateString();
                     }
                     case ExlibrisApp.BookStatus.EXPECTED_SOON: {
-                        return "EXPECTED SOON";
+                        return "expected soon";
                     }
                     case ExlibrisApp.BookStatus.AVAILABLE: {
-                        return book.availableCount + " AVAILABLE";
+                        return book.availableCount + " available";
                     }
                     case ExlibrisApp.BookStatus.EXPECTED: {
-                        return "EXPECTED";
+                        return "expected";
                     }
                 }
             }

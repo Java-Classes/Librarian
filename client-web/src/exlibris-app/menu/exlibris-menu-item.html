@@ -40,7 +40,7 @@
             <div id="item">
                 <slot></slot>
                 <span id="title">[[title]]</span>
-                <span id="count-badge" hidden="[[_isBadgeHidden(count)]]">[[count]]</span>
+                <span id="count-badge" hidden="[[!count]]">[[count]]</span>
             </div>
         </a>
     </template>
@@ -83,17 +83,6 @@
                      */
                     count: Number
                 };
-            }
-
-            /**
-             * Checks the passed count badge value.
-             *
-             * @param {Number} count the count badge value.
-             * @returns {boolean} the count badge `hidden` value.
-             * @private
-             */
-            _isBadgeHidden(count) {
-                return !(count && count > 0);
             }
         }
 
