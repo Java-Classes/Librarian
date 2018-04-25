@@ -78,6 +78,7 @@ public class BookViewProjection extends Projection<BookId, BookView, BookViewVBu
                     .clearStatus();
     }
 
+    // TODO: 4/25/2018 DELETE ON BOOK BECAME AVAILABLE
     @Subscribe
     public void on(InventoryAppended event) {
         final int availableCount = getBuilder().getAvailableCount();
@@ -94,6 +95,7 @@ public class BookViewProjection extends Projection<BookId, BookView, BookViewVBu
                     .setStatus(status);
     }
 
+    // TODO: 4/25/2018 DELETE IT
     @Subscribe
     public void on(BookLost event) {
         final int availableCount = getBuilder().getAvailableCount();
@@ -115,6 +117,7 @@ public class BookViewProjection extends Projection<BookId, BookView, BookViewVBu
                     .setStatus(status);
     }
 
+    // TODO: 4/25/2018 DELETE ON BOOK BECAME AVAILABLE
     @Subscribe
     public void on(BookReturned event) {
         final int availableCount = getBuilder().getAvailableCount();
