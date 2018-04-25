@@ -69,7 +69,6 @@ message BookView {
     BookStatus status = 9;
 }
 
-
 // The projection state of books that are expected in the library.
 //
 message ExpectedSoonBooksListView {
@@ -90,6 +89,12 @@ message BorrowedBooksListView {
 
     // The list of user's borrowed book.
     repeated BorrowedBookItem book_item = 2;
+
+    // A size of a list of borrowed books.
+    int32 number_of_borrowed_books = 3;
+
+    // The number of books that are overdue by the user.
+    int32 number_of_overdue_books = 4;
 }
 
 // The projection state of user's reserved books.
@@ -101,6 +106,9 @@ message ReservedBooksListView {
 
     // The list of user's reserved book.
     repeated ReservedBookItem book_item = 2;
+
+    // A size of a list of reserved books.
+    int32 number_of_reserved_books = 3;
 }
 
 // **** Projections for the UI role Admin. ****
