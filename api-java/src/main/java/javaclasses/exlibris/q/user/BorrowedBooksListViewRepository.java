@@ -27,9 +27,13 @@ import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanPeriodExtended;
+import javaclasses.exlibris.c.LoansBecameExtensionAllowed;
+import javaclasses.exlibris.c.LoansBecameNotAllowedForExtension;
 import javaclasses.exlibris.q.BorrowedBooksListView;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Repository for the {@link BorrowedBooksListViewProjection}.
@@ -45,7 +49,6 @@ public class BorrowedBooksListViewRepository extends ProjectionRepository<UserId
 
     /**
      * Adds the {@link io.spine.server.route.EventRoute EventRoute}s to the repository.
-     *
      */
     protected void setUpEventRoute() {
         getEventRouting().replaceDefault(((message, context) -> {
@@ -68,6 +71,16 @@ public class BorrowedBooksListViewRepository extends ProjectionRepository<UserId
             if (message instanceof BookLost) {
                 final BookLost event = (BookLost) message;
                 return Collections.singleton(event.getWhoLost());
+            }
+            if (message instanceof LoansBecameExtensionAllowed) {
+                final LoansBecameExtensionAllowed event = (LoansBecameExtensionAllowed) message;
+                final Set<UserId> userIds = new HashSet<>(event.getBorrowersList());
+                return userIds;
+            }
+            if (message instanceof LoansBecameNotAllowedForExtension) {
+                final LoansBecameNotAllowedForExtension event = (LoansBecameNotAllowedForExtension) message;
+                final Set<UserId> userIds = new HashSet<>(event.getBorrowersList());
+                return userIds;
             }
             return null;
         }));

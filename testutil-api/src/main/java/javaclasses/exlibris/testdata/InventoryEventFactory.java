@@ -373,7 +373,7 @@ public class InventoryEventFactory {
      */
     public static LoanBecameShouldReturnSoon loanBecameShouldReturnSoonInstance() {
         return loanBecameShouldReturnSoonInstance(INVENTORY_ID, INVENTORY_ITEM_ID, LOAN_ID,
-                                                  DEFAULT_TIMESTAMP1, USER_ID);
+                                                  DEFAULT_TIMESTAMP1, USER_ID, true);
     }
 
     /**
@@ -392,7 +392,7 @@ public class InventoryEventFactory {
             InventoryItemId inventoryItemId,
             LoanId loanId,
             Timestamp whenBecame,
-            UserId userId) {
+            UserId userId, boolean isAllowedLoanextension) {
         final LoanBecameShouldReturnSoon result =
                 LoanBecameShouldReturnSoon.newBuilder()
                                           .setInventoryId(inventoryId)
@@ -400,6 +400,7 @@ public class InventoryEventFactory {
                                           .setLoanId(loanId)
                                           .setUserId(userId)
                                           .setWhenBecameShouldReturnSoon(whenBecame)
+                                          .setIsAllowedExtension(isAllowedLoanextension)
                                           .build();
         return result;
     }

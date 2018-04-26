@@ -62,7 +62,6 @@ class ExlibrisEnrichmentsTest {
         when(bookRepo.find(any(BookId.class))).thenReturn(Optional.absent());
         when(inventoryRepo.find(any(InventoryId.class))).thenReturn(Optional.absent());
         enricher = ExlibrisEnrichments.newBuilder()
-                                      .setInventoryRepository(inventoryRepo)
                                       .setBookRepository(bookRepo)
                                       .build()
                                       .createEnricher();

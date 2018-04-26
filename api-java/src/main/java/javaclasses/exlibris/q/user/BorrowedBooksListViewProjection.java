@@ -27,14 +27,12 @@ import io.spine.server.projection.Projection;
 import io.spine.time.LocalDate;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookId;
-import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.LoanId;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookEnrichment;
 import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookReturned;
-import javaclasses.exlibris.c.InventoryEnrichment;
 import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanBecameShouldReturnSoon;
 import javaclasses.exlibris.c.LoanPeriodExtended;
@@ -99,11 +97,14 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
                                                           .setStatus(status)
                                                           .setIsAllowedLoanExtension(false)
                                                           .build();
-        getBuilder().addBookItem(bookItem);
+        getBuilder().addBookItem(bookItem)
+                    .setNumberOfBorrowedBooks(getBuilder().getBookItem()
+                                                          .size());
     }
 
     @Subscribe
     public void on(LoanBecameOverdue event) {
+        final int numberOfOverdueBooks = getBuilder().getNumberOfOverdueBooks();
         final List<BorrowedBookItem> items = new ArrayList<>(getBuilder().getBookItem());
         final int index = getIndexByBookId(items, event.getInventoryId()
                                                        .getBookId());
@@ -112,15 +113,12 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
                                                              .setStatus(
                                                                      BorrowedBookItemStatus.OVERDUE)
                                                              .build();
-        getBuilder().setBookItem(index, newBookItem);
+        getBuilder().setBookItem(index, newBookItem)
+                    .setNumberOfOverdueBooks(getNumberOfOverdueBooks(getBuilder().getBookItem()));
     }
 
     @Subscribe
-    public void on(LoanBecameShouldReturnSoon event, EventContext context) {
-        final InventoryEnrichment enrichment = getEnrichment(InventoryEnrichment.class, context);
-        final Inventory inventory = enrichment.getInventory();
-        final boolean isAllowedLoanExtension = inventory.getReservationsList()
-                                                        .isEmpty();
+    public void on(LoanBecameShouldReturnSoon event) {
         final List<BorrowedBookItem> items = new ArrayList<>(getBuilder().getBookItem());
 
         final int index = getIndexByBookId(items, event.getInventoryId()
@@ -131,7 +129,7 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
                                 .setStatus(
                                         BorrowedBookItemStatus.SHOULD_RETURN_SOON)
                                 .setIsAllowedLoanExtension(
-                                        isAllowedLoanExtension)
+                                        event.getIsAllowedExtension())
                                 .build();
         getBuilder().setBookItem(index, newBookItem);
     }
@@ -144,13 +142,17 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
         final int index = getIndexByBookId(items, event.getInventoryId()
                                                        .getBookId());
         final BorrowedBookItem bookItem = items.get(index);
+        final BorrowedBookItemStatus status = bookItem.getStatus();
         final BorrowedBookItem newBookItem = BorrowedBookItem.newBuilder(bookItem)
                                                              .setStatus(
                                                                      BorrowedBookItemStatus.BORROWED)
                                                              .setIsAllowedLoanExtension(false)
                                                              .setDueDate(newDueDate)
                                                              .build();
-        getBuilder().setBookItem(index, newBookItem);
+        getBuilder().setBookItem(index, newBookItem)
+                    .setNumberOfBorrowedBooks(getBuilder().getBookItem()
+                                                          .size())
+                    .setNumberOfOverdueBooks(getNumberOfOverdueBooks(getBuilder().getBookItem()));
     }
 
     @Subscribe
@@ -158,7 +160,9 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
         final List<BorrowedBookItem> items = new ArrayList<>(getBuilder().getBookItem());
         final int index = getIndexByBookId(items, event.getInventoryId()
                                                        .getBookId());
-        getBuilder().removeBookItem(index);
+        getBuilder().removeBookItem(index)
+                    .setNumberOfBorrowedBooks(getBuilder().getBookItem()
+                                                          .size());
     }
 
     @Subscribe
@@ -166,7 +170,9 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
         final List<BorrowedBookItem> items = new ArrayList<>(getBuilder().getBookItem());
         final int index = getIndexByBookId(items, event.getInventoryId()
                                                        .getBookId());
-        getBuilder().removeBookItem(index);
+        getBuilder().removeBookItem(index)
+                    .setNumberOfBorrowedBooks(getBuilder().getBookItem()
+                                                          .size());
     }
 
     @Subscribe
@@ -175,10 +181,13 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
         final int index = getIndexByBookId(items, event.getInventoryId()
                                                        .getBookId());
         final BorrowedBookItem bookItem = items.get(index);
-        final BorrowedBookItem newBookItem = BorrowedBookItem.newBuilder(bookItem)
-                                                             .setIsAllowedLoanExtension(true)
-                                                             .build();
-        getBuilder().setBookItem(index, newBookItem);
+        if (!bookItem.getStatus()
+                     .equals(BorrowedBookItemStatus.BORROWED)) {
+            final BorrowedBookItem newBookItem = BorrowedBookItem.newBuilder(bookItem)
+                                                                 .setIsAllowedLoanExtension(true)
+                                                                 .build();
+            getBuilder().setBookItem(index, newBookItem);
+        }
     }
 
     @Subscribe
@@ -200,6 +209,14 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
                                                              .equals(id))
                                            .findFirst();
         return index.isPresent() ? index.getAsInt() : -1;
+    }
+
+    private int getNumberOfOverdueBooks(List<BorrowedBookItem> items) {
+        final int count = (int) items.stream()
+                                     .filter(item -> item.getStatus()
+                                                         .equals(BorrowedBookItemStatus.OVERDUE))
+                                     .count();
+        return count;
     }
 
 }

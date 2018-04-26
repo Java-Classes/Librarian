@@ -26,8 +26,6 @@ import io.spine.server.event.EventBus;
 import io.spine.server.event.EventEnricher;
 import javaclasses.exlibris.c.book.BookAggregate;
 import javaclasses.exlibris.c.book.BookRepository;
-import javaclasses.exlibris.c.inventory.InventoryAggregate;
-import javaclasses.exlibris.c.inventory.InventoryRepository;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -41,18 +39,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class ExlibrisEnrichments {
 
     private final BookRepository bookRepo;
-    private final InventoryRepository inventoryRepo;
 
     private ExlibrisEnrichments(Builder builder) {
         this.bookRepo = builder.bookRepo;
-        this.inventoryRepo = builder.inventoryRepo;
     }
 
     EventEnricher createEnricher() {
         final EventEnricher enricher =
                 EventEnricher.newBuilder()
                              .add(InventoryId.class, Book.class, inventoryIdToBook())
-                             .add(InventoryId.class, Inventory.class, inventoryIdToInventory())
                              .build();
         return enricher;
     }
@@ -73,24 +68,9 @@ public class ExlibrisEnrichments {
         return result;
     }
 
-    private Function<InventoryId, Inventory> inventoryIdToInventory() {
-        final Function<InventoryId, Inventory> result = inventoryId -> {
-            if (inventoryId == null) {
-                return Inventory.getDefaultInstance();
-            }
-            final Optional<InventoryAggregate> aggregate = inventoryRepo.find(inventoryId);
-            if (!aggregate.isPresent()) {
-                return Inventory.getDefaultInstance();
-            }
-            final Inventory state = aggregate.get()
-                                             .getState();
-            return state;
-        };
-        return result;
-    }
 
     /**
-     * Creates a new builder for (@code TodoListEnrichments).
+     * Creates a new builder for (@code ExlibrisEnrichments).
      *
      * @return new builder instance
      */
@@ -104,7 +84,6 @@ public class ExlibrisEnrichments {
     public static class Builder {
 
         private BookRepository bookRepo;
-        private InventoryRepository inventoryRepo;
 
         private Builder() {
         }
@@ -112,12 +91,6 @@ public class ExlibrisEnrichments {
         public Builder setBookRepository(BookRepository bookRepo) {
             checkNotNull(bookRepo);
             this.bookRepo = bookRepo;
-            return this;
-        }
-
-        public Builder setInventoryRepository(InventoryRepository inventoryRepository) {
-            checkNotNull(inventoryRepository);
-            this.inventoryRepo = inventoryRepository;
             return this;
         }
 

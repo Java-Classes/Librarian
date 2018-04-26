@@ -83,8 +83,7 @@ public final class BoundedContexts {
         final BorrowedBooksListViewRepository borrowedRepo = new BorrowedBooksListViewRepository();
         final ReservedBooksListViewRepository reservedRepo = new ReservedBooksListViewRepository();
 
-        final EventBus.Builder eventBus = createEventBus(storageFactory, bookRepository,
-                                                         inventoryRepository);
+        final EventBus.Builder eventBus = createEventBus(storageFactory, bookRepository);
 
         final BoundedContext boundedContext = createBoundedContext(eventBus);
 
@@ -99,11 +98,9 @@ public final class BoundedContexts {
     }
 
     private static EventBus.Builder createEventBus(StorageFactory storageFactory,
-                                                   BookRepository bookRepo,
-                                                   InventoryRepository inventoryRepo) {
+                                                   BookRepository bookRepo) {
         final EventEnricher enricher = ExlibrisEnrichments.newBuilder()
                                                           .setBookRepository(bookRepo)
-                                                          .setInventoryRepository(inventoryRepo)
                                                           .build()
                                                           .createEnricher();
         final EventBus.Builder eventBus = EventBus.newBuilder()

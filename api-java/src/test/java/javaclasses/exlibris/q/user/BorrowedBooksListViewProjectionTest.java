@@ -84,6 +84,8 @@ class BorrowedBooksListViewProjectionTest extends ProjectionTest {
 
             final List<BorrowedBookItem> books = projection.getState()
                                                            .getBookItemList();
+            final int numberOfBorrowedBooks = projection.getState()
+                                                        .getNumberOfBorrowedBooks();
             assertEquals(1, books.size());
             final BorrowedBookItem bookItem = books.get(0);
             assertEquals(LOAN_ID, bookItem.getLoanId());
@@ -100,6 +102,7 @@ class BorrowedBooksListViewProjectionTest extends ProjectionTest {
             assertEquals(DEFAULT_DATE1, bookItem.getWhenBorrowed());
             assertEquals(DEFAULT_DUE_DATE, bookItem.getDueDate());
             assertEquals(BorrowedBookItemStatus.BORROWED, bookItem.getStatus());
+            assertEquals(1, numberOfBorrowedBooks);
         }
     }
 
@@ -116,9 +119,12 @@ class BorrowedBooksListViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(loanBecameOverdue));
             final List<BorrowedBookItem> books = projection.getState()
                                                            .getBookItemList();
+            final int numberOfOverdueBooks = projection.getState()
+                                                       .getNumberOfOverdueBooks();
             assertEquals(1, books.size());
             final BorrowedBookItem bookItem = books.get(0);
             assertEquals(BorrowedBookItemStatus.OVERDUE, bookItem.getStatus());
+            assertEquals(1, numberOfOverdueBooks);
         }
     }
 
@@ -135,10 +141,16 @@ class BorrowedBooksListViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(loanPeriodExtended));
             final List<BorrowedBookItem> books = projection.getState()
                                                            .getBookItemList();
+            final int numberOfOverdueBooks = projection.getState()
+                                                       .getNumberOfOverdueBooks();
+            final int numberOfBorrowedBooks = projection.getState()
+                                                        .getNumberOfBorrowedBooks();
             assertEquals(1, books.size());
             final BorrowedBookItem bookItem = books.get(0);
             assertEquals(BorrowedBookItemStatus.BORROWED, bookItem.getStatus());
             assertEquals(DEFAULT_DATE2, bookItem.getDueDate());
+            assertEquals(0, numberOfOverdueBooks);
+            assertEquals(1, numberOfBorrowedBooks);
         }
     }
 
@@ -155,7 +167,10 @@ class BorrowedBooksListViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(bookReturned));
             final List<BorrowedBookItem> books = projection.getState()
                                                            .getBookItemList();
+            final int numberOfBorrowedBooks = projection.getState()
+                                                        .getNumberOfBorrowedBooks();
             assertEquals(0, books.size());
+            assertEquals(0, numberOfBorrowedBooks);
         }
     }
 
@@ -172,7 +187,10 @@ class BorrowedBooksListViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(bookLost));
             final List<BorrowedBookItem> books = projection.getState()
                                                            .getBookItemList();
+            final int numberOfBorrowedBooks = projection.getState()
+                                                        .getNumberOfBorrowedBooks();
             assertEquals(0, books.size());
+            assertEquals(0, numberOfBorrowedBooks);
         }
     }
 
@@ -205,6 +223,8 @@ class BorrowedBooksListViewProjectionTest extends ProjectionTest {
         void allowExtension() {
             final BookBorrowed bookBorrowed = bookBorrowedInstance();
             dispatch(projection, createEvent(bookBorrowed));
+            final LoanBecameShouldReturnSoon loanBecameShouldReturnSoon = loanBecameShouldReturnSoonInstance();
+            dispatch(projection, createEvent(loanBecameShouldReturnSoon));
             final LoansBecameExtensionAllowed loansBecameExtensionAllowed = loansBecameExtensionAllowedInstance();
             dispatch(projection, createEvent(loansBecameExtensionAllowed));
             final List<BorrowedBookItem> books = projection.getState()
