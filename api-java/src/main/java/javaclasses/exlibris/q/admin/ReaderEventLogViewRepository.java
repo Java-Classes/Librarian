@@ -24,14 +24,13 @@ import io.spine.server.projection.ProjectionRepository;
 import javaclasses.exlibris.ReaderEventLogViewId;
 import javaclasses.exlibris.q.ReaderEventLogView;
 
-import java.util.Collections;
-
 import static io.spine.Identifier.newUuid;
+import static java.util.Collections.singleton;
 
 /**
  * Repository for the {@link ReaderEventLogViewProjection}.
  *
- * @author Yegor Udovchenko
+ * @author Yurii Haidamaka
  */
 public class ReaderEventLogViewRepository extends ProjectionRepository<ReaderEventLogViewId, ReaderEventLogViewProjection, ReaderEventLogView> {
     @Override
@@ -48,7 +47,7 @@ public class ReaderEventLogViewRepository extends ProjectionRepository<ReaderEve
             final ReaderEventLogViewId id = ReaderEventLogViewId.newBuilder()
                                                                 .setValue(newUuid())
                                                                 .build();
-            return Collections.singleton(id);
+            return singleton(id);
         }));
     }
 }

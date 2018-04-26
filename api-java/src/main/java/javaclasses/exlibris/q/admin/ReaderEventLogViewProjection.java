@@ -50,7 +50,7 @@ import static javaclasses.exlibris.EnrichmentHelper.getEnrichment;
 /**
  * The projection state of a one user's action.
  *
- * <p>Includes all information about one loan.
+ * <p>Includes all information about one user action.
  *
  * @author Yurii Haidamaka
  */

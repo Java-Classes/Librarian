@@ -36,15 +36,15 @@ import "javaclasses/exlibris/model.proto";
 
 message BookEnrichment {
     option (enrichment_for) = "javaclasses.exlibris.c.BookBorrowed,"
-                                "javaclasses.exlibris.c.ReservationAdded"
-                                "javaclasses.exlibris.c.BookReturned"
-                                "javaclasses.exlibris.c.ReservationCanceled"
-                                "javaclasses.exlibris.c.ReservationPickUpPeriodExpired"
-                                "javaclasses.exlibris.c.ReservationBecameLoan"
-                                "javaclasses.exlibris.c.LoanBecameOverdue"
-                                "javaclasses.exlibris.c.LoanBecameShouldReturnSoon"
-                                "javaclasses.exlibris.c.LoanPeriodExtended"
-                                "javaclasses.exlibris.c.BookLost";
+                                "javaclasses.exlibris.c.ReservationAdded";
+//                                "javaclasses.exlibris.c.BookReturned"
+//                                "javaclasses.exlibris.c.ReservationCanceled"
+//                                "javaclasses.exlibris.c.ReservationPickUpPeriodExpired"
+//                                "javaclasses.exlibris.c.ReservationBecameLoan"
+//                                "javaclasses.exlibris.c.LoanBecameOverdue"
+//                                "javaclasses.exlibris.c.LoanBecameShouldReturnSoon"
+//                                "javaclasses.exlibris.c.LoanPeriodExtended"
+//                                "javaclasses.exlibris.c.BookLost";
 
     Book book = 1 [(by) = "inventory_id"];
 }

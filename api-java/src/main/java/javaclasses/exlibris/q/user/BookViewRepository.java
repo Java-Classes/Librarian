@@ -29,7 +29,7 @@ import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.InventoryDecreased;
 import javaclasses.exlibris.q.BookView;
 
-import java.util.Collections;
+import static java.util.Collections.singleton;
 
 /**
  * Repository for the {@link BookViewProjection}.
@@ -53,25 +53,25 @@ public class BookViewRepository extends ProjectionRepository<BookId, BookViewPro
         getEventRouting().replaceDefault(((message, context) -> {
             if (message instanceof BookAdded) {
                 final BookAdded event = (BookAdded) message;
-                return Collections.singleton(event.getBookId());
+                return singleton(event.getBookId());
             }
             if (message instanceof BookRemoved) {
                 final BookRemoved event = (BookRemoved) message;
-                return Collections.singleton(event.getBookId());
+                return singleton(event.getBookId());
             }
             if (message instanceof InventoryDecreased) {
                 final InventoryDecreased event = (InventoryDecreased) message;
-                return Collections.singleton(event.getInventoryId()
+                return singleton(event.getInventoryId()
                                                   .getBookId());
             }
             if (message instanceof BookBorrowed) {
                 final BookBorrowed event = (BookBorrowed) message;
-                return Collections.singleton(event.getInventoryId()
+                return singleton(event.getInventoryId()
                                                   .getBookId());
             }
             if (message instanceof BookBecameAvailable) {
                 final BookBecameAvailable event = (BookBecameAvailable) message;
-                return Collections.singleton(event.getInventoryId()
+                return singleton(event.getInventoryId()
                                                   .getBookId());
             }
             return null;

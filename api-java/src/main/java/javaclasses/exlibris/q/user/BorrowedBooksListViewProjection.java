@@ -78,7 +78,6 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
         final BookDetails bookDetails = enrichment.getBook()
                                                   .getBookDetails();
         final Timestamp whenBorrowedTimeStamp = event.getWhenBorrowed();
-
         final LocalDate whenBorrowed = toLocalDate(whenBorrowedTimeStamp);
         final LocalDate dueDate = addDays(whenBorrowed, 14);
         final BorrowedBookItem bookItem = BorrowedBookItem.newBuilder()
