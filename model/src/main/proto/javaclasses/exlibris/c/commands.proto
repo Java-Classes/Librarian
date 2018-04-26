@@ -268,12 +268,18 @@ message AllowLoansExtension {
 
     // The identifier of an inventory.
     InventoryId inventory_id = 1;
+
+    // The collection of users' identifiers whos loans became not allowed for an extension.
+    repeated UserId borrowers = 2;
 }
 
 message ForbidLoansExtension {
 
     // The identifier of an inventory.
     InventoryId inventory_id = 1;
+
+    // The collection of users' identifiers whos loans became not allowed for an extension.
+    repeated UserId borrowers = 2;
 }
 
 message SatisfyReservation {

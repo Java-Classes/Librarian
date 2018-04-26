@@ -402,7 +402,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      */
     @Assign
     LoansExtensionAllowed handle(AllowLoansExtension cmd) {
-        final LoansExtensionAllowed result = createLoansExtensionAllowedEvent();
+        final List<UserId> userIds = cmd.getBorrowersList();
+        final LoansExtensionAllowed result = createLoansExtensionAllowedEvent(userIds);
         return result;
     }
 
@@ -416,7 +417,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      */
     @Assign
     LoansExtensionForbidden handle(ForbidLoansExtension cmd) {
-        final LoansExtensionForbidden result = createLoansExtensionForbiddenEvent();
+        final List<UserId> userIds = cmd.getBorrowersList();
+        final LoansExtensionForbidden result = createLoansExtensionForbiddenEvent(userIds);
         return result;
     }
 
@@ -804,6 +806,50 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         getBuilder().removeLoans(loanIndex);
     }
 
+    /**
+     * Handles a {@code LoansExtensionAllowed} event.
+     *
+     * <p>For details see {@link LoansExtensionAllowed}.
+     *
+     * @param event a {@code LoansExtensionAllowed} event message.
+     */
+    @Apply
+    void loansExtensionAllowed(LoansExtensionAllowed event) {
+        final List<UserId> borrowersList = event.getBorrowersList();
+        final List<Loan> loans = getBuilder().getLoans();
+
+        for (UserId borrower : borrowersList) {
+            final int loanIndex = getLoanIndexByUserId(borrower, loans);
+            final Loan loan = loans.get(loanIndex);
+            final Loan updatedLoan = Loan.newBuilder(loan)
+                                         .setIsAllowedExtension(true)
+                                         .build();
+            getBuilder().setLoans(loanIndex, updatedLoan);
+        }
+    }
+
+    /**
+     * Handles a {@code LoansExtensionForbidden} event.
+     *
+     * <p>For details see {@link LoansExtensionForbidden}.
+     *
+     * @param event a {@code LoansExtensionForbidden} event message.
+     */
+    @Apply
+    void loansExtensionForbidden(LoansExtensionForbidden event) {
+        final List<UserId> borrowersList = event.getBorrowersList();
+        final List<Loan> loans = getBuilder().getLoans();
+
+        for (UserId borrower : borrowersList) {
+            final int loanIndex = getLoanIndexByUserId(borrower, loans);
+            final Loan loan = loans.get(loanIndex);
+            final Loan updatedLoan = Loan.newBuilder(loan)
+                                         .setIsAllowedExtension(false)
+                                         .build();
+            getBuilder().setLoans(loanIndex, updatedLoan);
+        }
+    }
+
     private BookBecameAvailable createBookBecameAvailableEvent() {
         final InventoryId inventoryId = getState().getInventoryId();
         final Timestamp currentTime = getCurrentTime();
@@ -883,10 +929,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return reservationAdded;
     }
 
-    private LoansExtensionAllowed createLoansExtensionAllowedEvent() {
+    private LoansExtensionAllowed createLoansExtensionAllowedEvent(List<UserId> loanOwners) {
         final InventoryId inventoryId = getState().getInventoryId();
-        final List<Loan> loans = getBuilder().getLoans();
-        final List<UserId> loanOwners = getLoanOwners(loans);
         final LoansExtensionAllowed loansExtensionAllowed =
                 LoansExtensionAllowed.newBuilder()
                                      .setInventoryId(inventoryId)
@@ -896,10 +940,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return loansExtensionAllowed;
     }
 
-    private LoansExtensionForbidden createLoansExtensionForbiddenEvent() {
+    private LoansExtensionForbidden createLoansExtensionForbiddenEvent(List<UserId> loanOwners) {
         final InventoryId inventoryId = getState().getInventoryId();
-        final List<Loan> loans = getBuilder().getLoans();
-        final List<UserId> loanOwners = getLoanOwners(loans);
         final LoansExtensionForbidden loansExtensionForbidden =
                 LoansExtensionForbidden.newBuilder()
                                        .addAllBorrowers(loanOwners)
@@ -961,6 +1003,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                  .setLoanId(loanId)
                                  .setUserId(whoBorrowed)
                                  .setWhenBecameOverdue(getCurrentTime())
+//                                 .setIsAllowedExtension()
                                  .build();
         return becameOverdue;
     }
@@ -982,6 +1025,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                           .setLoanId(loanId)
                                           .setUserId(whoBorrowed)
                                           .setWhenBecameShouldReturnSoon(getCurrentTime())
+//                                          .setIsAllowedExtension()
                                           .build();
         return result;
     }
