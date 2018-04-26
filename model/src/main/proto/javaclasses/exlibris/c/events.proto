@@ -80,14 +80,11 @@ message BookBecameAvailable {
     // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
-    // The item which became available.
-    InventoryItemId inventory_item_id = 2;
-
     // In library items count
-    int32 in_library_count = 3;
+    int32 in_library_count = 2;
 
     // When book became available.
-    google.protobuf.Timestamp when_became_available = 4;
+    google.protobuf.Timestamp when_became_available = 3;
 }
 
 // An event fired when a book is available for a user to take it.
@@ -101,17 +98,14 @@ message BookReadyToPickup {
     // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
-    // The identifier of an inventory item which became ready to pickup.
-    InventoryItemId inventory_item_id = 2;
-
     // Who can take this book during 2 days.
-    UserId for_whom = 3;
+    UserId for_whom = 2;
 
     // When a book became ready to pickup.
-    google.protobuf.Timestamp when_became_ready_to_pickup = 4;
+    google.protobuf.Timestamp when_became_ready_to_pickup = 3;
 
     // The pickup deadline of a book.
-    google.protobuf.Timestamp pick_up_deadline = 5;
+    google.protobuf.Timestamp pick_up_deadline = 4;
 }
 
 // An event fired when a user reserves a book.
