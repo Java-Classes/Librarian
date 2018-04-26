@@ -123,3 +123,12 @@ message BookReservationViewId {
     // The identifier of a user.
     UserId user_id = 2;
 }
+
+// The identifier of of a one loan view.
+//
+message BookLoanViewId {
+
+    // String representation of UUID.
+    //
+    string value = 1;
+}
