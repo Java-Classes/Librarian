@@ -79,7 +79,7 @@ import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
 import javaclasses.exlibris.c.rejection.CannotExtendLoanPeriod;
 import javaclasses.exlibris.c.rejection.CannotReturnMissingBook;
 import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
-import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
+import javaclasses.exlibris.c.rejection.CannotWriteBookOff;
 import javaclasses.exlibris.c.rejection.NonAvailableBook;
 
 import java.util.List;
@@ -97,7 +97,7 @@ import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.Retu
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.ReturnBookRejection.throwCannotReturnMissingBook;
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.cannotCancelMissingReservation;
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.cannotExtendLoanPeriod;
-import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.cannotWriteMissingBookOff;
+import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.cannotWriteBookOff;
 
 /**
  * The aggregate managing the state of a {@link Inventory}.
@@ -163,13 +163,13 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      *
      * @param cmd command with a reason of a book writing off.
      * @return a {@code WriteBookOff} event.
-     * @throws CannotWriteMissingBookOff if that book is missing.
+     * @throws CannotWriteBookOff if that item is missing or borrowed.
      */
     @Assign
-    InventoryDecreased handle(WriteBookOff cmd) throws CannotWriteMissingBookOff {
+    InventoryDecreased handle(WriteBookOff cmd) throws CannotWriteBookOff {
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
-        if (!inventoryItemExists(inventoryItemId)) {
-            throw cannotWriteMissingBookOff(cmd);
+        if (!inventoryItemExists(inventoryItemId) || isInventoryItemBorrowed(inventoryItemId)) {
+            throw cannotWriteBookOff(cmd);
         }
         final InventoryDecreased inventoryDecreased = createInventoryDecreasedEvent(cmd);
         return inventoryDecreased;
@@ -180,7 +180,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      *
      * <p>For details see {@link ReserveBook}.
      *
-     * @param cmd command to reserve book.
+     * @param cmd command to reserve a book.
      * @return a {@code ReservationAdded} event.
      * @throws BookAlreadyBorrowed if a book is already borrowed by a user.
      * @throws BookAlreadyReserved if a reservation already exists.
@@ -196,7 +196,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             throw bookAlreadyReserved(cmd);
         }
         final ReservationAdded reservationAdded = createReservationAddedEvent(cmd);
-
         return reservationAdded;
     }
 
@@ -218,10 +217,14 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * @param cmd command to borrow book.
      * @return the {@link Pair} of the events.
      * @throws BookAlreadyBorrowed if a book is already borrowed ba a user.
-     * @throws NonAvailableBook    if this item is already borrowed by somebody or the user's
-     *                             reservation is not the first in the queue or he has no reservation
-     *                             but somebody has.
-     */
+     * @throws NonAvailableBook in following cases:
+     * <ul>
+     *      <li>if this item is already borrowed by somebody
+     *      <li>user has the reservation for this book and it is not satisfied
+     *      <li>user has no reservation for this book but the satisfied reservations count for this
+     *          book is greater or equal the `in library` items count.
+     * </ul>
+     */ 
     // @formatter:on
     @Assign
     Pair<BookBorrowed, Optional<ReservationBecameLoan>> handle(BorrowBook cmd) throws
@@ -239,6 +242,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
         final BookBorrowed bookBorrowedEvent = createBookBorrowedEvent(cmd);
         final List<Reservation> reservations = getState().getReservationsList();
+        final List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
 
         if (isBookReservedByUser(userId)) {
             final Reservation reservation = getReservationByUserId(userId, reservations);
@@ -251,7 +255,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             return result;
         }
 
-        if (isThereUnsatisfiedReservations(reservations)) {
+        if (!isThereFreeInventoryItems()) {
             throw nonAvailableBook(cmd);
         }
         final Pair result = Pair.withNullable(bookBorrowedEvent, null);
@@ -997,12 +1001,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         getBuilder().setLoans(loanPosition, updatedLoan);
     }
 
-    // TODO 4/26/2018[yegor.udovchenko]: refactor to `isBorrowingAllowed`
-    private boolean isThereUnsatisfiedReservations(List<Reservation> reservations) {
-        final boolean any = Iterables.any(reservations, item -> !item.getIsSatisfied());
-        return any;
-    }
-
     private boolean isBookReservedByUser(UserId userId) {
         final List<Reservation> reservations = getState().getReservationsList();
         final boolean any = Iterables.any(reservations, item -> item.getWhoReserved()
@@ -1101,12 +1099,22 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return isAllowed;
     }
 
-    private int getInLibraryItemsCount() {
+    private boolean isThereFreeInventoryItems() {
         final List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
+        final List<Reservation> reservations = getState().getReservationsList();
+        final int freeInventoryItemsCount = getFreeInventoryItemsCount(inventoryItems,
+                                                                       reservations);
+        return freeInventoryItemsCount > 0;
+    }
 
-        final int count = (int) inventoryItems.stream()
-                                              .filter(InventoryItem::getInLibrary)
-                                              .count();
-        return count;
+    private int getFreeInventoryItemsCount(List<InventoryItem> inventoryItems,
+                                           List<Reservation> reservations) {
+        final int satisfiedReservationsCount = (int) reservations.stream()
+                                                                 .filter(Reservation::getIsSatisfied)
+                                                                 .count();
+        final int inLibraryCount = (int) inventoryItems.stream()
+                                                       .filter(InventoryItem::getInLibrary)
+                                                       .count();
+        return inLibraryCount - satisfiedReservationsCount;
     }
 }
