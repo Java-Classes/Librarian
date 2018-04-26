@@ -255,7 +255,7 @@ message LoanPeriodExtended {
 //
 // All recent loans of the specified book become not allowed for extension.
 //
-message LoansBecameNotAllowedForExtension {
+message LoansExtensionForbidden {
 
     // The identifier of an inventory.
     InventoryId inventory_id = 1;
@@ -272,7 +272,7 @@ message LoansBecameNotAllowedForExtension {
 //
 // All recent loans of the specified book become allowed for extension.
 //
-message LoansBecameExtensionAllowed {
+message LoansExtensionAllowed {
 
     // The identifier of an inventory.
     InventoryId inventory_id = 1;
