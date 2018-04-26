@@ -249,17 +249,20 @@ message BookInventoryItemView {
 //
 message BookReservationView {
 
+    // The identifier of a one book reservation.
+    BookReservationViewId id = 1;
+
     // The identifier of a book.
-    BookId id = 1;
+    BookId book_id = 2;
 
     // The name of a reader.
-    spine.people.PersonName user_name = 2;
+    spine.people.PersonName user_name = 3;
 
     // The email address of a reader.
-    spine.net.EmailAddress email = 3;
+    spine.net.EmailAddress email = 4;
 
     // The time when a book was reserved.
-    google.protobuf.Timestamp when_reserved = 4;
+    google.protobuf.Timestamp when_reserved = 5;
 }
 
 // The projection state of a one loan.

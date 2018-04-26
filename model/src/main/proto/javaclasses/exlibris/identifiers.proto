@@ -112,3 +112,14 @@ message ReaderLoanViewId {
     // The identifier of a loan period.
     LoanId loan_id = 2;
 }
+
+// The identifier of a one book reservation.
+//
+message BookReservationViewId {
+
+    // The identifier of a book.
+    BookId book_id = 1;
+
+    // The identifier of a user.
+    UserId user_id = 2;
+}
