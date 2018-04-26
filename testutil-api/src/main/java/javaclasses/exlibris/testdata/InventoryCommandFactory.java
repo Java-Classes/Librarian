@@ -118,21 +118,19 @@ public class InventoryCommandFactory {
 
     public static AppendInventory appendInventoryInstance() {
 
-        final AppendInventory result = appendInventoryInstance(inventoryId, inventoryItemId, userId,
-                                                               rfid);
+        final AppendInventory result = appendInventoryInstance(inventoryId, inventoryItemId,
+                                                               userId);
         return result;
     }
 
     public static AppendInventory appendInventoryInstance(InventoryId inventoryId,
                                                           InventoryItemId inventoryItemId,
-                                                          UserId userId, Rfid rfid) {
+                                                          UserId userId) {
 
         AppendInventory result = AppendInventory.newBuilder()
                                                 .setInventoryId(inventoryId)
                                                 .setInventoryItemId(inventoryItemId)
                                                 .setLibrarianId(userId)
-                                                .setRfid(rfid)
-
                                                 .build();
         return result;
     }

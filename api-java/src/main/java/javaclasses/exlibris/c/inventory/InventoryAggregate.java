@@ -237,7 +237,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final UserId userId = cmd.getUserId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
 
-        if (!isBookBorrowedByUser(userId)) {
+        if (isBookBorrowedByUser(userId)) {
             throw bookAlreadyBorrowed(cmd);
         }
         if (isInventoryItemBorrowed(inventoryItemId)) {
@@ -451,7 +451,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Reacts on a {@code BookAdded} event.
+     * Reacts on a {@code BookAdded} event from the {@code BookAggregate}.
      *
      * @param event stimulus for reacting.
      * @return a {@code InventoryCreated} event.
@@ -469,7 +469,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Reacts on a {@code BookRemoved} event.
+     * Reacts on a {@code BookRemoved} event from the {@code BookAggregate}.
      *
      * @param event stimulus for reacting.
      * @return a {@code InventoryRemoved} event.
@@ -486,35 +486,23 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return result;
     }
 
-    /**
-     * Handles a {@code Empty} event.
-     *
-     * @param event a {@code Empty} event message.
-     */
+    /*
+     * Event appliers
+     *****************/
+
     @Apply
     void emptyEvent(Empty event) {
-        // Uses when command calls an empty event.
+        // Applier for empty event.
+        // Used when BorrowBook handler returns two events:
+        // BookBorrowed, Empty
+        // to handle Empty event without changing aggregate state.
     }
 
-    /**
-     * Handles a {@code InventoryCreated} event.
-     *
-     * <p>For details see {@link InventoryCreated}.
-     *
-     * @param event a {@code InventoryCreated} event message.
-     */
     @Apply
     void inventoryCreated(InventoryCreated event) {
         getBuilder().setInventoryId(event.getInventoryId());
     }
 
-    /**
-     * Handles a {@code InventoryRemoved} event.
-     *
-     * <p>For details see {@link InventoryRemoved}.
-     *
-     * @param event the {@code InventoryRemoved} event message.
-     */
     @Apply
     void inventoryRemoved(InventoryRemoved event) {
         getBuilder().clearInventoryId()
@@ -523,15 +511,8 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                     .clearReservations();
     }
 
-    /**
-     * Handles a {@code InventoryAppended} event.
-     *
-     * <p>For details see {@link InventoryAppended}.
-     *
-     * @param event a {@code InventoryAppended} event message.
-     */
     @Apply
-    // TODO 4/26/2018[yegor.udovchenko]: QR code?
+        // TODO 4/26/2018[yegor.udovchenko]: QR code?
     void inventoryAppended(InventoryAppended event) {
         final InventoryItemId inventoryItemId = event.getInventoryItemId();
         final InventoryItem newInventoryItem = InventoryItem.newBuilder()
@@ -542,25 +523,12 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         getBuilder().addInventoryItems(newInventoryItem);
     }
 
-    /**
-     * Handles a {@code BookBecameAvailable} event.
-     *
-     * <p>For details see {@link BookBecameAvailable}.
-     *
-     * @param event a {@code BookBecameAvailable} event message.
-     */
-    @SuppressWarnings("all")
     @Apply
     void bookBecameAvailable(BookBecameAvailable event) {
+        // BookBecameAvailable event does not cause aggregate state changes.
+        // Used to notify application read side about free
     }
 
-    /**
-     * Handles a {@code BookReadyToPickup} event.
-     *
-     * <p>A users reservation becomes satisfied.
-     *
-     * @param event a {@code BookReadyToPickup} event message.
-     */
     @Apply
     void bookReadyToPickup(BookReadyToPickup event) {
         final List<Reservation> reservations = getBuilder().getReservations();
@@ -574,13 +542,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         getBuilder().setReservations(reservationIndex, satisfiedReservation);
     }
 
-    /**
-     * Handles a {@code ReservationBecameLoan} event.
-     *
-     * <p>For details see {@link ReservationBecameLoan}.
-     *
-     * @param event a {@code ReservationBecameLoan} event message.
-     */
     @Apply
     void reservationBecameLoan(ReservationBecameLoan event) {
         final List<Reservation> reservations = getBuilder().getReservations();
@@ -589,13 +550,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         getBuilder().removeReservations(reservationIndex);
     }
 
-    /**
-     * Handles a {@code InventoryDecreased} event.
-     *
-     * <p>For details see {@link InventoryDecreased}.
-     *
-     * @param event a {@code InventoryDecreased} event message.
-     */
     @Apply
     void inventoryDecreased(InventoryDecreased event) {
         final List<InventoryItem> inventoryItems = getBuilder().getInventoryItems();
@@ -605,13 +559,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         getBuilder().removeInventoryItems(itemIndex);
     }
 
-    /**
-     * Handles a {@code ReservationAdded} event.
-     *
-     * <p>For details see {@link ReservationAdded}.
-     *
-     * @param event a {@code ReservationAdded} event message.
-     */
     @Apply
     void reservationAdded(ReservationAdded event) {
         final Isbn62 isbn62 = event.getInventoryId()
@@ -632,7 +579,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     /**
-     * Handles a {@code BookBorrowed} event.
+     * Applies a {@code BookBorrowed} event.
      *
      * <p>For details see {@link BookBorrowed}.
      *
@@ -659,33 +606,19 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                               .setWhoBorrowed(event.getWhoBorrowed())
                               .setWhenTaken(whenBorrowed)
                               .setWhenDue(whenDue)
-                              .setIsAllowedExtension(false)
+                              .setIsAllowedExtension(true)
                               .build();
 
         getBuilder().setInventoryItems(itemPosition, borrowedItem)
                     .addLoans(loan);
     }
 
-    /**
-     * Handles a {@code LoanBecameOverdue} event.
-     *
-     * <p>For details see {@link LoanBecameOverdue}.
-     *
-     * @param event a {@code LoanBecameOverdue} event message.
-     */
     @Apply
     void loanBecameOverdue(LoanBecameOverdue event) {
         final LoanId loanId = event.getLoanId();
         updateLoanStatus(loanId, LOAN_OVERDUE);
     }
 
-    /**
-     * Handles a {@code LoanBecameShouldReturnSoon} event.
-     *
-     * <p>For details see {@link LoanBecameShouldReturnSoon}.
-     *
-     * @param event a {@code LoanBecameShouldReturnSoon} event message.
-     */
     @Apply
     void loanBecameShouldReturnSoon(LoanBecameShouldReturnSoon event) {
         final LoanId loanId = event.getLoanId();
@@ -702,13 +635,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         getBuilder().setLoans(loanPosition, updatedLoan);
     }
 
-    /**
-     * Handles a {@code LoanPeriodExtended} event.
-     *
-     * <p>For details see {@link LoanPeriodExtended}.
-     *
-     * @param event a {@code LoanPeriodExtended} event message.
-     */
     @Apply
     void loanPeriodExtended(LoanPeriodExtended event) {
         final LoanId loanId = event.getLoanId();
@@ -723,13 +649,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         getBuilder().setLoans(loanPosition, updatedLoan);
     }
 
-    /**
-     * Handles a {@code ReservationCanceled} event.
-     *
-     * <p>For details see {@link ReservationCanceled}.
-     *
-     * @param event a {@code ReservationCanceled} event message.
-     */
     @Apply
     void reservationCanceled(ReservationCanceled event) {
         final UserId whoCanceled = event.getWhoCanceled();
@@ -739,13 +658,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         getBuilder().removeReservations(reservationIndex);
     }
 
-    /**
-     * Handles a {@code ReservationPickUpPeriodExpired} event.
-     *
-     * <p>For details see {@link ReservationPickUpPeriodExpired}.
-     *
-     * @param event a {@code ReservationPickUpPeriodExpired} event message.
-     */
     @Apply
     void reservationPickUpPeriodExpired(ReservationPickUpPeriodExpired event) {
         final UserId userId = event.getUserId();
@@ -755,13 +667,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         getBuilder().removeReservations(reservationPosition);
     }
 
-    /**
-     * Handles a {@code BookReturned} event.
-     *
-     * <p>For details see {@link BookReturned}.
-     *
-     * @param event a {@code BookReturned} event message.
-     */
     @Apply
     void bookReturned(BookReturned event) {
         final UserId whoReturned = event.getWhoReturned();
@@ -780,13 +685,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         getBuilder().removeLoans(loanIndex);
     }
 
-    /**
-     * Handles a {@code BookLost} event.
-     *
-     * <p>For details see {@link BookLost}.
-     *
-     * @param event a {@code BookLost} event message.
-     */
     @Apply
     void bookLost(BookLost event) {
         final UserId whoLost = event.getWhoLost();
@@ -806,13 +704,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         getBuilder().removeLoans(loanIndex);
     }
 
-    /**
-     * Handles a {@code LoansExtensionAllowed} event.
-     *
-     * <p>For details see {@link LoansExtensionAllowed}.
-     *
-     * @param event a {@code LoansExtensionAllowed} event message.
-     */
     @Apply
     void loansExtensionAllowed(LoansExtensionAllowed event) {
         final List<UserId> borrowersList = event.getBorrowersList();
@@ -828,13 +719,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         }
     }
 
-    /**
-     * Handles a {@code LoansExtensionForbidden} event.
-     *
-     * <p>For details see {@link LoansExtensionForbidden}.
-     *
-     * @param event a {@code LoansExtensionForbidden} event message.
-     */
     @Apply
     void loansExtensionForbidden(LoansExtensionForbidden event) {
         final List<UserId> borrowersList = event.getBorrowersList();
@@ -995,6 +879,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final Loan loan = loans.get(loanPosition);
         final UserId whoBorrowed = loan.getWhoBorrowed();
         final InventoryItemId inventoryItemId = loan.getInventoryItemId();
+        final boolean isAllowedExtension = loan.getIsAllowedExtension();
 
         final LoanBecameOverdue becameOverdue =
                 LoanBecameOverdue.newBuilder()
@@ -1003,7 +888,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                  .setLoanId(loanId)
                                  .setUserId(whoBorrowed)
                                  .setWhenBecameOverdue(getCurrentTime())
-//                                 .setIsAllowedExtension()
+                                 .setIsAllowedExtension(isAllowedExtension)
                                  .build();
         return becameOverdue;
     }
@@ -1016,6 +901,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final int loanPosition = getLoanIndexByLoanId(loanId, loans);
         final Loan loan = loans.get(loanPosition);
         final UserId whoBorrowed = loan.getWhoBorrowed();
+        final boolean isAllowedExtension = loan.getIsAllowedExtension();
         final InventoryItemId inventoryItemId = loan.getInventoryItemId();
 
         final LoanBecameShouldReturnSoon result =
@@ -1025,7 +911,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                           .setLoanId(loanId)
                                           .setUserId(whoBorrowed)
                                           .setWhenBecameShouldReturnSoon(getCurrentTime())
-//                                          .setIsAllowedExtension()
+                                          .setIsAllowedExtension(isAllowedExtension)
                                           .build();
         return result;
     }
@@ -1039,8 +925,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final Loan loan = loans.get(loanPosition);
         final InventoryItemId inventoryItemId = loan.getInventoryItemId();
         final Timestamp previousDueDate = loan.getWhenDue();
-        final long newDueDateInSeconds = previousDueDate.getSeconds() +
-                LOAN_PERIOD;
+        final long newDueDateInSeconds = previousDueDate.getSeconds() + LOAN_PERIOD;
         final Timestamp newDueDate = Timestamp.newBuilder()
                                               .setSeconds(newDueDateInSeconds)
                                               .build();
@@ -1201,7 +1086,10 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final List<Loan> loans = getState().getLoansList();
         final int loanIndex = getLoanIndexByLoanId(loanId, loans);
         final Loan loan = loans.get(loanIndex);
-        final boolean isAllowed = loan.getIsAllowedExtension();
+        final LoanStatus status = loan.getStatus();
+        final boolean isAllowed =
+                (status.equals(LOAN_OVERDUE) || status.equals(LOAN_SOULD_RETURN_SOON)) &&
+                        loan.getIsAllowedExtension();
         return isAllowed;
     }
 

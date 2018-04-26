@@ -27,7 +27,7 @@ import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.InventoryDecreased;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.WriteBookOff;
-import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
+import javaclasses.exlibris.c.rejection.CannotWriteBookOff;
 import javaclasses.exlibris.testdata.InventoryCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -119,6 +119,6 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
 
         final Throwable cause = Throwables.getRootCause(t);
 
-        assertThat(cause, instanceOf(CannotWriteMissingBookOff.class));
+        assertThat(cause, instanceOf(CannotWriteBookOff.class));
     }
 }

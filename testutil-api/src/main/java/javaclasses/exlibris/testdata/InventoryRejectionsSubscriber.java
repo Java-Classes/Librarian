@@ -68,7 +68,7 @@ public class InventoryRejectionsSubscriber extends RejectionSubscriber {
     }
 
     @Subscribe
-    public void on(Rejections.CannotWriteMissingBookOff rejection) {
+    public void on(Rejections.CannotWriteBookOff rejection) {
         wasCalled = true;
     }
 

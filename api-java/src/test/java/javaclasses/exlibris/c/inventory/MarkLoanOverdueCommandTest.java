@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static javaclasses.exlibris.LoanStatus.LOAN_OVERDUE;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.markLoanOverdue;
@@ -88,8 +89,8 @@ public class MarkLoanOverdueCommandTest extends InventoryCommandTest<MarkLoanOve
         assertTrue(state.getInventoryItems(0)
                         .getBorrowed());
 
-        assertTrue(state.getLoans(0)
-                        .getOverdue());
+        assertEquals(state.getLoans(0)
+                          .getStatus(), LOAN_OVERDUE);
     }
 
     private void dispatchAppendInventory() {

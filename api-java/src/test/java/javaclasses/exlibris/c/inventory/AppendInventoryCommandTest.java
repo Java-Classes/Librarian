@@ -60,7 +60,7 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
                                                                     envelopeOf(appendInventory));
 
         assertNotNull(aggregate.getId());
-        assertEquals(2, messageList.size());
+        assertEquals(1, messageList.size());
         assertEquals(InventoryAppended.class, messageList.get(0)
                                                          .getClass());
 

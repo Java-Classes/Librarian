@@ -41,7 +41,6 @@ import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInvent
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryItemId;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryItemId2;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.rfid;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId2;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId3;
@@ -174,8 +173,7 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
 
         final AppendInventory appendInventoryCommand = appendInventoryInstance(inventoryId,
                                                                                inventoryItemId2,
-                                                                               userId,
-                                                                               rfid);
+                                                                               userId);
         dispatchCommand(aggregate,
                         envelopeOf(appendInventoryCommand));
 

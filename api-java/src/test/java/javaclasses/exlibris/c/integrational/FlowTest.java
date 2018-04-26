@@ -79,8 +79,7 @@ public class FlowTest extends InventoryCommandTest<Message> {
     private final Command appendInventory2 = requestFactory.createCommand(
             toMessage(appendInventoryInstance(InventoryCommandFactory.inventoryId,
                                               InventoryCommandFactory.inventoryItemId2,
-                                              InventoryCommandFactory.userId,
-                                              InventoryCommandFactory.rfid)));
+                                              InventoryCommandFactory.userId)));
 
     private final Command borrowBook = requestFactory.createCommand(
             toMessage(borrowBookInstance()));
