@@ -242,7 +242,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
         final BookBorrowed bookBorrowedEvent = createBookBorrowedEvent(cmd);
         final List<Reservation> reservations = getState().getReservationsList();
-        final List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
 
         if (isBookReservedByUser(userId)) {
             final Reservation reservation = getReservationByUserId(userId, reservations);
@@ -255,7 +254,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             return result;
         }
 
-        if (!isThereFreeInventoryItems()) {
+        if (!isThereInventoryItemsFreeForBorrowing()) {
             throw nonAvailableBook(cmd);
         }
         final Pair result = Pair.withNullable(bookBorrowedEvent, null);
@@ -299,7 +298,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * @param cmd command with the identifier of a loan
      *            that a user is going to extend.
      * @return a {@code LoanPeriodExtended} event.
-     * @throws CannotExtendLoanPeriod if a loan period extension isn’t possible.
+     * @throws CannotExtendLoanPeriod if a loan period extension isn’t allowed.
      */
     @Assign
     LoanPeriodExtended handle(ExtendLoanPeriod cmd) throws CannotExtendLoanPeriod {
@@ -318,8 +317,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      *
      * <p>For details see {@link CancelReservation}.
      *
-     * @param cmd command with the identifier of a reservation
-     *            that a user is going to cancel.
+     * @param cmd command with the identifier of a user who is going to cancel a reservation.
      * @return the {@code ReservationCanceled} event.
      * @throws CannotCancelMissingReservation if a reservation is missing.
      */
@@ -1099,7 +1097,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return isAllowed;
     }
 
-    private boolean isThereFreeInventoryItems() {
+    private boolean isThereInventoryItemsFreeForBorrowing() {
         final List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
         final List<Reservation> reservations = getState().getReservationsList();
         final int freeInventoryItemsCount = getFreeInventoryItemsCount(inventoryItems,
