@@ -93,24 +93,22 @@ message ExpectedSoonBooksListViewId {
     string value = 1;
 }
 
-// The identifier of a list of lost books.
+// The identifier of each readaer's event.
 //
-message LostBooksListViewId {
+message ReaderEventLogViewId {
 
     // String representation of UUID.
     //
     string value = 1;
 }
 
-// The identifier of an inventory list.
+// The identifier of a reader's loan.
 //
-message InventoryListViewId {
+message ReaderLoanViewId {
 
-    // String representation of UUID.
-    //
-    string value = 1;
+    // The identifier of a user.
+    UserId user_id = 1;
+
+    // The identifier of a loan period.
+    LoanId loan_id = 2;
 }
-
-
-
-
