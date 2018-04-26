@@ -149,7 +149,7 @@ message BookBorrowed {
     // Who borrowed a book.
     UserId who_borrowed = 3;
 
-    // The loan period.
+    // The loan idenifier.
     LoanId loan_id = 4;
 
     // In library items count
@@ -157,6 +157,9 @@ message BookBorrowed {
 
     // The time when user borrowed a book.
     google.protobuf.Timestamp when_borrowed = 6;
+
+    // The time when the loan becomes overdue.
+    google.protobuf.Timestamp when_due = 7;
 }
 
 // An event when a reservation was successfully finished.
@@ -301,8 +304,11 @@ message BookReturned {
     // Who returned a book.
     UserId who_returned = 3;
 
+    // The loan idenifier.
+    LoanId loan_id = 4;
+
     // The timestamp when user returned a book.
-    google.protobuf.Timestamp when_returned = 4;
+    google.protobuf.Timestamp when_returned = 5;
 }
 
 // An event fired when an user lost a borrowed book.
