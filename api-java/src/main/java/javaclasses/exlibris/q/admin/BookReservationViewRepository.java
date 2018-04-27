@@ -24,6 +24,7 @@ import io.spine.server.projection.ProjectionRepository;
 import io.spine.server.route.EventRouting;
 import javaclasses.exlibris.BookReservationViewId;
 import javaclasses.exlibris.c.ReservationAdded;
+import javaclasses.exlibris.c.ReservationBecameLoan;
 import javaclasses.exlibris.c.ReservationCanceled;
 import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 import javaclasses.exlibris.q.BookReservationView;
@@ -72,6 +73,18 @@ public class BookReservationViewRepository extends ProjectionRepository<BookRese
                           return singleton(id);
                       });
         routing.route(ReservationPickUpPeriodExpired.class,
+                      (message, context) -> {
+                          final BookReservationViewId id =
+                                  BookReservationViewId.newBuilder()
+                                                       .setBookId(
+                                                               message.getInventoryId()
+                                                                      .getBookId())
+                                                       .setUserId(
+                                                               message.getUserId())
+                                                       .build();
+                          return singleton(id);
+                      });
+        routing.route(ReservationBecameLoan.class,
                       (message, context) -> {
                           final BookReservationViewId id =
                                   BookReservationViewId.newBuilder()

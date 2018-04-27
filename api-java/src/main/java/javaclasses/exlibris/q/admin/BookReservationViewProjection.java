@@ -28,6 +28,7 @@ import io.spine.server.projection.Projection;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.BookReservationViewId;
 import javaclasses.exlibris.c.ReservationAdded;
+import javaclasses.exlibris.c.ReservationBecameLoan;
 import javaclasses.exlibris.c.ReservationCanceled;
 import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 import javaclasses.exlibris.q.BookReservationView;
@@ -75,6 +76,14 @@ public class BookReservationViewProjection extends Projection<BookReservationVie
 
     @Subscribe
     public void on(ReservationPickUpPeriodExpired event) {
+        getBuilder().clearBookId()
+                    .clearUserName()
+                    .clearEmail()
+                    .clearWhenReserved();
+    }
+
+    @Subscribe
+    public void on(ReservationBecameLoan event) {
         getBuilder().clearBookId()
                     .clearUserName()
                     .clearEmail()
