@@ -89,7 +89,7 @@ message BookBecameAvailable {
 
 // An event fired when a book is available for a user to take it.
 //
-// Appears when an inventory appended or a book returned.
+// Appears when an inventory appended or a book returned or someone canceles his reservation.
 //
 // In 2 days this opportunity disappears and a reservation expires.
 //
@@ -110,9 +110,6 @@ message BookReadyToPickup {
 
 // An event fired when a user reserves a book.
 //
-// If a queue on book exists then user will be added to the queue.
-// Else if book is available then user has 2 days to borrow book.
-//
 message ReservationAdded {
 
     // The identifier of an inventory.
@@ -128,7 +125,7 @@ message ReservationAdded {
     google.protobuf.Timestamp when_created = 4;
 }
 
-// An event fired when user borrows book.
+// An event fired when a user borrows a book.
 //
 // Triggers 'reservation became loan' if the book was reserved.
 //
