@@ -22,9 +22,10 @@ package javaclasses.exlibris.c.inventory;
 
 import com.google.protobuf.Message;
 import javaclasses.exlibris.Inventory;
+import javaclasses.exlibris.InventoryItem;
+import javaclasses.exlibris.InventoryItemId;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.InventoryAppended;
-import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.testdata.InventoryCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -68,11 +69,12 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
 
         assertEquals(InventoryCommandFactory.inventoryId, inventoryAppended.getInventoryId());
         assertEquals(InventoryCommandFactory.userId, inventoryAppended.getLibrarianId());
-
+        assertEquals(InventoryCommandFactory.inventoryItemId,
+                     inventoryAppended.getInventoryItemId());
     }
 
     @Test
-    @DisplayName("append inventory with no reservations")
+    @DisplayName("add inventory item to the state")
     void appendInventoryWithoutReservation() {
         final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
         dispatchCommand(aggregate, envelopeOf(appendInventory));
@@ -80,64 +82,20 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
         final Inventory inventory = aggregate.getState();
         assertEquals(1, inventory.getInventoryItemsList()
                                  .size());
-        assertEquals(true, inventory.getInventoryItemsList()
-                                    .get(0)
-                                    .getInLibrary());
-        assertEquals(false, inventory.getInventoryItemsList()
-                                     .get(0)
-                                     .getLost());
-        assertEquals(false, inventory.getInventoryItemsList()
-                                     .get(0)
-                                     .getBorrowed());
-        assertEquals(1, inventory.getInventoryItemsList()
-                                 .get(0)
-                                 .getInventoryItemId()
-                                 .getItemNumber());
-        assertEquals(isbn62, inventory.getInventoryItemsList()
-                                      .get(0)
-                                      .getInventoryItemId()
-                                      .getBookId()
-                                      .getIsbn62());
-        assertEquals("", inventory.getInventoryItemsList()
-                                  .get(0)
-                                  .getUserId()
-                                  .getEmail()
-                                  .getValue());
-    }
 
-    @Test
-    @DisplayName("append inventory with reservation")
-    void appendInventoryWithReservation() {
-        final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
-        dispatchCommand(aggregate, envelopeOf(reserveBook));
+        final InventoryItem appendedItem = inventory.getInventoryItemsList()
+                                                    .get(0);
+        assertTrue(appendedItem.getInLibrary());
+        assertFalse(appendedItem.getLost());
+        assertFalse(appendedItem.getBorrowed());
+        final String userEmailValue = appendedItem.getUserId()
+                                                  .getEmail()
+                                                  .getValue();
+        assertEquals("", userEmailValue);
 
-        final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
-        dispatchCommand(aggregate, envelopeOf(appendInventory));
-        final Inventory inventory = aggregate.getState();
-        assertEquals(1, inventory.getInventoryItemsList()
-                                 .size());
-        assertTrue(inventory.getInventoryItemsList()
-                            .get(0)
-                            .getInLibrary());
-        assertFalse(inventory.getInventoryItemsList()
-                             .get(0)
-                             .getLost());
-        assertFalse(inventory.getInventoryItemsList()
-                             .get(0)
-                             .getBorrowed());
-        assertEquals(1, inventory.getInventoryItemsList()
-                                 .get(0)
-                                 .getInventoryItemId()
-                                 .getItemNumber());
-        assertEquals(isbn62, inventory.getInventoryItemsList()
-                                      .get(0)
-                                      .getInventoryItemId()
-                                      .getBookId()
-                                      .getIsbn62());
-        assertEquals("", inventory.getInventoryItemsList()
-                                  .get(0)
-                                  .getUserId()
-                                  .getEmail()
-                                  .getValue());
+        final InventoryItemId inventoryItemId = appendedItem.getInventoryItemId();
+        assertEquals(1, inventoryItemId.getItemNumber());
+        assertEquals(isbn62, inventoryItemId.getBookId()
+                                            .getIsbn62());
     }
 }
