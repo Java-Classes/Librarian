@@ -39,9 +39,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.protobuf.TypeConverter.toMessage;
+import static javaclasses.exlibris.testdata.BookCommandFactory.bookId;
 import static javaclasses.exlibris.testdata.BookCommandFactory.bookTitle;
-import static javaclasses.exlibris.testdata.BookCommandFactory.isbn62Value;
-import static javaclasses.exlibris.testdata.BookCommandFactory.userEmailAddress1;
+import static javaclasses.exlibris.testdata.BookCommandFactory.userId;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -61,12 +61,11 @@ public class SubscribersTest extends BookCommandTest<AddBook> {
         final RejectionBus rejectionBus = boundedContext.getRejectionBus();
 
         final Command addBook = requestFactory.createCommand(
-                toMessage(
-                        BookCommandFactory.createBookInstance()));
+                toMessage(BookCommandFactory.createBookInstance()));
 
-        final BookRejectionsSubscriber vendorRejectionsSubscriber = new BookRejectionsSubscriber();
+        final BookRejectionsSubscriber bookRejectionsSubscriber = new BookRejectionsSubscriber();
 
-        rejectionBus.register(vendorRejectionsSubscriber);
+        rejectionBus.register(bookRejectionsSubscriber);
 
         assertNull(BookRejectionsSubscriber.getRejection());
 
@@ -75,10 +74,8 @@ public class SubscribersTest extends BookCommandTest<AddBook> {
 
         Rejections.BookAlreadyExists bookAlreadyExists = BookRejectionsSubscriber.getRejection();
 
-        assertEquals(userEmailAddress1, bookAlreadyExists.getLibrarianId()
-                                                         .getEmail());
-        assertEquals(isbn62Value, bookAlreadyExists.getBookId()
-                                                   .getIsbn62());
+        assertEquals(userId, bookAlreadyExists.getLibrarianId());
+        assertEquals(bookId, bookAlreadyExists.getBookId());
         assertEquals(bookTitle, bookAlreadyExists.getBookTitle());
     }
 
@@ -88,19 +85,17 @@ public class SubscribersTest extends BookCommandTest<AddBook> {
         final BoundedContext boundedContext = BoundedContexts.create();
         final CommandBus commandBus = boundedContext.getCommandBus();
         final EventBus eventBus = boundedContext.getEventBus();
-        final Command addBook = requestFactory.command()
-                                              .create(toMessage(
-                                                      BookCommandFactory.createBookInstance()));
-
+        final Command addBook =
+                requestFactory.command()
+                              .create(toMessage(BookCommandFactory.createBookInstance()));
         final BookEventSubscriber eventSubscriber = new BookEventSubscriber();
         eventBus.register(eventSubscriber);
+
         commandBus.post(addBook, StreamObservers.noOpObserver());
         final BookAdded event = BookEventSubscriber.getEvent();
-        assertEquals(isbn62Value, event.getBookId()
-                                       .getIsbn62());
+        assertEquals(bookId, event.getBookId());
         assertEquals(bookTitle, event.getDetails()
                                      .getTitle());
-        assertEquals(userEmailAddress1, event.getLibrarianId()
-                                             .getEmail());
+        assertEquals(userId, event.getLibrarianId());
     }
 }
