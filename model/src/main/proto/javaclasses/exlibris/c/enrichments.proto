@@ -36,7 +36,8 @@ import "javaclasses/exlibris/model.proto";
 
 message BookEnrichment {
     option (enrichment_for) = "javaclasses.exlibris.c.BookBorrowed,"
-                                "javaclasses.exlibris.c.ReservationAdded";
+                                "javaclasses.exlibris.c.ReservationAdded,"
+                                "javaclasses.exlibris.c.BookLost";
 //                                "javaclasses.exlibris.c.BookReturned"
 //                                "javaclasses.exlibris.c.ReservationCanceled"
 //                                "javaclasses.exlibris.c.ReservationPickUpPeriodExpired"
