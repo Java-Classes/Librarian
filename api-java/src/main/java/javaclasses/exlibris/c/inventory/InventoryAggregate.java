@@ -739,12 +739,12 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final Timestamp currentTime = getCurrentTime();
         // current available count should be increased to match its value
         // after applying this event.
-        final int itemsCount = getAvailableInventoryItemsCount() + 1;
+        final int availableItemsCount = getAvailableInventoryItemsCount() + 1;
         final BookBecameAvailable bookBecameAvailable =
                 BookBecameAvailable.newBuilder()
                                    .setInventoryId(inventoryId)
                                    .setWhenBecameAvailable(currentTime)
-                                   .setInLibraryCount(itemsCount)
+                                   .setAvailableBooksCount(availableItemsCount)
                                    .build();
         return bookBecameAvailable;
     }
@@ -791,7 +791,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final WriteOffReason writeOffReason = cmd.getWriteBookOffReason();
         // current available count should be decreased to match its value
         // after applying this event.
-        final int itemsCount = getAvailableInventoryItemsCount() - 1;
+        final int availableItemsCount = getAvailableInventoryItemsCount() - 1;
         final InventoryDecreased inventoryDecreased =
                 InventoryDecreased.newBuilder()
                                   .setInventoryId(inventoryId)
@@ -799,7 +799,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                   .setWhenDecreased(getCurrentTime())
                                   .setLibrarianId(librarianId)
                                   .setWriteOffReason(writeOffReason)
-                                  .setInLibraryCount(itemsCount)
+                                  .setAvailableBooksCount(availableItemsCount)
                                   .build();
         return inventoryDecreased;
     }
@@ -860,7 +860,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                       .setLoanId(loanId)
                                                       .setWhenBorrowed(whenBorrowed)
                                                       .setWhenDue(whenDue)
-                                                      .setInLibraryCount(availableItemsCount)
+                                                      .setAvailableBooksCount(availableItemsCount)
                                                       .build();
         return bookBorrowed;
     }
