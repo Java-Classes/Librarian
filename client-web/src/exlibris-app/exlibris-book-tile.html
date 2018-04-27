@@ -154,6 +154,9 @@
                         computed: '_computeBookStatusMessage(book)'
                     },
 
+                    /**
+                     * Class that depends on the status of the book.
+                     */
                     statusClass: {
                         value: String,
                         computed: "_computeClassForStatusMessage(book.status)"
