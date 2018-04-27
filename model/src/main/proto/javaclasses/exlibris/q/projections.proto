@@ -234,17 +234,6 @@ message BookDetailsView {
     BookDetails book_details = 2;
 }
 
-// The projection state of a book inventory view.
-//
-message BookInventoryItemView {
-
-    // The identifier of a book.
-    BookId id = 1;
-
-    // The collection of inventory items.
-    repeated InventoryItemFullState item_state = 2;
-}
-
 // The projection state of a one book reservation.
 //
 message BookReservationView {
