@@ -167,7 +167,7 @@ public class InventoryEventFactory {
      */
     public static InventoryDecreased inventoryDecreasedInstance() {
         return inventoryDecreasedInstance(INVENTORY_ID, INVENTORY_ITEM_ID, USER_ID,
-                                          getCurrentTime(), WRITE_OFF_REASON);
+                                          getCurrentTime(), WRITE_OFF_REASON, 0);
     }
 
     /**
@@ -179,17 +179,19 @@ public class InventoryEventFactory {
      * @param userId          the identifier of a user who added a book
      * @param whenAppended    time when inventory was appended
      * @param reason          reason for write book off
+     * @param count           available count og books
      * @return the {@code InventoryDecreased} instance
      */
     public static InventoryDecreased inventoryDecreasedInstance(InventoryId inventoryId,
                                                                 InventoryItemId inventoryItemId,
                                                                 UserId userId,
                                                                 Timestamp whenAppended,
-                                                                WriteOffReason reason) {
+                                                                WriteOffReason reason, int count) {
         final InventoryDecreased result = InventoryDecreased.newBuilder()
                                                             .setInventoryId(inventoryId)
                                                             .setInventoryItemId(inventoryItemId)
                                                             .setLibrarianId(userId)
+                                                            .setAvailableBooksCount(count)
                                                             .setWhenDecreased(whenAppended)
                                                             .setWriteOffReason(reason)
                                                             .build();
@@ -291,7 +293,7 @@ public class InventoryEventFactory {
         final BookBecameAvailable result = BookBecameAvailable.newBuilder()
                                                               .setInventoryId(inventoryId)
                                                               .setInventoryItemId(inventoryItemId)
-                                                              .setInLibraryCount(count)
+                                                              .setAvailableBooksCount(count)
                                                               .setWhenBecameAvailable(
                                                                       whenBecameAvailable)
                                                               .build();

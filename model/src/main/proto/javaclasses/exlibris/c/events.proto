@@ -83,8 +83,8 @@ message BookBecameAvailable {
     // The item which became available.
     InventoryItemId inventory_item_id = 2;
 
-    // In library items count
-    int32 in_library_count = 3;
+    // The number of public available books.
+    int32 available_books_count = 3;
 
     // When book became available.
     google.protobuf.Timestamp when_became_available = 4;
@@ -152,8 +152,8 @@ message BookBorrowed {
     // The loan period.
     LoanId loan_id = 4;
 
-    // In library items count
-    int32 in_library_count = 5;
+    // The number of public available books.
+    int32 available_books_count = 5;
 
     // The time when user borrowed a book.
     google.protobuf.Timestamp when_borrowed = 6;
@@ -364,8 +364,8 @@ message InventoryDecreased {
     // The time when inventory was decreased.
     google.protobuf.Timestamp when_decreased = 4;
 
-    // In library items count
-    int32 in_library_count = 5;
+    // The number of public available books.
+    int32 available_books_count = 5;
 
     // A book can be lost or outdated.
     WriteOffReason write_off_reason = 6;
