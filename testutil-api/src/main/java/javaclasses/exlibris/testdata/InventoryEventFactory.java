@@ -49,6 +49,8 @@ import javaclasses.exlibris.c.ReservationAdded;
 import javaclasses.exlibris.c.ReservationBecameLoan;
 import javaclasses.exlibris.c.ReservationCanceled;
 import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
+import javaclasses.exlibris.q.InventoryItemState;
+import javaclasses.exlibris.q.LoanDetails;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,6 +135,49 @@ public class InventoryEventFactory {
                                                          .setGivenName("Ivan")
                                                          .setFamilyName("Petrov")
                                                          .build();
+
+    public static final InventoryItemState IN_LIBRARY_ITEM_STATE = InventoryItemState.newBuilder()
+                                                                                     .setItemId(
+                                                                                             INVENTORY_ITEM_ID)
+                                                                                     .setInLibrary(
+                                                                                             true)
+                                                                                     .build();
+
+    public static final LoanDetails LOAN_DETAILS = LoanDetails.newBuilder()
+                                                              .setUserId(USER_ID)
+                                                              .setUserName(USER_NAME)
+                                                              .setEmail(USER_EMAIL_ADRESS)
+                                                              .setWhenTaken(DEFAULT_DATE1)
+                                                              .setWhenDue(DEFAULT_DUE_DATE)
+                                                              .setOverdue(false)
+                                                              .build();
+    public static final InventoryItemState BORROWED_ITEM_STATE = InventoryItemState.newBuilder()
+                                                                                   .setItemId(
+                                                                                           INVENTORY_ITEM_ID)
+                                                                                   .setLoanDetails(
+                                                                                           LOAN_DETAILS)
+                                                                                   .build();
+
+    public static final InventoryItemState LOST_ITEM_STATE = InventoryItemState.newBuilder()
+                                                                               .setItemId(
+                                                                                       INVENTORY_ITEM_ID)
+                                                                               .setLost(true)
+                                                                               .build();
+
+    public static final LoanDetails OVERDUE_LOAN_DETAILS = LoanDetails.newBuilder()
+                                                                      .setUserId(USER_ID)
+                                                                      .setUserName(USER_NAME)
+                                                                      .setEmail(USER_EMAIL_ADRESS)
+                                                                      .setWhenTaken(DEFAULT_DATE1)
+                                                                      .setWhenDue(DEFAULT_DUE_DATE)
+                                                                      .setOverdue(true)
+                                                                      .build();
+    public static final InventoryItemState OVERDUE_ITEM_STATE = InventoryItemState.newBuilder()
+                                                                                  .setItemId(
+                                                                                          INVENTORY_ITEM_ID)
+                                                                                  .setLoanDetails(
+                                                                                          OVERDUE_LOAN_DETAILS)
+                                                                                  .build();
 
     private InventoryEventFactory() {
     }
