@@ -53,6 +53,6 @@ public class MarkBookAsAvailableCommandTest extends InventoryCommandTest<MarkBoo
         final BookBecameAvailable bookBecameAvailable = (BookBecameAvailable) messageList.get(0);
         final int availableBooksCount = bookBecameAvailable.getAvailableBooksCount();
 
-        assertEquals(1, availableBooksCount);
+        assertEquals(0, availableBooksCount);
     }
 }

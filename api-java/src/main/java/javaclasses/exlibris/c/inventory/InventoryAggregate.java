@@ -87,7 +87,6 @@ import javaclasses.exlibris.c.rejection.CannotWriteBookOff;
 import javaclasses.exlibris.c.rejection.NonAvailableBook;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static io.spine.time.Time.getCurrentTime;
 import static javaclasses.exlibris.LoanStatus.LOAN_OVERDUE;
@@ -737,9 +736,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     private BookBecameAvailable createBookBecameAvailableEvent() {
         final InventoryId inventoryId = getState().getInventoryId();
         final Timestamp currentTime = getCurrentTime();
-        // current available count should be increased to match its value
-        // after applying this event.
-        final int availableItemsCount = getAvailableInventoryItemsCount() + 1;
+        final int availableItemsCount = getAvailableInventoryItemsCount();
         final BookBecameAvailable bookBecameAvailable =
                 BookBecameAvailable.newBuilder()
                                    .setInventoryId(inventoryId)
@@ -1079,13 +1076,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final int index = Iterables.indexOf(inventoryItems, item -> item.getInventoryItemId()
                                                                         .equals(inventoryItemId));
         return index;
-    }
-
-    private List<UserId> getLoanOwners(List<Loan> loans) {
-        final List<UserId> loanOwners = loans.stream()
-                                             .map(Loan::getWhoBorrowed)
-                                             .collect(Collectors.toList());
-        return loanOwners;
     }
 
     private boolean isLoanAllowedForExtension(LoanId loanId) {
