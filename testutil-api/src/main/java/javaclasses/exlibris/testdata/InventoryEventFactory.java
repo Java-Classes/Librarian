@@ -22,6 +22,7 @@ package javaclasses.exlibris.testdata;
 
 import com.google.protobuf.Timestamp;
 import io.spine.net.EmailAddress;
+import io.spine.people.PersonName;
 import io.spine.time.LocalDate;
 import io.spine.time.MonthOfYear;
 import javaclasses.exlibris.BookId;
@@ -47,6 +48,7 @@ import javaclasses.exlibris.c.LoansBecameNotAllowedForExtension;
 import javaclasses.exlibris.c.ReservationAdded;
 import javaclasses.exlibris.c.ReservationBecameLoan;
 import javaclasses.exlibris.c.ReservationCanceled;
+import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,6 +122,10 @@ public class InventoryEventFactory {
                                                                       MonthOfYear.valueOf(1))
                                                               .setYear(1970)
                                                               .build();
+    public static final PersonName USER_NAME = PersonName.newBuilder()
+                                                         .setGivenName("Ivan")
+                                                         .setFamilyName("Petrov")
+                                                         .build();
 
     private InventoryEventFactory() {
     }
@@ -241,7 +247,7 @@ public class InventoryEventFactory {
      */
     public static BookReturned bookReturnedInstance() {
         return bookReturnedInstance(INVENTORY_ID, INVENTORY_ITEM_ID, USER_ID,
-                                    getCurrentTime());
+                                    DEFAULT_TIMESTAMP1);
     }
 
     /**
@@ -307,7 +313,7 @@ public class InventoryEventFactory {
      */
     public static BookLost bookLostInstance() {
         return bookLostInstance(INVENTORY_ID, INVENTORY_ITEM_ID, USER_ID,
-                                getCurrentTime());
+                                DEFAULT_TIMESTAMP1);
     }
 
     /**
@@ -594,6 +600,38 @@ public class InventoryEventFactory {
                                                               .setWhoCanceled(userId)
                                                               .setWhenCanceled(whenCanceled)
                                                               .build();
+        return result;
+    }
+
+    /**
+     * Provides a pre-configured {@link ReservationPickUpPeriodExpired} event instance.
+     *
+     * @return the {@link ReservationPickUpPeriodExpired} instance
+     */
+    public static ReservationPickUpPeriodExpired reservationPickUpPeriodExpiredInstance() {
+        return reservationPickUpPeriodExpiredInstance(INVENTORY_ID, USER_ID, DEFAULT_TIMESTAMP1);
+    }
+
+    /**
+     * Provides the {@link ReservationPickUpPeriodExpired} event by inventory ID, user ID and time.
+     *
+     * @param inventoryId the identifier of an inventory
+     * @param userId      the identifier of a user
+     * @param whenExpired the time when the reservation was expired
+     * @return the {@code ReservationPickUpPeriodExpired} instance
+     */
+    public static ReservationPickUpPeriodExpired reservationPickUpPeriodExpiredInstance(
+            InventoryId inventoryId,
+            UserId userId,
+            Timestamp whenExpired) {
+        final ReservationPickUpPeriodExpired result = ReservationPickUpPeriodExpired.newBuilder()
+                                                                                    .setInventoryId(
+                                                                                            inventoryId)
+                                                                                    .setUserId(
+                                                                                            userId)
+                                                                                    .setWhenExpired(
+                                                                                            whenExpired)
+                                                                                    .build();
         return result;
     }
 
