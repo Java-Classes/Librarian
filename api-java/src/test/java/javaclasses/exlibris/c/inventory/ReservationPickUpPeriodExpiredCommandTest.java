@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.reservationPickUpPeriodInstanceExpired;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -53,7 +52,7 @@ public class ReservationPickUpPeriodExpiredCommandTest extends InventoryCommandT
     void produceEvent() {
         dispatchReserveBook();
 
-        final MarkReservationExpired reservationExpired = reservationPickUpPeriodInstanceExpired();
+        final MarkReservationExpired reservationExpired = InventoryCommandFactory.markReservationExpiredInstance();
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(
                                                                             reservationExpired));
@@ -68,7 +67,7 @@ public class ReservationPickUpPeriodExpiredCommandTest extends InventoryCommandT
     void reservationPickUpPeriodExpired() {
         dispatchReserveBook();
 
-        final MarkReservationExpired reservationExpired = reservationPickUpPeriodInstanceExpired();
+        final MarkReservationExpired reservationExpired = InventoryCommandFactory.markReservationExpiredInstance();
 
         dispatchCommand(aggregate, envelopeOf(reservationExpired));
         assertEquals(0, aggregate.getDefaultState()

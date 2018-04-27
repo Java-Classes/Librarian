@@ -30,18 +30,23 @@ import javaclasses.exlibris.LoanId;
 import javaclasses.exlibris.Rfid;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
+import javaclasses.exlibris.c.AllowLoansExtension;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.ExtendLoanPeriod;
+import javaclasses.exlibris.c.ForbidLoansExtension;
 import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.c.MarkLoanOverdue;
+import javaclasses.exlibris.c.MarkLoanShouldReturnSoon;
 import javaclasses.exlibris.c.MarkReservationExpired;
 import javaclasses.exlibris.c.ReportLostBook;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.SatisfyReservation;
 import javaclasses.exlibris.c.WriteBookOff;
+
+import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 
@@ -160,6 +165,15 @@ public class InventoryCommandFactory {
         return result;
     }
 
+    public static MarkLoanShouldReturnSoon markLoanShouldReturnSoon(LoanId loanId,
+                                                                    InventoryId inventoryId) {
+        final MarkLoanShouldReturnSoon result = MarkLoanShouldReturnSoon.newBuilder()
+                                                                        .setLoanId(loanId)
+                                                                        .setInventoryId(inventoryId)
+                                                                        .build();
+        return result;
+    }
+
     public static WriteBookOff writeBookOffInstance() {
 
         final WriteBookOff result = writeBookOffInstance(inventoryId, inventoryItemId, userId,
@@ -253,14 +267,14 @@ public class InventoryCommandFactory {
         return result;
     }
 
-    public static MarkReservationExpired reservationPickUpPeriodInstanceExpired() {
+    public static MarkReservationExpired markReservationExpiredInstance() {
 
-        final MarkReservationExpired result = reservationPickUpPeriodInstanceExpired(inventoryId,
-                                                                                     userId);
+        final MarkReservationExpired result = markReservationExpiredInstance(inventoryId,
+                                                                             userId);
         return result;
     }
 
-    public static MarkReservationExpired reservationPickUpPeriodInstanceExpired(
+    public static MarkReservationExpired markReservationExpiredInstance(
             InventoryId inventoryId,
             UserId userId) {
         MarkReservationExpired result = MarkReservationExpired.newBuilder()
@@ -277,6 +291,27 @@ public class InventoryCommandFactory {
 
         return result;
 
+    }
+
+    public static ForbidLoansExtension forbidLoansExtensionInstance(InventoryId inventoryId,
+                                                                    List<UserId> userIds) {
+
+        final ForbidLoansExtension result = ForbidLoansExtension.newBuilder()
+                                                                .setInventoryId(inventoryId)
+                                                                .addAllBorrowers(userIds)
+                                                                .build();
+        return result;
+
+    }
+
+    public static AllowLoansExtension allowLoansExtensionInstance(InventoryId inventoryId,
+                                                                  List<UserId> userIds) {
+
+        final AllowLoansExtension result = AllowLoansExtension.newBuilder()
+                                                              .setInventoryId(inventoryId)
+                                                              .addAllBorrowers(userIds)
+                                                              .build();
+        return result;
     }
 
     public static ExtendLoanPeriod extendLoanPeriodInstance(InventoryId inventoryId, LoanId loanId,
