@@ -31,6 +31,7 @@ import javaclasses.exlibris.c.BookReadyToPickup;
 import javaclasses.exlibris.c.ReservationAdded;
 import javaclasses.exlibris.c.ReservationBecameLoan;
 import javaclasses.exlibris.c.ReservationCanceled;
+import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 import javaclasses.exlibris.q.ReservedBookItem;
 import javaclasses.exlibris.q.ReservedBookItemStatus;
 import javaclasses.exlibris.q.ReservedBooksListView;
@@ -78,7 +79,8 @@ public class ReservedBooksListViewProjection extends Projection<UserId, Reserved
                                                           .addAllCategorie(
                                                                   bookDetails.getCategoriesList())
                                                           .setSynopsis(bookDetails.getSynopsis())
-                                                          .setWhenReadyToPickUp(event.getWhenExpected())
+                                                          .setWhenReadyToPickUp(
+                                                                  event.getWhenExpected())
                                                           .setStatus(status)
                                                           .build();
         getBuilder().addBookItem(bookItem);
@@ -96,6 +98,16 @@ public class ReservedBooksListViewProjection extends Projection<UserId, Reserved
 
     @Subscribe
     public void on(ReservationCanceled event) {
+        final List<ReservedBookItem> items = new ArrayList<>(getBuilder().getBookItem());
+        final int index = getIndexByBookId(items, event.getInventoryId()
+                                                       .getBookId());
+        if (index != -1) {
+            getBuilder().removeBookItem(index);
+        }
+    }
+
+    @Subscribe
+    public void on(ReservationPickUpPeriodExpired event) {
         final List<ReservedBookItem> items = new ArrayList<>(getBuilder().getBookItem());
         final int index = getIndexByBookId(items, event.getInventoryId()
                                                        .getBookId());

@@ -25,6 +25,7 @@ import javaclasses.exlibris.c.BookReadyToPickup;
 import javaclasses.exlibris.c.ReservationAdded;
 import javaclasses.exlibris.c.ReservationBecameLoan;
 import javaclasses.exlibris.c.ReservationCanceled;
+import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 import javaclasses.exlibris.q.ProjectionTest;
 import javaclasses.exlibris.q.ReservedBookItem;
 import javaclasses.exlibris.q.ReservedBookItemStatus;
@@ -49,6 +50,7 @@ import static javaclasses.exlibris.testdata.InventoryEventFactory.bookReadyToPic
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationAddedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationBecameLoanInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationCanceledInstance;
+import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationPickUpPeriodExpiredInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ReservedBooksListViewProjectionTest extends ProjectionTest {
@@ -110,12 +112,30 @@ class ReservedBooksListViewProjectionTest extends ProjectionTest {
     class ReservationCanceledEvent {
 
         @Test
-        @DisplayName("delete book from the list of reserved books")
-        void deleteBook() {
+        @DisplayName("remove book from the list of reserved books")
+        void removeBook() {
             final ReservationAdded reservationAdded = reservationAddedInstance();
             dispatch(projection, createEvent(reservationAdded));
             final ReservationCanceled reservationCanceled = reservationCanceledInstance();
             dispatch(projection, createEvent(reservationCanceled));
+            final List<ReservedBookItem> books = projection.getState()
+                                                           .getBookItemList();
+            assertEquals(0, books.size());
+        }
+    }
+
+    @Nested
+    @DisplayName("ReservationPickUpPeriodExpired event should be interpreted by ReservedBooksListViewProjection and")
+    class ReservationPickUpPeriodExpiredEvent {
+
+        @Test
+        @DisplayName("remove book from the list of reserved books")
+        void removeBook() {
+            final ReservationAdded reservationAdded = reservationAddedInstance();
+            dispatch(projection, createEvent(reservationAdded));
+            final ReservationPickUpPeriodExpired reservationPickUpPeriodExpired =
+                    reservationPickUpPeriodExpiredInstance();
+            dispatch(projection, createEvent(reservationPickUpPeriodExpired));
             final List<ReservedBookItem> books = projection.getState()
                                                            .getBookItemList();
             assertEquals(0, books.size());
