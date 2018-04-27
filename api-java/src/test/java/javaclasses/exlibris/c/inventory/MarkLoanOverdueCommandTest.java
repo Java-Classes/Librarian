@@ -58,11 +58,9 @@ public class MarkLoanOverdueCommandTest extends InventoryCommandTest<MarkLoanOve
     @Test
     @DisplayName("produce LoanBecameOverdue event")
     void produceEvent() {
-        dispatchAppendInventory();
+        final LoanId loanId = prepareLoan();
 
-        final LoanId eventLoanId = dispatchBorrowBookAndReturnLoanId();
-
-        final MarkLoanOverdue markLoanOverdue = markLoanOverdue(eventLoanId, inventoryId);
+        final MarkLoanOverdue markLoanOverdue = markLoanOverdue(loanId, inventoryId);
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(markLoanOverdue));
@@ -71,16 +69,13 @@ public class MarkLoanOverdueCommandTest extends InventoryCommandTest<MarkLoanOve
                                                          .getClass());
         final LoanBecameOverdue loanBecameOverdue = (LoanBecameOverdue) messageList.get(0);
 
-        assertEquals(eventLoanId, loanBecameOverdue.getLoanId());
-
+        assertEquals(loanId, loanBecameOverdue.getLoanId());
     }
 
     @Test
     @DisplayName("marks loan as overdue")
     void markLoanPeriodAsOverdue() {
-        dispatchAppendInventory();
-
-        final LoanId eventLoanId = dispatchBorrowBookAndReturnLoanId();
+        final LoanId eventLoanId = prepareLoan();
 
         final MarkLoanOverdue markLoanOverdue = markLoanOverdue(eventLoanId, inventoryId);
 
@@ -89,7 +84,6 @@ public class MarkLoanOverdueCommandTest extends InventoryCommandTest<MarkLoanOve
 
         assertTrue(state.getInventoryItems(0)
                         .getBorrowed());
-
         assertEquals(state.getLoans(0)
                           .getStatus(), LOAN_OVERDUE);
     }
@@ -99,9 +93,9 @@ public class MarkLoanOverdueCommandTest extends InventoryCommandTest<MarkLoanOve
         dispatchCommand(aggregate, envelopeOf(appendInventory));
     }
 
-    private LoanId dispatchBorrowBookAndReturnLoanId() {
+    private LoanId prepareLoan() {
+        dispatchAppendInventory();
         final BorrowBook borrowBook = borrowBookInstance();
-
         final List<? extends Message> messages = dispatchCommand(aggregate, envelopeOf(borrowBook));
         final BookBorrowed bookBorrowed = (BookBorrowed) messages.get(0);
         return bookBorrowed.getLoanId();
