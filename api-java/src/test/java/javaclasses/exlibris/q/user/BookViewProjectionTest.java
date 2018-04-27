@@ -28,7 +28,6 @@ import javaclasses.exlibris.c.InventoryDecreased;
 import javaclasses.exlibris.q.BookStatus;
 import javaclasses.exlibris.q.BookView;
 import javaclasses.exlibris.q.ProjectionTest;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -77,7 +76,7 @@ class BookViewProjectionTest extends ProjectionTest {
             assertEquals(CATEGORY, book.getCategories(0));
             assertEquals(SYNOPSIS, book.getSynopsis());
             assertEquals(0, book.getAvailableCount());
-            Assertions.assertEquals(BookStatus.EXPECTED, book.getStatus());
+            assertEquals(BookStatus.EXPECTED, book.getStatus());
         }
     }
 
