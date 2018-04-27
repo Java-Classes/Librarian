@@ -24,6 +24,7 @@ import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.Inventory;
+import javaclasses.exlibris.Reservation;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.ReservationAdded;
@@ -39,15 +40,14 @@ import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.bookId;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.isbn62;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.userEmailAddress1;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId2;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryItemId;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -70,44 +70,31 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(reserveBook));
 
-        assertNotNull(aggregate.getId());
         assertEquals(1, messageList.size());
         assertEquals(ReservationAdded.class, messageList.get(0)
                                                         .getClass());
-
         final ReservationAdded reservationAdded = (ReservationAdded) messageList.get(0);
-
         assertEquals(inventoryId, reservationAdded.getInventoryId());
-
-        assertEquals(userEmailAddress1, reservationAdded.getForWhomReserved()
-                                                        .getEmail());
+        assertEquals(userId, reservationAdded.getForWhomReserved());
     }
 
     @Test
-    @DisplayName("reserve a book")
+    @DisplayName("add reservation to the list")
     void reserveBook() {
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
         dispatchCommand(aggregate, envelopeOf(reserveBook));
 
         Inventory inventory = aggregate.getState();
-        assertEquals(isbn62, inventory.getReservations(0)
-                                      .getBookId()
-                                      .getIsbn62());
-        assertEquals(userEmailAddress1, inventory.getReservations(0)
-                                                 .getWhoReserved()
-                                                 .getEmail());
-        final ReserveBook reserveBook2 = InventoryCommandFactory.reserveBookInstance(userId2,
-                                                                                     inventoryId);
-        dispatchCommand(aggregate, envelopeOf(reserveBook2));
-        inventory = aggregate.getState();
-        assertEquals(2, inventory.getReservationsList()
-                                 .size());
+        assertEquals(1, inventory.getReservationsCount());
+        final Reservation reservation = inventory.getReservations(0);
+        assertEquals(bookId, reservation.getBookId());
+        assertEquals(userId, reservation.getWhoReserved());
     }
 
     @Test
     @DisplayName("throw CannotReserveBook rejection upon " +
             "an attempt reserve the book that is already reserved")
-    void notReserveBook() {
+    void reserveBookTwice() {
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
         dispatchCommand(aggregate, envelopeOf(reserveBook));
 
@@ -132,15 +119,12 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
     void notReserveBorrowedBook() {
         final AppendInventory appendInventory = appendInventoryInstance();
         dispatchCommand(aggregate, envelopeOf(appendInventory));
-
         final BorrowBook borrowBook = borrowBookInstance(inventoryId,
-                                                         InventoryCommandFactory.inventoryItemId,
-                                                         InventoryCommandFactory.userId);
-
+                                                         inventoryItemId,
+                                                         userId);
         dispatchCommand(aggregate, envelopeOf(borrowBook));
 
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
-
         final Throwable t = assertThrows(Throwable.class,
                                          () -> dispatchCommand(aggregate,
                                                                envelopeOf(reserveBook)));
