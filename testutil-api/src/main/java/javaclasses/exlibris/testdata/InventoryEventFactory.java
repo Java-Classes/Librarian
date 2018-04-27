@@ -94,6 +94,9 @@ public class InventoryEventFactory {
     public static final LoanId LOAN_ID = LoanId.newBuilder()
                                                .setValue(1)
                                                .build();
+
+    private static final int LOAN_PERIOD = 60 * 60 * 24 * 14;
+
     // Timestamp on 01.01.1970 00:00
     public static final Timestamp DEFAULT_TIMESTAMP1 = Timestamp.newBuilder()
                                                                 .setNanos(0)
@@ -103,6 +106,10 @@ public class InventoryEventFactory {
                                                                 .setNanos(0)
                                                                 .setSeconds(213456789)
                                                                 .build();
+
+    public static final Timestamp DUE_TIMESTAMP = Timestamp.newBuilder()
+                                                           .setSeconds(LOAN_PERIOD)
+                                                           .build();
 
     public static final LocalDate DEFAULT_DATE1 = LocalDate.newBuilder()
                                                            .setDay(1)
@@ -211,7 +218,7 @@ public class InventoryEventFactory {
      */
     public static BookBorrowed bookBorrowedInstance() {
         return bookBorrowedInstance(INVENTORY_ID, INVENTORY_ITEM_ID, USER_ID, LOAN_ID,
-                                    DEFAULT_TIMESTAMP1);
+                                    DEFAULT_TIMESTAMP1, DUE_TIMESTAMP);
     }
 
     /**
@@ -229,12 +236,13 @@ public class InventoryEventFactory {
                                                     InventoryItemId inventoryItemId,
                                                     UserId userId,
                                                     LoanId loanId,
-                                                    Timestamp whenBorrowed) {
+                                                    Timestamp whenBorrowed, Timestamp whenDue) {
         final BookBorrowed result = BookBorrowed.newBuilder()
                                                 .setInventoryId(inventoryId)
                                                 .setInventoryItemId(inventoryItemId)
                                                 .setWhoBorrowed(userId)
                                                 .setWhenBorrowed(whenBorrowed)
+                                                .setWhenDue(whenDue)
                                                 .setLoanId(loanId)
                                                 .build();
         return result;
