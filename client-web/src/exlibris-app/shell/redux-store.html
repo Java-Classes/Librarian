@@ -1,20 +1,11 @@
 <link rel="import" href="../../../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="./exlibris-app-namespace.html">
+<link rel="import" href="../reducers/exlibris-reducer.html">
 
 <script>
     {
-        /*global Redux PolymerRedux */
-
-        const initialState = {};
-
-        const reducer = (state = initialState, action) => {
-            switch (action) {
-                default:
-                    return state;
-            }
-        };
-
-        const store = Redux.createStore(reducer);
+        /*global Redux PolymerRedux*/
+        const store = Redux.createStore(ExlibrisApp.reducer);
 
         /**
          * The Redux store of the Exlibris application state.
