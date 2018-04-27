@@ -37,6 +37,7 @@ import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.ExtendLoanPeriod;
 import javaclasses.exlibris.c.ForbidLoansExtension;
 import javaclasses.exlibris.c.LoanPeriodExtended;
+import javaclasses.exlibris.c.MarkBookAsAvailable;
 import javaclasses.exlibris.c.MarkLoanOverdue;
 import javaclasses.exlibris.c.MarkLoanShouldReturnSoon;
 import javaclasses.exlibris.c.MarkReservationExpired;
@@ -217,6 +218,13 @@ public class InventoryCommandFactory {
                                                       .setInventoryId(inventoryId)
                                                       .setUserId(userId)
                                                       .build();
+        return result;
+    }
+
+    public static MarkBookAsAvailable markBookAsAvailableInstance() {
+        MarkBookAsAvailable result = MarkBookAsAvailable.newBuilder()
+                                                        .setInventoryId(inventoryId)
+                                                        .build();
         return result;
     }
 
