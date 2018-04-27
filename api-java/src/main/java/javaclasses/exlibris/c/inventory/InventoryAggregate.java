@@ -347,7 +347,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Assign
     ReservationPickUpPeriodExpired handle(MarkReservationExpired cmd) {
         final ReservationPickUpPeriodExpired reservationExpiredEvent =
-                createReservationPickUpPeriodExpiredEventEvent(cmd);
+                createReservationPickUpPeriodExpiredEvent(cmd);
         return reservationExpiredEvent;
     }
 
@@ -737,7 +737,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     private BookBecameAvailable createBookBecameAvailableEvent() {
         final InventoryId inventoryId = getState().getInventoryId();
         final Timestamp currentTime = getCurrentTime();
-        final int itemsCount = getFreeInventoryItemsCount();
+        // current available count should be increased to match its value
+        // after applying this event.
+        final int itemsCount = getAvailableInventoryItemsCount() + 1;
         final BookBecameAvailable bookBecameAvailable =
                 BookBecameAvailable.newBuilder()
                                    .setInventoryId(inventoryId)
@@ -787,7 +789,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final UserId librarianId = cmd.getLibrarianId();
         final WriteOffReason writeOffReason = cmd.getWriteBookOffReason();
-        final int itemsCount = getFreeInventoryItemsCount();
+        // current available count should be decreased to match its value
+        // after applying this event.
+        final int itemsCount = getAvailableInventoryItemsCount() - 1;
         final InventoryDecreased inventoryDecreased =
                 InventoryDecreased.newBuilder()
                                   .setInventoryId(inventoryId)
@@ -813,22 +817,22 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return reservationAdded;
     }
 
-    private LoansExtensionAllowed createLoansExtensionAllowedEvent(List<UserId> loanOwners) {
+    private LoansExtensionAllowed createLoansExtensionAllowedEvent(List<UserId> borrowers) {
         final InventoryId inventoryId = getState().getInventoryId();
         final LoansExtensionAllowed loansExtensionAllowed =
                 LoansExtensionAllowed.newBuilder()
                                      .setInventoryId(inventoryId)
                                      .setWhenBecame(getCurrentTime())
-                                     .addAllBorrowers(loanOwners)
+                                     .addAllBorrowers(borrowers)
                                      .build();
         return loansExtensionAllowed;
     }
 
-    private LoansExtensionForbidden createLoansExtensionForbiddenEvent(List<UserId> loanOwners) {
+    private LoansExtensionForbidden createLoansExtensionForbiddenEvent(List<UserId> borrowers) {
         final InventoryId inventoryId = getState().getInventoryId();
         final LoansExtensionForbidden loansExtensionForbidden =
                 LoansExtensionForbidden.newBuilder()
-                                       .addAllBorrowers(loanOwners)
+                                       .addAllBorrowers(borrowers)
                                        .setInventoryId(inventoryId)
                                        .setWhenBecame(getCurrentTime())
                                        .build();
@@ -846,7 +850,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final Timestamp whenDue = Timestamp.newBuilder()
                                            .setSeconds(whenBorrowed.getSeconds() + LOAN_PERIOD)
                                            .build();
-        final int freeItemsCount = getFreeInventoryItemsCount();
+        // current available count should be decreased to match its value
+        // after applying this event.
+        final int availableItemsCount = getAvailableInventoryItemsCount() - 1;
         final BookBorrowed bookBorrowed = BookBorrowed.newBuilder()
                                                       .setInventoryId(inventoryId)
                                                       .setInventoryItemId(inventoryItemId)
@@ -854,7 +860,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                       .setLoanId(loanId)
                                                       .setWhenBorrowed(whenBorrowed)
                                                       .setWhenDue(whenDue)
-                                                      .setInLibraryCount(freeItemsCount)
+                                                      .setInLibraryCount(availableItemsCount)
                                                       .build();
         return bookBorrowed;
     }
@@ -954,7 +960,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return reservationCanceledEvent;
     }
 
-    private ReservationPickUpPeriodExpired createReservationPickUpPeriodExpiredEventEvent(
+    private ReservationPickUpPeriodExpired createReservationPickUpPeriodExpiredEvent(
             MarkReservationExpired cmd) {
         final UserId userId = cmd.getUserId();
         final InventoryId inventoryId = cmd.getInventoryId();
@@ -1094,11 +1100,11 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     private boolean isThereInventoryItemsFreeForBorrowing() {
-        final int freeInventoryItemsCount = getFreeInventoryItemsCount();
+        final int freeInventoryItemsCount = getAvailableInventoryItemsCount();
         return freeInventoryItemsCount > 0;
     }
 
-    private int getFreeInventoryItemsCount() {
+    private int getAvailableInventoryItemsCount() {
         final List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
         final List<Reservation> reservations = getState().getReservationsList();
         final int satisfiedReservationsCount = (int) reservations.stream()
