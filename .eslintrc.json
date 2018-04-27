@@ -49,7 +49,7 @@
     "setup": false,
     "sinon": false,
     "test": false,
-    "ExlibrisAppTest": false,
+    "ExlibrisAppTest": true,
     "fixture": false,
     "flush": false,
     "teardown": false

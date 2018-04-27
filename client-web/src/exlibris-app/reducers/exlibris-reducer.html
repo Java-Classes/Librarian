@@ -26,7 +26,7 @@
     /*global userTestBooks libraryTestBooks expectedSoonLibraryBooks*/
     {
         const initialState = {
-            overdueBooks: userTestBooks.overdue,
+            overdueBooks: [...userTestBooks.overdue],
             borrowedBooks: [...userTestBooks.overdue, ...userTestBooks.borrowed],
             shouldReturnBooks: userTestBooks.shouldReturnSoon,
             reservedBooks: userTestBooks.reserved,
@@ -40,6 +40,10 @@
 
         ExlibrisApp.reducer = (state = initialState, action) => {
             switch (action.type) {
+                case ExlibrisApp.ExlibrisActions.FETCH_BOOKS: {
+                    //TODO:2018-55-17:yurii.haidamaka add data loading from the server
+                    return state;
+                }
                 case ExlibrisApp.ExlibrisActions.FIND_BOOK_BY_ID: {
                     const id = action.bookId;
                     const book = findElement(id, state.allBooks, state.expectedSoonBooks, state.borrowedBooks, state.reservedBooks);
@@ -71,11 +75,6 @@
 
                 case ExlibrisApp.ExlibrisActions.EXTEND_LOAN_PERIOD: {
                     //TODO:2018-22-18:yegor.udovchenko: request loan extension
-                    return state;
-                }
-
-                case ExlibrisApp.ExlibrisActions.DOWNLOAD_MORE_BOOKS: {
-                    //TODO:2018-55-17:yurii.haidamaka add data loading from the server
                     return state;
                 }
 
