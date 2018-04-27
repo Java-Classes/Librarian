@@ -24,10 +24,8 @@ import com.google.protobuf.Message;
 import io.spine.client.TestActorRequestFactory;
 import io.spine.core.CommandEnvelope;
 import io.spine.server.aggregate.AggregateCommandTest;
-import javaclasses.exlibris.BookId;
-import javaclasses.exlibris.InventoryId;
 
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.isbn62;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
 
 /**
  * @author Alexander Karpets
@@ -38,18 +36,9 @@ public class InventoryCommandTest<C extends Message> extends AggregateCommandTes
             TestActorRequestFactory.newInstance(getClass());
 
     InventoryAggregate aggregate;
-    InventoryId inventoryId;
-
-    private static InventoryId createBookId() {
-        return InventoryId.newBuilder()
-                          .setBookId(BookId.newBuilder()
-                                           .setIsbn62(isbn62))
-                          .build();
-    }
 
     @Override
     protected InventoryAggregate createAggregate() {
-        inventoryId = createBookId();
         return new InventoryAggregate(inventoryId);
     }
 

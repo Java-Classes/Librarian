@@ -34,6 +34,7 @@ import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.reportLostBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.userEmailAddress1;
 import static org.junit.jupiter.api.Assertions.assertEquals;

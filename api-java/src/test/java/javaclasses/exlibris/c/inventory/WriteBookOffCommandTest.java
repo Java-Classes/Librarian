@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.isbn62;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.userEmailAddress1;
 import static org.hamcrest.MatcherAssert.assertThat;

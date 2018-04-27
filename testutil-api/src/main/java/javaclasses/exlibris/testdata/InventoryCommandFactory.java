@@ -40,6 +40,7 @@ import javaclasses.exlibris.c.MarkReservationExpired;
 import javaclasses.exlibris.c.ReportLostBook;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
+import javaclasses.exlibris.c.SatisfyReservation;
 import javaclasses.exlibris.c.WriteBookOff;
 
 import static io.spine.time.Time.getCurrentTime;
@@ -179,7 +180,6 @@ public class InventoryCommandFactory {
     }
 
     public static ReserveBook reserveBookInstance() {
-
         final ReserveBook result = reserveBookInstance(userId, inventoryId);
         return result;
     }
@@ -189,6 +189,20 @@ public class InventoryCommandFactory {
                                         .setInventoryId(inventoryId)
                                         .setUserId(userId)
                                         .build();
+        return result;
+    }
+
+    public static SatisfyReservation satisfyReservationInstance() {
+        final SatisfyReservation result = satisfyReservationInstance(userId, inventoryId);
+        return result;
+    }
+
+    public static SatisfyReservation satisfyReservationInstance(UserId userId,
+                                                                InventoryId inventoryId) {
+        SatisfyReservation result = SatisfyReservation.newBuilder()
+                                                      .setInventoryId(inventoryId)
+                                                      .setUserId(userId)
+                                                      .build();
         return result;
     }
 

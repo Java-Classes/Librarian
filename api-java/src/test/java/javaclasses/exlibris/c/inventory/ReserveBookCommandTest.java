@@ -40,6 +40,7 @@ import java.util.List;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.isbn62;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.userEmailAddress1;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId2;
@@ -132,7 +133,7 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
         final AppendInventory appendInventory = appendInventoryInstance();
         dispatchCommand(aggregate, envelopeOf(appendInventory));
 
-        final BorrowBook borrowBook = borrowBookInstance(InventoryCommandFactory.inventoryId,
+        final BorrowBook borrowBook = borrowBookInstance(inventoryId,
                                                          InventoryCommandFactory.inventoryItemId,
                                                          InventoryCommandFactory.userId);
 
