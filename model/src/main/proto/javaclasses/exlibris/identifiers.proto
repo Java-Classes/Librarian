@@ -132,3 +132,12 @@ message BookLoanViewId {
     //
     string value = 1;
 }
+
+// The identifier of a one action with book.
+//
+message BookEventLogViewId {
+
+    // String representation of UUID.
+    //
+    string value = 1;
+}

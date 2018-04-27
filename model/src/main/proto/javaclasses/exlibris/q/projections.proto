@@ -269,7 +269,7 @@ message BookReservationView {
 //
 message BookLoanView {
 
-    // The identifier of of a one loan view.
+    // The identifier of a one loan view.
     BookLoanViewId id = 1;
 
     // The identifier of a book.
@@ -294,21 +294,25 @@ message BookLoanView {
 // The projection state of a one action with book.
 //
 message BookEventLogView {
+
+    // The identifier of a one action with book.
+    BookEventLogViewId id = 1;
+
     // The identifier of a book.
-    BookId id = 1;
+    BookId book_id = 2;
 
     // The identifier of an inventory item.
-    InventoryItemId item_id = 2;
+    InventoryItemId item_id = 3;
 
     // The name of a reader.
-    spine.people.PersonName user_name = 3;
+    spine.people.PersonName user_name = 4;
 
     // The email address of a reader.
-    spine.net.EmailAddress email = 4;
+    spine.net.EmailAddress email = 5;
 
     // The type of an event.
-    string event_type = 5;
+    string event_type = 6;
 
     // The time when an event was emitted.
-    google.protobuf.Timestamp when_emitted = 6;
+    google.protobuf.Timestamp when_emitted = 7;
 }
