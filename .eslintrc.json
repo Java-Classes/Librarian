@@ -1,7 +1,14 @@
 {
   "extends": "eslint:recommended",
   "rules": {
-    "no-console": ["error", {"allow": ["error"]}],
+    "no-console": [
+      "error",
+      {
+        "allow": [
+          "error"
+        ]
+      }
+    ],
     "eqeqeq": "error",
     "valid-jsdoc": [
       "error",
@@ -11,9 +18,20 @@
         "requireReturn": false
       }
     ],
-    "curly": ["error", "multi-line"],
+    "curly": [
+      "error",
+      "multi-line"
+    ],
     "no-multi-spaces": "error",
-    "no-magic-numbers": ["error", {"ignore": [0, 1]}],
+    "no-magic-numbers": [
+      "error",
+      {
+        "ignore": [
+          0,
+          1
+        ]
+      }
+    ],
     "no-var": "error"
   },
   "env": {
@@ -27,9 +45,13 @@
     "Polymer": false,
     "ExlibrisApp": true,
     "assert": false,
-    "test": false,
     "suite": false,
+    "setup": false,
+    "sinon": false,
+    "test": false,
+    "ExlibrisAppTest": true,
     "fixture": false,
-    "setup": false
+    "flush": false,
+    "teardown": false
   }
 }
