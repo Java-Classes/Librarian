@@ -24,8 +24,8 @@ import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.c.AppendInventory;
+import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.InventoryDecreased;
-import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.WriteBookOff;
 import javaclasses.exlibris.c.rejection.CannotWriteBookOff;
 import javaclasses.exlibris.testdata.InventoryCommandFactory;
@@ -37,12 +37,10 @@ import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.isbn62;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.userEmailAddress1;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -50,17 +48,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Paul Ageyev
  */
 @DisplayName("WriteBookOffCommand command should be interpreted by InventoryAggregate and")
-public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
+public class WriteBookOffCommandTest extends InventoryCommandTest<WriteBookOff> {
 
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
-    }
-
-    private void appendInventory() {
-        final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
-        dispatchCommand(aggregate, envelopeOf(appendInventory));
     }
 
     @Test
@@ -71,25 +64,17 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
         final WriteBookOff writeBookOff = InventoryCommandFactory.writeBookOffInstance();
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(writeBookOff));
-
-        assertNotNull(aggregate.getId());
         assertEquals(1, messageList.size());
         assertEquals(InventoryDecreased.class, messageList.get(0)
                                                           .getClass());
-
         final InventoryDecreased inventoryDecreased = (InventoryDecreased) messageList.get(0);
 
         assertEquals(inventoryId, inventoryDecreased.getInventoryId());
-
-        assertEquals(isbn62, inventoryDecreased.getInventoryId()
-                                               .getBookId()
-                                               .getIsbn62());
         assertEquals(true, inventoryDecreased.getWriteOffReason()
                                              .getOutdated());
         assertEquals(false, inventoryDecreased.getWriteOffReason()
                                               .getLost());
-        assertEquals(userEmailAddress1, inventoryDecreased.getLibrarianId()
-                                                          .getEmail());
+        assertEquals(userId, inventoryDecreased.getLibrarianId());
     }
 
     @Test
@@ -98,28 +83,49 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<ReserveBook> {
         appendInventory();
 
         final Inventory inventoryBefore = aggregate.getState();
-        assertEquals(1, inventoryBefore.getInventoryItemsList()
-                                       .size());
+        assertEquals(1, inventoryBefore.getInventoryItemsCount());
         final WriteBookOff writeBookOff = InventoryCommandFactory.writeBookOffInstance();
         dispatchCommand(aggregate, envelopeOf(writeBookOff));
 
         final Inventory inventoryAfter = aggregate.getState();
-        assertEquals(0, inventoryAfter.getInventoryItemsList()
-                                      .size());
+        assertEquals(0, inventoryAfter.getInventoryItemsCount());
     }
 
     @Test
     @DisplayName("throw WriteBookOffRejection rejection upon " +
             "an attempt to write off a missing book")
-    void notWriteOffBook() {
+    void writeOffMissingBook() {
         final WriteBookOff writeBookOff = InventoryCommandFactory.writeBookOffInstance();
 
         final Throwable t = assertThrows(Throwable.class,
                                          () -> dispatchCommand(aggregate,
                                                                envelopeOf(writeBookOff)));
-
         final Throwable cause = Throwables.getRootCause(t);
-
         assertThat(cause, instanceOf(CannotWriteBookOff.class));
+    }
+
+    @Test
+    @DisplayName("throw WriteBookOffRejection rejection upon " +
+            "an attempt to write off borrowed book")
+    void writeOffBorrowedBook() {
+        appendInventory();
+        borrowBook();
+        final WriteBookOff writeBookOff = InventoryCommandFactory.writeBookOffInstance();
+
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(writeBookOff)));
+        final Throwable cause = Throwables.getRootCause(t);
+        assertThat(cause, instanceOf(CannotWriteBookOff.class));
+    }
+
+    private void appendInventory() {
+        final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
+        dispatchCommand(aggregate, envelopeOf(appendInventory));
+    }
+
+    private void borrowBook() {
+        final BorrowBook borrowBook = InventoryCommandFactory.borrowBookInstance();
+        dispatchCommand(aggregate, envelopeOf(borrowBook));
     }
 }
