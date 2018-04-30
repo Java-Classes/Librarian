@@ -118,8 +118,8 @@ message ReservationAdded {
     // Who reserved a book.
     UserId for_whom_reserved = 2;
 
-    // The date when the book is expected to become ready to pick up.
-    spine.time.LocalDate when_expected = 3;
+    // The estimated time when the book becomes ready to pick up.
+    google.protobuf.Timestamp when_expected = 3;
 
     // The time when the reservation was added.
     google.protobuf.Timestamp when_created = 4;
