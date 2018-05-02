@@ -50,14 +50,17 @@ public class InventoryRepository extends AggregateRepository<InventoryId, Invent
         return InventoryRepositorySingleton.INSTANCE.value;
     }
 
+    /**
+     * Sets the new repository instance value to clear storage for tests.
+     */
     @VisibleForTesting
-    public static void clearInstance() {
+    public static void setNewInstance() {
         InventoryRepositorySingleton.INSTANCE.value = new InventoryRepository();
     }
 
     private enum InventoryRepositorySingleton {
         INSTANCE;
-        public InventoryRepository value = new InventoryRepository();
+        private InventoryRepository value = new InventoryRepository();
     }
 
     private InventoryRepository() {

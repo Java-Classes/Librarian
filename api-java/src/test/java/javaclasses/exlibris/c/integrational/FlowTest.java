@@ -136,7 +136,7 @@ public class FlowTest extends InventoryCommandTest<Message> {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        InventoryRepository.clearInstance();
+        InventoryRepository.setNewInstance();
     }
 
     @Test
