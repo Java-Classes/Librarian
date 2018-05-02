@@ -164,6 +164,27 @@ public class FlowTest extends InventoryCommandTest<Message> {
     }
 
     @Test
+    @DisplayName("fsdsw")
+    void reservationsTests() {
+        final BoundedContext boundedContext = BoundedContexts.create();
+        final CommandBus commandBus = boundedContext.getCommandBus();
+        final StreamObserver<Ack> observer = StreamObservers.noOpObserver();
+        final BookRejectionsSubscriber bookRejectionsSubscriber = new BookRejectionsSubscriber();
+        final InventoryRejectionsSubscriber inventoryRejectionsSubscriber = new InventoryRejectionsSubscriber();
+        boundedContext.getRejectionBus()
+                      .register(bookRejectionsSubscriber);
+        boundedContext.getRejectionBus()
+                      .register(inventoryRejectionsSubscriber);
+        commandBus.post(addBook, observer);
+        commandBus.post(appendInventory, observer);
+        commandBus.post(appendInventory2, observer);
+        commandBus.post(reserveBook2, observer);
+
+        assertFalse(bookRejectionsSubscriber.wasCalled());
+        assertFalse(inventoryRejectionsSubscriber.wasCalled());
+    }
+
+    @Test
     @DisplayName("attempt to update, borrow, return missing book leads to rejection, same actions are allowed when book is added.")
     void rejectionsThrow() {
         final BoundedContext boundedContext = BoundedContexts.create();

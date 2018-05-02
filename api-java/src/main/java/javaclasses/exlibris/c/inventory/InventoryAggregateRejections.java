@@ -30,6 +30,7 @@ import javaclasses.exlibris.c.rejection.BookAlreadyBorrowed;
 import javaclasses.exlibris.c.rejection.BookAlreadyReserved;
 import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
 import javaclasses.exlibris.c.rejection.CannotExtendLoanPeriod;
+import javaclasses.exlibris.c.rejection.CannotReserveAvailableBook;
 import javaclasses.exlibris.c.rejection.CannotReturnMissingBook;
 import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
 import javaclasses.exlibris.c.rejection.CannotWriteBookOff;
@@ -57,6 +58,7 @@ class InventoryAggregateRejections {
      * <ol>
      * <li> {@link BookAlreadyBorrowed} a rejection when a user tries to reserve a book that he borrowed by himself.</li>
      * <li> {@link BookAlreadyReserved} a rejection when a user tries to reserve a book that he already reserved.</li>
+     * <li> {@link CannotReserveAvailableBook} a rejection when a user tries to reserve a book that is available to borrow.</li>
      * </ol>
      */
     static class ReserveBookRejection {
@@ -77,6 +79,16 @@ class InventoryAggregateRejections {
         static BookAlreadyReserved bookAlreadyReserved(ReserveBook cmd) throws BookAlreadyReserved {
             checkNotNull(cmd);
             throw new BookAlreadyReserved(cmd.getInventoryId(), cmd.getUserId(), getCurrentTime());
+        }
+
+        /**
+         * Throws a rejection when a user tries to reserve a book that is available to borrow.
+         */
+        static CannotReserveAvailableBook cannotReserveAvailableBook(ReserveBook cmd) throws
+                                                                                      CannotReserveAvailableBook {
+            checkNotNull(cmd);
+            throw new CannotReserveAvailableBook(cmd.getInventoryId(), cmd.getUserId(),
+                                                 getCurrentTime());
         }
     }
 

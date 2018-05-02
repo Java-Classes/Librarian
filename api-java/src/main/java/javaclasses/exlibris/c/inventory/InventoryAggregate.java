@@ -81,6 +81,7 @@ import javaclasses.exlibris.c.rejection.BookAlreadyBorrowed;
 import javaclasses.exlibris.c.rejection.BookAlreadyReserved;
 import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
 import javaclasses.exlibris.c.rejection.CannotExtendLoanPeriod;
+import javaclasses.exlibris.c.rejection.CannotReserveAvailableBook;
 import javaclasses.exlibris.c.rejection.CannotReturnMissingBook;
 import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
 import javaclasses.exlibris.c.rejection.CannotWriteBookOff;
@@ -96,6 +97,7 @@ import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.Borr
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.BorrowBookRejection.nonAvailableBook;
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.ReserveBookRejection.bookAlreadyBorrowed;
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.ReserveBookRejection.bookAlreadyReserved;
+import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.ReserveBookRejection.cannotReserveAvailableBook;
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.ReturnBookRejection.cannotReturnNonBorrowedBook;
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.ReturnBookRejection.throwCannotReturnMissingBook;
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.cannotCancelMissingReservation;
@@ -189,7 +191,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * @throws BookAlreadyReserved if a reservation already exists.
      */
     @Assign
-    ReservationAdded handle(ReserveBook cmd) throws BookAlreadyBorrowed, BookAlreadyReserved {
+    ReservationAdded handle(ReserveBook cmd) throws BookAlreadyBorrowed,
+                                                    BookAlreadyReserved,
+                                                    CannotReserveAvailableBook {
         final UserId userId = cmd.getUserId();
 
         if (isBookBorrowedByUser(userId)) {
@@ -197,6 +201,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         }
         if (isBookReservedByUser(userId)) {
             throw bookAlreadyReserved(cmd);
+        }
+        if (isThereInventoryItemsFreeForBorrowing()) {
+            throw cannotReserveAvailableBook(cmd);
         }
         final ReservationAdded reservationAdded = createReservationAddedEvent(cmd);
         return reservationAdded;
