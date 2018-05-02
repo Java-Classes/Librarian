@@ -20,6 +20,7 @@
 
 package javaclasses.exlibris.c.inventory;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
 import io.spine.server.aggregate.AggregateRepository;
@@ -49,12 +50,17 @@ public class InventoryRepository extends AggregateRepository<InventoryId, Invent
         return InventoryRepositorySingleton.INSTANCE.value;
     }
 
-    private enum InventoryRepositorySingleton {
-        INSTANCE;
-        public final InventoryRepository value = new InventoryRepository();
+    @VisibleForTesting
+    public static void clearInstance() {
+        InventoryRepositorySingleton.INSTANCE.value = new InventoryRepository();
     }
 
-    public InventoryRepository() {
+    private enum InventoryRepositorySingleton {
+        INSTANCE;
+        public InventoryRepository value = new InventoryRepository();
+    }
+
+    private InventoryRepository() {
         getEventRouting().replaceDefault((EventRoute<InventoryId, Message>) (message, context) -> {
             if (message instanceof BookAdded) {
                 return getInventoryIds((BookAdded) message);

@@ -67,12 +67,12 @@ public class SubscribersTest extends BookCommandTest<AddBook> {
 
         rejectionBus.register(bookRejectionsSubscriber);
 
-        assertNull(BookRejectionsSubscriber.getRejection());
+        assertNull(bookRejectionsSubscriber.getRejection());
 
         commandBus.post(addBook, StreamObservers.noOpObserver());
         commandBus.post(addBook, StreamObservers.noOpObserver());
 
-        Rejections.BookAlreadyExists bookAlreadyExists = BookRejectionsSubscriber.getRejection();
+        Rejections.BookAlreadyExists bookAlreadyExists = bookRejectionsSubscriber.getRejection();
 
         assertEquals(userId, bookAlreadyExists.getLibrarianId());
         assertEquals(bookId, bookAlreadyExists.getBookId());
@@ -92,7 +92,7 @@ public class SubscribersTest extends BookCommandTest<AddBook> {
         eventBus.register(eventSubscriber);
 
         commandBus.post(addBook, StreamObservers.noOpObserver());
-        final BookAdded event = BookEventSubscriber.getEvent();
+        final BookAdded event = eventSubscriber.getEvent();
         assertEquals(bookId, event.getBookId());
         assertEquals(bookTitle, event.getDetails()
                                      .getTitle());

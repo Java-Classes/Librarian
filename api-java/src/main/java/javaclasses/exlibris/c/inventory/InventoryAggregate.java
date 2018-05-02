@@ -239,7 +239,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         if (isBookBorrowedByUser(userId)) {
             throw bookAlreadyBorrowed(cmd);
         }
-        if (isInventoryItemBorrowed(inventoryItemId)) {
+        if (inventoryItemExists(inventoryItemId) && isInventoryItemBorrowed(inventoryItemId)) {
             throw nonAvailableBook(cmd);
         }
 
@@ -445,7 +445,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      */
     @Assign
     BookBecameAvailable handle(MarkBookAsAvailable cmd) {
-        System.out.println("in handler");
         final BookBecameAvailable result = createBookBecameAvailableEvent();
         return result;
     }

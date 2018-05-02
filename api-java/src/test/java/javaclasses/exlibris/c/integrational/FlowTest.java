@@ -32,6 +32,7 @@ import javaclasses.exlibris.BookDetailsChange;
 import javaclasses.exlibris.BoundedContexts;
 import javaclasses.exlibris.c.RemoveBook;
 import javaclasses.exlibris.c.inventory.InventoryCommandTest;
+import javaclasses.exlibris.c.inventory.InventoryRepository;
 import javaclasses.exlibris.testdata.BookCommandFactory;
 import javaclasses.exlibris.testdata.BookRejectionsSubscriber;
 import javaclasses.exlibris.testdata.InventoryCommandFactory;
@@ -135,6 +136,7 @@ public class FlowTest extends InventoryCommandTest<Message> {
     @BeforeEach
     public void setUp() {
         super.setUp();
+        InventoryRepository.clearInstance();
     }
 
     @Test
@@ -162,63 +164,6 @@ public class FlowTest extends InventoryCommandTest<Message> {
     }
 
     @Test
-    @DisplayName("librarian adds book, appends inventory. " +
-            "Users borrow books, one user lost the book and the book is written off, another user returns the book.")
-    void secondUseCase() {
-        final BoundedContext boundedContext = BoundedContexts.create();
-        final CommandBus commandBus = boundedContext.getCommandBus();
-
-        final StreamObserver<Ack> observer = StreamObservers.noOpObserver();
-
-        final BookRejectionsSubscriber bookRejectionsSubscriber = new BookRejectionsSubscriber();
-        final InventoryRejectionsSubscriber inventoryRejectionsSubscriber = new InventoryRejectionsSubscriber();
-
-        boundedContext.getRejectionBus()
-                      .register(bookRejectionsSubscriber);
-        boundedContext.getRejectionBus()
-                      .register(inventoryRejectionsSubscriber);
-
-        commandBus.post(addBook, observer);
-
-        commandBus.post(appendInventory, observer);
-        commandBus.post(appendInventory2, observer);
-
-        commandBus.post(borrowBook, observer);
-        assertFalse(InventoryRejectionsSubscriber.wasCalled());
-
-        commandBus.post(borrowBook3, observer);
-        assertFalse(InventoryRejectionsSubscriber.wasCalled());
-
-        commandBus.post(reserveBook, observer);
-        assertTrue(InventoryRejectionsSubscriber.wasCalled());
-        InventoryRejectionsSubscriber.clear();
-
-        commandBus.post(extendLoanPeriod, observer);
-        assertFalse(InventoryRejectionsSubscriber.wasCalled());
-
-        commandBus.post(returnBook, observer);
-        assertFalse(InventoryRejectionsSubscriber.wasCalled());
-
-        commandBus.post(borrowBook, observer);
-        assertFalse(InventoryRejectionsSubscriber.wasCalled());
-
-        commandBus.post(writeBookOff, observer);
-        assertFalse(InventoryRejectionsSubscriber.wasCalled());
-
-        commandBus.post(returnBook3, observer);
-        assertFalse(InventoryRejectionsSubscriber.wasCalled());
-
-        commandBus.post(appendInventory, observer);
-        assertFalse(InventoryRejectionsSubscriber.wasCalled());
-
-        commandBus.post(borrowBook, observer);
-        assertFalse(InventoryRejectionsSubscriber.wasCalled());
-
-        commandBus.post(returnBook, observer);
-        assertFalse(InventoryRejectionsSubscriber.wasCalled());
-    }
-
-    @Test
     @DisplayName("attempt to update, borrow, return missing book leads to rejection, same actions are allowed when book is added.")
     void rejectionsThrow() {
         final BoundedContext boundedContext = BoundedContexts.create();
@@ -232,56 +177,33 @@ public class FlowTest extends InventoryCommandTest<Message> {
                       .register(inventoryRejectionsSubscriber);
 
         commandBus.post(borrowBook, observer);
-        assertTrue(InventoryRejectionsSubscriber.wasCalled());
-        InventoryRejectionsSubscriber.clear();
+        assertTrue(inventoryRejectionsSubscriber.wasCalled());
+        inventoryRejectionsSubscriber.clear();
 
         commandBus.post(updateBook, observer);
-        assertTrue(BookRejectionsSubscriber.wasCalled());
-        BookRejectionsSubscriber.clear();
-
-        commandBus.post(addBook, observer);
-        assertFalse(BookRejectionsSubscriber.wasCalled());
+        assertTrue(bookRejectionsSubscriber.wasCalled());
+        bookRejectionsSubscriber.clear();
 
         commandBus.post(returnBook, observer);
-        assertTrue(InventoryRejectionsSubscriber.wasCalled());
-        InventoryRejectionsSubscriber.clear();
+        assertTrue(inventoryRejectionsSubscriber.wasCalled());
+        inventoryRejectionsSubscriber.clear();
+
+        commandBus.post(addBook, observer);
+        assertFalse(bookRejectionsSubscriber.wasCalled());
 
         commandBus.post(appendInventory, observer);
-        assertFalse(InventoryRejectionsSubscriber.wasCalled());
+        assertFalse(inventoryRejectionsSubscriber.wasCalled());
 
         commandBus.post(updateBook, observer);
-        assertFalse(InventoryRejectionsSubscriber.wasCalled());
+        assertFalse(inventoryRejectionsSubscriber.wasCalled());
 
         commandBus.post(borrowBook, observer);
-        assertFalse(InventoryRejectionsSubscriber.wasCalled());
-    }
-
-    @Test
-    @DisplayName("two users by turns borrow book and few times extend their loan periods")
-    void loanFlow() {
-        final BoundedContext boundedContext = BoundedContexts.create();
-        final CommandBus commandBus = boundedContext.getCommandBus();
-        final StreamObserver<Ack> observer = StreamObservers.noOpObserver();
-        final InventoryRejectionsSubscriber inventoryRejectionsSubscriber = new InventoryRejectionsSubscriber();
-
-        boundedContext.getRejectionBus()
-                      .register(inventoryRejectionsSubscriber);
-        commandBus.post(addBook, observer);
-        commandBus.post(appendInventory, observer);
-        commandBus.post(borrowBook, observer);
-        commandBus.post(extendLoanPeriod, observer);
-        commandBus.post(extendLoanPeriod, observer);
-        commandBus.post(returnBook, observer);
-        commandBus.post(borrowBook2, observer);
-        commandBus.post(extendLoanPeriod2, observer);
-        commandBus.post(extendLoanPeriod2, observer);
-        commandBus.post(returnBook2, observer);
         assertFalse(inventoryRejectionsSubscriber.wasCalled());
     }
 
     @Test
-    @DisplayName("rejection when user to tries extend loan period without taking a book")
-    void extendLoan() {
+    @DisplayName("throws rejection when user borrows a  book and tries to extend loan period at once")
+    void extendLoanPeriodOfRecentLoan() {
         final BoundedContext boundedContext = BoundedContexts.create();
         final CommandBus commandBus = boundedContext.getCommandBus();
         final StreamObserver<Ack> observer = StreamObservers.noOpObserver();
@@ -291,10 +213,8 @@ public class FlowTest extends InventoryCommandTest<Message> {
                       .register(inventoryRejectionsSubscriber);
         commandBus.post(addBook, observer);
         commandBus.post(appendInventory, observer);
-
         commandBus.post(borrowBook, observer);
-        commandBus.post(extendLoanPeriod2, observer);
+        commandBus.post(extendLoanPeriod, observer);
         assertTrue(inventoryRejectionsSubscriber.wasCalled());
-        InventoryRejectionsSubscriber.clear();
     }
 }

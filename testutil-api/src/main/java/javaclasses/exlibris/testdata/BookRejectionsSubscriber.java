@@ -31,10 +31,10 @@ import javaclasses.exlibris.c.rejection.Rejections;
  */
 public class BookRejectionsSubscriber extends RejectionSubscriber {
 
-    private static Rejections.BookAlreadyExists rejection = null;
-    private static boolean wasCalled = false;
+    private Rejections.BookAlreadyExists rejection = null;
+    private boolean wasCalled = false;
 
-    public static boolean wasCalled() {
+    public boolean wasCalled() {
         return wasCalled;
     }
 
@@ -54,11 +54,11 @@ public class BookRejectionsSubscriber extends RejectionSubscriber {
         wasCalled = true;
     }
 
-    public static Rejections.BookAlreadyExists getRejection() {
+    public Rejections.BookAlreadyExists getRejection() {
         return rejection;
     }
 
-    public static void clear() {
+    public void clear() {
         rejection = null;
         wasCalled = false;
     }

@@ -57,7 +57,7 @@ public class ReservationQueue extends ProcessManager<ReservationQueueId, Empty, 
         super(id);
     }
 
-    public static final ReservationQueueId ID =
+    protected static final ReservationQueueId ID =
             ReservationQueueId.newBuilder()
                               .setValue("ReservationQueueSingleton")
                               .build();
