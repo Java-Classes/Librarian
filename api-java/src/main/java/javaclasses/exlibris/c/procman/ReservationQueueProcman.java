@@ -57,10 +57,6 @@ public class ReservationQueueProcman extends ProcessManager<ReservationQueueId, 
         super(id);
     }
 
-    /**
-     * As long as the {@code ReservationQueueProcman} has no state,
-     * the {@link ReservationQueueProcman} is a singleton.
-     */
     protected static final ReservationQueueId ID =
             ReservationQueueId.newBuilder()
                               .setValue("ReservationQueueSingleton")

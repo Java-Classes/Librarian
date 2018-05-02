@@ -60,10 +60,6 @@ public class LoansExtensionProcman extends ProcessManager<LoansExtensionId, Loan
         super(id);
     }
 
-    /**
-     * As long as the {@code ReservationQueueProcman} has no state,
-     * the {@link ReservationQueueProcman} is a singleton.
-     */
     protected static final LoansExtensionId ID =
             LoansExtensionId.newBuilder()
                             .setValue("ReservationQueueSingleton")
