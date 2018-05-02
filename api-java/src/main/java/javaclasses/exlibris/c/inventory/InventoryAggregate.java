@@ -511,13 +511,11 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     @Apply
-        // TODO 4/26/2018[yegor.udovchenko]: QR code?
     void inventoryAppended(InventoryAppended event) {
         final InventoryItemId inventoryItemId = event.getInventoryItemId();
         final InventoryItem newInventoryItem = InventoryItem.newBuilder()
                                                             .setInLibrary(true)
                                                             .setInventoryItemId(inventoryItemId)
-//                                                            .setQrCodeUrl()
                                                             .build();
         getBuilder().addInventoryItems(newInventoryItem);
     }
@@ -764,7 +762,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return bookReadyToPickup;
     }
 
-    // TODO 4/26/2018[yegor.udovchenko]: Add QR code url
     private InventoryAppended createInventoryAppendedEvent(AppendInventory cmd) {
         final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
@@ -776,7 +773,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                  .setInventoryItemId(inventoryItemId)
                                  .setWhenAppended(getCurrentTime())
                                  .setLibrarianId(userId)
-//                                 .setQrCodeUrl()
                                  .build();
         return inventoryAppended;
     }

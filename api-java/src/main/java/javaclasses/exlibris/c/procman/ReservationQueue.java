@@ -57,6 +57,10 @@ public class ReservationQueue extends ProcessManager<ReservationQueueId, Empty, 
         super(id);
     }
 
+    /**
+     * As long as the {@code ReservationQueue} has no state,
+     * the {@link ReservationQueue} is a singleton.
+     */
     protected static final ReservationQueueId ID =
             ReservationQueueId.newBuilder()
                               .setValue("ReservationQueueSingleton")
@@ -103,23 +107,34 @@ public class ReservationQueue extends ProcessManager<ReservationQueueId, Empty, 
         return CommandRouted.getDefaultInstance();
     }
 
+    /**
+     * Checks the reservation queue for unsatisfied reservations.
+     *
+     * <p>If there are unsatisfied reservations gets first and creates a {@link SatisfyReservation}
+     * command for it. If there are no reservations to satisfy creates a {@link MarkBookAsAvailable}
+     * command.
+     *
+     * @param inventoryId    the inventory identifier to check its reservations.
+     * @param commandContext the command context to route commands.
+     * @return the command router that routes specified command in one call
+     */
     private CommandRouter markBookAsAvailableOrSatisfyReservation(InventoryId inventoryId,
                                                                   CommandContext commandContext) {
         final Optional<UserId> userIdOptional = findUserToSatisfyReservation(inventoryId);
         if (userIdOptional.isPresent()) {
             final UserId userId = userIdOptional.get();
-            final CommandRouter satisfyReservation = createSatisfyReservation(inventoryId,
-                                                                              commandContext,
-                                                                              userId);
+            final CommandRouter satisfyReservation = createSatisfyReservationRouter(inventoryId,
+                                                                                    commandContext,
+                                                                                    userId);
             return satisfyReservation;
         }
-        final CommandRouter markBookAsAvailable = createMarkBookAsAvailable(inventoryId,
-                                                                            commandContext);
+        final CommandRouter markBookAsAvailable = createMarkBookAsAvailableRouter(inventoryId,
+                                                                                  commandContext);
         return markBookAsAvailable;
     }
 
-    private CommandRouter createMarkBookAsAvailable(InventoryId inventoryId,
-                                                    CommandContext commandContext) {
+    private CommandRouter createMarkBookAsAvailableRouter(InventoryId inventoryId,
+                                                          CommandContext commandContext) {
         final MarkBookAsAvailable markBookAsAvailable =
                 MarkBookAsAvailable.newBuilder()
                                    .setInventoryId(inventoryId)
@@ -127,9 +142,9 @@ public class ReservationQueue extends ProcessManager<ReservationQueueId, Empty, 
         return newRouterFor(markBookAsAvailable, commandContext).add(markBookAsAvailable);
     }
 
-    private CommandRouter createSatisfyReservation(InventoryId inventoryId,
-                                                   CommandContext commandContext,
-                                                   UserId userId) {
+    private CommandRouter createSatisfyReservationRouter(InventoryId inventoryId,
+                                                         CommandContext commandContext,
+                                                         UserId userId) {
         final SatisfyReservation satisfyReservation = SatisfyReservation.newBuilder()
                                                                         .setInventoryId(inventoryId)
                                                                         .setUserId(userId)
@@ -140,15 +155,27 @@ public class ReservationQueue extends ProcessManager<ReservationQueueId, Empty, 
     private Optional<InventoryAggregate> getInventory(InventoryId inventoryId) {
         final InventoryRepository inventoryRepository = InventoryRepository.getRepository();
 
-        final Optional<InventoryAggregate> inventory = inventoryRepository.find(inventoryId);
+        final Optional<InventoryAggregate> inventoryOptional = inventoryRepository.find(
+                inventoryId);
 
-        return inventory;
+        return inventoryOptional;
     }
 
+    /**
+     * Finds first unsatisfied reservation in queue.
+     *
+     * @param inventoryId the inventory identifier to check its reservations.
+     * @return Optional user identifier to satisfy reservation, Optional.absent if there are no
+     * reservations to satis
+     */
     private Optional<UserId> findUserToSatisfyReservation(InventoryId inventoryId) {
         final Optional<InventoryAggregate> inventoryOptional = getInventory(inventoryId);
+        if (!inventoryOptional.isPresent()) {
+            final String errorMessage = "The aggregate state for %s identifier not found in the InventoryRepository.";
+            throw new IllegalArgumentException(String.format(errorMessage, inventoryId.getBookId()
+                                                                                      .getIsbn62()));
+        }
         final InventoryAggregate inventory = inventoryOptional.get();
-
         final List<Reservation> reservations = inventory.getState()
                                                         .getReservationsList();
         final int index = Iterables.indexOf(reservations, item -> !item.getIsSatisfied());
