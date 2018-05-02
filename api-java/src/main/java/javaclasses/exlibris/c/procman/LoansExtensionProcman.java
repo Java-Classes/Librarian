@@ -79,8 +79,6 @@ public class LoansExtensionProcman extends ProcessManager<LoansExtensionId, Loan
     @React
     CommandRouted on(BookReadyToPickup event, EventContext ctx) {
         final InventoryId inventoryId = event.getInventoryId();
-        final Optional<InventoryAggregate> inventory = getInventory(inventoryId);
-        final InventoryAggregate inventoryAggregate = inventory.get();
         final CommandContext commandContext = ctx.getCommandContext();
         return updateLoansExtensionStateRouter(inventoryId, commandContext);
     }
@@ -119,7 +117,6 @@ public class LoansExtensionProcman extends ProcessManager<LoansExtensionId, Loan
             return routerOptional.isPresent() ? routerOptional.get()
                                                               .routeAll()
                                               : null;
-
         }
         final Optional<CommandRouter> routerOptional =
                 allowLoansExtensionRouter(inventoryId, commandContext, loans,
