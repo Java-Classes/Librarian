@@ -20,9 +20,11 @@
 
 package javaclasses.exlibris.q.user;
 
+import com.google.protobuf.Timestamp;
 import io.spine.core.EventContext;
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
+import io.spine.time.LocalDate;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.UserId;
@@ -43,6 +45,7 @@ import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 import static javaclasses.exlibris.EnrichmentHelper.getEnrichment;
+import static javaclasses.exlibris.Timestamps.toLocalDate;
 
 /**
  * A projection state of all books that are reserved by user.
@@ -68,6 +71,8 @@ public class ReservedBooksListViewProjection extends Projection<UserId, Reserved
         final BookEnrichment enrichment = getEnrichment(BookEnrichment.class, context);
         final BookDetails bookDetails = enrichment.getBook()
                                                   .getBookDetails();
+        final Timestamp whenExpectedTimestamp = event.getWhenExpected();
+        final LocalDate whenExpected = toLocalDate(whenExpectedTimestamp);
 
         final ReservedBookItem bookItem = ReservedBookItem.newBuilder()
                                                           .setBookId(bookId)
@@ -79,8 +84,7 @@ public class ReservedBooksListViewProjection extends Projection<UserId, Reserved
                                                           .addAllCategorie(
                                                                   bookDetails.getCategoriesList())
                                                           .setSynopsis(bookDetails.getSynopsis())
-                                                          .setWhenReadyToPickUp(
-                                                                  event.getWhenExpected())
+                                                          .setWhenReadyToPickUp(whenExpected)
                                                           .setStatus(status)
                                                           .build();
         getBuilder().addBookItem(bookItem);

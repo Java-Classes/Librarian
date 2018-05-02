@@ -36,8 +36,8 @@ import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanBecameShouldReturnSoon;
 import javaclasses.exlibris.c.LoanPeriodExtended;
-import javaclasses.exlibris.c.LoansBecameExtensionAllowed;
-import javaclasses.exlibris.c.LoansBecameNotAllowedForExtension;
+import javaclasses.exlibris.c.LoansExtensionAllowed;
+import javaclasses.exlibris.c.LoansExtensionForbidden;
 import javaclasses.exlibris.q.BorrowedBookItem;
 import javaclasses.exlibris.q.BorrowedBookItemStatus;
 import javaclasses.exlibris.q.BorrowedBooksListView;
@@ -175,7 +175,7 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
     }
 
     @Subscribe
-    public void on(LoansBecameExtensionAllowed event) {
+    public void on(LoansExtensionAllowed event) {
         final List<BorrowedBookItem> items = new ArrayList<>(getBuilder().getBookItem());
         final int index = getIndexByBookId(items, event.getInventoryId()
                                                        .getBookId());
@@ -190,7 +190,7 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
     }
 
     @Subscribe
-    public void on(LoansBecameNotAllowedForExtension event) {
+    public void on(LoansExtensionForbidden event) {
         final List<BorrowedBookItem> items = new ArrayList<>(getBuilder().getBookItem());
         final int index = getIndexByBookId(items, event.getInventoryId()
                                                        .getBookId());

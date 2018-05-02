@@ -27,8 +27,8 @@ import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanPeriodExtended;
-import javaclasses.exlibris.c.LoansBecameExtensionAllowed;
-import javaclasses.exlibris.c.LoansBecameNotAllowedForExtension;
+import javaclasses.exlibris.c.LoansExtensionAllowed;
+import javaclasses.exlibris.c.LoansExtensionForbidden;
 import javaclasses.exlibris.q.BorrowedBooksListView;
 
 import java.util.Collections;
@@ -72,13 +72,13 @@ public class BorrowedBooksListViewRepository extends ProjectionRepository<UserId
                 final BookLost event = (BookLost) message;
                 return Collections.singleton(event.getWhoLost());
             }
-            if (message instanceof LoansBecameExtensionAllowed) {
-                final LoansBecameExtensionAllowed event = (LoansBecameExtensionAllowed) message;
+            if (message instanceof LoansExtensionAllowed) {
+                final LoansExtensionAllowed event = (LoansExtensionAllowed) message;
                 final Set<UserId> userIds = new HashSet<>(event.getBorrowersList());
                 return userIds;
             }
-            if (message instanceof LoansBecameNotAllowedForExtension) {
-                final LoansBecameNotAllowedForExtension event = (LoansBecameNotAllowedForExtension) message;
+            if (message instanceof LoansExtensionForbidden) {
+                final LoansExtensionForbidden event = (LoansExtensionForbidden) message;
                 final Set<UserId> userIds = new HashSet<>(event.getBorrowersList());
                 return userIds;
             }

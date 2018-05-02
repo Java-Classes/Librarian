@@ -27,8 +27,8 @@ import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanBecameShouldReturnSoon;
 import javaclasses.exlibris.c.LoanPeriodExtended;
-import javaclasses.exlibris.c.LoansBecameExtensionAllowed;
-import javaclasses.exlibris.c.LoansBecameNotAllowedForExtension;
+import javaclasses.exlibris.c.LoansExtensionAllowed;
+import javaclasses.exlibris.c.LoansExtensionForbidden;
 import javaclasses.exlibris.q.BorrowedBookItem;
 import javaclasses.exlibris.q.BorrowedBookItemStatus;
 import javaclasses.exlibris.q.ProjectionTest;
@@ -58,8 +58,8 @@ import static javaclasses.exlibris.testdata.InventoryEventFactory.bookReturnedIn
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loanBecameOverdueInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loanBecameShouldReturnSoonInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loanPeriodExtendedInstance;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.loansBecameExtensionAllowedInstance;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.loansBecameNotAllowedForExtensionInstance;
+import static javaclasses.exlibris.testdata.InventoryEventFactory.loansExtensionAllowedInstance;
+import static javaclasses.exlibris.testdata.InventoryEventFactory.loansExtensionForbiddenInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BorrowedBooksListViewProjectionTest extends ProjectionTest {
@@ -215,8 +215,8 @@ class BorrowedBooksListViewProjectionTest extends ProjectionTest {
     }
 
     @Nested
-    @DisplayName("LoansBecameExtensionAllowed event should be interpreted by BorrowedBooksListViewProjection and")
-    class LoansBecameExtensionAllowedEvent {
+    @DisplayName("LoansExtensionAllowed event should be interpreted by BorrowedBooksListViewProjection and")
+    class LoansExtensionAllowedEvent {
 
         @Test
         @DisplayName("allow extension")
@@ -225,8 +225,8 @@ class BorrowedBooksListViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(bookBorrowed));
             final LoanBecameShouldReturnSoon loanBecameShouldReturnSoon = loanBecameShouldReturnSoonInstance();
             dispatch(projection, createEvent(loanBecameShouldReturnSoon));
-            final LoansBecameExtensionAllowed loansBecameExtensionAllowed = loansBecameExtensionAllowedInstance();
-            dispatch(projection, createEvent(loansBecameExtensionAllowed));
+            final LoansExtensionAllowed loansExtensionAllowed = loansExtensionAllowedInstance();
+            dispatch(projection, createEvent(loansExtensionAllowed));
             final List<BorrowedBookItem> books = projection.getState()
                                                            .getBookItemList();
             assertEquals(1, books.size());
@@ -236,17 +236,17 @@ class BorrowedBooksListViewProjectionTest extends ProjectionTest {
     }
 
     @Nested
-    @DisplayName("LoansBecameNotAllowedForExtension event should be interpreted by BorrowedBooksListViewProjection and")
-    class LoansBecameNotAllowedForExtensionEvent {
+    @DisplayName("LoansExtensionForbidden event should be interpreted by BorrowedBooksListViewProjection and")
+    class LoansExtensionForbiddenEvent {
 
         @Test
         @DisplayName("not allow extension")
         void notAllowExtension() {
             final BookBorrowed bookBorrowed = bookBorrowedInstance();
             dispatch(projection, createEvent(bookBorrowed));
-            final LoansBecameNotAllowedForExtension loansBecameNotAllowedForExtension =
-                    loansBecameNotAllowedForExtensionInstance();
-            dispatch(projection, createEvent(loansBecameNotAllowedForExtension));
+            final LoansExtensionForbidden loansExtensionForbidden =
+                    loansExtensionForbiddenInstance();
+            dispatch(projection, createEvent(loansExtensionForbidden));
             final List<BorrowedBookItem> books = projection.getState()
                                                            .getBookItemList();
             assertEquals(1, books.size());

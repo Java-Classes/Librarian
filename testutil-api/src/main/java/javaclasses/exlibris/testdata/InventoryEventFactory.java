@@ -43,8 +43,8 @@ import javaclasses.exlibris.c.InventoryDecreased;
 import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanBecameShouldReturnSoon;
 import javaclasses.exlibris.c.LoanPeriodExtended;
-import javaclasses.exlibris.c.LoansBecameExtensionAllowed;
-import javaclasses.exlibris.c.LoansBecameNotAllowedForExtension;
+import javaclasses.exlibris.c.LoansExtensionAllowed;
+import javaclasses.exlibris.c.LoansExtensionForbidden;
 import javaclasses.exlibris.c.ReservationAdded;
 import javaclasses.exlibris.c.ReservationBecameLoan;
 import javaclasses.exlibris.c.ReservationCanceled;
@@ -331,27 +331,24 @@ public class InventoryEventFactory {
      * @return the {@link BookBecameAvailable} instance
      */
     public static BookBecameAvailable bookBecameAvailableInstance() {
-        return bookBecameAvailableInstance(INVENTORY_ID, INVENTORY_ITEM_ID, 1,
+        return bookBecameAvailableInstance(INVENTORY_ID, 1,
                                            getCurrentTime());
     }
 
     /**
-     * Provides the {@link BookBecameAvailable} event by inventory ID, inventory item ID,
+     * Provides the {@link BookBecameAvailable} event by inventory ID
      * available count and time.
      *
      * @param inventoryId         the identifier of an inventory
-     * @param inventoryItemId     the identifier of an inventory item that was added
      * @param count               available book count in the library
      * @param whenBecameAvailable time when book became available
      * @return the {@code BookBecameAvailable} instance
      */
     public static BookBecameAvailable bookBecameAvailableInstance(InventoryId inventoryId,
-                                                                  InventoryItemId inventoryItemId,
                                                                   int count,
                                                                   Timestamp whenBecameAvailable) {
         final BookBecameAvailable result = BookBecameAvailable.newBuilder()
                                                               .setInventoryId(inventoryId)
-                                                              .setInventoryItemId(inventoryItemId)
                                                               .setAvailableBooksCount(count)
                                                               .setWhenBecameAvailable(
                                                                       whenBecameAvailable)
@@ -467,66 +464,66 @@ public class InventoryEventFactory {
     }
 
     /**
-     * Provides a pre-configured {@link LoansBecameExtensionAllowed} event instance.
+     * Provides a pre-configured {@link LoansExtensionAllowed} event instance.
      *
-     * @return the {@link LoansBecameExtensionAllowed} instance
+     * @return the {@link LoansExtensionAllowed} instance
      */
-    public static LoansBecameExtensionAllowed loansBecameExtensionAllowedInstance() {
-        return loansBecameExtensionAllowedInstance(INVENTORY_ID, USER_ID, DEFAULT_TIMESTAMP1);
+    public static LoansExtensionAllowed loansExtensionAllowedInstance() {
+        return loansExtensionAllowedInstance(INVENTORY_ID, USER_ID, DEFAULT_TIMESTAMP1);
     }
 
     /**
-     * Provides the {@link LoansBecameExtensionAllowed} event by inventory ID, user ID and time.
+     * Provides the {@link LoansExtensionAllowed} event by inventory ID, user ID and time.
      *
      * @param inventoryId the identifier of an inventory
      * @param whenBecame  time when loan became extension allowed
      * @param userId      the identifier of a user
-     * @return the {@code LoansBecameExtensionAllowed} instance
+     * @return the {@code LoansExtensionAllowed} instance
      */
-    public static LoansBecameExtensionAllowed loansBecameExtensionAllowedInstance(
+    public static LoansExtensionAllowed loansExtensionAllowedInstance(
             InventoryId inventoryId,
             UserId userId,
             Timestamp whenBecame) {
         final List<UserId> borrowers = new ArrayList<>();
         borrowers.add(userId);
-        final LoansBecameExtensionAllowed result =
-                LoansBecameExtensionAllowed.newBuilder()
-                                           .setInventoryId(inventoryId)
-                                           .addAllBorrowers(borrowers)
-                                           .setWhenBecame(whenBecame)
-                                           .build();
+        final LoansExtensionAllowed result =
+                LoansExtensionAllowed.newBuilder()
+                                     .setInventoryId(inventoryId)
+                                     .addAllBorrowers(borrowers)
+                                     .setWhenBecame(whenBecame)
+                                     .build();
         return result;
     }
 
     /**
-     * Provides a pre-configured {@link LoansBecameNotAllowedForExtension} event instance.
+     * Provides a pre-configured {@link LoansExtensionForbidden} event instance.
      *
-     * @return the {@link LoansBecameNotAllowedForExtension} instance
+     * @return the {@link LoansExtensionForbidden} instance
      */
-    public static LoansBecameNotAllowedForExtension loansBecameNotAllowedForExtensionInstance() {
-        return loansBecameNotAllowedForExtensionInstance(INVENTORY_ID, USER_ID, DEFAULT_TIMESTAMP1);
+    public static LoansExtensionForbidden loansExtensionForbiddenInstance() {
+        return loansExtensionForbiddenInstance(INVENTORY_ID, USER_ID, DEFAULT_TIMESTAMP1);
     }
 
     /**
-     * Provides the {@link LoansBecameNotAllowedForExtension} event by inventory ID, user ID and time.
+     * Provides the {@link LoansExtensionForbidden} event by inventory ID, user ID and time.
      *
      * @param inventoryId the identifier of an inventory
      * @param whenBecame  time when loan became not allowed for extension
      * @param userId      the identifier of a user
-     * @return the {@code LoansBecameNotAllowedForExtension} instance
+     * @return the {@code LoansExtensionForbidden} instance
      */
-    public static LoansBecameNotAllowedForExtension loansBecameNotAllowedForExtensionInstance(
+    public static LoansExtensionForbidden loansExtensionForbiddenInstance(
             InventoryId inventoryId,
             UserId userId,
             Timestamp whenBecame) {
         final List<UserId> borrowers = new ArrayList<>();
         borrowers.add(userId);
-        final LoansBecameNotAllowedForExtension result =
-                LoansBecameNotAllowedForExtension.newBuilder()
-                                                 .setInventoryId(inventoryId)
-                                                 .addAllBorrowers(borrowers)
-                                                 .setWhenBecame(whenBecame)
-                                                 .build();
+        final LoansExtensionForbidden result =
+                LoansExtensionForbidden.newBuilder()
+                                       .setInventoryId(inventoryId)
+                                       .addAllBorrowers(borrowers)
+                                       .setWhenBecame(whenBecame)
+                                       .build();
         return result;
     }
 
@@ -575,27 +572,27 @@ public class InventoryEventFactory {
      * @return the {@link ReservationAdded} instance
      */
     public static ReservationAdded reservationAddedInstance() {
-        return reservationAddedInstance(INVENTORY_ID, USER_ID, DEFAULT_TIMESTAMP1, DEFAULT_DATE1);
+        return reservationAddedInstance(INVENTORY_ID, USER_ID, DEFAULT_TIMESTAMP1, DUE_TIMESTAMP);
     }
 
     /**
      * Provides the {@link ReservationAdded} event by inventory ID, user ID and time.
      *
-     * @param inventoryId       the identifier of an inventory
-     * @param userId            the identifier of a user
-     * @param whenCreated       the time when the reservation was added
-     * @param whenReadyToPickUp the time when book will be ready to pick up
+     * @param inventoryId  the identifier of an inventory
+     * @param userId       the identifier of a user
+     * @param whenCreated  the time when the reservation was added
+     * @param whenExpected the time when book will be ready to pick up
      * @return the {@code ReservationAdded} instance
      */
     public static ReservationAdded reservationAddedInstance(InventoryId inventoryId,
                                                             UserId userId,
                                                             Timestamp whenCreated,
-                                                            LocalDate whenReadyToPickUp) {
+                                                            Timestamp whenExpected) {
         final ReservationAdded result = ReservationAdded.newBuilder()
                                                         .setInventoryId(inventoryId)
                                                         .setForWhomReserved(userId)
                                                         .setWhenCreated(whenCreated)
-                                                        .setWhenExpected(whenReadyToPickUp)
+                                                        .setWhenExpected(whenExpected)
                                                         .build();
         return result;
     }
@@ -694,12 +691,12 @@ public class InventoryEventFactory {
      * @return the {@link BookReadyToPickup} instance
      */
     public static BookReadyToPickup bookReadyToPickUpInstance() {
-        return bookReadyToPickUpInstance(INVENTORY_ID, INVENTORY_ITEM_ID, USER_ID,
+        return bookReadyToPickUpInstance(INVENTORY_ID, USER_ID,
                                          DEFAULT_TIMESTAMP1, DEFAULT_TIMESTAMP2);
     }
 
     /**
-     * Provides the {@link BookReadyToPickup} event by inventory ID, inventory item ID,
+     * Provides the {@link BookReadyToPickup} event by inventory ID,
      * user ID and time.
      *
      * @param inventoryId             the identifier of an inventory
@@ -709,13 +706,11 @@ public class InventoryEventFactory {
      * @return the {@code BookReadyToPickup} instance
      */
     public static BookReadyToPickup bookReadyToPickUpInstance(InventoryId inventoryId,
-                                                              InventoryItemId inventoryItemId,
                                                               UserId userId,
                                                               Timestamp whenBecameReadyToPickUp,
                                                               Timestamp pickUpDeadline) {
         final BookReadyToPickup result = BookReadyToPickup.newBuilder()
                                                           .setInventoryId(inventoryId)
-                                                          .setInventoryItemId(inventoryItemId)
                                                           .setForWhom(userId)
                                                           .setWhenBecameReadyToPickup(
                                                                   whenBecameReadyToPickUp)
