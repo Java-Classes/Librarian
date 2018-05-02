@@ -22,17 +22,17 @@ package javaclasses.exlibris.c.procman;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
-import com.google.protobuf.Empty;
 import io.spine.core.CommandContext;
 import io.spine.core.EventContext;
 import io.spine.core.React;
 import io.spine.server.procman.CommandRouted;
 import io.spine.server.procman.CommandRouter;
 import io.spine.server.procman.ProcessManager;
-import io.spine.validate.EmptyVBuilder;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.Reservation;
+import javaclasses.exlibris.ReservationQueue;
 import javaclasses.exlibris.ReservationQueueId;
+import javaclasses.exlibris.ReservationQueueVBuilder;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.InventoryAppended;
@@ -45,7 +45,7 @@ import javaclasses.exlibris.c.inventory.InventoryRepository;
 
 import java.util.List;
 
-public class ReservationQueue extends ProcessManager<ReservationQueueId, Empty, EmptyVBuilder> {
+public class ReservationQueueProcman extends ProcessManager<ReservationQueueId, ReservationQueue, ReservationQueueVBuilder> {
 
     /**
      * Creates a new instance.
@@ -53,13 +53,13 @@ public class ReservationQueue extends ProcessManager<ReservationQueueId, Empty, 
      * @param id an ID for the new instance
      * @throws IllegalArgumentException if the ID type is unsupported
      */
-    protected ReservationQueue(ReservationQueueId id) {
+    protected ReservationQueueProcman(ReservationQueueId id) {
         super(id);
     }
 
     /**
-     * As long as the {@code ReservationQueue} has no state,
-     * the {@link ReservationQueue} is a singleton.
+     * As long as the {@code ReservationQueueProcman} has no state,
+     * the {@link ReservationQueueProcman} is a singleton.
      */
     protected static final ReservationQueueId ID =
             ReservationQueueId.newBuilder()
@@ -70,8 +70,8 @@ public class ReservationQueue extends ProcessManager<ReservationQueueId, Empty, 
     CommandRouted on(BookReturned event, EventContext ctx) {
         final InventoryId inventoryId = event.getInventoryId();
         final CommandContext commandContext = ctx.getCommandContext();
-        final CommandRouter commandRouter = markBookAsAvailableOrSatisfyReservation(inventoryId,
-                                                                                    commandContext);
+        final CommandRouter commandRouter =
+                markBookAsAvailableOrSatisfyReservationRouter(inventoryId, commandContext);
         return commandRouter.routeAll();
     }
 
@@ -79,8 +79,8 @@ public class ReservationQueue extends ProcessManager<ReservationQueueId, Empty, 
     CommandRouted on(InventoryAppended event, EventContext ctx) {
         final InventoryId inventoryId = event.getInventoryId();
         final CommandContext commandContext = ctx.getCommandContext();
-        final CommandRouter commandRouter = markBookAsAvailableOrSatisfyReservation(inventoryId,
-                                                                                    commandContext);
+        final CommandRouter commandRouter =
+                markBookAsAvailableOrSatisfyReservationRouter(inventoryId, commandContext);
         return commandRouter.routeAll();
     }
 
@@ -88,8 +88,8 @@ public class ReservationQueue extends ProcessManager<ReservationQueueId, Empty, 
     CommandRouted on(ReservationPickUpPeriodExpired event, EventContext ctx) {
         final InventoryId inventoryId = event.getInventoryId();
         final CommandContext commandContext = ctx.getCommandContext();
-        final CommandRouter commandRouter = markBookAsAvailableOrSatisfyReservation(inventoryId,
-                                                                                    commandContext);
+        final CommandRouter commandRouter =
+                markBookAsAvailableOrSatisfyReservationRouter(inventoryId, commandContext);
         return commandRouter.routeAll();
     }
 
@@ -99,12 +99,12 @@ public class ReservationQueue extends ProcessManager<ReservationQueueId, Empty, 
         if (reservationWasSatisfied) {
             final InventoryId inventoryId = event.getInventoryId();
             final CommandContext commandContext = ctx.getCommandContext();
-            final CommandRouter commandRouter = markBookAsAvailableOrSatisfyReservation(inventoryId,
-                                                                                        commandContext);
+            final CommandRouter commandRouter =
+                    markBookAsAvailableOrSatisfyReservationRouter(inventoryId, commandContext);
             return commandRouter.routeAll();
         }
 
-        return CommandRouted.getDefaultInstance();
+        return null;
     }
 
     /**
@@ -118,8 +118,8 @@ public class ReservationQueue extends ProcessManager<ReservationQueueId, Empty, 
      * @param commandContext the command context to route commands.
      * @return the command router that routes specified command in one call
      */
-    private CommandRouter markBookAsAvailableOrSatisfyReservation(InventoryId inventoryId,
-                                                                  CommandContext commandContext) {
+    private CommandRouter markBookAsAvailableOrSatisfyReservationRouter(InventoryId inventoryId,
+                                                                        CommandContext commandContext) {
         final Optional<UserId> userIdOptional = findUserToSatisfyReservation(inventoryId);
         if (userIdOptional.isPresent()) {
             final UserId userId = userIdOptional.get();

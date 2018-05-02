@@ -92,3 +92,12 @@ message ReservationQueueId {
     //
     string value = 1;
 }
+
+// The identifier of a loans extension process manager.
+//
+message LoansExtensionId {
+
+    // String representation of UUID.
+    //
+    string value = 1;
+}
