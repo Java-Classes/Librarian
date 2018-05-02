@@ -335,6 +335,9 @@ message ReservationCanceled {
 
     // The time when user canceled a reservation.
     google.protobuf.Timestamp when_canceled = 3;
+
+    // Shows whether the canceled reservation was satisfied or not.
+    bool was_satisfied = 4;
 }
 
 // An event fired when a librarian decreases a current inventory.

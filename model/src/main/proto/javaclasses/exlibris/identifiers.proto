@@ -83,3 +83,12 @@ message LoanId {
     // Maybe `currentTimeMillis`.
     int64 value = 1;
 }
+
+// The identifier of a reservation queue process manager.
+//
+message ReservationQueueId {
+
+    // String representation of UUID.
+    //
+    string value = 1;
+}

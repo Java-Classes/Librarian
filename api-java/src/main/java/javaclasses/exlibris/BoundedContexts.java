@@ -28,6 +28,7 @@ import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import javaclasses.exlibris.c.book.BookRepository;
 import javaclasses.exlibris.c.inventory.InventoryRepository;
+import javaclasses.exlibris.c.procman.ReservationQueueRepository;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -71,14 +72,18 @@ public final class BoundedContexts {
         checkNotNull(storageFactory);
 
         final BookRepository bookRepository = new BookRepository();
-        final InventoryRepository inventoryRepository = new InventoryRepository();
+        final InventoryRepository inventoryRepository = InventoryRepository.getRepository();
+        final ReservationQueueRepository reservationQueueRepository = new ReservationQueueRepository();
 
         final EventBus.Builder eventBus = createEventBus(storageFactory);
 
         final BoundedContext boundedContext = createBoundedContext(eventBus);
-        boundedContext.register(bookRepository);
+        boundedContext.getEventBus()
+                      .register(reservationQueueRepository);
 
+        boundedContext.register(bookRepository);
         boundedContext.register(inventoryRepository);
+        boundedContext.register(reservationQueueRepository);
         return boundedContext;
     }
 

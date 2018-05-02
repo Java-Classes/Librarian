@@ -42,6 +42,18 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  */
 public class InventoryRepository extends AggregateRepository<InventoryId, InventoryAggregate> {
 
+    /**
+     * Returns instance of the VendorRepository
+     */
+    public static InventoryRepository getRepository() {
+        return InventoryRepositorySingleton.INSTANCE.value;
+    }
+
+    private enum InventoryRepositorySingleton {
+        INSTANCE;
+        public final InventoryRepository value = new InventoryRepository();
+    }
+
     public InventoryRepository() {
         getEventRouting().replaceDefault((EventRoute<InventoryId, Message>) (message, context) -> {
             if (message instanceof BookAdded) {

@@ -445,6 +445,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      */
     @Assign
     BookBecameAvailable handle(MarkBookAsAvailable cmd) {
+        System.out.println("in handler");
         final BookBecameAvailable result = createBookBecameAvailableEvent();
         return result;
     }
@@ -948,11 +949,15 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     private ReservationCanceled createReservationCanceledEvent(CancelReservation cmd) {
         final InventoryId inventoryId = cmd.getInventoryId();
         final UserId userId = cmd.getUserId();
+        final List<Reservation> reservations = getState().getReservationsList();
+        final Reservation reservation = getReservationByUserId(userId, reservations);
+        final boolean isSatisfied = reservation.getIsSatisfied();
         final ReservationCanceled reservationCanceledEvent =
                 ReservationCanceled.newBuilder()
                                    .setInventoryId(inventoryId)
                                    .setWhoCanceled(userId)
                                    .setWhenCanceled(getCurrentTime())
+                                   .setWasSatisfied(isSatisfied)
                                    .build();
         return reservationCanceledEvent;
     }
