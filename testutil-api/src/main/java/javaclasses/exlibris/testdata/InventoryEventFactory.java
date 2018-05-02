@@ -21,14 +21,8 @@
 package javaclasses.exlibris.testdata;
 
 import com.google.protobuf.Timestamp;
-import io.spine.net.EmailAddress;
-import io.spine.people.PersonName;
-import io.spine.time.LocalDate;
-import io.spine.time.MonthOfYear;
-import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.InventoryItemId;
-import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.LoanId;
 import javaclasses.exlibris.QRcodeURL;
 import javaclasses.exlibris.UserId;
@@ -49,13 +43,20 @@ import javaclasses.exlibris.c.ReservationAdded;
 import javaclasses.exlibris.c.ReservationBecameLoan;
 import javaclasses.exlibris.c.ReservationCanceled;
 import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
-import javaclasses.exlibris.q.InventoryItemState;
-import javaclasses.exlibris.q.LoanDetails;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
+import static javaclasses.exlibris.testdata.TestValues.DEFAULT_TIMESTAMP1;
+import static javaclasses.exlibris.testdata.TestValues.DEFAULT_TIMESTAMP2;
+import static javaclasses.exlibris.testdata.TestValues.DUE_TIMESTAMP;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ID;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ITEM_ID_1;
+import static javaclasses.exlibris.testdata.TestValues.LOAN_ID;
+import static javaclasses.exlibris.testdata.TestValues.QR_CODE_URL;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID;
+import static javaclasses.exlibris.testdata.TestValues.WRITE_OFF_REASON;
 
 /**
  * A factory of the book events for the test needs.
@@ -63,121 +64,6 @@ import static io.spine.time.Time.getCurrentTime;
  * @author Yurii Haidamaka
  */
 public class InventoryEventFactory {
-
-    public static final Isbn62 ISBN_62 = Isbn62.newBuilder()
-                                               .setValue("2mBSCRqZ")
-                                               .build();
-
-    public static final BookId BOOK_ID = BookId.newBuilder()
-                                               .setIsbn62(ISBN_62)
-                                               .build();
-    public static final EmailAddress USER_EMAIL_ADRESS = EmailAddress.newBuilder()
-                                                                     .setValue(
-                                                                             "paulageyev@gmail.com")
-                                                                     .build();
-    public static final UserId USER_ID = UserId.newBuilder()
-                                               .setEmail(USER_EMAIL_ADRESS)
-                                               .build();
-
-    public static final InventoryId INVENTORY_ID = InventoryId.newBuilder()
-                                                              .setBookId(BOOK_ID)
-                                                              .build();
-    public static final InventoryItemId INVENTORY_ITEM_ID = InventoryItemId.newBuilder()
-                                                                           .setBookId(BOOK_ID)
-                                                                           .setItemNumber(1)
-                                                                           .build();
-    public static final QRcodeURL QR_CODE_URL = QRcodeURL.newBuilder()
-                                                         .setValue("exlibris/4321")
-                                                         .build();
-    public static final WriteOffReason WRITE_OFF_REASON = WriteOffReason.newBuilder()
-                                                                        .setCustomReason(
-                                                                                "Custom reason")
-                                                                        .build();
-    public static final LoanId LOAN_ID = LoanId.newBuilder()
-                                               .setValue(1)
-                                               .build();
-
-    private static final int LOAN_PERIOD = 60 * 60 * 24 * 14;
-
-    // Timestamp on 01.01.1970 00:00
-    public static final Timestamp DEFAULT_TIMESTAMP1 = Timestamp.newBuilder()
-                                                                .setNanos(0)
-                                                                .setSeconds(0)
-                                                                .build();
-    public static final Timestamp DEFAULT_TIMESTAMP2 = Timestamp.newBuilder()
-                                                                .setNanos(0)
-                                                                .setSeconds(213456789)
-                                                                .build();
-
-    public static final Timestamp DUE_TIMESTAMP = Timestamp.newBuilder()
-                                                           .setSeconds(LOAN_PERIOD)
-                                                           .build();
-
-    public static final LocalDate DEFAULT_DATE1 = LocalDate.newBuilder()
-                                                           .setDay(1)
-                                                           .setMonth(
-                                                                   MonthOfYear.valueOf(1))
-                                                           .setYear(1970)
-                                                           .build();
-    public static final LocalDate DEFAULT_DATE2 = LocalDate.newBuilder()
-                                                           .setDay(6)
-                                                           .setMonth(
-                                                                   MonthOfYear.valueOf(10))
-                                                           .setYear(1976)
-                                                           .build();
-    public static final LocalDate DEFAULT_DUE_DATE = LocalDate.newBuilder()
-                                                              .setDay(15)
-                                                              .setMonth(
-                                                                      MonthOfYear.valueOf(1))
-                                                              .setYear(1970)
-                                                              .build();
-    public static final PersonName USER_NAME = PersonName.newBuilder()
-                                                         .setGivenName("Ivan")
-                                                         .setFamilyName("Petrov")
-                                                         .build();
-
-    public static final InventoryItemState IN_LIBRARY_ITEM_STATE = InventoryItemState.newBuilder()
-                                                                                     .setItemId(
-                                                                                             INVENTORY_ITEM_ID)
-                                                                                     .setInLibrary(
-                                                                                             true)
-                                                                                     .build();
-
-    public static final LoanDetails LOAN_DETAILS = LoanDetails.newBuilder()
-                                                              .setUserId(USER_ID)
-                                                              .setUserName(USER_NAME)
-                                                              .setEmail(USER_EMAIL_ADRESS)
-                                                              .setWhenTaken(DEFAULT_DATE1)
-                                                              .setWhenDue(DEFAULT_DUE_DATE)
-                                                              .setOverdue(false)
-                                                              .build();
-    public static final InventoryItemState BORROWED_ITEM_STATE = InventoryItemState.newBuilder()
-                                                                                   .setItemId(
-                                                                                           INVENTORY_ITEM_ID)
-                                                                                   .setLoanDetails(
-                                                                                           LOAN_DETAILS)
-                                                                                   .build();
-
-    public static final InventoryItemState LOST_ITEM_STATE = InventoryItemState.newBuilder()
-                                                                               .setItemId(
-                                                                                       INVENTORY_ITEM_ID)
-                                                                               .setLost(true)
-                                                                               .build();
-
-    public static final LoanDetails OVERDUE_LOAN_DETAILS = LoanDetails.newBuilder()
-                                                                      .setUserId(USER_ID)
-                                                                      .setUserName(USER_NAME)
-                                                                      .setEmail(USER_EMAIL_ADRESS)
-                                                                      .setWhenTaken(DEFAULT_DATE1)
-                                                                      .setWhenDue(DEFAULT_DUE_DATE)
-                                                                      .setOverdue(true)
-                                                                      .build();
-    public static final InventoryItemState OVERDUE_ITEM_STATE = InventoryItemState.newBuilder()
-                                                                                  .setItemId(
-                                                                                          INVENTORY_ITEM_ID)
-                                                                                  .setLoanDetails(
-                                                                                          OVERDUE_LOAN_DETAILS)
-                                                                                  .build();
 
     private InventoryEventFactory() {
     }
@@ -188,7 +74,7 @@ public class InventoryEventFactory {
      * @return the {@link InventoryAppended} instance
      */
     public static InventoryAppended inventoryAppendedInstance() {
-        return inventoryAppendedInstance(INVENTORY_ID, INVENTORY_ITEM_ID, QR_CODE_URL, USER_ID,
+        return inventoryAppendedInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1, QR_CODE_URL, USER_ID,
                                          getCurrentTime());
     }
 
@@ -224,7 +110,7 @@ public class InventoryEventFactory {
      * @return the {@link InventoryDecreased} instance
      */
     public static InventoryDecreased inventoryDecreasedInstance() {
-        return inventoryDecreasedInstance(INVENTORY_ID, INVENTORY_ITEM_ID, USER_ID,
+        return inventoryDecreasedInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1, USER_ID,
                                           getCurrentTime(), WRITE_OFF_REASON, 0);
     }
 
@@ -262,7 +148,7 @@ public class InventoryEventFactory {
      * @return the {@link BookBorrowed} instance
      */
     public static BookBorrowed bookBorrowedInstance() {
-        return bookBorrowedInstance(INVENTORY_ID, INVENTORY_ITEM_ID, USER_ID, LOAN_ID,
+        return bookBorrowedInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1, USER_ID, LOAN_ID,
                                     DEFAULT_TIMESTAMP1, DUE_TIMESTAMP);
     }
 
@@ -299,7 +185,7 @@ public class InventoryEventFactory {
      * @return the {@link BookReturned} instance
      */
     public static BookReturned bookReturnedInstance() {
-        return bookReturnedInstance(INVENTORY_ID, INVENTORY_ITEM_ID, USER_ID,
+        return bookReturnedInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1, USER_ID,
                                     DEFAULT_TIMESTAMP1);
     }
 
@@ -362,7 +248,7 @@ public class InventoryEventFactory {
      * @return the {@link BookLost} instance
      */
     public static BookLost bookLostInstance() {
-        return bookLostInstance(INVENTORY_ID, INVENTORY_ITEM_ID, USER_ID,
+        return bookLostInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1, USER_ID,
                                 DEFAULT_TIMESTAMP1);
     }
 
@@ -394,7 +280,7 @@ public class InventoryEventFactory {
      * @return the {@link LoanBecameOverdue} instance
      */
     public static LoanBecameOverdue loanBecameOverdueInstance() {
-        return loanBecameOverdueInstance(INVENTORY_ID, INVENTORY_ITEM_ID, LOAN_ID,
+        return loanBecameOverdueInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1, LOAN_ID,
                                          DEFAULT_TIMESTAMP1, USER_ID);
     }
 
@@ -430,7 +316,7 @@ public class InventoryEventFactory {
      * @return the {@link LoanBecameShouldReturnSoon} instance
      */
     public static LoanBecameShouldReturnSoon loanBecameShouldReturnSoonInstance() {
-        return loanBecameShouldReturnSoonInstance(INVENTORY_ID, INVENTORY_ITEM_ID, LOAN_ID,
+        return loanBecameShouldReturnSoonInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1, LOAN_ID,
                                                   DEFAULT_TIMESTAMP1, USER_ID, true);
     }
 
@@ -533,7 +419,7 @@ public class InventoryEventFactory {
      * @return the {@link LoanPeriodExtended} instance
      */
     public static LoanPeriodExtended loanPeriodExtendedInstance() {
-        return loanPeriodExtendedInstance(INVENTORY_ID, INVENTORY_ITEM_ID, LOAN_ID, USER_ID,
+        return loanPeriodExtendedInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1, LOAN_ID, USER_ID,
                                           DEFAULT_TIMESTAMP1,
                                           DEFAULT_TIMESTAMP2);
     }

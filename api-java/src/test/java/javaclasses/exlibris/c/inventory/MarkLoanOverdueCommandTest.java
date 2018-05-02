@@ -38,8 +38,8 @@ import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchComma
 import static javaclasses.exlibris.LoanStatus.LOAN_OVERDUE;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.markLoanOverdue;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -60,7 +60,7 @@ public class MarkLoanOverdueCommandTest extends InventoryCommandTest<MarkLoanOve
     void produceEvent() {
         final LoanId loanId = prepareLoan();
 
-        final MarkLoanOverdue markLoanOverdue = markLoanOverdue(loanId, inventoryId);
+        final MarkLoanOverdue markLoanOverdue = markLoanOverdue(loanId, INVENTORY_ID);
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(markLoanOverdue));
@@ -77,7 +77,7 @@ public class MarkLoanOverdueCommandTest extends InventoryCommandTest<MarkLoanOve
     void markLoanPeriodAsOverdue() {
         final LoanId loanId = prepareLoan();
 
-        final MarkLoanOverdue markLoanOverdue = markLoanOverdue(loanId, inventoryId);
+        final MarkLoanOverdue markLoanOverdue = markLoanOverdue(loanId, INVENTORY_ID);
 
         dispatchCommand(aggregate, envelopeOf(markLoanOverdue));
         final Inventory state = aggregate.getState();

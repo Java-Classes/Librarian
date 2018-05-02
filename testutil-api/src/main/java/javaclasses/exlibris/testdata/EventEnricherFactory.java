@@ -20,19 +20,11 @@
 
 package javaclasses.exlibris.testdata;
 
-import io.spine.net.Url;
-import io.spine.people.PersonName;
 import io.spine.server.event.EventEnricher;
-import javaclasses.exlibris.AuthorName;
 import javaclasses.exlibris.Book;
-import javaclasses.exlibris.BookDetails;
-import javaclasses.exlibris.BookSynopsis;
-import javaclasses.exlibris.BookTitle;
-import javaclasses.exlibris.Category;
 import javaclasses.exlibris.InventoryId;
-import javaclasses.exlibris.Isbn;
 
-import java.util.function.Function;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ID_TO_BOOK;
 
 /**
  * Provides event enricher for the test needs.
@@ -40,50 +32,6 @@ import java.util.function.Function;
  * @author Illia Shepilov
  */
 public class EventEnricherFactory {
-    public static final Isbn ISBN = Isbn.newBuilder()
-                                        .setValue("0201485672")
-                                        .build();
-
-    public static final BookTitle TITLE = BookTitle.newBuilder()
-                                                   .setTitle("Refactoring")
-                                                   .build();
-
-    public static final AuthorName AUTHOR = AuthorName.newBuilder()
-                                                      .addAuthorName(
-                                                              PersonName.newBuilder()
-                                                                        .setFamilyName(
-                                                                                "Fowler")
-                                                                        .setGivenName(
-                                                                                "Martin"))
-                                                      .build();
-
-    public static final Url COVER_URL = Url.newBuilder()
-                                           .setRaw("http://library.teamdev.com/book/1")
-                                           .build();
-
-    public static final BookSynopsis SYNOPSIS = BookSynopsis.newBuilder()
-                                                            .setBookSynopsis(
-                                                                    "As the application of object " +
-                                                                            "technology--particularly the Java programming language")
-                                                            .build();
-
-    public static final Category CATEGORY = Category.newBuilder()
-                                                    .setValue("Programming")
-                                                    .build();
-
-    public static final BookDetails DETAILS = BookDetails.newBuilder()
-                                                         .setIsbn(ISBN)
-                                                         .setTitle(TITLE)
-                                                         .setAuthor(AUTHOR)
-                                                         .setBookCoverUrl(COVER_URL)
-                                                         .setSynopsis(SYNOPSIS)
-                                                         .addCategories(CATEGORY)
-                                                         .build();
-    private static final Book BOOK = Book.newBuilder()
-                                         .setBookDetails(DETAILS)
-                                         .build();
-
-    private static final Function<InventoryId, Book> INVENTORY_ID_TO_BOOK = inventoryId -> BOOK;
 
     private EventEnricherFactory() {
     }

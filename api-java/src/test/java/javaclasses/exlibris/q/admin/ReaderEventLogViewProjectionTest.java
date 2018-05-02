@@ -41,10 +41,6 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.Identifier.newUuid;
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
-import static javaclasses.exlibris.testdata.BookEventFactory.BOOK_ID;
-import static javaclasses.exlibris.testdata.BookEventFactory.USER_ID;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.DEFAULT_TIMESTAMP1;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.INVENTORY_ITEM_ID;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookBorrowedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookLostInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookReturnedInstance;
@@ -55,6 +51,10 @@ import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationAdd
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationBecameLoanInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationCanceledInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationPickUpPeriodExpiredInstance;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
+import static javaclasses.exlibris.testdata.TestValues.DEFAULT_TIMESTAMP1;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ITEM_ID_1;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ReaderEventLogViewProjectionTest extends ProjectionTest {
@@ -207,7 +207,7 @@ class ReaderEventLogViewProjectionTest extends ProjectionTest {
     private void assertEqualsWithItemId(Message event) {
         final ReaderEventLogView state = projection.getState();
         assertEquals(USER_ID, state.getUserId());
-        assertEquals(INVENTORY_ITEM_ID, state.getItemId());
+        assertEquals(INVENTORY_ITEM_ID_1, state.getItemId());
         assertEquals(event.getClass()
                           .getSimpleName(), state.getEventType());
         assertEquals(DEFAULT_TIMESTAMP1, state.getWhenEmitted());

@@ -31,13 +31,13 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
-import static javaclasses.exlibris.testdata.BookEventFactory.BOOK_ID;
-import static javaclasses.exlibris.testdata.BookEventFactory.USER_EMAIL_ADRESS;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.DEFAULT_DATE1;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.DEFAULT_DUE_DATE;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.INVENTORY_ITEM_ID;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.USER_NAME;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookBorrowedInstance;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
+import static javaclasses.exlibris.testdata.TestValues.DEFAULT_DATE1;
+import static javaclasses.exlibris.testdata.TestValues.DEFAULT_DUE_DATE;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ITEM_ID_1;
+import static javaclasses.exlibris.testdata.TestValues.USER_EMAIL_1;
+import static javaclasses.exlibris.testdata.TestValues.USER_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BookLoanViewProjectionTest extends ProjectionTest {
@@ -64,9 +64,9 @@ class BookLoanViewProjectionTest extends ProjectionTest {
 
             final BookLoanView state = projection.getState();
             assertEquals(BOOK_ID, state.getBookId());
-            assertEquals(INVENTORY_ITEM_ID, state.getItemId());
+            assertEquals(INVENTORY_ITEM_ID_1, state.getItemId());
             assertEquals(USER_NAME, state.getUserName());
-            assertEquals(USER_EMAIL_ADRESS, state.getEmail());
+            assertEquals(USER_EMAIL_1, state.getEmail());
             assertEquals(DEFAULT_DATE1, state.getWhenTaken());
             assertEquals(DEFAULT_DUE_DATE, state.getWhenDue());
         }

@@ -45,11 +45,11 @@ import java.util.List;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryItemId;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryItemId2;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId2;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ID;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ITEM_ID_1;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ITEM_ID_2;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID_2;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -76,7 +76,8 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     void produceBookBorrowedEvent() {
         dispatchAppendInventory();
 
-        final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
+        final BorrowBook borrowBook = borrowBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1,
+                                                         USER_ID);
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(borrowBook));
         assertEquals(2, messageList.size());
@@ -85,9 +86,9 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
         final BookBorrowed bookBorrowed = (BookBorrowed) messageList.get(0);
         final InventoryItemId borrowedItemId = bookBorrowed.getInventoryItemId();
         final UserId whoBorrowed = bookBorrowed.getWhoBorrowed();
-        assertEquals(inventoryId, bookBorrowed.getInventoryId());
-        assertEquals(inventoryItemId, borrowedItemId);
-        assertEquals(userId, whoBorrowed);
+        assertEquals(INVENTORY_ID, bookBorrowed.getInventoryId());
+        assertEquals(INVENTORY_ITEM_ID_1, borrowedItemId);
+        assertEquals(USER_ID, whoBorrowed);
     }
 
     @Test
@@ -95,12 +96,13 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     void borrowBook() {
         dispatchAppendInventory();
 
-        final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
+        final BorrowBook borrowBook = borrowBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1,
+                                                         USER_ID);
         dispatchCommand(aggregate, envelopeOf(borrowBook));
         final Inventory state = aggregate.getState();
         final InventoryItem borrowedItem = state.getInventoryItems(0);
         assertTrue(borrowedItem.getBorrowed());
-        assertEquals(userId, borrowedItem.getUserId());
+        assertEquals(USER_ID, borrowedItem.getUserId());
     }
 
     @Test
@@ -108,14 +110,15 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     void createLoan() {
         dispatchAppendInventory();
 
-        final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
+        final BorrowBook borrowBook = borrowBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1,
+                                                         USER_ID);
         dispatchCommand(aggregate, envelopeOf(borrowBook));
 
         final Inventory state = aggregate.getState();
         assertEquals(1, state.getLoansCount());
         final Loan loan = state.getLoans(0);
-        assertEquals(loan.getInventoryItemId(), inventoryItemId);
-        assertEquals(loan.getWhoBorrowed(), userId);
+        assertEquals(loan.getInventoryItemId(), INVENTORY_ITEM_ID_1);
+        assertEquals(loan.getWhoBorrowed(), USER_ID);
     }
 
     @Test
@@ -125,7 +128,8 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
         dispatchReserveBook();
         dispatchSatisfyReservation();
 
-        final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
+        final BorrowBook borrowBook = borrowBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1,
+                                                         USER_ID);
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(borrowBook));
         assertEquals(2, messageList.size());
@@ -133,7 +137,7 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
                                                              .getClass());
 
         final ReservationBecameLoan becameLoan = (ReservationBecameLoan) messageList.get(1);
-        assertEquals(userId, becameLoan.getUserId());
+        assertEquals(USER_ID, becameLoan.getUserId());
     }
 
     @Test
@@ -143,7 +147,8 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
         dispatchReserveBook();
         dispatchSatisfyReservation();
 
-        final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
+        final BorrowBook borrowBook = borrowBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1,
+                                                         USER_ID);
         dispatchCommand(aggregate, envelopeOf(borrowBook));
 
         final Inventory state = aggregate.getState();
@@ -158,13 +163,13 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     void throwBookAlreadyBorrowed() {
         dispatchAppendInventoryTwice();
 
-        final BorrowBook borrowBook = borrowBookInstance(inventoryId,
-                                                         inventoryItemId, userId);
+        final BorrowBook borrowBook = borrowBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1,
+                                                         USER_ID);
 
         dispatchCommand(aggregate, envelopeOf(borrowBook));
 
-        final BorrowBook borrowOneMoreBook = borrowBookInstance(inventoryId,
-                                                                inventoryItemId2, userId);
+        final BorrowBook borrowOneMoreBook = borrowBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1,
+                                                                USER_ID);
 
         final Throwable t = assertThrows(Throwable.class,
                                          () -> dispatchCommand(aggregate,
@@ -179,14 +184,12 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     void borrowingSomeonesBook() {
         dispatchAppendInventory();
 
-        final BorrowBook borrowBookForSomeone = borrowBookInstance(inventoryId,
-                                                                   inventoryItemId,
-                                                                   userId);
+        final BorrowBook borrowBookForSomeone = borrowBookInstance(INVENTORY_ID,
+                                                                   INVENTORY_ITEM_ID_1, USER_ID);
         dispatchCommand(aggregate, envelopeOf(borrowBookForSomeone));
 
-        final BorrowBook borrowSomeOnesBook = borrowBookInstance(inventoryId,
-                                                                 inventoryItemId,
-                                                                 userId2);
+        final BorrowBook borrowSomeOnesBook = borrowBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1,
+                                                                 USER_ID_2);
 
         final Throwable t = assertThrows(Throwable.class,
                                          () -> dispatchCommand(aggregate,
@@ -203,9 +206,8 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
         dispatchAppendInventory();
         dispatchReserveBook();
 
-        final BorrowBook borrowBook = borrowBookInstance(inventoryId,
-                                                         inventoryItemId,
-                                                         userId);
+        final BorrowBook borrowBook = borrowBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1,
+                                                         USER_ID);
         final Throwable t = assertThrows(Throwable.class,
                                          () -> dispatchCommand(aggregate,
                                                                envelopeOf(borrowBook)));
@@ -222,9 +224,8 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
         dispatchReserveBook();
         dispatchSatisfyReservation();
 
-        final BorrowBook borrowBook = borrowBookInstance(inventoryId,
-                                                         inventoryItemId,
-                                                         userId2);
+        final BorrowBook borrowBook = borrowBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1,
+                                                         USER_ID_2);
         final Throwable t = assertThrows(Throwable.class,
                                          () -> dispatchCommand(aggregate,
                                                                envelopeOf(borrowBook)));
@@ -251,9 +252,9 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     private void dispatchAppendInventoryTwice() {
         final AppendInventory appendInventory = appendInventoryInstance();
         dispatchCommand(aggregate, envelopeOf(appendInventory));
-        final AppendInventory appendAnotherInventory = appendInventoryInstance(inventoryId,
-                                                                               inventoryItemId2,
-                                                                               userId);
+        final AppendInventory appendAnotherInventory = appendInventoryInstance(INVENTORY_ID,
+                                                                               INVENTORY_ITEM_ID_2,
+                                                                               USER_ID);
         dispatchCommand(aggregate, envelopeOf(appendAnotherInventory));
     }
 }

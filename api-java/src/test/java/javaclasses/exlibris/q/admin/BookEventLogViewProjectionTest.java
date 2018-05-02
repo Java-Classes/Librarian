@@ -41,11 +41,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
-import static javaclasses.exlibris.testdata.BookEventFactory.BOOK_ID;
-import static javaclasses.exlibris.testdata.BookEventFactory.USER_EMAIL_ADRESS;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.DEFAULT_TIMESTAMP1;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.INVENTORY_ITEM_ID;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.USER_NAME;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookBorrowedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookLostInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookReturnedInstance;
@@ -56,6 +51,11 @@ import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationAdd
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationBecameLoanInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationCanceledInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationPickUpPeriodExpiredInstance;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
+import static javaclasses.exlibris.testdata.TestValues.DEFAULT_TIMESTAMP1;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ITEM_ID_1;
+import static javaclasses.exlibris.testdata.TestValues.USER_EMAIL_1;
+import static javaclasses.exlibris.testdata.TestValues.USER_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BookEventLogViewProjectionTest extends ProjectionTest {
@@ -208,7 +208,7 @@ class BookEventLogViewProjectionTest extends ProjectionTest {
 
     private void assertEqualsAllFields(Message bookBorrowed) {
         final BookEventLogView state = projection.getState();
-        assertEquals(INVENTORY_ITEM_ID, state.getItemId());
+        assertEquals(INVENTORY_ITEM_ID_1, state.getItemId());
         assertEqualsAllFieldsWithoutItemId(bookBorrowed);
     }
 
@@ -216,7 +216,7 @@ class BookEventLogViewProjectionTest extends ProjectionTest {
         final BookEventLogView state = projection.getState();
         assertEquals(BOOK_ID, state.getBookId());
         assertEquals(USER_NAME, state.getUserName());
-        assertEquals(USER_EMAIL_ADRESS, state.getEmail());
+        assertEquals(USER_EMAIL_1, state.getEmail());
         assertEquals(bookBorrowed.getClass()
                                  .getSimpleName(), state.getEventType());
         assertEquals(DEFAULT_TIMESTAMP1, state.getWhenEmitted());

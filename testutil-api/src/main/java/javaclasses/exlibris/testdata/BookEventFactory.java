@@ -21,24 +21,19 @@
 package javaclasses.exlibris.testdata;
 
 import com.google.protobuf.Timestamp;
-import io.spine.net.EmailAddress;
-import io.spine.net.Url;
-import io.spine.people.PersonName;
-import javaclasses.exlibris.AuthorName;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookDetailsChange;
 import javaclasses.exlibris.BookId;
-import javaclasses.exlibris.BookSynopsis;
-import javaclasses.exlibris.BookTitle;
-import javaclasses.exlibris.Category;
-import javaclasses.exlibris.Isbn;
-import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.BookUpdated;
 
 import static io.spine.time.Time.getCurrentTime;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_DETAILS;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
+import static javaclasses.exlibris.testdata.TestValues.DETAILS_CHANGE;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID;
 
 /**
  * A factory of the book events for the test needs.
@@ -46,92 +41,6 @@ import static io.spine.time.Time.getCurrentTime;
  * @author Yurii Haidamaka
  */
 public class BookEventFactory {
-
-    public static final Isbn ISBN = Isbn.newBuilder()
-                                        .setValue("0201485672")
-                                        .build();
-
-    public static final Isbn ISBN_2 = Isbn.newBuilder()
-                                          .setValue("0256314523")
-                                          .build();
-
-    public static final Isbn62 ISBN_62 = Isbn62.newBuilder()
-                                               .setValue("2mBSCRqZ")
-                                               .build();
-
-    public static final BookId BOOK_ID = BookId.newBuilder()
-                                               .setIsbn62(ISBN_62)
-                                               .build();
-    public static final EmailAddress USER_EMAIL_ADRESS = EmailAddress.newBuilder()
-                                                                     .setValue(
-                                                                             "paulageyev@gmail.com")
-                                                                     .build();
-    public static final UserId USER_ID = UserId.newBuilder()
-                                               .setEmail(USER_EMAIL_ADRESS)
-                                               .build();
-
-    public static final BookTitle TITLE = BookTitle.newBuilder()
-                                                   .setTitle("Refactoring")
-                                                   .build();
-
-    public static final BookTitle TITLE_2 = BookTitle.newBuilder()
-                                                     .setTitle("Java 8 in Action")
-                                                     .build();
-
-    public static final AuthorName AUTHOR = AuthorName.newBuilder()
-                                                      .addAuthorName(
-                                                              PersonName.newBuilder()
-                                                                        .setFamilyName(
-                                                                                "Fowler")
-                                                                        .setGivenName(
-                                                                                "Martin"))
-                                                      .build();
-    public static final AuthorName AUTHOR_2 = AuthorName.newBuilder()
-                                                        .addAuthorName(
-                                                                PersonName.newBuilder()
-                                                                          .setFamilyName(
-                                                                                  "Ivan")
-                                                                          .setGivenName(
-                                                                                  "Petrov"))
-                                                        .build();
-
-    public static final Url COVER_URL = Url.newBuilder()
-                                           .setRaw("http://library.teamdev.com/book/1")
-                                           .build();
-
-    public static final BookSynopsis SYNOPSIS = BookSynopsis.newBuilder()
-                                                            .setBookSynopsis(
-                                                                    "As the application of object " +
-                                                                            "technology--particularly the Java programming language")
-                                                            .build();
-
-    public static final Category CATEGORY = Category.newBuilder()
-                                                    .setValue("Programming")
-                                                    .build();
-
-    public static final BookDetails DETAILS = BookDetails.newBuilder()
-                                                         .setIsbn(ISBN)
-                                                         .setTitle(TITLE)
-                                                         .setAuthor(AUTHOR)
-                                                         .setBookCoverUrl(COVER_URL)
-                                                         .setSynopsis(SYNOPSIS)
-                                                         .addCategories(CATEGORY)
-                                                         .build();
-
-    public static final BookDetails NEW_DETAILS = BookDetails.newBuilder()
-                                                             .setIsbn(ISBN_2)
-                                                             .setTitle(TITLE_2)
-                                                             .setAuthor(AUTHOR_2)
-                                                             .setBookCoverUrl(COVER_URL)
-                                                             .setSynopsis(SYNOPSIS)
-                                                             .addCategories(CATEGORY)
-                                                             .build();
-    public static final BookDetailsChange DETAILS_CHANGE = BookDetailsChange.newBuilder()
-                                                                            .setNewBookDetails(
-                                                                                    NEW_DETAILS)
-                                                                            .setPreviousBookDetails(
-                                                                                    DETAILS)
-                                                                            .build();
 
     private BookEventFactory() {
     }
@@ -142,7 +51,7 @@ public class BookEventFactory {
      * @return the {@link BookAdded} instance
      */
     public static BookAdded bookAddedInstance() {
-        return bookAddedInstance(BOOK_ID, DETAILS, USER_ID, getCurrentTime());
+        return bookAddedInstance(BOOK_ID, BOOK_DETAILS, USER_ID, getCurrentTime());
     }
 
     /**
@@ -194,20 +103,6 @@ public class BookEventFactory {
                                               .build();
         return result;
     }
-
-    /*
-        // The identifier of a book.
-    BookId book_id = 1;
-
-    // Details of a current book.
-    BookDetailsChange book_details_change = 2;
-
-    // Who updated a book.
-    UserId librarian_id = 3;
-
-    // The time when book was updated.
-    google.protobuf.Timestamp when_updated = 4;
-     */
 
     /**
      * Provides a pre-configured {@link BookRemoved} event instance.

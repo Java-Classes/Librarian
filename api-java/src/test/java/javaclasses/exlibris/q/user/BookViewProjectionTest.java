@@ -34,18 +34,18 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
-import static javaclasses.exlibris.testdata.BookEventFactory.AUTHOR;
-import static javaclasses.exlibris.testdata.BookEventFactory.BOOK_ID;
-import static javaclasses.exlibris.testdata.BookEventFactory.CATEGORY;
-import static javaclasses.exlibris.testdata.BookEventFactory.COVER_URL;
-import static javaclasses.exlibris.testdata.BookEventFactory.ISBN;
-import static javaclasses.exlibris.testdata.BookEventFactory.SYNOPSIS;
-import static javaclasses.exlibris.testdata.BookEventFactory.TITLE;
 import static javaclasses.exlibris.testdata.BookEventFactory.bookAddedInstance;
 import static javaclasses.exlibris.testdata.BookEventFactory.bookRemovedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookBecameAvailableInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookBorrowedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.inventoryDecreasedInstance;
+import static javaclasses.exlibris.testdata.TestValues.AUTHOR_NAME;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_CATEGORY;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_SYNOPSIS;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_TITLE;
+import static javaclasses.exlibris.testdata.TestValues.COVER_URL;
+import static javaclasses.exlibris.testdata.TestValues.ISBN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BookViewProjectionTest extends ProjectionTest {
@@ -69,12 +69,12 @@ class BookViewProjectionTest extends ProjectionTest {
 
             final BookView book = projection.getState();
             assertEquals(BOOK_ID, book.getBookId());
-            assertEquals(TITLE, book.getTitle());
-            assertEquals(AUTHOR, book.getAuthors());
+            assertEquals(BOOK_TITLE, book.getTitle());
+            assertEquals(AUTHOR_NAME, book.getAuthors());
             assertEquals(ISBN, book.getIsbn());
             assertEquals(COVER_URL, book.getCoverUrl());
-            assertEquals(CATEGORY, book.getCategories(0));
-            assertEquals(SYNOPSIS, book.getSynopsis());
+            assertEquals(BOOK_CATEGORY, book.getCategories(0));
+            assertEquals(BOOK_SYNOPSIS, book.getSynopsis());
             assertEquals(0, book.getAvailableCount());
             assertEquals(BookStatus.EXPECTED, book.getStatus());
         }

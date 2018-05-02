@@ -40,18 +40,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
-import static javaclasses.exlibris.testdata.BookEventFactory.AUTHOR;
-import static javaclasses.exlibris.testdata.BookEventFactory.CATEGORY;
-import static javaclasses.exlibris.testdata.BookEventFactory.COVER_URL;
-import static javaclasses.exlibris.testdata.BookEventFactory.ISBN;
-import static javaclasses.exlibris.testdata.BookEventFactory.SYNOPSIS;
-import static javaclasses.exlibris.testdata.BookEventFactory.TITLE;
-import static javaclasses.exlibris.testdata.BookEventFactory.USER_ID;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.BOOK_ID;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.DEFAULT_DATE1;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.DEFAULT_DATE2;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.DEFAULT_DUE_DATE;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.LOAN_ID;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookBorrowedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookLostInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookReturnedInstance;
@@ -60,6 +48,18 @@ import static javaclasses.exlibris.testdata.InventoryEventFactory.loanBecameShou
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loanPeriodExtendedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loansExtensionAllowedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loansExtensionForbiddenInstance;
+import static javaclasses.exlibris.testdata.TestValues.AUTHOR_NAME;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_CATEGORY;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_SYNOPSIS;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_TITLE;
+import static javaclasses.exlibris.testdata.TestValues.COVER_URL;
+import static javaclasses.exlibris.testdata.TestValues.DEFAULT_DATE1;
+import static javaclasses.exlibris.testdata.TestValues.DEFAULT_DATE2;
+import static javaclasses.exlibris.testdata.TestValues.DEFAULT_DUE_DATE;
+import static javaclasses.exlibris.testdata.TestValues.ISBN;
+import static javaclasses.exlibris.testdata.TestValues.LOAN_ID;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BorrowedBooksListViewProjectionTest extends ProjectionTest {
@@ -91,12 +91,12 @@ class BorrowedBooksListViewProjectionTest extends ProjectionTest {
             assertEquals(LOAN_ID, bookItem.getLoanId());
             assertEquals(BOOK_ID, bookItem.getBookId());
             assertEquals(ISBN, bookItem.getIsbn());
-            assertEquals(TITLE, bookItem.getTitle());
-            assertEquals(AUTHOR, bookItem.getAuthors());
+            assertEquals(BOOK_TITLE, bookItem.getTitle());
+            assertEquals(AUTHOR_NAME, bookItem.getAuthors());
             assertEquals(COVER_URL, bookItem.getCoverUrl());
-            assertEquals(CATEGORY, bookItem.getCategoriesList()
-                                           .get(0));
-            assertEquals(SYNOPSIS, bookItem.getSynopsis());
+            assertEquals(BOOK_CATEGORY, bookItem.getCategoriesList()
+                                                .get(0));
+            assertEquals(BOOK_SYNOPSIS, bookItem.getSynopsis());
             assertEquals(false, bookItem.getIsAllowedLoanExtension());
             assertEquals(BorrowedBookItemStatus.BORROWED, bookItem.getStatus());
             assertEquals(DEFAULT_DATE1, bookItem.getWhenBorrowed());

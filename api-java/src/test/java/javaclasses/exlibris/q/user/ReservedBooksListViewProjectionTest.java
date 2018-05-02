@@ -37,20 +37,20 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
-import static javaclasses.exlibris.testdata.BookEventFactory.AUTHOR;
-import static javaclasses.exlibris.testdata.BookEventFactory.CATEGORY;
-import static javaclasses.exlibris.testdata.BookEventFactory.COVER_URL;
-import static javaclasses.exlibris.testdata.BookEventFactory.ISBN;
-import static javaclasses.exlibris.testdata.BookEventFactory.SYNOPSIS;
-import static javaclasses.exlibris.testdata.BookEventFactory.TITLE;
-import static javaclasses.exlibris.testdata.BookEventFactory.USER_ID;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.BOOK_ID;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.DEFAULT_DUE_DATE;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookReadyToPickUpInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationAddedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationBecameLoanInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationCanceledInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationPickUpPeriodExpiredInstance;
+import static javaclasses.exlibris.testdata.TestValues.AUTHOR_NAME;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_CATEGORY;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_SYNOPSIS;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_TITLE;
+import static javaclasses.exlibris.testdata.TestValues.COVER_URL;
+import static javaclasses.exlibris.testdata.TestValues.DEFAULT_DUE_DATE;
+import static javaclasses.exlibris.testdata.TestValues.ISBN;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ReservedBooksListViewProjectionTest extends ProjectionTest {
@@ -79,12 +79,12 @@ class ReservedBooksListViewProjectionTest extends ProjectionTest {
             final ReservedBookItem bookItem = books.get(0);
             assertEquals(BOOK_ID, bookItem.getBookId());
             assertEquals(ISBN, bookItem.getIsbn());
-            assertEquals(TITLE, bookItem.getTitle());
-            assertEquals(AUTHOR, bookItem.getAuthors());
+            assertEquals(BOOK_TITLE, bookItem.getTitle());
+            assertEquals(AUTHOR_NAME, bookItem.getAuthors());
             assertEquals(COVER_URL, bookItem.getCoverUrl());
-            assertEquals(CATEGORY, bookItem.getCategorieList()
-                                           .get(0));
-            assertEquals(SYNOPSIS, bookItem.getSynopsis());
+            assertEquals(BOOK_CATEGORY, bookItem.getCategorieList()
+                                                .get(0));
+            assertEquals(BOOK_SYNOPSIS, bookItem.getSynopsis());
             assertEquals(DEFAULT_DUE_DATE, bookItem.getWhenReadyToPickUp());
             assertEquals(ReservedBookItemStatus.RESERVED, bookItem.getStatus());
         }

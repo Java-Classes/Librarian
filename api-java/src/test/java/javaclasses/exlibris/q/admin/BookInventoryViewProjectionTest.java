@@ -35,14 +35,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
-import static javaclasses.exlibris.testdata.BookEventFactory.AUTHOR;
-import static javaclasses.exlibris.testdata.BookEventFactory.TITLE;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.BORROWED_ITEM_STATE;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.DEFAULT_DATE2;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.INVENTORY_ID;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.IN_LIBRARY_ITEM_STATE;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.LOST_ITEM_STATE;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.OVERDUE_ITEM_STATE;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookBorrowedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookLostInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookReturnedInstance;
@@ -50,6 +42,14 @@ import static javaclasses.exlibris.testdata.InventoryEventFactory.inventoryAppen
 import static javaclasses.exlibris.testdata.InventoryEventFactory.inventoryDecreasedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loanBecameOverdueInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loanPeriodExtendedInstance;
+import static javaclasses.exlibris.testdata.TestValues.AUTHOR_NAME;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_TITLE;
+import static javaclasses.exlibris.testdata.TestValues.BORROWED_ITEM_STATE;
+import static javaclasses.exlibris.testdata.TestValues.DEFAULT_DATE2;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ID;
+import static javaclasses.exlibris.testdata.TestValues.IN_LIBRARY_ITEM_STATE;
+import static javaclasses.exlibris.testdata.TestValues.LOST_ITEM_STATE;
+import static javaclasses.exlibris.testdata.TestValues.OVERDUE_ITEM_STATE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BookInventoryViewProjectionTest extends ProjectionTest {
@@ -72,8 +72,8 @@ class BookInventoryViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(inventoryAppended));
 
             final BookInventoryView state = projection.getState();
-            assertEquals(TITLE, state.getTitle());
-            assertEquals(AUTHOR, state.getAuthor());
+            assertEquals(BOOK_TITLE, state.getTitle());
+            assertEquals(AUTHOR_NAME, state.getAuthor());
             assertEquals(IN_LIBRARY_ITEM_STATE, state.getItemState(0));
         }
     }

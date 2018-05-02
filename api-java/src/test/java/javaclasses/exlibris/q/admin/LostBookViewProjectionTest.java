@@ -30,14 +30,14 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
-import static javaclasses.exlibris.testdata.BookEventFactory.AUTHOR;
-import static javaclasses.exlibris.testdata.BookEventFactory.TITLE;
-import static javaclasses.exlibris.testdata.BookEventFactory.USER_EMAIL_ADRESS;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.DEFAULT_DATE1;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.INVENTORY_ITEM_ID;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.USER_NAME;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookLostInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.inventoryDecreasedInstance;
+import static javaclasses.exlibris.testdata.TestValues.AUTHOR_NAME;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_TITLE;
+import static javaclasses.exlibris.testdata.TestValues.DEFAULT_DATE1;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ITEM_ID_1;
+import static javaclasses.exlibris.testdata.TestValues.USER_EMAIL_1;
+import static javaclasses.exlibris.testdata.TestValues.USER_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LostBookViewProjectionTest extends ProjectionTest {
@@ -46,7 +46,7 @@ class LostBookViewProjectionTest extends ProjectionTest {
 
     @BeforeEach
     void setUp() {
-        projection = new LostBookViewProjection(INVENTORY_ITEM_ID);
+        projection = new LostBookViewProjection(INVENTORY_ITEM_ID_1);
     }
 
     @Nested
@@ -61,11 +61,11 @@ class LostBookViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(bookLost));
 
             final LostBookView state = projection.getState();
-            assertEquals(TITLE, state.getTitle());
+            assertEquals(BOOK_TITLE, state.getTitle());
             assertEquals(USER_NAME, state.getUserName());
-            assertEquals(USER_EMAIL_ADRESS, state.getEmail());
-            assertEquals(AUTHOR, state.getAuthors());
-            assertEquals(INVENTORY_ITEM_ID, state.getItemId());
+            assertEquals(USER_EMAIL_1, state.getEmail());
+            assertEquals(AUTHOR_NAME, state.getAuthors());
+            assertEquals(INVENTORY_ITEM_ID_1, state.getItemId());
             assertEquals(DEFAULT_DATE1, state.getWhenReported());
         }
     }

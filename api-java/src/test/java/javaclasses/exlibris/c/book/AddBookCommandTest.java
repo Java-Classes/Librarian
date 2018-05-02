@@ -28,7 +28,6 @@ import javaclasses.exlibris.BookTitle;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.rejection.BookAlreadyExists;
-import javaclasses.exlibris.testdata.BookCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +36,8 @@ import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.exlibris.testdata.BookCommandFactory.createBookInstance;
-import static javaclasses.exlibris.testdata.BookCommandFactory.userId;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -69,8 +69,8 @@ public class AddBookCommandTest extends BookCommandTest<AddBook> {
 
         final BookAdded bookAdded = (BookAdded) messageList.get(0);
 
-        assertEquals(BookCommandFactory.bookId, bookAdded.getBookId());
-        assertEquals(userId, bookAdded.getLibrarianId());
+        assertEquals(BOOK_ID, bookAdded.getBookId());
+        assertEquals(USER_ID, bookAdded.getLibrarianId());
     }
 
     @Test

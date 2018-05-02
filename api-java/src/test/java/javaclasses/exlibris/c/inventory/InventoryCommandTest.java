@@ -25,7 +25,7 @@ import io.spine.client.TestActorRequestFactory;
 import io.spine.core.CommandEnvelope;
 import io.spine.server.aggregate.AggregateCommandTest;
 
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ID;
 
 /**
  * @author Alexander Karpets
@@ -39,7 +39,7 @@ public class InventoryCommandTest<C extends Message> extends AggregateCommandTes
 
     @Override
     protected InventoryAggregate createAggregate() {
-        return new InventoryAggregate(inventoryId);
+        return new InventoryAggregate(INVENTORY_ID);
     }
 
     @Override

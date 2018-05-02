@@ -30,11 +30,11 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
-import static javaclasses.exlibris.testdata.BookEventFactory.BOOK_ID;
-import static javaclasses.exlibris.testdata.BookEventFactory.DETAILS;
-import static javaclasses.exlibris.testdata.BookEventFactory.NEW_DETAILS;
 import static javaclasses.exlibris.testdata.BookEventFactory.bookAddedInstance;
 import static javaclasses.exlibris.testdata.BookEventFactory.bookUpdatedInstance;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_DETAILS;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_DETAILS_2;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BookDetailsViewProjectionTest extends ProjectionTest {
@@ -57,7 +57,7 @@ class BookDetailsViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(bookAdded));
 
             final BookDetailsView state = projection.getState();
-            assertEquals(DETAILS, state.getBookDetails());
+            assertEquals(BOOK_DETAILS, state.getBookDetails());
         }
     }
 
@@ -75,7 +75,7 @@ class BookDetailsViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(bookUpdated));
 
             final BookDetailsView state = projection.getState();
-            assertEquals(NEW_DETAILS, state.getBookDetails());
+            assertEquals(BOOK_DETAILS_2, state.getBookDetails());
         }
     }
 

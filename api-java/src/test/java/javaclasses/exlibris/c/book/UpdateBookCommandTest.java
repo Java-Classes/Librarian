@@ -30,7 +30,6 @@ import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookUpdated;
 import javaclasses.exlibris.c.UpdateBook;
 import javaclasses.exlibris.c.rejection.CannotUpdateMissingBook;
-import javaclasses.exlibris.testdata.BookCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,10 +37,12 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static javaclasses.exlibris.testdata.BookCommandFactory.bookDetails;
-import static javaclasses.exlibris.testdata.BookCommandFactory.bookDetails2;
 import static javaclasses.exlibris.testdata.BookCommandFactory.createBookInstance;
 import static javaclasses.exlibris.testdata.BookCommandFactory.updateBookInstance;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_DETAILS;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_DETAILS_2;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -67,13 +68,13 @@ public class UpdateBookCommandTest extends BookCommandTest<UpdateBook> {
 
         final BookDetailsChange bookDetailsChange = BookDetailsChange.newBuilder()
                                                                      .setPreviousBookDetails(
-                                                                             bookDetails)
+                                                                             BOOK_DETAILS)
                                                                      .setNewBookDetails(
-                                                                             bookDetails2)
+                                                                             BOOK_DETAILS_2)
                                                                      .build();
 
-        final UpdateBook updateBook = updateBookInstance(BookCommandFactory.bookId,
-                                                         BookCommandFactory.userId,
+        final UpdateBook updateBook = updateBookInstance(BOOK_ID,
+                                                         USER_ID,
                                                          bookDetailsChange);
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
@@ -86,11 +87,11 @@ public class UpdateBookCommandTest extends BookCommandTest<UpdateBook> {
 
         final BookUpdated bookUpdated = (BookUpdated) messageList.get(0);
 
-        assertEquals(BookCommandFactory.bookId, bookUpdated.getBookId());
+        assertEquals(BOOK_ID, bookUpdated.getBookId());
 
-        assertEquals(bookDetails2.getTitle(), bookUpdated.getBookDetailsChange()
-                                                         .getNewBookDetails()
-                                                         .getTitle());
+        assertEquals(BOOK_DETAILS_2.getTitle(), bookUpdated.getBookDetailsChange()
+                                                           .getNewBookDetails()
+                                                           .getTitle());
     }
 
     @Test
@@ -100,20 +101,20 @@ public class UpdateBookCommandTest extends BookCommandTest<UpdateBook> {
 
         final BookDetailsChange bookDetailsChange = BookDetailsChange.newBuilder()
                                                                      .setPreviousBookDetails(
-                                                                             bookDetails)
+                                                                             BOOK_DETAILS)
                                                                      .setNewBookDetails(
-                                                                             bookDetails2)
+                                                                             BOOK_DETAILS_2)
                                                                      .build();
 
-        final UpdateBook updateBook = updateBookInstance(BookCommandFactory.bookId,
-                                                         BookCommandFactory.userId,
+        final UpdateBook updateBook = updateBookInstance(BOOK_ID,
+                                                         USER_ID,
                                                          bookDetailsChange);
 
         dispatchCommand(aggregate, envelopeOf(updateBook));
 
         final Book state = aggregate.getState();
 
-        assertEquals(BookCommandFactory.bookId, state.getBookId());
+        assertEquals(BOOK_ID, state.getBookId());
         assertEquals(state.getBookDetails()
                           .getTitle(), state.getBookDetails()
                                             .getTitle());
@@ -128,9 +129,9 @@ public class UpdateBookCommandTest extends BookCommandTest<UpdateBook> {
 
         final BookDetailsChange bookDetailsChange = BookDetailsChange.newBuilder()
                                                                      .setPreviousBookDetails(
-                                                                             bookDetails)
+                                                                             BOOK_DETAILS)
                                                                      .setNewBookDetails(
-                                                                             bookDetails2)
+                                                                             BOOK_DETAILS_2)
                                                                      .build();
 
         final BookId bookId2 = BookId.newBuilder()
@@ -140,7 +141,7 @@ public class UpdateBookCommandTest extends BookCommandTest<UpdateBook> {
                                      .build();
 
         final UpdateBook updateBook = updateBookInstance(bookId2,
-                                                         BookCommandFactory.userId,
+                                                         USER_ID,
                                                          bookDetailsChange);
 
         final Throwable t = assertThrows(Throwable.class,

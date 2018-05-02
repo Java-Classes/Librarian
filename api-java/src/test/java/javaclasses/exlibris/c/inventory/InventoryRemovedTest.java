@@ -30,7 +30,6 @@ import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.book.BookAggregate;
-import javaclasses.exlibris.testdata.BookCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,6 +38,7 @@ import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.server.command.TestEventFactory.newInstance;
 import static javaclasses.exlibris.BoundedContexts.create;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -86,10 +86,10 @@ public class InventoryRemovedTest extends InventoryCommandTest<AddBook> {
     }
 
     private static Event bookRemoved() {
-        final TestEventFactory eventFactory = newInstance(pack(BookCommandFactory.bookId),
+        final TestEventFactory eventFactory = newInstance(pack(BOOK_ID),
                                                           BookAggregate.class);
         return eventFactory.createEvent(BookRemoved.newBuilder()
-                                                   .setBookId(BookCommandFactory.bookId)
+                                                   .setBookId(BOOK_ID)
                                                    .build()
         );
     }

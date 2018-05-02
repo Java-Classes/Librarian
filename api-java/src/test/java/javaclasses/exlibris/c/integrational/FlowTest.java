@@ -33,9 +33,7 @@ import javaclasses.exlibris.BoundedContexts;
 import javaclasses.exlibris.c.RemoveBook;
 import javaclasses.exlibris.c.inventory.InventoryCommandTest;
 import javaclasses.exlibris.c.inventory.InventoryRepository;
-import javaclasses.exlibris.testdata.BookCommandFactory;
 import javaclasses.exlibris.testdata.BookRejectionsSubscriber;
-import javaclasses.exlibris.testdata.InventoryCommandFactory;
 import javaclasses.exlibris.testdata.InventoryRejectionsSubscriber;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -51,6 +49,15 @@ import static javaclasses.exlibris.testdata.InventoryCommandFactory.extendLoanPe
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.reserveBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.returnBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.writeBookOffInstance;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_DETAILS_2;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ID;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ITEM_ID_1;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ITEM_ID_2;
+import static javaclasses.exlibris.testdata.TestValues.LIBRARIAN_ID;
+import static javaclasses.exlibris.testdata.TestValues.LOAN;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID_2;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -65,72 +72,62 @@ public class FlowTest extends InventoryCommandTest<Message> {
 
     private final BookDetailsChange newBookDetails = BookDetailsChange.newBuilder()
                                                                       .setNewBookDetails(
-                                                                              BookCommandFactory.bookDetails2)
+                                                                              BOOK_DETAILS_2)
                                                                       .build();
 
     private final Command addBook = requestFactory.createCommand(toMessage(createBookInstance()));
 
     private final Command updateBook = requestFactory.createCommand(
-            toMessage(updateBookInstance(BookCommandFactory.bookId,
-                                         BookCommandFactory.userId2,
+            toMessage(updateBookInstance(BOOK_ID,
+                                         USER_ID_2,
                                          newBookDetails)));
     private final Command appendInventory = requestFactory.createCommand(
             toMessage(appendInventoryInstance()));
 
     private final Command appendInventory2 = requestFactory.createCommand(
-            toMessage(appendInventoryInstance(InventoryCommandFactory.inventoryId,
-                                              InventoryCommandFactory.inventoryItemId2,
-                                              InventoryCommandFactory.userId)));
+            toMessage(appendInventoryInstance(INVENTORY_ID, INVENTORY_ITEM_ID_2, USER_ID)));
 
     private final Command borrowBook = requestFactory.createCommand(
             toMessage(borrowBookInstance()));
 
     private final Command borrowBook2 = requestFactory.createCommand(
-            toMessage(borrowBookInstance(InventoryCommandFactory.inventoryId,
-                                         InventoryCommandFactory.inventoryItemId,
-                                         InventoryCommandFactory.userId2)));
+            toMessage(borrowBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1, USER_ID_2)));
 
     private final Command borrowBook3 = requestFactory.createCommand(
-            toMessage(borrowBookInstance(InventoryCommandFactory.inventoryId,
-                                         InventoryCommandFactory.inventoryItemId2,
-                                         InventoryCommandFactory.userId2)));
+            toMessage(borrowBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_2, USER_ID_2)));
 
     private final Command reserveBook = requestFactory.createCommand(
-            toMessage(reserveBookInstance(InventoryCommandFactory.userId,
-                                          InventoryCommandFactory.inventoryId)));
+            toMessage(reserveBookInstance(USER_ID,
+                                          INVENTORY_ID)));
 
     private final Command reserveBook2 = requestFactory.createCommand(
-            toMessage(reserveBookInstance(InventoryCommandFactory.userId2,
-                                          InventoryCommandFactory.inventoryId)));
+            toMessage(reserveBookInstance(USER_ID_2,
+                                          INVENTORY_ID)));
 
     private final Command returnBook = requestFactory.createCommand(
             toMessage(returnBookInstance()));
 
     private final Command returnBook2 = requestFactory.createCommand(
-            toMessage(returnBookInstance(InventoryCommandFactory.inventoryId,
-                                         InventoryCommandFactory.inventoryItemId,
-                                         InventoryCommandFactory.userId2)));
+            toMessage(returnBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1, USER_ID_2)));
 
     private final Command returnBook3 = requestFactory.createCommand(
-            toMessage(returnBookInstance(InventoryCommandFactory.inventoryId,
-                                         InventoryCommandFactory.inventoryItemId2,
-                                         InventoryCommandFactory.userId2)));
+            toMessage(returnBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_2, USER_ID_2)));
 
     private final Command writeBookOff = requestFactory.createCommand(
             toMessage(writeBookOffInstance()));
 
     private final Command removeBook = requestFactory.createCommand(
-            toMessage(removeBookInstance(BookCommandFactory.bookId,
-                                         BookCommandFactory.librarianId,
+            toMessage(removeBookInstance(BOOK_ID,
+                                         LIBRARIAN_ID,
                                          RemoveBook.BookRemovalReasonCase.OUTDATED)));
 
     private final Command extendLoanPeriod = requestFactory.createCommand(
             toMessage(extendLoanPeriodInstance()));
 
     private final Command extendLoanPeriod2 = requestFactory.createCommand(
-            toMessage(extendLoanPeriodInstance(InventoryCommandFactory.inventoryId,
-                                               InventoryCommandFactory.loan.getLoanId(),
-                                               InventoryCommandFactory.userId2)));
+            toMessage(extendLoanPeriodInstance(INVENTORY_ID,
+                                               LOAN.getLoanId(),
+                                               USER_ID_2)));
 
     @Override
     @BeforeEach

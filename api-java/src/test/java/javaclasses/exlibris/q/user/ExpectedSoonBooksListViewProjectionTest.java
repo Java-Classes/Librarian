@@ -36,15 +36,15 @@ import java.util.List;
 
 import static io.spine.Identifier.newUuid;
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
-import static javaclasses.exlibris.testdata.BookEventFactory.AUTHOR;
-import static javaclasses.exlibris.testdata.BookEventFactory.BOOK_ID;
-import static javaclasses.exlibris.testdata.BookEventFactory.CATEGORY;
-import static javaclasses.exlibris.testdata.BookEventFactory.COVER_URL;
-import static javaclasses.exlibris.testdata.BookEventFactory.ISBN;
-import static javaclasses.exlibris.testdata.BookEventFactory.SYNOPSIS;
-import static javaclasses.exlibris.testdata.BookEventFactory.TITLE;
 import static javaclasses.exlibris.testdata.BookEventFactory.bookAddedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.inventoryAppendedInstance;
+import static javaclasses.exlibris.testdata.TestValues.AUTHOR_NAME;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_CATEGORY;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_SYNOPSIS;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_TITLE;
+import static javaclasses.exlibris.testdata.TestValues.COVER_URL;
+import static javaclasses.exlibris.testdata.TestValues.ISBN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ExpectedSoonBooksListViewProjectionTest extends ProjectionTest {
@@ -75,12 +75,12 @@ class ExpectedSoonBooksListViewProjectionTest extends ProjectionTest {
             assertEquals(1, books.size());
             final ExpectedSoonItem bookItem = books.get(0);
             assertEquals(BOOK_ID, bookItem.getBookId());
-            assertEquals(TITLE, bookItem.getTitle());
-            assertEquals(AUTHOR, bookItem.getAuthors());
+            assertEquals(BOOK_TITLE, bookItem.getTitle());
+            assertEquals(AUTHOR_NAME, bookItem.getAuthors());
             assertEquals(ISBN, bookItem.getIsbn());
             assertEquals(COVER_URL, bookItem.getCoverUrl());
-            assertEquals(CATEGORY, bookItem.getCategories(0));
-            assertEquals(SYNOPSIS, bookItem.getSynopsis());
+            assertEquals(BOOK_CATEGORY, bookItem.getCategories(0));
+            assertEquals(BOOK_SYNOPSIS, bookItem.getSynopsis());
             Assertions.assertEquals(ExpectedSoonItemStatus.EXPECTED_SOON, bookItem.getStatus());
         }
     }

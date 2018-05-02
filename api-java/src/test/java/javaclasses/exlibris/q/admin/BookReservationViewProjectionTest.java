@@ -33,15 +33,15 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
-import static javaclasses.exlibris.testdata.BookEventFactory.BOOK_ID;
-import static javaclasses.exlibris.testdata.BookEventFactory.USER_EMAIL_ADRESS;
-import static javaclasses.exlibris.testdata.BookEventFactory.USER_ID;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.DEFAULT_TIMESTAMP1;
-import static javaclasses.exlibris.testdata.InventoryEventFactory.USER_NAME;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationAddedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationBecameLoanInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationCanceledInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationPickUpPeriodExpiredInstance;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
+import static javaclasses.exlibris.testdata.TestValues.DEFAULT_TIMESTAMP1;
+import static javaclasses.exlibris.testdata.TestValues.USER_EMAIL_1;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID;
+import static javaclasses.exlibris.testdata.TestValues.USER_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BookReservationViewProjectionTest extends ProjectionTest {
@@ -71,7 +71,7 @@ class BookReservationViewProjectionTest extends ProjectionTest {
             final BookReservationView state = projection.getState();
             assertEquals(BOOK_ID, state.getBookId());
             assertEquals(USER_NAME, state.getUserName());
-            assertEquals(USER_EMAIL_ADRESS, state.getEmail());
+            assertEquals(USER_EMAIL_1, state.getEmail());
             assertEquals(DEFAULT_TIMESTAMP1, state.getWhenReserved());
         }
     }

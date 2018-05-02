@@ -36,8 +36,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ID;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -69,12 +69,12 @@ public class WriteBookOffCommandTest extends InventoryCommandTest<WriteBookOff> 
                                                           .getClass());
         final InventoryDecreased inventoryDecreased = (InventoryDecreased) messageList.get(0);
 
-        assertEquals(inventoryId, inventoryDecreased.getInventoryId());
+        assertEquals(INVENTORY_ID, inventoryDecreased.getInventoryId());
         assertEquals(true, inventoryDecreased.getWriteOffReason()
                                              .getOutdated());
         assertEquals(false, inventoryDecreased.getWriteOffReason()
                                               .getLost());
-        assertEquals(userId, inventoryDecreased.getLibrarianId());
+        assertEquals(USER_ID, inventoryDecreased.getLibrarianId());
     }
 
     @Test
