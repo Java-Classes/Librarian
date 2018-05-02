@@ -18,48 +18,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.exlibris.testdata;
+package javaclasses.exlibris.c.procman;
 
-import io.spine.core.Subscribe;
-import io.spine.server.rejection.RejectionSubscriber;
-import javaclasses.exlibris.c.rejection.Rejections;
+import com.google.protobuf.Empty;
+import io.spine.server.procman.ProcessManagerRepository;
+import javaclasses.exlibris.ReservationQueueId;
 
-/**
- * The subscriber which holds the rejection.
- *
- * @author Alexander Karpets
- */
-public class BookRejectionsSubscriber extends RejectionSubscriber {
+import static java.util.Collections.singleton;
+import static javaclasses.exlibris.c.procman.ReservationQueue.ID;
 
-    private Rejections.BookAlreadyExists rejection = null;
-    private boolean wasCalled = false;
+public class ReservationQueueRepository extends ProcessManagerRepository<ReservationQueueId, ReservationQueue, Empty> {
 
-    public boolean wasCalled() {
-        return wasCalled;
+    public ReservationQueueRepository() {
+        super();
+        setUpEventRoute();
     }
 
-    @Subscribe
-    public void on(Rejections.BookAlreadyExists rejection) {
-        this.rejection = rejection;
-        wasCalled = true;
-    }
-
-    @Subscribe
-    public void on(Rejections.CannotUpdateMissingBook rejection) {
-        wasCalled = true;
-    }
-
-    @Subscribe
-    public void on(Rejections.CannotRemoveMissingBook rejection) {
-        wasCalled = true;
-    }
-
-    public Rejections.BookAlreadyExists getRejection() {
-        return rejection;
-    }
-
-    public void clear() {
-        rejection = null;
-        wasCalled = false;
+    protected void setUpEventRoute() {
+        getEventRouting().replaceDefault(((message, context) -> singleton(ID)));
     }
 }

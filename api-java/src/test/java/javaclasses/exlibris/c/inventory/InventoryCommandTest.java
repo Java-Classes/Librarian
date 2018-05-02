@@ -18,48 +18,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.exlibris.testdata;
+package javaclasses.exlibris.c.inventory;
 
-import io.spine.core.Subscribe;
-import io.spine.server.rejection.RejectionSubscriber;
-import javaclasses.exlibris.c.rejection.Rejections;
+import com.google.protobuf.Message;
+import io.spine.client.TestActorRequestFactory;
+import io.spine.core.CommandEnvelope;
+import io.spine.server.aggregate.AggregateCommandTest;
+
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
 
 /**
- * The subscriber which holds the rejection.
- *
  * @author Alexander Karpets
  */
-public class BookRejectionsSubscriber extends RejectionSubscriber {
+public class InventoryCommandTest<C extends Message> extends AggregateCommandTest<C, InventoryAggregate> {
 
-    private Rejections.BookAlreadyExists rejection = null;
-    private boolean wasCalled = false;
+    private final TestActorRequestFactory requestFactory =
+            TestActorRequestFactory.newInstance(getClass());
 
-    public boolean wasCalled() {
-        return wasCalled;
+    InventoryAggregate aggregate;
+
+    @Override
+    protected InventoryAggregate createAggregate() {
+        return new InventoryAggregate(inventoryId);
     }
 
-    @Subscribe
-    public void on(Rejections.BookAlreadyExists rejection) {
-        this.rejection = rejection;
-        wasCalled = true;
+    @Override
+    protected void setUp() {
+        super.setUp();
+        aggregate = aggregate().get();
     }
 
-    @Subscribe
-    public void on(Rejections.CannotUpdateMissingBook rejection) {
-        wasCalled = true;
-    }
-
-    @Subscribe
-    public void on(Rejections.CannotRemoveMissingBook rejection) {
-        wasCalled = true;
-    }
-
-    public Rejections.BookAlreadyExists getRejection() {
-        return rejection;
-    }
-
-    public void clear() {
-        rejection = null;
-        wasCalled = false;
+    protected CommandEnvelope envelopeOf(Message commandMessage) {
+        return CommandEnvelope.of(requestFactory.command()
+                                                .create(commandMessage));
     }
 }

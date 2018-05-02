@@ -191,7 +191,7 @@ message CannotCancelMissingReservation {
 
 // Rejection when a librarian tries to write a missing book off.
 //
-message CannotWriteMissingBookOff {
+message CannotWriteBookOff {
 
     // The identifier of an inventory.
     InventoryId inventory_id = 1;

@@ -32,7 +32,7 @@ import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
 import javaclasses.exlibris.c.rejection.CannotExtendLoanPeriod;
 import javaclasses.exlibris.c.rejection.CannotReturnMissingBook;
 import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
-import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
+import javaclasses.exlibris.c.rejection.CannotWriteBookOff;
 import javaclasses.exlibris.c.rejection.NonAvailableBook;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -93,11 +93,11 @@ class InventoryAggregateRejections {
     /**
      * Throws a rejection when a librarian tries to write a missing book off.
      */
-    static CannotWriteMissingBookOff cannotWriteMissingBookOff(WriteBookOff cmd)
-            throws CannotWriteMissingBookOff {
+    static CannotWriteBookOff cannotWriteBookOff(WriteBookOff cmd)
+            throws CannotWriteBookOff {
         checkNotNull(cmd);
-        throw new CannotWriteMissingBookOff(cmd.getInventoryId(), cmd.getLibrarianId(),
-                                            cmd.getInventoryItemId(), getCurrentTime());
+        throw new CannotWriteBookOff(cmd.getInventoryId(), cmd.getLibrarianId(),
+                                     cmd.getInventoryItemId(), getCurrentTime());
     }
 
     /**

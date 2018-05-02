@@ -31,9 +31,9 @@ import javaclasses.exlibris.c.rejection.Rejections;
  */
 public class InventoryRejectionsSubscriber extends RejectionSubscriber {
 
-    private static boolean wasCalled = false;
+    private boolean wasCalled = false;
 
-    public static boolean wasCalled() {
+    public boolean wasCalled() {
         return wasCalled;
     }
 
@@ -68,7 +68,7 @@ public class InventoryRejectionsSubscriber extends RejectionSubscriber {
     }
 
     @Subscribe
-    public void on(Rejections.CannotWriteMissingBookOff rejection) {
+    public void on(Rejections.CannotWriteBookOff rejection) {
         wasCalled = true;
     }
 
@@ -77,7 +77,7 @@ public class InventoryRejectionsSubscriber extends RejectionSubscriber {
         wasCalled = true;
     }
 
-    public static void clear() {
+    public void clear() {
         wasCalled = false;
     }
 }

@@ -20,6 +20,7 @@
 
 package javaclasses.exlibris.c.inventory;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
 import io.spine.server.aggregate.AggregateRepository;
@@ -42,7 +43,27 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
  */
 public class InventoryRepository extends AggregateRepository<InventoryId, InventoryAggregate> {
 
-    public InventoryRepository() {
+    /**
+     * Returns instance of the VendorRepository
+     */
+    public static InventoryRepository getRepository() {
+        return InventoryRepositorySingleton.INSTANCE.value;
+    }
+
+    /**
+     * Sets the new repository instance value to clear storage for tests.
+     */
+    @VisibleForTesting
+    public static void setNewInstance() {
+        InventoryRepositorySingleton.INSTANCE.value = new InventoryRepository();
+    }
+
+    private enum InventoryRepositorySingleton {
+        INSTANCE;
+        private InventoryRepository value = new InventoryRepository();
+    }
+
+    private InventoryRepository() {
         getEventRouting().replaceDefault((EventRoute<InventoryId, Message>) (message, context) -> {
             if (message instanceof BookAdded) {
                 return getInventoryIds((BookAdded) message);

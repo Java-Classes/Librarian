@@ -157,9 +157,11 @@ message WriteOffReason {
 //
 message BookDetailsChange {
 
+    // The previous information about a book.
     BookDetails previous_book_details = 1;
-    BookDetails new_book_details = 2;
 
+    // The updated information about a book.
+    BookDetails new_book_details = 2;
 }
 
 //The International Standard Book Number.

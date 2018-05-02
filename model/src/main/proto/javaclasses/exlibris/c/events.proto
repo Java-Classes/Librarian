@@ -80,19 +80,16 @@ message BookBecameAvailable {
     // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
-    // The item which became available.
-    InventoryItemId inventory_item_id = 2;
-
     // The number of public available books.
-    int32 available_books_count = 3;
+    int32 available_books_count = 2;
 
     // When book became available.
-    google.protobuf.Timestamp when_became_available = 4;
+    google.protobuf.Timestamp when_became_available = 3;
 }
 
 // An event fired when a book is available for a user to take it.
 //
-// Appears when an inventory appended or a book returned.
+// Appears when an inventory appended or a book returned or someone canceles his reservation.
 //
 // In 2 days this opportunity disappears and a reservation expires.
 //
@@ -101,23 +98,17 @@ message BookReadyToPickup {
     // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
-    // The identifier of an inventory item which became ready to pickup.
-    InventoryItemId inventory_item_id = 2;
-
     // Who can take this book during 2 days.
-    UserId for_whom = 3;
+    UserId for_whom = 2;
 
     // When a book became ready to pickup.
-    google.protobuf.Timestamp when_became_ready_to_pickup = 4;
+    google.protobuf.Timestamp when_became_ready_to_pickup = 3;
 
     // The pickup deadline of a book.
-    google.protobuf.Timestamp pick_up_deadline = 5;
+    google.protobuf.Timestamp pick_up_deadline = 4;
 }
 
 // An event fired when a user reserves a book.
-//
-// If a queue on book exists then user will be added to the queue.
-// Else if book is available then user has 2 days to borrow book.
 //
 message ReservationAdded {
 
@@ -127,14 +118,14 @@ message ReservationAdded {
     // Who reserved a book.
     UserId for_whom_reserved = 2;
 
-    // The date when the book is expected to become ready to pick up.
-    spine.time.LocalDate when_expected = 3;
+    // The estimated time when the book becomes ready to pick up.
+    google.protobuf.Timestamp when_expected = 3;
 
     // The time when the reservation was added.
     google.protobuf.Timestamp when_created = 4;
 }
 
-// An event fired when user borrows book.
+// An event fired when a user borrows a book.
 //
 // Triggers 'reservation became loan' if the book was reserved.
 //
@@ -149,7 +140,7 @@ message BookBorrowed {
     // Who borrowed a book.
     UserId who_borrowed = 3;
 
-    // The loan period.
+    // The loan idenifier.
     LoanId loan_id = 4;
 
     // The number of public available books.
@@ -258,7 +249,7 @@ message LoanPeriodExtended {
 //
 // All recent loans of the specified book become not allowed for extension.
 //
-message LoansBecameNotAllowedForExtension {
+message LoansExtensionForbidden {
 
     // The identifier of an inventory.
     InventoryId inventory_id = 1;
@@ -275,7 +266,7 @@ message LoansBecameNotAllowedForExtension {
 //
 // All recent loans of the specified book become allowed for extension.
 //
-message LoansBecameExtensionAllowed {
+message LoansExtensionAllowed {
 
     // The identifier of an inventory.
     InventoryId inventory_id = 1;
@@ -344,6 +335,9 @@ message ReservationCanceled {
 
     // The time when user canceled a reservation.
     google.protobuf.Timestamp when_canceled = 3;
+
+    // Shows whether the canceled reservation was satisfied or not.
+    bool was_satisfied = 4;
 }
 
 // An event fired when a librarian decreases a current inventory.

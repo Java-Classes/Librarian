@@ -30,17 +30,24 @@ import javaclasses.exlibris.LoanId;
 import javaclasses.exlibris.Rfid;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
+import javaclasses.exlibris.c.AllowLoansExtension;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.ExtendLoanPeriod;
+import javaclasses.exlibris.c.ForbidLoansExtension;
 import javaclasses.exlibris.c.LoanPeriodExtended;
+import javaclasses.exlibris.c.MarkBookAsAvailable;
 import javaclasses.exlibris.c.MarkLoanOverdue;
+import javaclasses.exlibris.c.MarkLoanShouldReturnSoon;
 import javaclasses.exlibris.c.MarkReservationExpired;
 import javaclasses.exlibris.c.ReportLostBook;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
+import javaclasses.exlibris.c.SatisfyReservation;
 import javaclasses.exlibris.c.WriteBookOff;
+
+import java.util.List;
 
 import static io.spine.time.Time.getCurrentTime;
 
@@ -53,7 +60,7 @@ import static io.spine.time.Time.getCurrentTime;
 public class InventoryCommandFactory {
 
     public static final Isbn62 isbn62 = Isbn62.newBuilder()
-                                              .setValue("0201485672")
+                                              .setValue("123456789")
                                               .build();
 
     public static final EmailAddress userEmailAddress1 = EmailAddress.newBuilder()
@@ -118,21 +125,19 @@ public class InventoryCommandFactory {
 
     public static AppendInventory appendInventoryInstance() {
 
-        final AppendInventory result = appendInventoryInstance(inventoryId, inventoryItemId, userId,
-                                                               rfid);
+        final AppendInventory result = appendInventoryInstance(inventoryId, inventoryItemId,
+                                                               userId);
         return result;
     }
 
     public static AppendInventory appendInventoryInstance(InventoryId inventoryId,
                                                           InventoryItemId inventoryItemId,
-                                                          UserId userId, Rfid rfid) {
+                                                          UserId userId) {
 
         AppendInventory result = AppendInventory.newBuilder()
                                                 .setInventoryId(inventoryId)
                                                 .setInventoryItemId(inventoryItemId)
                                                 .setLibrarianId(userId)
-//                                                .setRfid(rfid)
-
                                                 .build();
         return result;
     }
@@ -161,6 +166,15 @@ public class InventoryCommandFactory {
         return result;
     }
 
+    public static MarkLoanShouldReturnSoon markLoanShouldReturnSoon(LoanId loanId,
+                                                                    InventoryId inventoryId) {
+        final MarkLoanShouldReturnSoon result = MarkLoanShouldReturnSoon.newBuilder()
+                                                                        .setLoanId(loanId)
+                                                                        .setInventoryId(inventoryId)
+                                                                        .build();
+        return result;
+    }
+
     public static WriteBookOff writeBookOffInstance() {
 
         final WriteBookOff result = writeBookOffInstance(inventoryId, inventoryItemId, userId,
@@ -181,7 +195,6 @@ public class InventoryCommandFactory {
     }
 
     public static ReserveBook reserveBookInstance() {
-
         final ReserveBook result = reserveBookInstance(userId, inventoryId);
         return result;
     }
@@ -191,6 +204,27 @@ public class InventoryCommandFactory {
                                         .setInventoryId(inventoryId)
                                         .setUserId(userId)
                                         .build();
+        return result;
+    }
+
+    public static SatisfyReservation satisfyReservationInstance() {
+        final SatisfyReservation result = satisfyReservationInstance(userId, inventoryId);
+        return result;
+    }
+
+    public static SatisfyReservation satisfyReservationInstance(UserId userId,
+                                                                InventoryId inventoryId) {
+        SatisfyReservation result = SatisfyReservation.newBuilder()
+                                                      .setInventoryId(inventoryId)
+                                                      .setUserId(userId)
+                                                      .build();
+        return result;
+    }
+
+    public static MarkBookAsAvailable markBookAsAvailableInstance() {
+        MarkBookAsAvailable result = MarkBookAsAvailable.newBuilder()
+                                                        .setInventoryId(inventoryId)
+                                                        .build();
         return result;
     }
 
@@ -241,14 +275,14 @@ public class InventoryCommandFactory {
         return result;
     }
 
-    public static MarkReservationExpired reservationPickUpPeriodInstanceExpired() {
+    public static MarkReservationExpired markReservationExpiredInstance() {
 
-        final MarkReservationExpired result = reservationPickUpPeriodInstanceExpired(inventoryId,
-                                                                                     userId);
+        final MarkReservationExpired result = markReservationExpiredInstance(inventoryId,
+                                                                             userId);
         return result;
     }
 
-    public static MarkReservationExpired reservationPickUpPeriodInstanceExpired(
+    public static MarkReservationExpired markReservationExpiredInstance(
             InventoryId inventoryId,
             UserId userId) {
         MarkReservationExpired result = MarkReservationExpired.newBuilder()
@@ -265,6 +299,27 @@ public class InventoryCommandFactory {
 
         return result;
 
+    }
+
+    public static ForbidLoansExtension forbidLoansExtensionInstance(InventoryId inventoryId,
+                                                                    List<UserId> userIds) {
+
+        final ForbidLoansExtension result = ForbidLoansExtension.newBuilder()
+                                                                .setInventoryId(inventoryId)
+                                                                .addAllBorrowers(userIds)
+                                                                .build();
+        return result;
+
+    }
+
+    public static AllowLoansExtension allowLoansExtensionInstance(InventoryId inventoryId,
+                                                                  List<UserId> userIds) {
+
+        final AllowLoansExtension result = AllowLoansExtension.newBuilder()
+                                                              .setInventoryId(inventoryId)
+                                                              .addAllBorrowers(userIds)
+                                                              .build();
+        return result;
     }
 
     public static ExtendLoanPeriod extendLoanPeriodInstance(InventoryId inventoryId, LoanId loanId,

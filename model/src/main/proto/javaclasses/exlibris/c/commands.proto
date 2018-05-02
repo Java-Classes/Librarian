@@ -251,7 +251,7 @@ message ReportLostBook {
 //
 message WriteBookOff {
 
-    // The identifier of an inventory..
+    // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
     // The book that is planned to write off.
@@ -262,4 +262,45 @@ message WriteBookOff {
 
     // Who tries to write a book off.
     UserId librarian_id = 4;
+}
+
+// An attempt to mark corresponding loans as allowed for extension.
+//
+message AllowLoansExtension {
+
+    // The identifier of an inventory.
+    InventoryId inventory_id = 1;
+
+    // The collection of users' identifiers whos loans became allowed for an extension.
+    repeated UserId borrowers = 2;
+}
+
+// An attempt to mark corresponding loans as forbidden for extension.
+//
+message ForbidLoansExtension {
+
+    // The identifier of an inventory.
+    InventoryId inventory_id = 1;
+
+    // The collection of users' identifiers whos loans became not allowed for an extension.
+    repeated UserId borrowers = 2;
+}
+
+// An attempt to satisfy reservation for the specific user.
+//
+message SatisfyReservation {
+
+    // The identifier of an inventory.
+    InventoryId inventory_id = 1;
+
+    // For whom reservation should be satisfied.
+    UserId user_id = 2;
+}
+
+// An attempt to increase available for borrowing books count.
+//
+message MarkBookAsAvailable {
+
+    // The identifier of an inventory.
+    InventoryId inventory_id = 1;
 }

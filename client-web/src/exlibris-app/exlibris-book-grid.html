@@ -1,0 +1,98 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+
+<link rel="import" href="../exlibris-app/exlibris-book-tile.html">
+<link rel="import" href="./book-values.html">
+
+<dom-module id="exlibris-book-grid">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            .center {
+                @apply --paper-font-subhead;
+                margin-top: 250px;
+                text-align: center;
+                color: var(--paper-grey-700);
+            }
+        </style>
+        <div class="center" hidden="[[books.length]]">[[noBooksMessage]]</div>
+
+        <iron-list items="[[books]]" as="book" scroll-target="document" grid>
+            <template>
+                    <exlibris-book-tile book="[[book]]"></exlibris-book-tile>
+            </template>
+        </iron-list>
+
+
+        <!-- this element loads more books when the user scrolls down and reached the lower threshold -->
+        <iron-scroll-threshold lower-threshold="30"
+                               on-lower-threshold="_onLowerThreshold"
+                               scroll-target="document">
+        </iron-scroll-threshold>
+    </template>
+
+    <script>
+        /**
+         * `<book-grid>` component displays grid of books with picture, synopsis and status.
+         *
+         * @customElement
+         * @polymer
+         */
+        class ExlibrisBookGrid extends Polymer.Element {
+            static get is() {
+                return 'exlibris-book-grid';
+            }
+
+            static get properties() {
+                return {
+                    /**
+                     * The array of the next objects:
+                     * @typedef {Object} Book
+                     * @property {string} title the title of a book
+                     * @property {string} authors string with authors of the book
+                     * @property {string} status  one of the following values: "overdue",
+                     * "borrowed", "should-return-soon",
+                     * "available", "reserved", "expected","ready-to-pick-up"
+                     */
+                    books: Array,
+
+                    /**
+                     * The text is shown in the case of an empty books array.
+                     */
+                    noBooksMessage: String
+                };
+            }
+
+            _onLowerThreshold() {
+                this.dispatchEvent(new CustomEvent('exlibris-book-grid-lower-threshold'));
+            }
+        }
+
+        window.customElements.define(ExlibrisBookGrid.is, ExlibrisBookGrid);
+    </script>
+</dom-module>
