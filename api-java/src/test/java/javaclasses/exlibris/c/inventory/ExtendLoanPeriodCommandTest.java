@@ -195,6 +195,10 @@ public class ExtendLoanPeriodCommandTest extends InventoryCommandTest<ExtendLoan
         final LoanId loanId = state.getLoans(0)
                                    .getLoanId();
         List<UserId> borrowers = Collections.singletonList(whoBorrowed);
+        final MarkLoanOverdue markLoanOverdue = markLoanOverdue(loanId, inventoryId);
+
+        dispatchCommand(aggregate, envelopeOf(markLoanOverdue));
+
         final ForbidLoansExtension forbidLoansExtension = forbidLoansExtensionInstance(inventoryId,
                                                                                        borrowers);
         dispatchCommand(aggregate, envelopeOf(forbidLoansExtension));

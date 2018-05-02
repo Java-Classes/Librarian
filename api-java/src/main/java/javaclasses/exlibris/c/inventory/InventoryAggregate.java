@@ -758,7 +758,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final Timestamp pickUpDeadline = Timestamp.newBuilder()
                                                   .setSeconds(pickupDeadlineTimeSeconds)
                                                   .build();
-        final InventoryId inventoryId = getState().getInventoryId();
+        final InventoryId inventoryId = cmd.getInventoryId();
         final BookReadyToPickup bookReadyToPickup =
                 BookReadyToPickup.newBuilder()
                                  .setInventoryId(inventoryId)
