@@ -48,16 +48,6 @@ import java.util.List;
 public class ReservationQueueProcman extends ProcessManager<ReservationQueueId, ReservationQueue, ReservationQueueVBuilder> {
 
     /**
-     * Creates a new instance.
-     *
-     * @param id an ID for the new instance
-     * @throws IllegalArgumentException if the ID type is unsupported
-     */
-    protected ReservationQueueProcman(ReservationQueueId id) {
-        super(id);
-    }
-
-    /**
      * As long as the {@code ReservationQueueProcman} is an {@code InventoryAggregate}
      * service and does not hold model state it is a singleton. All subscribed events
      * are routed to the single instance.
@@ -66,6 +56,16 @@ public class ReservationQueueProcman extends ProcessManager<ReservationQueueId, 
             ReservationQueueId.newBuilder()
                               .setValue("ReservationQueueSingleton")
                               .build();
+
+    /**
+     * Creates a new instance.
+     *
+     * @param id an ID for the new instance
+     * @throws IllegalArgumentException if the ID type is unsupported
+     */
+    protected ReservationQueueProcman(ReservationQueueId id) {
+        super(id);
+    }
 
     @React
     CommandRouted on(BookReturned event, EventContext eventContext) {
