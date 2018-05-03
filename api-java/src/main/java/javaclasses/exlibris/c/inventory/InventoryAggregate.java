@@ -811,17 +811,23 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return inventoryDecreased;
     }
 
-    // TODO 4/26/2018[yegor.udovchenko]: Set when expected.
     private ReservationAdded createReservationAddedEvent(ReserveBook cmd) {
         final InventoryId inventoryId = cmd.getInventoryId();
         final UserId userId = cmd.getUserId();
-        final ReservationAdded reservationAdded = ReservationAdded.newBuilder()
-                                                                  .setInventoryId(inventoryId)
-                                                                  .setForWhomReserved(userId)
-                                                                  .setWhenCreated(getCurrentTime())
-//                                                                  .setWhenExpected()
-                                                                  .build();
-        return reservationAdded;
+        final List<Loan> loans = getState().getLoansList();
+        final List<Reservation> reservations = getState().getReservationsList();
+        final Optional<Timestamp> readyToPickUpExpectedTime =
+                getReadyToPickUpExpectedTime(loans, reservations);
+        final ReservationAdded.Builder reservationAddedBuilder =
+                ReservationAdded.newBuilder()
+                                .setInventoryId(inventoryId)
+                                .setForWhomReserved(userId)
+                                .setWhenCreated(getCurrentTime());
+        if (readyToPickUpExpectedTime.isPresent()) {
+            reservationAddedBuilder.setWhenExpected(readyToPickUpExpectedTime.get());
+        }
+
+        return reservationAddedBuilder.build();
     }
 
     private LoansExtensionAllowed createLoansExtensionAllowedEvent(List<UserId> borrowers) {
@@ -1118,5 +1124,49 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                        .filter(InventoryItem::getInLibrary)
                                                        .count();
         return inLibraryCount - satisfiedReservationsCount;
+    }
+
+    // @formatter:off
+    /**
+     * Calculates the expected time when the reservation should be satisfied upon
+     * the {@code ReserveBook} command handling.
+     *
+     * All following cases are provided when the reservation is allowed:
+     * <ul>
+     *      <li>if the loans list is empty(book has no items) the expected time cannot be calculated
+     *      <li>if there are loans allowed for extension in the list, the expected time equals
+     *          to the first that kind loan due time.
+     *      <li>if there are no loans allowed for extension, the expected time is calculated  as:
+     *          lastLoanDueTime + (unsatisfiedReservationsCount - loansCount + 1)*LOAN_PERIOD
+     *</ul>
+     *
+     * @param loans the list of loans
+     * @param reservations the list of reservations
+     * @return expected time when the reservation should be satisfied.
+     */
+    // @formatter:on
+    private Optional<Timestamp> getReadyToPickUpExpectedTime(List<Loan> loans,
+                                                             List<Reservation> reservations) {
+        if (loans.isEmpty()) {
+            return Optional.absent();
+        }
+
+        final int index = Iterables.indexOf(loans, Loan::getIsAllowedExtension);
+        if (index != -1) {
+            final Loan firstAllowedForExtensionLoan = loans.get(index);
+            return Optional.of(firstAllowedForExtensionLoan.getWhenDue());
+        }
+
+        final Loan lastLoan = loans.get(loans.size() - 1);
+        final int unsatisfiedReservationsCount = (int) reservations.stream()
+                                                                   .filter(item -> !item.getIsSatisfied())
+                                                                   .count();
+        final long expectedTimeSeconds = lastLoan.getWhenDue()
+                                                 .getSeconds() +
+                (unsatisfiedReservationsCount - loans.size() + 1) * LOAN_PERIOD;
+        final Timestamp expectedTime = Timestamp.newBuilder()
+                                                .setSeconds(expectedTimeSeconds)
+                                                .build();
+        return Optional.of(expectedTime);
     }
 }
