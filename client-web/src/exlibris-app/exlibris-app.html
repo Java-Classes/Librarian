@@ -38,7 +38,6 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
 
 <link rel="import" href="./actions/exlibris-action.html">
 <link rel="import" href="./menu/exlibris-menu-drawer.html">
@@ -112,8 +111,6 @@
                 pattern="/all-books/category/:name"
                 data="{{categoryData}}"></app-route>
 
-        <paper-progress indeterminateclass="slow red"></paper-progress>
-
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
             <app-drawer id="drawer" swipe-open="[[narrow]]" slot="drawer" on-click="_toggleDrawer">
@@ -135,6 +132,10 @@
                                 on-exlibris-book-search-query-changed="_handleQueryChanged"></exlibris-book-search>
                     </app-toolbar>
                 </app-header>
+                <div class="category">
+                    <exlibris-category-dropdown id="dropdown"
+                                                categories="[[categories]]"></exlibris-category-dropdown>
+                </div>
                 <iron-pages
                         id="pages"
                         selected="[[routeData.page]]"
@@ -143,14 +144,8 @@
                         role="main">
                     <exlibris-book-grid data-page="all-books"
                                         books="[[allBooks]]"
-                                        no-books-message="[[noBooksMessage.ALL]]"
+                                        no-books-message="[[noAllBooksMessage]]"
                                         on-exlibris-book-grid-lower-threshold="_handleLowerThreshold"></exlibris-book-grid>
-                                        message="[[messageForEmptyAllBooks]]">
-                        <div class="category">
-                            <exlibris-category-dropdown id="dropdown"
-                                                        categories="[[categories]]"></exlibris-category-dropdown>
-                        </div>
-                    </exlibris-book-grid>
                     <exlibris-book-grid data-page="overdue-books"
                                         books="[[overdueBooks]]"
                                         no-books-message="[[noBooksMessage.OVERDUE]]"></exlibris-book-grid>
@@ -182,8 +177,7 @@
                 BORROWED: "You haven't borrowed any books yet.",
                 SHOULD_RETURN_SOON: "You don't have books that you should return soon",
                 RESERVED: "You haven't reserved any books yet",
-                EXPECTED_SOON: "In the near future, the supply of new books to the library is not expected.",
-                ALL: "There are no books in the library."
+                EXPECTED_SOON: "In the near future, the supply of new books to the library is not expected."
             };
 
             /**
@@ -264,35 +258,6 @@
                             value: EmptyArrayMessage
                         },
 
-                    /**
-                     * The title of the app header.
-                     * Computed from `routeData.page` value.
-                     */
-                    appHeaderTitle: {
-                        type: String,
-                        computed: '_getTitle(routeData.page)'
-                    },
-
-                    /**
-                     * The array of categories.
-                     */
-                    categories: {
-                        type: Array,
-                        statePath: 'categories'
-                    },
-
-                    /**
-                     * The message that will be displayed in case of empty `allBooks` array.
-                     */
-                    messageForEmptyAllBooks: {
-                        type: String
-                    },
-
-                    /**
-                     * The query parameters from url.
-                     */
-                    queryParams: Object,
-                    categoryData: Object,
                         /**
                          * The title of the app header.
                          * Computed from `routeData.page` value.
@@ -301,6 +266,27 @@
                             type: String,
                             computed: '_getTitle(routeData.page)'
                         },
+
+                        /**
+                         * The array of categories.
+                         */
+                        categories: {
+                            type: Array,
+                            statePath: 'categories'
+                        },
+
+                        /**
+                         * The message that will be displayed in case of empty `allBooks` array.
+                         */
+                        noAllBooksMessage: {
+                            type: String
+                        },
+
+                        /**
+                         * The query parameters from url.
+                         */
+                        queryParams: Object,
+                        categoryData: Object,
 
                         /**
                          * The application title values:
@@ -318,76 +304,60 @@
                                 ['overdue-books']: 'Overdue Books'
                             }
                         }
-                };
-            }
-
-            static get actions() {
-                return {
-                    filterByCategory(category) {
-                        return {
-                            type: ExlibrisApp.ExlibrisActions.FILTER_BY_CATEGORY,
-                            category: category
-                        };
-                    },
-                    searchByQuery(query) {
-                        return {
-                            type: ExlibrisApp.ExlibrisActions.SEARCH_BY_QUERY,
-                            query: query
-                        };
-                    },
-                    resetFilters() {
-                        return {
-                            type: ExlibrisApp.ExlibrisActions.RESET_FILTERS,
-                        };
-                    }
-                };
-            }
-
-
-
-
-            static get observers() {
-                return [
-                    '_routePageChanged(routeData.page)',
-                    '_categoryDataChanged(categoryData.name)',
-                ];
-            }
+                    };
+                }
 
                 static get actions() {
                     return {
+                        filterByCategory: category => ({
+                            type: ExlibrisApp.ExlibrisActions.FILTER_BY_CATEGORY,
+                            category
+                        }),
+                        searchByQuery: query => ({
+                            type: ExlibrisApp.ExlibrisActions.SEARCH_BY_QUERY,
+                            query
+                        }),
+                        resetFilters: () => ({type: ExlibrisApp.ExlibrisActions.RESET_FILTERS}),
                         fetchBooks: () => ({type: ExlibrisApp.ExlibrisActions.FETCH_BOOKS})
                     };
                 }
 
-            /**
-             * Checks for an empty route passed to redirect user to the default app view.
-             */
-            _routePageChanged() {
-                if (!this.route.path) {
-                    this.set('route.path', '/all-books');
+                static get observers() {
+                    return [
+                        '_routePageChanged(routeData.page)',
+                        '_categoryDataChanged(categoryData.name)',
+                    ];
                 }
-                if (this.route.path === '/all-books') {
-                    if (this.queryParams.q !== undefined) {
-                        this.messageForEmptyAllBooks = "We couldn't find anything for your search - " + this.queryParams.q + "."
-                        this.dispatch('searchByQuery', this.queryParams.q);
-                    } else {
-                        this.$.dropdown.reset();
-                        this.dispatch("resetFilters")
+
+                /**
+                 * Checks for an empty route passed to redirect user to the default app view.
+                 */
+                _routePageChanged() {
+                    if (!this.route.path) {
+                        this.set('route.path', '/all-books');
+                    }
+                    if (this.route.path === '/all-books') {
+                        if (this.queryParams.q !== undefined) {
+                            this.noAllBooksMessage = "We couldn't find anything for your search - " + this.queryParams.q + "."
+                            this.dispatch('searchByQuery', this.queryParams.q);
+                        } else {
+                            this.$.dropdown.reset();
+                            this.dispatch("resetFilters")
+                        }
                     }
                 }
-            }
 
-            /**
-             * Creates the 'FILTER_BY_CATEGORY' redux action.
-             * @param {string} name the name of the category
-             * @private
-             */
-            _categoryDataChanged(name) {
-                if (name) {
-                    this.messageForEmptyAllBooks = "There are no books in this category.";
-                    this.dispatch('filterByCategory', name);
+                /**
+                 * Creates the 'FILTER_BY_CATEGORY' redux action.
+                 * @param {string} name the name of the category
+                 * @private
+                 */
+                _categoryDataChanged(name) {
+                    if (name) {
+                        this.noAllBooksMessage = "There are no books in this category.";
+                        this.dispatch('filterByCategory', name);
+                    }
                 }
-            }
 
                 /**
                  * Computes the title of the app header.
@@ -409,23 +379,23 @@
                         this.$.drawer.toggle();
                     }
                 }
-            }
 
-            _showView404() {
-                this.$.pages.select('view404');
-            }
 
-            /**
-             * Handles the exlibris-book-query-changed event.
-             *
-             * @param {object} e
-             * @private
-             */
-            _handleQueryChanged(e) {
-                this.set('route.path', '/all-books');
-                this.queryParams = {q: e.detail.query};
-                e.stopPropagation();
-            }
+                _showView404() {
+                    this.$.pages.select('view404');
+                }
+
+                /**
+                 * Handles the exlibris-book-query-changed event.
+                 *
+                 * @param {object} e
+                 * @private
+                 */
+                _handleQueryChanged(e) {
+                    this.set('route.path', '/all-books');
+                    this.queryParams = {q: e.detail.query};
+                    e.stopPropagation();
+                }
 
 
                 /**
