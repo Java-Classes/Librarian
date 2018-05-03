@@ -21,6 +21,7 @@
 package javaclasses.exlibris.q.user;
 
 import io.spine.server.projection.ProjectionRepository;
+import io.spine.server.route.EventRouting;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.BookReadyToPickup;
 import javaclasses.exlibris.c.ReservationAdded;
@@ -46,24 +47,14 @@ public class ReservedBooksListViewRepository extends ProjectionRepository<UserId
      * Adds the {@link io.spine.server.route.EventRoute EventRoute}s to the repository.
      */
     protected void setUpEventRoute() {
-        getEventRouting().replaceDefault(((message, context) -> {
-            if (message instanceof ReservationAdded) {
-                final ReservationAdded event = (ReservationAdded) message;
-                return Collections.singleton(event.getForWhomReserved());
-            }
-            if (message instanceof ReservationBecameLoan) {
-                final ReservationBecameLoan event = (ReservationBecameLoan) message;
-                return Collections.singleton(event.getUserId());
-            }
-            if (message instanceof ReservationCanceled) {
-                final ReservationCanceled event = (ReservationCanceled) message;
-                return Collections.singleton(event.getWhoCanceled());
-            }
-            if (message instanceof BookReadyToPickup) {
-                final BookReadyToPickup event = (BookReadyToPickup) message;
-                return Collections.singleton(event.getForWhom());
-            }
-            return null;
-        }));
+        final EventRouting<UserId> routing = getEventRouting();
+        routing.route(ReservationAdded.class,
+                      (message, context) -> Collections.singleton(message.getForWhomReserved()));
+        routing.route(ReservationBecameLoan.class,
+                      (message, context) -> Collections.singleton(message.getUserId()));
+        routing.route(ReservationCanceled.class,
+                      (message, context) -> Collections.singleton(message.getWhoCanceled()));
+        routing.route(BookReadyToPickup.class,
+                      (message, context) -> Collections.singleton(message.getForWhom()));
     }
 }

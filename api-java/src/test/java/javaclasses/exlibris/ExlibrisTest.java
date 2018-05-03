@@ -29,6 +29,7 @@ import io.spine.grpc.StreamObservers;
 import io.spine.server.BoundedContext;
 import io.spine.server.commandbus.CommandBus;
 import io.spine.server.entity.Repository;
+import javaclasses.exlibris.c.inventory.InventoryRepository;
 import javaclasses.exlibris.q.BookStatus;
 import javaclasses.exlibris.q.BookView;
 import javaclasses.exlibris.q.BorrowedBookItem;
@@ -88,6 +89,8 @@ public class ExlibrisTest {
 
             final Command borrowBook = createCommand(borrowBookInstance());
             commandBus.post(borrowBook, StreamObservers.noOpObserver());
+
+            InventoryRepository.setNewInstance();
         }
 
         @Test

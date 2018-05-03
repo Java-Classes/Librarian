@@ -21,6 +21,7 @@
 package javaclasses.exlibris.q.user;
 
 import io.spine.server.projection.ProjectionRepository;
+import io.spine.server.route.EventRouting;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.BookBecameAvailable;
@@ -29,7 +30,7 @@ import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.InventoryDecreased;
 import javaclasses.exlibris.q.BookView;
 
-import static java.util.Collections.singleton;
+import java.util.Collections;
 
 /**
  * Repository for the {@link BookViewProjection}.
@@ -50,31 +51,19 @@ public class BookViewRepository extends ProjectionRepository<BookId, BookViewPro
      * {@code BookViewProjection.ID}.
      */
     protected void setUpEventRoute() {
-        getEventRouting().replaceDefault(((message, context) -> {
-            if (message instanceof BookAdded) {
-                final BookAdded event = (BookAdded) message;
-                return singleton(event.getBookId());
-            }
-            if (message instanceof BookRemoved) {
-                final BookRemoved event = (BookRemoved) message;
-                return singleton(event.getBookId());
-            }
-            if (message instanceof InventoryDecreased) {
-                final InventoryDecreased event = (InventoryDecreased) message;
-                return singleton(event.getInventoryId()
-                                                  .getBookId());
-            }
-            if (message instanceof BookBorrowed) {
-                final BookBorrowed event = (BookBorrowed) message;
-                return singleton(event.getInventoryId()
-                                                  .getBookId());
-            }
-            if (message instanceof BookBecameAvailable) {
-                final BookBecameAvailable event = (BookBecameAvailable) message;
-                return singleton(event.getInventoryId()
-                                                  .getBookId());
-            }
-            return null;
-        }));
+        final EventRouting<BookId> routing = getEventRouting();
+        routing.route(BookAdded.class,
+                      (message, context) -> Collections.singleton(message.getBookId()));
+        routing.route(BookRemoved.class,
+                      (message, context) -> Collections.singleton(message.getBookId()));
+        routing.route(InventoryDecreased.class,
+                      (message, context) -> Collections.singleton(message.getInventoryId()
+                                                                         .getBookId()));
+        routing.route(BookBorrowed.class,
+                      (message, context) -> Collections.singleton(message.getInventoryId()
+                                                                         .getBookId()));
+        routing.route(BookBecameAvailable.class,
+                      (message, context) -> Collections.singleton(message.getInventoryId()
+                                                                         .getBookId()));
     }
 }

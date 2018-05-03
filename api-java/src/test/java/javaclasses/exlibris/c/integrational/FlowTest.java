@@ -49,7 +49,6 @@ import static javaclasses.exlibris.testdata.BookCommandFactory.updateBookInstanc
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.extendLoanPeriodInstance;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.reserveBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.returnBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.writeBookOffInstance;
@@ -62,6 +61,7 @@ import static javaclasses.exlibris.testdata.TestValues.LIBRARIAN_ID;
 import static javaclasses.exlibris.testdata.TestValues.LOAN;
 import static javaclasses.exlibris.testdata.TestValues.USER_ID;
 import static javaclasses.exlibris.testdata.TestValues.USER_ID_2;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID_3;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -101,7 +101,7 @@ public class FlowTest extends InventoryCommandTest<Message> {
             toMessage(borrowBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_2, USER_ID_2)));
 
     private final Command reserveBook3 = requestFactory.createCommand(
-            toMessage(reserveBookInstance(USER_ID,
+            toMessage(reserveBookInstance(USER_ID_3,
                                           INVENTORY_ID)));
 
     private final Command reserveBook2 = requestFactory.createCommand(
@@ -261,7 +261,7 @@ public class FlowTest extends InventoryCommandTest<Message> {
 
     private Inventory getAggregateState() {
         final Optional<InventoryAggregate> aggregateOptional = InventoryRepository.getRepository()
-                                                                                  .find(inventoryId);
+                                                                                  .find(INVENTORY_ID);
         return aggregateOptional.isPresent() ? aggregateOptional.get()
                                                                 .getState() : null;
     }
