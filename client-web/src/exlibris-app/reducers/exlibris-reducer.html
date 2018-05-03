@@ -21,13 +21,14 @@
 <link rel="import" href="../book/book-values.html">
 <script src="./loading-status.js"></script>
 <link rel="import" href="../actions/exlibris-action.html">
+<link rel="import" href="../actions/exlibris-actions.html">
 
 <script>
     /* exported reducer */
     /*global userTestBooks libraryTestBooks expectedSoonLibraryBooks testCategories*/
     {
         const initialState = {
-            overdueBooks: userTestBooks.overdue,
+            overdueBooks: [...userTestBooks.overdue],
             borrowedBooks: [...userTestBooks.overdue, ...userTestBooks.borrowed],
             shouldReturnBooks: userTestBooks.shouldReturnSoon,
             reservedBooks: userTestBooks.reserved,
@@ -83,6 +84,10 @@
                 case ExlibrisApp.ExlibrisActions.RESET_FILTERS: {
                     const allBooks = [...state.overdueBooks, ...libraryTestBooks]
                     return Object.assign({}, state, {allBooks: allBooks});
+                }
+                case ExlibrisApp.ExlibrisActions.FETCH_BOOKS: {
+                    //TODO:2018-55-17:yurii.haidamaka add data loading from the server
+                    return state;
                 }
                 default:
                     return state;

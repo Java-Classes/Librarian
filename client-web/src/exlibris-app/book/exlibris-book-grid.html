@@ -18,13 +18,13 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
-<link rel="import" href="../../../bower_components/iron-list/iron-list.html">
-<link rel="import" href="./exlibris-book-tile.html">
-<link rel="import" href="book-values.html">
-<link rel="import" href="../../../bower_components/paper-styles/typography.html">
-<link rel="import" href="./exlibris-book-tile.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+
+<link rel="import" href="../exlibris-app/exlibris-book-tile.html">
+<link rel="import" href="./book-values.html">
 
 <dom-module id="exlibris-book-grid">
     <template>
@@ -40,23 +40,17 @@
                 color: var(--paper-grey-700);
             }
         </style>
-        <slot></slot>
-        <dom-if is="dom-if" if="[[!books.length]]">
-            <template>
-                <div class="center">[[message]]</div>
-            </template>
-        </dom-if>
+        <div class="center" hidden="[[books.length]]">[[noBooksMessage]]</div>
+
         <iron-list items="[[books]]" as="book" scroll-target="document" grid>
             <template>
-                <div>
                     <exlibris-book-tile book="[[book]]"></exlibris-book-tile>
-                </div>
             </template>
         </iron-list>
 
+
         <!-- this element loads more books when the user scrolls down and reached the lower threshold -->
-        <iron-scroll-threshold id="scrollThreshold"
-                               lower-threshold="30"
+        <iron-scroll-threshold lower-threshold="30"
                                on-lower-threshold="_onLowerThreshold"
                                scroll-target="document">
         </iron-scroll-threshold>
@@ -77,24 +71,25 @@
             static get properties() {
                 return {
                     /**
-                     * The array of  the next objects:
+                     * The array of the next objects:
                      * @typedef {Object} Book
                      * @property {string} title the title of a book
                      * @property {string} authors string with authors of the book
-                     * @property {string} status  one of the following values: "overdue", "borrowed", "should-return-soon",
+                     * @property {string} status  one of the following values: "overdue",
+                     * "borrowed", "should-return-soon",
                      * "available", "reserved", "expected","ready-to-pick-up"
                      */
                     books: Array,
 
                     /**
-                     * The text that will be shown in the case of an empty books array.
+                     * The text is shown in the case of an empty books array.
                      */
-                    message: String
+                    noBooksMessage: String
                 };
             }
 
             _onLowerThreshold() {
-                //TODO:2018-53-11:yurii.haidamaka add data loading from the server
+                this.dispatchEvent(new CustomEvent('exlibris-book-grid-lower-threshold'));
             }
         }
 
