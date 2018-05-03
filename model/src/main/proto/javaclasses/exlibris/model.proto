@@ -111,6 +111,9 @@ message Reservation {
 
     // The time when a book was reserved.
     google.protobuf.Timestamp when_created = 4;
+
+    // The time when a reservation might be satisfied.
+    google.protobuf.Timestamp when_expected = 5;
 }
 
 // The model of a loan.
