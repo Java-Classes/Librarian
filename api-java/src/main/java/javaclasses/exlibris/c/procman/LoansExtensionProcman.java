@@ -60,36 +60,61 @@ public class LoansExtensionProcman extends ProcessManager<LoansExtensionId, Loan
         super(id);
     }
 
+    /**
+     * As long as the {@code LoansExtensionProcman} is an {@code InventoryAggregate}
+     * service and does not hold model state it is a singleton. All subscribed events
+     * are routed to the single instance.
+     */
     protected static final LoansExtensionId ID =
             LoansExtensionId.newBuilder()
                             .setValue("ReservationQueueSingleton")
                             .build();
 
     @React
-    CommandRouted on(ReservationAdded event, EventContext ctx) {
+    CommandRouted on(ReservationAdded event, EventContext eventContext) {
         final InventoryId inventoryId = event.getInventoryId();
-        final CommandContext commandContext = ctx.getCommandContext();
+        final CommandContext commandContext = eventContext.getCommandContext();
         return updateLoansExtensionStateRouter(inventoryId, commandContext);
     }
 
     @React
-    CommandRouted on(BookReadyToPickup event, EventContext ctx) {
+    CommandRouted on(BookReadyToPickup event, EventContext eventContext) {
         final InventoryId inventoryId = event.getInventoryId();
-        final CommandContext commandContext = ctx.getCommandContext();
+        final CommandContext commandContext = eventContext.getCommandContext();
         return updateLoansExtensionStateRouter(inventoryId, commandContext);
     }
 
+    /**
+     * Reacts on {@code ReservationCanceled} event.
+     *
+     * <p>Performs action only when the canceled reservation was unsatisfied (in that case available
+     * some loans should be allowed for extension).
+     *
+     * @param event        the {@code ReservationCanceled} event to react on.
+     * @param eventContext the event context
+     * @return routed command.
+     */
     @React
-    CommandRouted on(ReservationCanceled event, EventContext ctx) {
+    CommandRouted on(ReservationCanceled event, EventContext eventContext) {
         final boolean wasSatisfied = event.getWasSatisfied();
         if (!wasSatisfied) {
             final InventoryId inventoryId = event.getInventoryId();
-            final CommandContext commandContext = ctx.getCommandContext();
+            final CommandContext commandContext = eventContext.getCommandContext();
             return updateLoansExtensionStateRouter(inventoryId, commandContext);
         }
         return null;
     }
 
+    /**
+     * Checks the {@code InventoryAggregate} state reservation queue and the loans list.
+     *
+     * Collates the unsatisfied reservations count with the forbidden for extension loans count.
+     * Performs action to equalize those values if possible.
+     *
+     * @param inventoryId    the identifier of the {@code InventoryAggregate} to check
+     * @param commandContext the command context
+     * @return the routed command
+     */
     private CommandRouted updateLoansExtensionStateRouter(InventoryId inventoryId,
                                                           CommandContext commandContext) {
         final Optional<InventoryAggregate> inventoryOptional = getInventory(inventoryId);
@@ -122,6 +147,16 @@ public class LoansExtensionProcman extends ProcessManager<LoansExtensionId, Loan
                                           : null;
     }
 
+    /**
+     * Creates routed command to forbid extension for as many loans as possible to rich the
+     * {@code numberToForbid} count.
+     *
+     * @param inventoryId the identifier of the {@code InventoryAggregate}
+     * @param commandContext the command context
+     * @param loans the list of loans
+     * @param numberToForbid the target number to forbid
+     * @return the routed command to forbid loans extension
+     */
     private Optional<CommandRouter> forbidLoansExtensionRouter(InventoryId inventoryId,
                                                                CommandContext commandContext,
                                                                List<Loan> loans,
@@ -134,8 +169,8 @@ public class LoansExtensionProcman extends ProcessManager<LoansExtensionId, Loan
                                                              .map(Loan::getWhoBorrowed)
                                                              .collect(Collectors.toList());
         final Iterator<UserId> iterator = userIds.iterator();
-
         final List<UserId> resultUserIds = new ArrayList<>();
+
         while (iterator.hasNext() && resultUserIds.size() < numberToForbid) {
             resultUserIds.add(iterator.next());
         }
@@ -154,6 +189,16 @@ public class LoansExtensionProcman extends ProcessManager<LoansExtensionId, Loan
         return Optional.absent();
     }
 
+    /**
+     * Creates routed command to allow extension for as many loans as possible to rich the
+     * {@code numberToAllow} count. Loans extension goes from the end of the loans list.
+     *
+     * @param inventoryId the identifier of the {@code InventoryAggregate}
+     * @param commandContext the command context
+     * @param loans the list of loans
+     * @param numberToAllow the target number to allow
+     * @return the routed command to allow loans extension
+     */
     private Optional<CommandRouter> allowLoansExtensionRouter(InventoryId inventoryId,
                                                               CommandContext commandContext,
                                                               List<Loan> loans,
