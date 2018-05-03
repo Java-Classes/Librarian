@@ -789,9 +789,16 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final UserId librarianId = cmd.getLibrarianId();
         final WriteOffReason writeOffReason = cmd.getWriteBookOffReason();
+        final List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
+        final int index = getInventoryItemIndexById(inventoryItemId, inventoryItems);
+        final InventoryItem inventoryItem = inventoryItems.get(index);
+
         // current available count should be decreased to match its value
-        // after applying this event.
-        final int availableItemsCount = getAvailableInventoryItemsCount() - 1;
+        // after applying this event. If the book was lost by user it is already
+        // non available.
+        final int availableItemsCount = inventoryItem.getLost()
+                                        ? getAvailableInventoryItemsCount()
+                                        : getAvailableInventoryItemsCount() - 1;
         final InventoryDecreased inventoryDecreased =
                 InventoryDecreased.newBuilder()
                                   .setInventoryId(inventoryId)
