@@ -27,6 +27,7 @@ import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.LoanBecameOverdue;
+import javaclasses.exlibris.c.LoanBecameShouldReturnSoon;
 import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.c.LoansExtensionAllowed;
 import javaclasses.exlibris.c.LoansExtensionForbidden;
@@ -66,5 +67,7 @@ public class BorrowedBooksListViewRepository extends ProjectionRepository<UserId
                       (message, context) -> new HashSet<>(message.getBorrowersList()));
         routing.route(LoansExtensionForbidden.class,
                       (message, context) -> new HashSet<>(message.getBorrowersList()));
+        routing.route(LoanBecameShouldReturnSoon.class,
+                      (message, context) -> Collections.singleton(message.getUserId()));
     }
 }

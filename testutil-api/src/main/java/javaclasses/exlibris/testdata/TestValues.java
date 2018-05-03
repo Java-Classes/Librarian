@@ -49,7 +49,9 @@ import javaclasses.exlibris.q.LoanDetails;
 
 import java.util.function.Function;
 
+import static io.spine.time.LocalDates.addDays;
 import static io.spine.time.Time.getCurrentTime;
+import static javaclasses.exlibris.Timestamps.toLocalDate;
 
 /**
  * The utility class that provides constant instances of
@@ -281,12 +283,53 @@ public class TestValues {
                                                               .setWhenDue(DEFAULT_DUE_DATE)
                                                               .setOverdue(false)
                                                               .build();
+    /**
+     * today's date
+     */
+    public static final LocalDate CURRENT_DATE = toLocalDate(getCurrentTime());
+
+    /**
+     * 14 days after today
+     */
+    public static final LocalDate DUE_DATE = addDays(CURRENT_DATE, 14);
+    public static final LoanDetails LOAN_DETAILS_TODAY = LoanDetails.newBuilder()
+                                                                    .setUserId(USER_ID)
+                                                                    .setUserName(USER_NAME)
+                                                                    .setEmail(USER_EMAIL_1)
+                                                                    .setWhenTaken(CURRENT_DATE)
+                                                                    .setWhenDue(DUE_DATE)
+                                                                    .setOverdue(false)
+                                                                    .build();
+
+    public static final LoanDetails LOAN_DETAILS_TODAY2 = LoanDetails.newBuilder()
+                                                                     .setUserId(USER_ID)
+                                                                     .setUserName(USER_NAME)
+                                                                     .setEmail(USER_EMAIL_1)
+                                                                     .setWhenTaken(CURRENT_DATE)
+                                                                     .setWhenDue(
+                                                                             addDays(CURRENT_DATE,
+                                                                                     14 * 2))
+                                                                     .setOverdue(false)
+                                                                     .build();
     public static final InventoryItemState BORROWED_ITEM_STATE = InventoryItemState.newBuilder()
                                                                                    .setItemId(
                                                                                            INVENTORY_ITEM_ID_1)
                                                                                    .setLoanDetails(
                                                                                            LOAN_DETAILS)
                                                                                    .build();
+
+    public static final InventoryItemState BORROWED_ITEM_STATE_TODAY = InventoryItemState.newBuilder()
+                                                                                         .setItemId(
+                                                                                                 INVENTORY_ITEM_ID_1)
+                                                                                         .setLoanDetails(
+                                                                                                 LOAN_DETAILS_TODAY)
+                                                                                         .build();
+    public static final InventoryItemState BORROWED_ITEM_STATE_TODAY2 = InventoryItemState.newBuilder()
+                                                                                          .setItemId(
+                                                                                                  INVENTORY_ITEM_ID_1)
+                                                                                          .setLoanDetails(
+                                                                                                  LOAN_DETAILS_TODAY2)
+                                                                                          .build();
 
     public static final InventoryItemState LOST_ITEM_STATE = InventoryItemState.newBuilder()
                                                                                .setItemId(
@@ -314,4 +357,5 @@ public class TestValues {
                                          .build();
 
     public static final Function<InventoryId, Book> INVENTORY_ID_TO_BOOK = inventoryId -> BOOK;
+
 }

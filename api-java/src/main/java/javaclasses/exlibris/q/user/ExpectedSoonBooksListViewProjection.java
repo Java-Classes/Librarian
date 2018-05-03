@@ -54,8 +54,9 @@ public class ExpectedSoonBooksListViewProjection extends Projection<ExpectedSoon
      * to support work with the same projection from execution to execution.
      */
     public static final ExpectedSoonBooksListViewId ID = ExpectedSoonBooksListViewId.newBuilder()
-                                                  .setValue("ExpectedSoonBooksListViewProjection")
-                                                  .build();
+                                                                                    .setValue(
+                                                                                            "ExpectedSoonBooksListViewProjection")
+                                                                                    .build();
 
     /**
      * @see Projection#Projection(Object)
@@ -90,7 +91,9 @@ public class ExpectedSoonBooksListViewProjection extends Projection<ExpectedSoon
                                .getBookId();
         final List<ExpectedSoonItem> items = new ArrayList<>(getBuilder().getBookItem());
         final int index = getIndexByBookId(items, id);
-        getBuilder().removeBookItem(index);
+        if (index != -1) {
+            getBuilder().removeBookItem(index);
+        }
     }
 
     private int getIndexByBookId(List<ExpectedSoonItem> items, BookId id) {

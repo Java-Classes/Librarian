@@ -87,7 +87,8 @@ public class BookInventoryViewProjection extends Projection<InventoryId, BookInv
 
     @Subscribe
     public void on(InventoryDecreased event) {
-        getBuilder().clearTitle()
+        getBuilder().clearInventoryId()
+                    .clearTitle()
                     .clearAuthor()
                     .clearItemState();
     }

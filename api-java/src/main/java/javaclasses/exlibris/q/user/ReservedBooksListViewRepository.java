@@ -27,6 +27,7 @@ import javaclasses.exlibris.c.BookReadyToPickup;
 import javaclasses.exlibris.c.ReservationAdded;
 import javaclasses.exlibris.c.ReservationBecameLoan;
 import javaclasses.exlibris.c.ReservationCanceled;
+import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 import javaclasses.exlibris.q.ReservedBooksListView;
 
 import java.util.Collections;
@@ -56,5 +57,7 @@ public class ReservedBooksListViewRepository extends ProjectionRepository<UserId
                       (message, context) -> Collections.singleton(message.getWhoCanceled()));
         routing.route(BookReadyToPickup.class,
                       (message, context) -> Collections.singleton(message.getForWhom()));
+        routing.route(ReservationPickUpPeriodExpired.class,
+                      (message, context) -> Collections.singleton(message.getUserId()));
     }
 }

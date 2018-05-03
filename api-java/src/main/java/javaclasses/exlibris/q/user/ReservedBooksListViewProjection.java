@@ -87,7 +87,9 @@ public class ReservedBooksListViewProjection extends Projection<UserId, Reserved
                                                           .setWhenReadyToPickUp(whenExpected)
                                                           .setStatus(status)
                                                           .build();
-        getBuilder().addBookItem(bookItem);
+        getBuilder().addBookItem(bookItem)
+                    .setNumberOfReservedBooks((getBuilder().getBookItem()
+                                                           .size()));
     }
 
     @Subscribe
@@ -96,7 +98,9 @@ public class ReservedBooksListViewProjection extends Projection<UserId, Reserved
         final int index = getIndexByBookId(items, event.getInventoryId()
                                                        .getBookId());
         if (index != -1) {
-            getBuilder().removeBookItem(index);
+            getBuilder().removeBookItem(index)
+                        .setNumberOfReservedBooks((getBuilder().getBookItem()
+                                                               .size()));
         }
     }
 
@@ -106,7 +110,9 @@ public class ReservedBooksListViewProjection extends Projection<UserId, Reserved
         final int index = getIndexByBookId(items, event.getInventoryId()
                                                        .getBookId());
         if (index != -1) {
-            getBuilder().removeBookItem(index);
+            getBuilder().removeBookItem(index)
+                        .setNumberOfReservedBooks((getBuilder().getBookItem()
+                                                               .size()));
         }
     }
 
@@ -116,7 +122,9 @@ public class ReservedBooksListViewProjection extends Projection<UserId, Reserved
         final int index = getIndexByBookId(items, event.getInventoryId()
                                                        .getBookId());
         if (index != -1) {
-            getBuilder().removeBookItem(index);
+            getBuilder().removeBookItem(index)
+                        .setNumberOfReservedBooks((getBuilder().getBookItem()
+                                                               .size()));
         }
     }
 
@@ -131,7 +139,9 @@ public class ReservedBooksListViewProjection extends Projection<UserId, Reserved
                                                                  .setStatus(
                                                                          ReservedBookItemStatus.READY_TO_PICK_UP)
                                                                  .build();
-            getBuilder().setBookItem(index, newBookItem);
+            getBuilder().setBookItem(index, newBookItem)
+                        .setNumberOfReservedBooks((getBuilder().getBookItem()
+                                                               .size()));
         }
     }
 
