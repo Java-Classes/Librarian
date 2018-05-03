@@ -35,7 +35,7 @@ public class InventoryCommandTest<C extends Message> extends AggregateCommandTes
     private final TestActorRequestFactory requestFactory =
             TestActorRequestFactory.newInstance(getClass());
 
-    InventoryAggregate aggregate;
+    public InventoryAggregate aggregate;
 
     @Override
     protected InventoryAggregate createAggregate() {

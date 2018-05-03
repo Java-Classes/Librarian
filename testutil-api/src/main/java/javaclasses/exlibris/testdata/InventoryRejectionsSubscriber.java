@@ -77,6 +77,11 @@ public class InventoryRejectionsSubscriber extends RejectionSubscriber {
         wasCalled = true;
     }
 
+    @Subscribe
+    public void on(Rejections.CannotReserveAvailableBook rejection) {
+        wasCalled = true;
+    }
+
     public void clear() {
         wasCalled = false;
     }
