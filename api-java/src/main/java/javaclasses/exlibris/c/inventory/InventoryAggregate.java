@@ -81,6 +81,7 @@ import javaclasses.exlibris.c.rejection.BookAlreadyBorrowed;
 import javaclasses.exlibris.c.rejection.BookAlreadyReserved;
 import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
 import javaclasses.exlibris.c.rejection.CannotExtendLoanPeriod;
+import javaclasses.exlibris.c.rejection.CannotReserveAvailableBook;
 import javaclasses.exlibris.c.rejection.CannotReturnMissingBook;
 import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
 import javaclasses.exlibris.c.rejection.CannotWriteBookOff;
@@ -96,6 +97,7 @@ import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.Borr
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.BorrowBookRejection.nonAvailableBook;
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.ReserveBookRejection.bookAlreadyBorrowed;
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.ReserveBookRejection.bookAlreadyReserved;
+import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.ReserveBookRejection.cannotReserveAvailableBook;
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.ReturnBookRejection.cannotReturnNonBorrowedBook;
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.ReturnBookRejection.throwCannotReturnMissingBook;
 import static javaclasses.exlibris.c.inventory.InventoryAggregateRejections.cannotCancelMissingReservation;
@@ -189,7 +191,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      * @throws BookAlreadyReserved if a reservation already exists.
      */
     @Assign
-    ReservationAdded handle(ReserveBook cmd) throws BookAlreadyBorrowed, BookAlreadyReserved {
+    ReservationAdded handle(ReserveBook cmd) throws BookAlreadyBorrowed,
+                                                    BookAlreadyReserved,
+                                                    CannotReserveAvailableBook {
         final UserId userId = cmd.getUserId();
 
         if (isBookBorrowedByUser(userId)) {
@@ -197,6 +201,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         }
         if (isBookReservedByUser(userId)) {
             throw bookAlreadyReserved(cmd);
+        }
+        if (isThereInventoryItemsFreeForBorrowing()) {
+            throw cannotReserveAvailableBook(cmd);
         }
         final ReservationAdded reservationAdded = createReservationAddedEvent(cmd);
         return reservationAdded;
@@ -511,13 +518,11 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     @Apply
-        // TODO 4/26/2018[yegor.udovchenko]: QR code?
     void inventoryAppended(InventoryAppended event) {
         final InventoryItemId inventoryItemId = event.getInventoryItemId();
         final InventoryItem newInventoryItem = InventoryItem.newBuilder()
                                                             .setInLibrary(true)
                                                             .setInventoryItemId(inventoryItemId)
-//                                                            .setQrCodeUrl()
                                                             .build();
         getBuilder().addInventoryItems(newInventoryItem);
     }
@@ -753,7 +758,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final Timestamp pickUpDeadline = Timestamp.newBuilder()
                                                   .setSeconds(pickupDeadlineTimeSeconds)
                                                   .build();
-        final InventoryId inventoryId = getState().getInventoryId();
+        final InventoryId inventoryId = cmd.getInventoryId();
         final BookReadyToPickup bookReadyToPickup =
                 BookReadyToPickup.newBuilder()
                                  .setInventoryId(inventoryId)
@@ -764,7 +769,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return bookReadyToPickup;
     }
 
-    // TODO 4/26/2018[yegor.udovchenko]: Add QR code url
     private InventoryAppended createInventoryAppendedEvent(AppendInventory cmd) {
         final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
@@ -776,7 +780,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                  .setInventoryItemId(inventoryItemId)
                                  .setWhenAppended(getCurrentTime())
                                  .setLibrarianId(userId)
-//                                 .setQrCodeUrl()
                                  .build();
         return inventoryAppended;
     }

@@ -124,8 +124,8 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     @Test
     @DisplayName("produce ReservationBecameLoan event when borrowing is a consequence of reservation.")
     void produceReservationBecameLoanEvent() {
-        dispatchAppendInventory();
         dispatchReserveBook();
+        dispatchAppendInventory();
         dispatchSatisfyReservation();
 
         final BorrowBook borrowBook = borrowBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1,
@@ -143,8 +143,8 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     @Test
     @DisplayName("remove reservation when borrowing is a consequence of reservation.")
     void removeReservationWhenBecameLoan() {
-        dispatchAppendInventory();
         dispatchReserveBook();
+        dispatchAppendInventory();
         dispatchSatisfyReservation();
 
         final BorrowBook borrowBook = borrowBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1,
@@ -203,8 +203,8 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     @DisplayName("throw NonAvailableBook rejection upon " +
             "an attempt to borrow a book with unsatisfied reservation")
     void borrowWithUnsatisfiedReservation() {
-        dispatchAppendInventory();
         dispatchReserveBook();
+        dispatchAppendInventory();
 
         final BorrowBook borrowBook = borrowBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1,
                                                          USER_ID);
@@ -220,8 +220,8 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     @DisplayName("throw NonAvailableBook rejection upon " +
             "an attempt to borrow a book that satisfies someone's reservation")
     void borrowNotPublicAvailableBookReservation() {
-        dispatchAppendInventory();
         dispatchReserveBook();
+        dispatchAppendInventory();
         dispatchSatisfyReservation();
 
         final BorrowBook borrowBook = borrowBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1,

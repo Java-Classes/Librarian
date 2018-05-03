@@ -20,16 +20,16 @@
 
 package javaclasses.exlibris.c.procman;
 
-import com.google.protobuf.Empty;
 import io.spine.server.procman.ProcessManagerRepository;
+import javaclasses.exlibris.ReservationQueue;
 import javaclasses.exlibris.ReservationQueueId;
 
 import static java.util.Collections.singleton;
-import static javaclasses.exlibris.c.procman.ReservationQueue.ID;
+import static javaclasses.exlibris.c.procman.ReservationQueueProcman.ID;
 
-public class ReservationQueueRepository extends ProcessManagerRepository<ReservationQueueId, ReservationQueue, Empty> {
+public class ReservationQueueProcmanRepository extends ProcessManagerRepository<ReservationQueueId, ReservationQueueProcman, ReservationQueue> {
 
-    public ReservationQueueRepository() {
+    public ReservationQueueProcmanRepository() {
         super();
         setUpEventRoute();
     }

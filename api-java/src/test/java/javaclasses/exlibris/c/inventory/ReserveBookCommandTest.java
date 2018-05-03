@@ -31,6 +31,7 @@ import javaclasses.exlibris.c.ReservationAdded;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.rejection.BookAlreadyBorrowed;
 import javaclasses.exlibris.c.rejection.BookAlreadyReserved;
+import javaclasses.exlibris.c.rejection.CannotReserveAvailableBook;
 import javaclasses.exlibris.testdata.InventoryCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -92,7 +93,7 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
     }
 
     @Test
-    @DisplayName("throw CannotReserveBook rejection upon " +
+    @DisplayName("throw BookAlreadyReserved rejection upon " +
             "an attempt reserve the book that is already reserved")
     void reserveBookTwice() {
         final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
@@ -114,7 +115,7 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
     }
 
     @Test
-    @DisplayName("throw CannotReserveBook rejection upon " +
+    @DisplayName("throw BookAlreadyBorrowed rejection upon " +
             "an attempt reserve the book that is already borrowed")
     void notReserveBorrowedBook() {
         final AppendInventory appendInventory = appendInventoryInstance();
@@ -132,6 +133,29 @@ public class ReserveBookCommandTest extends InventoryCommandTest<ReserveBook> {
         assertThat(cause, instanceOf(BookAlreadyBorrowed.class));
 
         final BookAlreadyBorrowed rejection = (BookAlreadyBorrowed) cause;
+        final BookId actualBookId = rejection.getMessageThrown()
+                                             .getInventoryId()
+                                             .getBookId();
+        assertEquals(reserveBook.getInventoryId()
+                                .getBookId(), actualBookId);
+    }
+
+    @Test
+    @DisplayName("throw CannotReserveAvailableBook rejection upon " +
+            "an attempt reserve the book that is available for borrowing")
+    void notReserveAvailableBook() {
+        final AppendInventory appendInventory = appendInventoryInstance();
+        dispatchCommand(aggregate, envelopeOf(appendInventory));
+
+        final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance();
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(reserveBook)));
+        final Throwable cause = Throwables.getRootCause(t);
+
+        assertThat(cause, instanceOf(CannotReserveAvailableBook.class));
+
+        final CannotReserveAvailableBook rejection = (CannotReserveAvailableBook) cause;
         final BookId actualBookId = rejection.getMessageThrown()
                                              .getInventoryId()
                                              .getBookId();

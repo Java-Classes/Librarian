@@ -33,7 +33,8 @@ import javaclasses.exlibris.q.user.BookViewRepository;
 import javaclasses.exlibris.q.user.BorrowedBooksListViewRepository;
 import javaclasses.exlibris.q.user.ExpectedSoonBooksListViewRepository;
 import javaclasses.exlibris.q.user.ReservedBooksListViewRepository;
-import javaclasses.exlibris.c.procman.ReservationQueueRepository;
+import javaclasses.exlibris.c.procman.LoansExtensionProcmanRepository;
+import javaclasses.exlibris.c.procman.ReservationQueueProcmanRepository;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -78,7 +79,8 @@ public final class BoundedContexts {
 
         final BookRepository bookRepository = new BookRepository();
         final InventoryRepository inventoryRepository = InventoryRepository.getRepository();
-        final ReservationQueueRepository reservationQueueRepository = new ReservationQueueRepository();
+        final ReservationQueueProcmanRepository reservationQueueRepository = new ReservationQueueProcmanRepository();
+        final LoansExtensionProcmanRepository loansExtensionRepository = new LoansExtensionProcmanRepository();
 
         final BookViewRepository allBooksRepo = new BookViewRepository();
         final ExpectedSoonBooksListViewRepository expectedSoonRepo = new ExpectedSoonBooksListViewRepository();
@@ -88,12 +90,12 @@ public final class BoundedContexts {
         final EventBus.Builder eventBus = createEventBus(storageFactory, bookRepository);
 
         final BoundedContext boundedContext = createBoundedContext(eventBus);
-        boundedContext.getEventBus()
-                      .register(reservationQueueRepository);
 
         boundedContext.register(bookRepository);
         boundedContext.register(inventoryRepository);
+
         boundedContext.register(reservationQueueRepository);
+        boundedContext.register(loansExtensionRepository);
 
         boundedContext.register(allBooksRepo);
         boundedContext.register(expectedSoonRepo);

@@ -141,3 +141,19 @@ message Loan {
     //
     bool is_allowed_extension = 7;
 }
+
+// The model of a reservation queue process manager.
+//
+message ReservationQueue {
+
+    // The identifier of a process manager
+    ReservationQueueId id = 1;
+}
+
+// The model of a loans extension process manager.
+//
+message LoansExtension {
+
+    // The identifier of a process manager
+    LoansExtensionId id = 1;
+}

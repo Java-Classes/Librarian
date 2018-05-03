@@ -20,6 +20,7 @@
 
 package javaclasses.exlibris.c.integrational;
 
+import com.google.common.base.Optional;
 import com.google.protobuf.Message;
 import io.grpc.stub.StreamObserver;
 import io.spine.client.TestActorRequestFactory;
@@ -30,7 +31,9 @@ import io.spine.server.BoundedContext;
 import io.spine.server.commandbus.CommandBus;
 import javaclasses.exlibris.BookDetailsChange;
 import javaclasses.exlibris.BoundedContexts;
+import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.c.RemoveBook;
+import javaclasses.exlibris.c.inventory.InventoryAggregate;
 import javaclasses.exlibris.c.inventory.InventoryCommandTest;
 import javaclasses.exlibris.c.inventory.InventoryRepository;
 import javaclasses.exlibris.testdata.BookRejectionsSubscriber;
@@ -46,6 +49,7 @@ import static javaclasses.exlibris.testdata.BookCommandFactory.updateBookInstanc
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.extendLoanPeriodInstance;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.reserveBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.returnBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.writeBookOffInstance;
@@ -96,7 +100,7 @@ public class FlowTest extends InventoryCommandTest<Message> {
     private final Command borrowBook3 = requestFactory.createCommand(
             toMessage(borrowBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_2, USER_ID_2)));
 
-    private final Command reserveBook = requestFactory.createCommand(
+    private final Command reserveBook3 = requestFactory.createCommand(
             toMessage(reserveBookInstance(USER_ID,
                                           INVENTORY_ID)));
 
@@ -161,6 +165,46 @@ public class FlowTest extends InventoryCommandTest<Message> {
     }
 
     @Test
+    @DisplayName("User1 borrows book -> User2 borrows book -> User3 reserves book -> User2 returns book -> User1 loan becomes allowed for extension, reservation satisfied.")
+    void reservationsTests() {
+        final BoundedContext boundedContext = BoundedContexts.create();
+        final CommandBus commandBus = boundedContext.getCommandBus();
+        final StreamObserver<Ack> observer = StreamObservers.noOpObserver();
+        final BookRejectionsSubscriber bookRejectionsSubscriber = new BookRejectionsSubscriber();
+        final InventoryRejectionsSubscriber inventoryRejectionsSubscriber = new InventoryRejectionsSubscriber();
+        boundedContext.getRejectionBus()
+                      .register(bookRejectionsSubscriber);
+        boundedContext.getRejectionBus()
+                      .register(inventoryRejectionsSubscriber);
+        commandBus.post(addBook, observer);
+        commandBus.post(appendInventory, observer);
+        commandBus.post(appendInventory2, observer);
+        commandBus.post(borrowBook, observer);
+        commandBus.post(borrowBook3, observer);
+        commandBus.post(reserveBook3, observer);
+        final boolean isAllowedExtensionForFirstUser = getAggregateState().getLoans(0)
+                                                                          .getIsAllowedExtension();
+        final boolean isAllowedExtensionForSecondUser = getAggregateState().getLoans(1)
+                                                                           .getIsAllowedExtension();
+        final boolean isSatisfiedBefore = getAggregateState().getReservations(0)
+                                                             .getIsSatisfied();
+        assertFalse(isAllowedExtensionForFirstUser);
+        assertTrue(isAllowedExtensionForSecondUser);
+        assertFalse(isSatisfiedBefore);
+
+        commandBus.post(returnBook3, observer);
+        final boolean isSatisfiedAfter = getAggregateState().getReservations(0)
+                                                            .getIsSatisfied();
+        final boolean isAllowedExtensionForFirstUserAfter = getAggregateState().getLoans(0)
+                                                                               .getIsAllowedExtension();
+        assertTrue(isSatisfiedAfter);
+        assertTrue(isAllowedExtensionForFirstUserAfter);
+
+        assertFalse(bookRejectionsSubscriber.wasCalled());
+        assertFalse(inventoryRejectionsSubscriber.wasCalled());
+    }
+
+    @Test
     @DisplayName("attempt to update, borrow, return missing book leads to rejection, same actions are allowed when book is added.")
     void rejectionsThrow() {
         final BoundedContext boundedContext = BoundedContexts.create();
@@ -213,5 +257,12 @@ public class FlowTest extends InventoryCommandTest<Message> {
         commandBus.post(borrowBook, observer);
         commandBus.post(extendLoanPeriod, observer);
         assertTrue(inventoryRejectionsSubscriber.wasCalled());
+    }
+
+    private Inventory getAggregateState() {
+        final Optional<InventoryAggregate> aggregateOptional = InventoryRepository.getRepository()
+                                                                                  .find(inventoryId);
+        return aggregateOptional.isPresent() ? aggregateOptional.get()
+                                                                .getState() : null;
     }
 }
