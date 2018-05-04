@@ -46,15 +46,15 @@ import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInvent
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.cancelReservationInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.extendLoanPeriodInstance;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryItemId;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryItemId2;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.markReservationExpiredInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.reserveBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.returnBookInstance;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId2;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId3;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ID;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ITEM_ID_1;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ITEM_ID_2;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID_2;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID_3;
 
 public class ProcessManagerTest {
     /** The name of the test {@code BoundedContext}. */
@@ -72,47 +72,47 @@ public class ProcessManagerTest {
             requestFactory.createCommand(toMessage(appendInventoryInstance()));
 
     final Command appendInventoryItem2 =
-            requestFactory.createCommand(toMessage(appendInventoryInstance(inventoryId,
-                                                                           inventoryItemId2,
-                                                                           userId)));
+            requestFactory.createCommand(toMessage(appendInventoryInstance(INVENTORY_ID,
+                                                                           INVENTORY_ITEM_ID_2,
+                                                                           USER_ID)));
     final Command borrowBookUser1Item1 =
             requestFactory.createCommand(toMessage(borrowBookInstance()));
 
     final Command borrowBookUser2Item1 =
-            requestFactory.createCommand(toMessage(borrowBookInstance(inventoryId,
-                                                                      inventoryItemId,
-                                                                      userId2)));
+            requestFactory.createCommand(toMessage(borrowBookInstance(INVENTORY_ID,
+                                                                      INVENTORY_ITEM_ID_1,
+                                                                      USER_ID_2)));
     final Command borrowBookUser2Item2 =
-            requestFactory.createCommand(toMessage(borrowBookInstance(inventoryId,
-                                                                      inventoryItemId2,
-                                                                      userId2)));
+            requestFactory.createCommand(toMessage(borrowBookInstance(INVENTORY_ID,
+                                                                      INVENTORY_ITEM_ID_2,
+                                                                      USER_ID_2)));
     final Command borrowBookUser3Item1 =
-            requestFactory.createCommand(toMessage(borrowBookInstance(inventoryId,
-                                                                      inventoryItemId,
-                                                                      userId3)));
+            requestFactory.createCommand(toMessage(borrowBookInstance(INVENTORY_ID,
+                                                                      INVENTORY_ITEM_ID_1,
+                                                                      USER_ID_3)));
 
     final Command returnBookUser1Item1 =
             requestFactory.createCommand(toMessage(returnBookInstance()));
 
     final Command returnBookUser2Item2 =
-            requestFactory.createCommand(toMessage(returnBookInstance(inventoryId,
-                                                                      inventoryItemId2,
-                                                                      userId2)));
+            requestFactory.createCommand(toMessage(returnBookInstance(INVENTORY_ID,
+                                                                      INVENTORY_ITEM_ID_2,
+                                                                      USER_ID_2)));
     final Command reserveBookUser2 =
-            requestFactory.createCommand(toMessage(reserveBookInstance(userId2,
-                                                                       inventoryId)));
+            requestFactory.createCommand(toMessage(reserveBookInstance(USER_ID_2,
+                                                                       INVENTORY_ID)));
 
     final Command reserveBookUser3 =
-            requestFactory.createCommand(toMessage(reserveBookInstance(userId3,
-                                                                       inventoryId)));
+            requestFactory.createCommand(toMessage(reserveBookInstance(USER_ID_3,
+                                                                       INVENTORY_ID)));
 
     final Command cancelReservationUser2 =
-            requestFactory.createCommand(toMessage(cancelReservationInstance(inventoryId,
-                                                                             userId2)));
+            requestFactory.createCommand(toMessage(cancelReservationInstance(INVENTORY_ID,
+                                                                             USER_ID_2)));
 
     final Command expireReservationUser3 =
-            requestFactory.createCommand(toMessage(markReservationExpiredInstance(inventoryId,
-                                                                                  userId3)));
+            requestFactory.createCommand(toMessage(markReservationExpiredInstance(INVENTORY_ID,
+                                                                                  USER_ID_3)));
 
     final Command extendLoanPeriodUser1Item1 =
             requestFactory.createCommand(toMessage(extendLoanPeriodInstance()));
@@ -185,7 +185,7 @@ public class ProcessManagerTest {
 
     protected Inventory getAggregateState() {
         final Optional<InventoryAggregate> aggregateOptional = InventoryRepository.getRepository()
-                                                                                  .find(inventoryId);
+                                                                                  .find(INVENTORY_ID);
         return aggregateOptional.isPresent() ? aggregateOptional.get()
                                                                 .getState() : null;
     }

@@ -84,6 +84,64 @@ message LoanId {
     int64 value = 1;
 }
 
+// The identifier of the `ExpectedSoonBooksListView` projection.
+//
+message ExpectedSoonBooksListViewId {
+
+    // String representation of UUID.
+    //
+    string value = 1;
+}
+
+// The identifier of the `ReaderEventLogView` projection.
+//
+message ReaderEventLogViewId {
+
+    // String representation of UUID.
+    //
+    string value = 1;
+}
+
+// The identifier of the `ReaderLoanView` projection.
+//
+message ReaderLoanViewId {
+
+    // The identifier of a user.
+    UserId user_id = 1;
+
+    // The identifier of a loan period.
+    LoanId loan_id = 2;
+}
+
+// The identifier of the `BookReservationView` projection.
+//
+message BookReservationViewId {
+
+    // The identifier of a book.
+    BookId book_id = 1;
+
+    // The identifier of a user.
+    UserId user_id = 2;
+}
+
+// The identifier of the `BookLoanView` projection.
+//
+message BookLoanViewId {
+
+    // String representation of UUID.
+    //
+    string value = 1;
+}
+
+// The identifier of the `BookEventLogView` projection.
+//
+message BookEventLogViewId {
+
+    // String representation of UUID.
+    //
+    string value = 1;
+}
+
 // The identifier of a reservation queue process manager.
 //
 message ReservationQueueId {

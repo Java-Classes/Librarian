@@ -38,6 +38,7 @@ import "spine/people/person_name.proto";
 // The ISBN is the unique code provided by the publisher.
 // This code has ten or thirteen symbols.
 //
+//
 // To increase readability the code is converted from decimal format to code with base62.
 // Base62 is based on the use of numbers and letters in the upper and lower cases.
 //
