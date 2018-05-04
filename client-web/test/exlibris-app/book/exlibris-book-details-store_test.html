@@ -50,7 +50,7 @@
         const TEST_BOOK = ExlibrisAppTest.BOOKS[0];
         const TEST_BOOK_ROUTE = {
             prefix: '/book-details',
-            path: '/' + TEST_BOOK.title.replace(/\s/g, '_') + '/' + TEST_BOOK.id
+            path: '/' + TEST_BOOK.id + '/' + TEST_BOOK.title.replace(/\s/g, '_')
         };
 
         const BOOK_DETAILS_SELECTORS = {
