@@ -84,7 +84,7 @@ message LoanId {
     int64 value = 1;
 }
 
-// The identifier of books that are expected in the library.
+// The identifier of the `ExpectedSoonBooksListView` projection.
 //
 message ExpectedSoonBooksListViewId {
 
@@ -93,7 +93,7 @@ message ExpectedSoonBooksListViewId {
     string value = 1;
 }
 
-// The identifier of each readaer's event.
+// The identifier of the `ReaderEventLogView` projection.
 //
 message ReaderEventLogViewId {
 
@@ -102,7 +102,7 @@ message ReaderEventLogViewId {
     string value = 1;
 }
 
-// The identifier of a reader's loan.
+// The identifier of the `ReaderLoanView` projection.
 //
 message ReaderLoanViewId {
 
@@ -113,7 +113,7 @@ message ReaderLoanViewId {
     LoanId loan_id = 2;
 }
 
-// The identifier of a one book reservation.
+// The identifier of the `BookReservationView` projection.
 //
 message BookReservationViewId {
 
@@ -124,7 +124,7 @@ message BookReservationViewId {
     UserId user_id = 2;
 }
 
-// The identifier of of a one loan view.
+// The identifier of the `BookLoanView` projection.
 //
 message BookLoanViewId {
 
@@ -133,7 +133,7 @@ message BookLoanViewId {
     string value = 1;
 }
 
-// The identifier of a one action with book.
+// The identifier of the `BookEventLogView` projection.
 //
 message BookEventLogViewId {
 
