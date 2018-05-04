@@ -21,18 +21,17 @@
 <link rel="import" href="../shell/exlibris-app-namespace.html">
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/polymer-redux/polymer-redux.html">
-<link rel="import" href="../shell/redux-store.html">
 <link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="../../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/iron-image/iron-image.html">
-<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="book-values.html">
-<link rel="import" href="../actions/exlibris-action.html">
-<link rel="import" href="./exlibris-book-details-redirect-link.html">
 
+<link rel="import" href="../shell/redux-store.html">
+<link rel="import" href="./book-values.html">
+<link rel="import" href="../actions/exlibris-actions.html">
+<link rel="import" href="./exlibris-book-details-redirect-link.html">
 <script src="../reducers/loading-status.js"></script>
 
 <dom-module id="exlibris-book-details">
@@ -53,7 +52,7 @@
                 color: var(--light-theme-text-color);
             }
 
-            .book-card .head-region {
+            .book-card .head-part {
                 display: flex;
                 flex-direction: row;
                 justify-content: flex-start;
@@ -62,14 +61,14 @@
                 height: fit-content;
             }
 
-            .book-card .head-region iron-image {
+            #book-cover {
                 @apply --shadow-elevation-4dp;
                 --iron-image-width: 100%;
                 margin-left: 36px;
                 margin-top: 25px;
             }
 
-            .book-card .head-region .head-info {
+            .book-card .head-part .book-details {
                 display: flex;
                 width: 70%;
                 height: 100%;
@@ -79,26 +78,26 @@
                 justify-content: space-between;
             }
 
-            .book-card .head-region .head-info .head-text {
+            .book-card .head-part .book-details .details-text-part {
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
                 padding-top: 35px;
             }
 
-            .book-card .head-region .head-info .button-wide-screen {
+            .book-card .head-part .book-details .details-action-part {
                 display: block;
                 width: 100%;
                 margin: 0;
             }
 
-            .book-card .button-narrow-screen {
+            .book-card .narrow-screen-action-part {
                 display: none;
                 width: fit-content;
                 margin: 15px 0 0 15px;
             }
 
-            .button-place-message {
+            .action-part-message {
                 @apply --paper-font-button;
                 color: var(--light-theme-secondary-color);
             }
@@ -148,25 +147,25 @@
                     margin: 0;
                 }
 
-                .book-card .head-region iron-image {
+                #book-cover {
                     margin-left: 15px;
                     margin-top: 15px;
                 }
 
-                .book-card .head-region .head-info .button-wide-screen {
+                .book-card .head-part .book-details .details-action-part {
                     display: none;
                 }
 
-                .book-card .button-narrow-screen {
+                .book-card .narrow-screen-action-part {
                     display: block;
                 }
 
-                .book-card .head-region .head-info {
+                .book-card .head-part .book-details {
                     padding-left: 10px;
                     padding-right: 15px;
                 }
 
-                .book-card .head-region .head-info .head-text {
+                .book-card .head-part .book-details .details-text-part {
                     padding-top: 15px;
                 }
 
@@ -187,36 +186,36 @@
 
         <app-route
                 route="{{route}}"
-                pattern="/:title/:id"
+                pattern="/:id/:title"
                 data="{{routeData}}"></app-route>
         <div class="book-card">
-            <div class="head-region">
-                <iron-image src="[[book.image]]"></iron-image>
-                <div class="head-info">
-                    <div class="head-text">
+            <div class="head-part">
+                <iron-image id="book-cover" src="[[book.image]]"></iron-image>
+                <div class="book-details">
+                    <div class="details-text-part">
                         <div id="title">[[book.title]]</div>
                         <div id="author">[[book.author]]</div>
                         <exlibris-book-details-redirect-link book-code="[[book.isbn]]"
                                                              book-title="[[book.title]]"></exlibris-book-details-redirect-link>
                         <div id="status-message">[[statusMessage]]</div>
                     </div>
-                    <div class="button-wide-screen" hidden="true">
+                    <div class="details-action-part" hidden="true">
                         <paper-button raised
                                       on-click="_handleButtonClick"
                                       hidden="[[!button]]">
                             [[button.title]]
                         </paper-button>
-                        <div class="button-place-message">[[actionUnsupportedMessage]]</div>
+                        <div class="action-part-message">[[actionUnsupportedMessage]]</div>
                     </div>
                 </div>
             </div>
-            <div class="button-narrow-screen">
+            <div class="narrow-screen-action-part">
                 <paper-button class="small"
                               on-click="_handleButtonClick"
                               hidden="[[!button]]">
                     [[button.title]]
                 </paper-button>
-                <div class="button-place-message">[[actionUnsupportedMessage]]</div>
+                <div class="action-part-message">[[actionUnsupportedMessage]]</div>
             </div>
             <div id="description">
                 [[book.description]]
@@ -335,6 +334,24 @@
                             type: ExlibrisApp.ExlibrisActions.FIND_BOOK_BY_ID,
                             bookId: bookId
                         }
+                    },
+                    reserveBook(bookId) {
+                        return {
+                            type: ExlibrisApp.ExlibrisActions.RESERVE_BOOK,
+                            bookId: bookId
+                        }
+                    },
+                    cancelBookReservation(bookId) {
+                        return {
+                            type: ExlibrisApp.ExlibrisActions.CANCEL_BOOK_RESERVATION,
+                            bookId: bookId
+                        }
+                    },
+                    extendBookLoanPeriod(bookId) {
+                        return {
+                            type: ExlibrisApp.ExlibrisActions.EXTEND_LOAN_PERIOD,
+                            bookId: bookId
+                        }
                     }
                 }
             }
@@ -353,7 +370,7 @@
 
             /**
              * Sets the appropriate button title and the click handler function
-             * according to the passed book.
+             * according to the passed book parameters.
              *
              * @param {Book} book the book object to choose a button.
              * @returns {Object} the title and the click function of the button for the specified book.
@@ -366,7 +383,7 @@
                         case ExlibrisApp.BookStatus.EXPECTED: {
                             return {
                                 title: 'RESERVE',
-                                clickHandler: this._requestReservation
+                                clickHandler: this._requestReservation.bind(this)
                             };
                         }
 
@@ -376,7 +393,7 @@
                             if (book.isAllowedLoanExtension) {
                                 return {
                                     title: 'EXTEND LOAN PERIOD',
-                                    clickHandler: this._requestLoanExtension
+                                    clickHandler: this._requestLoanExtension.bind(this)
                                 };
                             }
                             break;
@@ -386,7 +403,7 @@
                         case ExlibrisApp.BookStatus.READY_TO_PICK_UP: {
                             return {
                                 title: 'CANCEL RESERVATION',
-                                clickHandler: this._requestCancelReservation
+                                clickHandler: this._requestCancelReservation.bind(this)
                             };
                         }
                         default:
@@ -487,7 +504,7 @@
 
             /**
              * Handles the button click.
-             * Calls the button clickHandler` function.
+             * Calls the button `clickHandler` function.
              *
              * @private
              */
@@ -501,8 +518,7 @@
              * @private
              */
             _requestCancelReservation() {
-                alert('Reservation canceled!');
-                //Request someone to cancel reservation
+                this.dispatch('cancelBookReservation', this.book.id);
             }
 
             /**
@@ -511,18 +527,16 @@
              * @private
              */
             _requestReservation() {
-                alert('Book reserved!');
-                //Request someone to make reservation
+                this.dispatch('reserveBook', this.book.id);
             }
 
             /**
-             * Handles the `EXTEND FOR TWO WEEKS` button click.
+             * Handles the `EXTEND LOAN PERIOD` button click.
              *
              * @private
              */
             _requestLoanExtension() {
-                alert('Loan period extended!');
-                //Request someone to extend loan period
+                this.dispatch('extendBookLoanPeriod', this.book.id);
             }
         }
 

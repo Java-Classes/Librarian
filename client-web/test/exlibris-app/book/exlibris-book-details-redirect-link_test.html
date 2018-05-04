@@ -32,7 +32,6 @@
 
     <link rel="import"
           href="../../../src/exlibris-app/book/exlibris-book-details-redirect-link.html">
-    <link rel="import" href="../../../src/exlibris-app/book/book-values.html">
 </head>
 <body>
 
@@ -59,34 +58,34 @@
             element = fixture('BasicTestFixture');
         });
 
-        test('should contain Amazon redirect link when code matches the `ISBN_10` pattern.', function () {
+        test('should generate Amazon redirect link when code matches the `ISBN_10` pattern.', function () {
             element.bookCode = TEST_BOOK_CODES.ISBN_10;
             element.bookTitle = TEST_BOOK_TITLE;
-            const expectedLink = ExlibrisApp.ExternalLinkTemplates.AMAZON.format(TEST_BOOK_TITLE, TEST_BOOK_CODES.ISBN_10);
+            const expectedLink = 'https://www.amazon.com/' + TEST_BOOK_TITLE + '/dp/' + TEST_BOOK_CODES.ISBN_10 + '/';
 
             const link = element.shadowRoot.querySelector(LINK_SELECTOR);
             assert.equal(link.href, expectedLink);
         });
 
-        test('should contain Play Books redirect link when code matches the `ISBN_13` pattern.', function () {
+        test('should generate Play Books redirect link when code matches the `ISBN_13` pattern.', function () {
             element.bookCode = TEST_BOOK_CODES.ISBN_13;
             element.bookTitle = TEST_BOOK_TITLE;
-            const expectedLink = ExlibrisApp.ExternalLinkTemplates.PLAY_BOOKS.format(TEST_BOOK_CODES.ISBN_13);
+            const expectedLink = 'https://play.google.com/store/search?q=' + TEST_BOOK_CODES.ISBN_13 + '&c=books'
 
             const link = element.shadowRoot.querySelector(LINK_SELECTOR);
             assert.equal(link.href, expectedLink);
         });
 
-        test('should contain Amazon redirect link when code matches the `ASIN` pattern.', function () {
+        test('should generate Amazon redirect link when code matches the `ASIN` pattern.', function () {
             element.bookCode = TEST_BOOK_CODES.ASIN;
             element.bookTitle = TEST_BOOK_TITLE;
-            const expectedLink = ExlibrisApp.ExternalLinkTemplates.AMAZON.format(TEST_BOOK_TITLE, TEST_BOOK_CODES.ASIN);
+            const expectedLink = 'https://www.amazon.com/' + TEST_BOOK_TITLE + '/dp/' + TEST_BOOK_CODES.ASIN + '/';
 
             const link = element.shadowRoot.querySelector(LINK_SELECTOR);
             assert.equal(link.href, expectedLink);
         });
 
-        test('should not contain link when the passed code does not match any pattern.', function () {
+        test('should not generate link when the passed code does not match to any pattern.', function () {
             element.bookCode = TEST_BOOK_CODES.INVALID;
             element.bookTitle = TEST_BOOK_TITLE;
 

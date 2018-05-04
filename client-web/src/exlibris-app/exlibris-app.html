@@ -301,7 +301,8 @@
                                 ['borrowed-books']: 'Borrowed Books',
                                 ['reserved-books']: 'Reserved Books',
                                 ['should-return-books']: 'Should Return Books',
-                                ['overdue-books']: 'Overdue Books'
+                                ['overdue-books']: 'Overdue Books',
+                                ['book-details']: 'Book Details'
                             }
                         }
                     };
@@ -404,6 +405,11 @@
                  */
                 _handleLowerThreshold() {
                     this.dispatch('fetchBooks');
+                }
+
+
+                _showView404() {
+                    this.$.pages.select('view404');
                 }
             }
 

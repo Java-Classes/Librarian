@@ -19,7 +19,6 @@
   -->
 
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
-<link rel="import" href="book-values.html">
 
 <dom-module id="exlibris-book-details-redirect-link">
     <template>
@@ -47,89 +46,119 @@
     </template>
 
     <script>
-        String.prototype.format = function () {
-            return [...arguments].reduce((p, c) => p.replace(/%s/, c), this);
-        };
+        {
+            String.prototype.format = function () {
+                return [...arguments].reduce((p, c) => p.replace(/%s/, c), this);
+            };
 
-        /**
-         * The book external link component.
-         *
-         * Generates the link to the one of the global book services to
-         * open it in the new tab. The external service choice depends
-         * on the book code format.
-         *
-         * @customElement
-         * @polymer
-         */
-        class ExlibrisBookDetailsRedirectLink extends Polymer.Element {
-            static get is() {
-                return 'exlibris-book-details-redirect-link';
-            }
+            const BookCodePattern = {
+                ISBN_10: /^\d{10}$/g,
+                ISBN_13: /^\d{13}$/g,
+                ASIN: /^[\d, A-Z]{10}$/g
+            };
 
-            static get properties() {
-                return {
-                    /**
-                     * The book unique code.
-                     * Can be presented in the form of ISBN-10, ISBN-13 or ASIN.
-                     */
-                    bookCode: String,
-
-                    /**
-                     * The book title.
-                     */
-                    bookTitle: String,
-
-                    /**
-                     * The book external link reference and its title.
-                     *
-                     * @property {string} title the reference title.
-                     * @property {string} value  the link to open in the new tab.
-                     */
-                    reference: {
-                        type: Object,
-                        computed: "_calculateReference(bookCode, bookTitle)"
-                    }
-                };
-            }
+            const ExternalLinkTemplate = {
+                AMAZON: 'https://www.amazon.com/%s/dp/%s/',
+                PLAY_BOOKS: 'https://play.google.com/store/search?q=%s&c=books'
+            };
 
             /**
-             * Checks for the passed book code format.
+             * The book external link component.
              *
-             * If the `bookCode` matches the `ISBN-10` or `ASIN` pattern, generates
-             * the Amazon book search link.
+             * Generates the link to the one of the global book services to
+             * open it in the new tab. The external service choice depends
+             * on the book code format.
              *
-             * If the `bookCode` matches the `ISBN-13` pattern, generates the Google Play Books
-             * search link.
-             *
-             * @param {string} bookCode the book unique code (ISBN, ASIN).
-             * @param {string} bookTitle the book title.
-             * @returns {Object} the title and the value of link.
-             * @private
+             * @customElement
+             * @polymer
              */
-            _calculateReference(bookCode, bookTitle) {
-                if (bookCode && bookTitle) {
-                    if (bookCode.match(ExlibrisApp.BookCodePatterns.ISBN_10)) {
-                        return {
-                            title: 'ISBN: ' + bookCode,
-                            value: ExlibrisApp.ExternalLinkTemplates.AMAZON.format(bookTitle, bookCode)
+            class ExlibrisBookDetailsRedirectLink extends Polymer.Element {
+                static get is() {
+                    return 'exlibris-book-details-redirect-link';
+                }
+
+                static get properties() {
+                    return {
+                        /**
+                         * The book unique code.
+                         * Can be presented in the form of ISBN10, ISBN13 or ASIN.
+                         */
+                        bookCode: String,
+
+                        /**
+                         * The book title.
+                         */
+                        bookTitle: String,
+
+                        /**
+                         * The enum of book code patterns for ISBN10, ISBN13 and ASIN.
+                         */
+                        bookCodePattern: {
+                            type: Object,
+                            value: BookCodePattern
+                        },
+
+                        /**
+                         * The enum of external links patterns. Each value is used to
+                         * generate redirect link depending on book code format.
+                         */
+                        externalLinkTemplate: {
+                            type: Object,
+                            value: ExternalLinkTemplate
+                        },
+
+                        /**
+                         * The book external link reference and its title.
+                         *
+                         * @property {string} title the reference title.
+                         * @property {string} value  the link to open in the new tab.
+                         */
+                        reference: {
+                            type: Object,
+                            computed: "_calculateReference(bookCode, bookTitle)"
                         }
-                    }
-                    if (bookCode.match(ExlibrisApp.BookCodePatterns.ISBN_13)) {
-                        return {
-                            title: 'ISBN: ' + bookCode,
-                            value: ExlibrisApp.ExternalLinkTemplates.PLAY_BOOKS.format(bookCode)
+                    };
+                }
+
+                /**
+                 * Checks for the passed book code format.
+                 *
+                 * If the `bookCode` matches the `ISBN10` or `ASIN` pattern, generates
+                 * the Amazon book search link.
+                 *
+                 * If the `bookCode` matches the `ISBN13` pattern, generates the Google Play Books
+                 * search link.
+                 *
+                 * @param {string} bookCode the book unique code (ISBN, ASIN).
+                 * @param {string} bookTitle the book title.
+                 * @returns {Object} the title and the value of link.
+                 * @private
+                 */
+                _calculateReference(bookCode, bookTitle) {
+                    if (bookCode && bookTitle) {
+                        if (bookCode.match(this.bookCodePattern.ISBN_10)) {
+                            return {
+                                title: 'ISBN: ' + bookCode,
+                                value: this.externalLinkTemplate.AMAZON.format(bookTitle, bookCode)
+                            }
                         }
-                    }
-                    if (bookCode.match(ExlibrisApp.BookCodePatterns.ASIN)) {
-                        return {
-                            title: 'ASIN: ' + bookCode,
-                            value: ExlibrisApp.ExternalLinkTemplates.AMAZON.format(bookTitle, bookCode)
+                        if (bookCode.match(this.bookCodePattern.ISBN_13)) {
+                            return {
+                                title: 'ISBN: ' + bookCode,
+                                value: this.externalLinkTemplate.PLAY_BOOKS.format(bookCode)
+                            }
+                        }
+                        if (bookCode.match(this.bookCodePattern.ASIN)) {
+                            return {
+                                title: 'ASIN: ' + bookCode,
+                                value: this.externalLinkTemplate.AMAZON.format(bookTitle, bookCode)
+                            }
                         }
                     }
                 }
             }
-        }
 
-        window.customElements.define(ExlibrisBookDetailsRedirectLink.is, ExlibrisBookDetailsRedirectLink);
+            window.customElements.define(ExlibrisBookDetailsRedirectLink.is, ExlibrisBookDetailsRedirectLink);
+        }
     </script>
 </dom-module>
