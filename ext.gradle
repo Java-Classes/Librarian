@@ -22,8 +22,8 @@
 final def SPINE_VERSION = '0.10.24-SNAPSHOT'
 
 project.ext {
-    // TODOList version
-    appVersion = SPINE_VERSION
+    // Exlibris version
+    appVersion = '0.1.0'
 
     // Spine dependencies' versions
     spineVersion = SPINE_VERSION
@@ -43,6 +43,7 @@ project.ext {
     shadowJarVersion = '2.0.1'
     mysqlDriverVersion = '6.0.6'
     nettyBoringsslVersion = '2.0.6.Final'
+    zxingVersion = '3.3.0'
 
     // Test scope third party dependencies' versions
     jUnitPlatformVersion = '1.0.0'

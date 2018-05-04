@@ -18,10 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-dependencies {
-    compile project(path: ':model')
-    compile group: 'io.spine', name: 'spine-server', version: spineVersion
-    compile group: 'com.google.zxing', name: 'core', version: zxingVersion
+package javaclasses.exlibris;
 
-    testCompile project(':testutil-api')
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+/**
+ * @author Yegor Udovchenko
+ */
+@DisplayName("QRGenerator should")
+public class QRGeneratorTest {
+
+    @Test
+    @DisplayName("generate QR code.")
+    void generateQR() {
+        String sourceText = "lkhriseluligheasligheraewfgu;sahguer;gah;eworha;geouhgeairufhv;he;svh;oheb";
+        String filePath = "D:\\qr\\test.png";
+        QRGenerator.generateQRCode(sourceText, filePath);
+    }
 }
