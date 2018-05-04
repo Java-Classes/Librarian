@@ -25,6 +25,7 @@ import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.c.InventoryDecreased;
+import javaclasses.exlibris.c.InventoryRemoved;
 import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.q.BookInventoryView;
@@ -40,6 +41,7 @@ import static javaclasses.exlibris.testdata.InventoryEventFactory.bookLostInstan
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookReturnedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.inventoryAppendedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.inventoryDecreasedInstance;
+import static javaclasses.exlibris.testdata.InventoryEventFactory.inventoryRemovedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loanBecameOverdueInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loanPeriodExtendedInstance;
 import static javaclasses.exlibris.testdata.TestValues.AUTHOR_NAME;
@@ -79,12 +81,31 @@ class BookInventoryViewProjectionTest extends ProjectionTest {
     }
 
     @Nested
-    @DisplayName("InventoryDecreased event should be interpreted by BookInventoryViewProjection and")
-    class InventoryDecreasedEvent {
+    @DisplayName("InventoryRemoved event should be interpreted by BookInventoryViewProjection and")
+    class InventoryRemovedEvent {
 
         @Test
         @DisplayName("clear this projection")
         void clearProjection() {
+            final InventoryAppended inventoryAppended = inventoryAppendedInstance();
+            dispatch(projection, createEvent(inventoryAppended));
+
+            final InventoryRemoved inventoryRemoved =
+                    inventoryRemovedInstance();
+            dispatch(projection, createEvent(inventoryRemoved));
+
+            final BookInventoryView state = projection.getState();
+            assertEquals("", state.toString());
+        }
+    }
+
+    @Nested
+    @DisplayName("InventoryDecreased event should be interpreted by BookInventoryViewProjection and")
+    class InventoryDecreasedEvent {
+
+        @Test
+        @DisplayName("remove this Inventory item state")
+        void removeItemState() {
             final InventoryAppended inventoryAppended = inventoryAppendedInstance();
             dispatch(projection, createEvent(inventoryAppended));
 
@@ -93,7 +114,8 @@ class BookInventoryViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(inventoryDecreased));
 
             final BookInventoryView state = projection.getState();
-            assertEquals("", state.toString());
+            assertEquals(0, state.getItemStateList()
+                                 .size());
         }
     }
 

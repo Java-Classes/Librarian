@@ -50,6 +50,5 @@ public class LostBookViewRepository extends ProjectionRepository<InventoryItemId
                       (message, context) -> singleton(message.getInventoryItemId()));
         routing.route(InventoryDecreased.class,
                       (message, context) -> singleton(message.getInventoryItemId()));
-
     }
 }

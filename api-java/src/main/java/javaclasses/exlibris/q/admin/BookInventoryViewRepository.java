@@ -28,6 +28,7 @@ import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.c.InventoryDecreased;
+import javaclasses.exlibris.c.InventoryRemoved;
 import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.q.BookInventoryView;
@@ -54,6 +55,8 @@ public class BookInventoryViewRepository extends ProjectionRepository<InventoryI
         routing.route(BookBorrowed.class,
                       (message, context) -> singleton(message.getInventoryId()));
         routing.route(InventoryDecreased.class,
+                      (message, context) -> singleton(message.getInventoryId()));
+        routing.route(InventoryRemoved.class,
                       (message, context) -> singleton(message.getInventoryId()));
         routing.route(InventoryAppended.class,
                       (message, context) -> singleton(message.getInventoryId()));

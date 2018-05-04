@@ -30,6 +30,7 @@ import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.BookLoanViewId;
 import javaclasses.exlibris.InventoryItemId;
 import javaclasses.exlibris.c.BookBorrowed;
+import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.q.BookLoanView;
 import javaclasses.exlibris.q.BookLoanViewVBuilder;
 
@@ -59,6 +60,31 @@ public class BookLoanViewProjection extends Projection<BookLoanViewId, BookLoanV
         final Timestamp whenTakenTimestamp = event.getWhenBorrowed();
         final LocalDate whenTaken = toLocalDate(whenTakenTimestamp);
         final Timestamp whenDueTimestamp = event.getWhenDue();
+        final LocalDate whenDue = toLocalDate(whenDueTimestamp);
+        // TODO: 4/26/2018 yurii.haidamaka SET USERNAME FROM GOOGLE BY EMAIL
+        final PersonName userName = PersonName.newBuilder()
+                                              .setGivenName("Ivan")
+                                              .setFamilyName("Petrov")
+                                              .build();
+
+        getBuilder().setBookId(bookId)
+                    .setItemId(inventoryItemId)
+                    .setUserName(userName)
+                    .setEmail(email)
+                    .setWhenTaken(whenTaken)
+                    .setWhenDue(whenDue);
+    }
+
+    @Subscribe
+    public void on(LoanPeriodExtended event) {
+        final EmailAddress email = event.getUserId()
+                                        .getEmail();
+        final BookId bookId = event.getInventoryId()
+                                   .getBookId();
+        final InventoryItemId inventoryItemId = event.getInventoryItemId();
+        final Timestamp whenTakenTimestamp = event.getWhenExtended();
+        final LocalDate whenTaken = toLocalDate(whenTakenTimestamp);
+        final Timestamp whenDueTimestamp = event.getNewDueDate();
         final LocalDate whenDue = toLocalDate(whenDueTimestamp);
         // TODO: 4/26/2018 yurii.haidamaka SET USERNAME FROM GOOGLE BY EMAIL
         final PersonName userName = PersonName.newBuilder()

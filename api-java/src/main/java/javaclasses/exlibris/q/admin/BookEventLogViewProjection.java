@@ -30,6 +30,7 @@ import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.InventoryItemId;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookLost;
+import javaclasses.exlibris.c.BookReadyToPickup;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanBecameShouldReturnSoon;
@@ -278,6 +279,28 @@ public class BookEventLogViewProjection extends Projection<BookEventLogViewId, B
 
         getBuilder().setBookId(bookId)
                     .setItemId(itemId)
+                    .setUserName(userName)
+                    .setEmail(email)
+                    .setEventType(eventType)
+                    .setWhenEmitted(whenEmitted);
+    }
+
+    @Subscribe
+    public void on(BookReadyToPickup event) {
+        final BookId bookId = event.getInventoryId()
+                                   .getBookId();
+        // TODO: 4/26/2018 yurii.haidamaka SET USERNAME FROM GOOGLE BY EMAIL
+        final PersonName userName = PersonName.newBuilder()
+                                              .setGivenName("Ivan")
+                                              .setFamilyName("Petrov")
+                                              .build();
+        final EmailAddress email = event.getForWhom()
+                                        .getEmail();
+        final String eventType = event.getClass()
+                                      .getSimpleName();
+        final Timestamp whenEmitted = event.getWhenBecameReadyToPickup();
+
+        getBuilder().setBookId(bookId)
                     .setUserName(userName)
                     .setEmail(email)
                     .setEventType(eventType)

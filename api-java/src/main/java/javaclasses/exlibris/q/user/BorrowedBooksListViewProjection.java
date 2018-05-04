@@ -48,7 +48,6 @@ import java.util.List;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
-import static io.spine.time.LocalDates.addDays;
 import static javaclasses.exlibris.EnrichmentHelper.getEnrichment;
 import static javaclasses.exlibris.Timestamps.toLocalDate;
 
@@ -79,7 +78,7 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
                                                   .getBookDetails();
         final Timestamp whenBorrowedTimeStamp = event.getWhenBorrowed();
         final LocalDate whenBorrowed = toLocalDate(whenBorrowedTimeStamp);
-        final LocalDate dueDate = addDays(whenBorrowed, 14);
+        final LocalDate dueDate = toLocalDate(event.getWhenDue());
         final BorrowedBookItem bookItem = BorrowedBookItem.newBuilder()
                                                           .setLoanId(loanId)
                                                           .setBookId(bookId)
@@ -147,8 +146,6 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
                                                              .setDueDate(newDueDate)
                                                              .build();
         getBuilder().setBookItem(index, newBookItem)
-                    .setNumberOfBorrowedBooks(getBuilder().getBookItem()
-                                                          .size())
                     .setNumberOfOverdueBooks(getNumberOfOverdueBooks(getBuilder().getBookItem()));
     }
 
@@ -215,5 +212,4 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
                                      .count();
         return count;
     }
-
 }

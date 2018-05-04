@@ -94,8 +94,8 @@ public class ExlibrisTest {
     private final ActorRequestFactory requestFactory =
             TestActorRequestFactory.newInstance(getClass());
 
-    private BoundedContext boundedContext = BoundedContexts.create();
-    private CommandBus commandBus = boundedContext.getCommandBus();
+    private BoundedContext boundedContext;
+    private CommandBus commandBus;
 
     @Nested
     @DisplayName("Add Book -> Append inventory -> Borrow Book")
@@ -225,7 +225,8 @@ public class ExlibrisTest {
                                                             .find(INVENTORY_ID)
                                                             .get();
             final BookInventoryView state = projection.getState();
-            assertEquals("", state.toString());
+            assertEquals(0, state.getItemStateList()
+                                 .size());
         }
 
         @Test

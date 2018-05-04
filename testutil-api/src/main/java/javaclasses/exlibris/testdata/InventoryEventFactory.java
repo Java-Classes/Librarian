@@ -34,6 +34,7 @@ import javaclasses.exlibris.c.BookReadyToPickup;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.c.InventoryDecreased;
+import javaclasses.exlibris.c.InventoryRemoved;
 import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanBecameShouldReturnSoon;
 import javaclasses.exlibris.c.LoanPeriodExtended;
@@ -139,6 +140,32 @@ public class InventoryEventFactory {
                                                             .setWhenDecreased(whenAppended)
                                                             .setWriteOffReason(reason)
                                                             .build();
+        return result;
+    }
+
+    /**
+     * Provides a pre-configured {@link InventoryRemoved} event instance.
+     *
+     * @return the {@link InventoryRemoved} instance
+     */
+    public static InventoryRemoved inventoryRemovedInstance() {
+        return inventoryRemovedInstance(INVENTORY_ID, DEFAULT_TIMESTAMP1);
+    }
+
+    /**
+     * Provides the {@link InventoryRemoved} event by inventory ID, inventory item ID,
+     * user ID, time and reason.
+     *
+     * @param inventoryId the identifier of an inventory
+     * @param whenRemoved time when inventory was removed
+     * @return the {@code InventoryRemoved} instance
+     */
+    public static InventoryRemoved inventoryRemovedInstance(InventoryId inventoryId,
+                                                            Timestamp whenRemoved) {
+        final InventoryRemoved result = InventoryRemoved.newBuilder()
+                                                        .setInventoryId(inventoryId)
+                                                        .setWhenRemoved(whenRemoved)
+                                                        .build();
         return result;
     }
 

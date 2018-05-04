@@ -21,6 +21,7 @@
 package javaclasses.exlibris.q.admin;
 
 import javaclasses.exlibris.c.BookAdded;
+import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.BookUpdated;
 import javaclasses.exlibris.q.BookDetailsView;
 import javaclasses.exlibris.q.ProjectionTest;
@@ -31,6 +32,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
 import static javaclasses.exlibris.testdata.BookEventFactory.bookAddedInstance;
+import static javaclasses.exlibris.testdata.BookEventFactory.bookRemovedInstance;
 import static javaclasses.exlibris.testdata.BookEventFactory.bookUpdatedInstance;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_DETAILS;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_DETAILS_2;
@@ -76,6 +78,24 @@ class BookDetailsViewProjectionTest extends ProjectionTest {
 
             final BookDetailsView state = projection.getState();
             assertEquals(BOOK_DETAILS_2, state.getBookDetails());
+        }
+    }
+
+    @Nested
+    @DisplayName("BookRemoved event should be interpreted by BookDetailsViewProjection and")
+    class BookRemovedEvent {
+
+        @Test
+        @DisplayName("clear this projection")
+        void updateBookDetails() {
+            final BookAdded bookAdded = bookAddedInstance();
+            dispatch(projection, createEvent(bookAdded));
+
+            final BookRemoved bookRemoved = bookRemovedInstance();
+            dispatch(projection, createEvent(bookRemoved));
+
+            final BookDetailsView state = projection.getState();
+            assertEquals("", state.toString());
         }
     }
 

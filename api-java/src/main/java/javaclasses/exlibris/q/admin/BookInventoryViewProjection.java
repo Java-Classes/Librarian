@@ -39,6 +39,7 @@ import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.c.InventoryDecreased;
+import javaclasses.exlibris.c.InventoryRemoved;
 import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.q.BookInventoryView;
@@ -86,7 +87,7 @@ public class BookInventoryViewProjection extends Projection<InventoryId, BookInv
     }
 
     @Subscribe
-    public void on(InventoryDecreased event) {
+    public void on(InventoryRemoved event) {
         getBuilder().clearInventoryId()
                     .clearTitle()
                     .clearAuthor()
@@ -94,7 +95,19 @@ public class BookInventoryViewProjection extends Projection<InventoryId, BookInv
     }
 
     @Subscribe
+    public void on(InventoryDecreased event) {
+        final List<InventoryItemState> items = new ArrayList<>(getBuilder().getItemState());
+        final int index = getIndexByInventoryItemId(items, event.getInventoryItemId());
+        getBuilder().removeItemState(index);
+    }
+
+    @Subscribe
     public void on(BookBorrowed event) {
+        final List<InventoryItemState> items = new ArrayList<>(getBuilder().getItemState());
+        final int index = getIndexByInventoryItemId(items, event.getInventoryItemId());
+        final InventoryItemState inventoryItemState = getBuilder().getItemState()
+                                                                  .get(index);
+
         final InventoryItemId itemId = event.getInventoryItemId();
         final UserId userId = event.getWhoBorrowed();
         // TODO: 4/26/2018 yurii.haidamaka SET USERNAME FROM GOOGLE BY EMAIL
@@ -116,13 +129,14 @@ public class BookInventoryViewProjection extends Projection<InventoryId, BookInv
                                                    .setWhenDue(whenDue)
                                                    .setOverdue(false)
                                                    .build();
-        final InventoryItemState inventoryItemState = InventoryItemState.newBuilder()
-                                                                        .setItemId(itemId)
-                                                                        .setLoanDetails(loanDetails)
-                                                                        .build();
-        final List<InventoryItemState> items = new ArrayList<>(getBuilder().getItemState());
-        final int index = getIndexByInventoryId(items, event.getInventoryItemId());
-        getBuilder().setItemState(index, inventoryItemState);
+        final InventoryItemState newInventoryItemState = InventoryItemState.newBuilder(
+                inventoryItemState)
+                                                                           .setItemId(itemId)
+                                                                           .setLoanDetails(
+                                                                                   loanDetails)
+                                                                           .clearInLibrary()
+                                                                           .build();
+        getBuilder().setItemState(index, newInventoryItemState);
     }
 
     @Subscribe
@@ -130,11 +144,12 @@ public class BookInventoryViewProjection extends Projection<InventoryId, BookInv
         final InventoryItemId itemId = event.getInventoryItemId();
 
         final List<InventoryItemState> items = new ArrayList<>(getBuilder().getItemState());
-        final int index = getIndexByInventoryId(items, event.getInventoryItemId());
+        final int index = getIndexByInventoryItemId(items, event.getInventoryItemId());
         final InventoryItemState invItemState = items.get(index);
         final InventoryItemState newInvItemState = InventoryItemState.newBuilder(invItemState)
                                                                      .setItemId(itemId)
                                                                      .setLost(true)
+                                                                     .clearLoanDetails()
                                                                      .build();
         getBuilder().setItemState(index, newInvItemState);
     }
@@ -144,7 +159,7 @@ public class BookInventoryViewProjection extends Projection<InventoryId, BookInv
         final InventoryItemId itemId = event.getInventoryItemId();
 
         final List<InventoryItemState> items = new ArrayList<>(getBuilder().getItemState());
-        final int index = getIndexByInventoryId(items, event.getInventoryItemId());
+        final int index = getIndexByInventoryItemId(items, event.getInventoryItemId());
         final InventoryItemState invItemState = items.get(index);
         final LoanDetails loanDetails = LoanDetails.newBuilder(invItemState.getLoanDetails())
                                                    .setOverdue(true)
@@ -161,11 +176,12 @@ public class BookInventoryViewProjection extends Projection<InventoryId, BookInv
         final InventoryItemId itemId = event.getInventoryItemId();
 
         final List<InventoryItemState> items = new ArrayList<>(getBuilder().getItemState());
-        final int index = getIndexByInventoryId(items, event.getInventoryItemId());
+        final int index = getIndexByInventoryItemId(items, event.getInventoryItemId());
         final InventoryItemState invItemState = items.get(index);
         final InventoryItemState newInvItemState = InventoryItemState.newBuilder(invItemState)
                                                                      .setItemId(itemId)
                                                                      .setInLibrary(true)
+                                                                     .clearLoanDetails()
                                                                      .build();
         getBuilder().setItemState(index, newInvItemState);
     }
@@ -177,11 +193,12 @@ public class BookInventoryViewProjection extends Projection<InventoryId, BookInv
         final LocalDate whenDue = toLocalDate(whenDueTimestamp);
 
         final List<InventoryItemState> items = new ArrayList<>(getBuilder().getItemState());
-        final int index = getIndexByInventoryId(items, event.getInventoryItemId());
+        final int index = getIndexByInventoryItemId(items, event.getInventoryItemId());
         final InventoryItemState invItemState = items.get(index);
 
         final LoanDetails loanDetails = LoanDetails.newBuilder(invItemState.getLoanDetails())
                                                    .setWhenDue(whenDue)
+                                                   .clearOverdue()
                                                    .build();
         final InventoryItemState newInvItemState = InventoryItemState.newBuilder(invItemState)
                                                                      .setItemId(itemId)
@@ -190,7 +207,7 @@ public class BookInventoryViewProjection extends Projection<InventoryId, BookInv
         getBuilder().setItemState(index, newInvItemState);
     }
 
-    private int getIndexByInventoryId(List<InventoryItemState> items, InventoryItemId id) {
+    private int getIndexByInventoryItemId(List<InventoryItemState> items, InventoryItemId id) {
         final OptionalInt index = IntStream.range(0, items.size())
                                            .filter(i -> items.get(i)
                                                              .getItemId()
@@ -198,5 +215,4 @@ public class BookInventoryViewProjection extends Projection<InventoryId, BookInv
                                            .findFirst();
         return index.isPresent() ? index.getAsInt() : -1;
     }
-
 }

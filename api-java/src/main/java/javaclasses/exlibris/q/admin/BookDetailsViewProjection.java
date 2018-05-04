@@ -25,6 +25,7 @@ import io.spine.server.projection.Projection;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.c.BookAdded;
+import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.BookUpdated;
 import javaclasses.exlibris.q.BookDetailsView;
 import javaclasses.exlibris.q.BookDetailsViewVBuilder;
@@ -54,5 +55,11 @@ public class BookDetailsViewProjection extends Projection<BookId, BookDetailsVie
         final BookDetails bookDetails = event.getBookDetailsChange()
                                              .getNewBookDetails();
         getBuilder().setBookDetails(bookDetails);
+    }
+
+    @Subscribe
+    public void on(BookRemoved event) {
+        getBuilder().clearBookDetails()
+                    .clearId();
     }
 }

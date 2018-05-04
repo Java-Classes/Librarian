@@ -72,5 +72,4 @@ public class Timestamps {
                                         .build();
         return date;
     }
-
 }

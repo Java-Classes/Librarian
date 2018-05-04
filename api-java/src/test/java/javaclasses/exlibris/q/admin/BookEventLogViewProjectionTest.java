@@ -25,6 +25,7 @@ import io.spine.Identifier;
 import javaclasses.exlibris.BookEventLogViewId;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookLost;
+import javaclasses.exlibris.c.BookReadyToPickup;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.LoanBecameOverdue;
 import javaclasses.exlibris.c.LoanBecameShouldReturnSoon;
@@ -43,6 +44,7 @@ import org.junit.jupiter.api.Test;
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookBorrowedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookLostInstance;
+import static javaclasses.exlibris.testdata.InventoryEventFactory.bookReadyToPickUpInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookReturnedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loanBecameOverdueInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loanBecameShouldReturnSoonInstance;
@@ -203,6 +205,20 @@ class BookEventLogViewProjectionTest extends ProjectionTest {
                     bookLostInstance();
             dispatch(projection, createEvent(bookLost));
             assertEqualsAllFields(bookLost);
+        }
+    }
+
+    @Nested
+    @DisplayName("BookReadyToPickUp event should be interpreted by BookEventLogViewProjection and")
+    class BookReadyToPickUpEvent {
+
+        @Test
+        @DisplayName("add information about book lost event")
+        void addInformation() {
+            final BookReadyToPickup bookReadyToPickup =
+                    bookReadyToPickUpInstance();
+            dispatch(projection, createEvent(bookReadyToPickup));
+            assertEqualsAllFieldsWithoutItemId(bookReadyToPickup);
         }
     }
 

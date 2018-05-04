@@ -23,6 +23,7 @@ package javaclasses.exlibris.q.admin;
 import io.spine.Identifier;
 import javaclasses.exlibris.BookLoanViewId;
 import javaclasses.exlibris.c.BookBorrowed;
+import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.q.BookLoanView;
 import javaclasses.exlibris.q.ProjectionTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,8 +33,10 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookBorrowedInstance;
+import static javaclasses.exlibris.testdata.InventoryEventFactory.loanPeriodExtendedInstance;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
 import static javaclasses.exlibris.testdata.TestValues.DEFAULT_DATE1;
+import static javaclasses.exlibris.testdata.TestValues.DEFAULT_DATE2;
 import static javaclasses.exlibris.testdata.TestValues.DEFAULT_DUE_DATE;
 import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ITEM_ID_1;
 import static javaclasses.exlibris.testdata.TestValues.USER_EMAIL_1;
@@ -69,6 +72,26 @@ class BookLoanViewProjectionTest extends ProjectionTest {
             assertEquals(USER_EMAIL_1, state.getEmail());
             assertEquals(DEFAULT_DATE1, state.getWhenTaken());
             assertEquals(DEFAULT_DUE_DATE, state.getWhenDue());
+        }
+    }
+
+    @Nested
+    @DisplayName("LoanPeriodExtended event should be interpreted by BookLoanViewProjection and")
+    class LoanPeriodExtendedEvent {
+
+        @Test
+        @DisplayName("add information about start loan period")
+        void addInformation() {
+            final LoanPeriodExtended loanPeriodExtended = loanPeriodExtendedInstance();
+            dispatch(projection, createEvent(loanPeriodExtended));
+
+            final BookLoanView state = projection.getState();
+            assertEquals(BOOK_ID, state.getBookId());
+            assertEquals(INVENTORY_ITEM_ID_1, state.getItemId());
+            assertEquals(USER_NAME, state.getUserName());
+            assertEquals(USER_EMAIL_1, state.getEmail());
+            assertEquals(DEFAULT_DATE1, state.getWhenTaken());
+            assertEquals(DEFAULT_DATE2, state.getWhenDue());
         }
     }
 }

@@ -24,6 +24,7 @@ import io.spine.server.projection.ProjectionRepository;
 import io.spine.server.route.EventRouting;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.c.BookAdded;
+import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.BookUpdated;
 import javaclasses.exlibris.q.BookDetailsView;
 
@@ -49,6 +50,8 @@ public class BookDetailsViewRepository extends ProjectionRepository<BookId, Book
         routing.route(BookAdded.class,
                       (message, context) -> singleton(message.getBookId()));
         routing.route(BookUpdated.class,
+                      (message, context) -> singleton(message.getBookId()));
+        routing.route(BookRemoved.class,
                       (message, context) -> singleton(message.getBookId()));
     }
 }
