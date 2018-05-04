@@ -22,10 +22,12 @@ package javaclasses.exlibris.c.inventory;
 
 import com.google.protobuf.Message;
 import javaclasses.exlibris.Inventory;
+import javaclasses.exlibris.InventoryItem;
+import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BookLost;
+import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.ReportLostBook;
-import javaclasses.exlibris.c.ReserveBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,16 +36,20 @@ import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.reportLostBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.userEmailAddress1;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Paul Ageyev
  */
-@DisplayName("ReportLostBookCommandTest command should be interpreted by InventoryAggregate and")
-public class ReportLostBookCommandTest extends InventoryCommandTest<ReserveBook> {
+@DisplayName("ReportLostBook command should be interpreted by InventoryAggregate and")
+public class ReportLostBookCommandTest extends InventoryCommandTest<ReportLostBook> {
 
     @Override
     @BeforeEach
@@ -54,13 +60,12 @@ public class ReportLostBookCommandTest extends InventoryCommandTest<ReserveBook>
     @Test
     @DisplayName("produce BookLost event")
     void produceEvent() {
-        dispatchAppendInventory();
+        borrowBook();
 
         final ReportLostBook reportLostBook = reportLostBookInstance();
 
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(reportLostBook));
-
         assertNotNull(aggregate.getId());
         assertEquals(1, messageList.size());
         assertEquals(BookLost.class, messageList.get(0)
@@ -74,22 +79,25 @@ public class ReportLostBookCommandTest extends InventoryCommandTest<ReserveBook>
     }
 
     @Test
-    @DisplayName("report for lost book")
+    @DisplayName("set item status as lost and remove absent loan.")
     void reportLostBook() {
-        dispatchAppendInventory();
+        borrowBook();
 
         final ReportLostBook reportLostBook = reportLostBookInstance();
         dispatchCommand(aggregate, envelopeOf(reportLostBook));
 
-        final Inventory currentInventory = aggregate.getState();
+        final Inventory state = aggregate.getState();
+        final InventoryItem lostItem = state.getInventoryItems(0);
 
-        assertEquals(true, currentInventory.getInventoryItemsList()
-                                           .get(0)
-                                           .getLost());
+        assertTrue(lostItem.getLost());
+        assertFalse(lostItem.getBorrowed());
+        assertEquals(UserId.getDefaultInstance(), lostItem.getUserId());
     }
 
-    private void dispatchAppendInventory() {
+    private void borrowBook() {
         final AppendInventory appendInventory = appendInventoryInstance();
         dispatchCommand(aggregate, envelopeOf(appendInventory));
+        final BorrowBook borrowBook = borrowBookInstance();
+        dispatchCommand(aggregate, envelopeOf(borrowBook));
     }
 }

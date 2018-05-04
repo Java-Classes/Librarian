@@ -18,10 +18,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// @formatter:off
 /**
- * This package contains both book, inventory aggregates, its rejections and process managers.
+ * This package provides implementation for following classes:
+ *
+ * <ul>
+ *     <li>{@code ReservationQueueProcman}
+ *     <li>{@code ReservationQueueProcmanRepository}
+ *     <li>{@code LoansExtensionProcman}
+ *     <li>{@code LoansExtensionProcmanRepository}
+ * </ul>
  */
+// @formatter:on
 @ParametersAreNonnullByDefault
-package javaclasses.exlibris.c;
+package javaclasses.exlibris.c.procman;
 
 import javax.annotation.ParametersAreNonnullByDefault;

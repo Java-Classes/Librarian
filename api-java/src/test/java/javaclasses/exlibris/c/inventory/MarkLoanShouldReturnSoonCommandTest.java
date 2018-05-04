@@ -26,8 +26,8 @@ import javaclasses.exlibris.LoanId;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BorrowBook;
-import javaclasses.exlibris.c.LoanBecameOverdue;
-import javaclasses.exlibris.c.MarkLoanOverdue;
+import javaclasses.exlibris.c.LoanBecameShouldReturnSoon;
+import javaclasses.exlibris.c.MarkLoanShouldReturnSoon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,19 +35,19 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static javaclasses.exlibris.LoanStatus.LOAN_OVERDUE;
+import static javaclasses.exlibris.LoanStatus.LOAN_SOULD_RETURN_SOON;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.markLoanOverdue;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.markLoanShouldReturnSoon;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * @author Dmytry Dyachenko
+ * @author Yegor Udovchenko
  */
-@DisplayName("MarkLoanOverdue command should be interpreted by InventoryAggregate and")
-public class MarkLoanOverdueCommandTest extends InventoryCommandTest<MarkLoanOverdue> {
+@DisplayName("MarkLoanShouldReturnSoon command should be interpreted by InventoryAggregate and")
+public class MarkLoanShouldReturnSoonCommandTest extends InventoryCommandTest<MarkLoanShouldReturnSoon> {
 
     @Override
     @BeforeEach
@@ -56,36 +56,37 @@ public class MarkLoanOverdueCommandTest extends InventoryCommandTest<MarkLoanOve
     }
 
     @Test
-    @DisplayName("produce LoanBecameOverdue event")
+    @DisplayName("produce LoanBecameShouldReturnSoon event")
     void produceEvent() {
         final LoanId loanId = prepareLoan();
 
-        final MarkLoanOverdue markLoanOverdue = markLoanOverdue(loanId, inventoryId);
+        final MarkLoanShouldReturnSoon markLoanShouldReturnSoon = markLoanShouldReturnSoon(loanId,
+                                                                                           inventoryId);
+        final List<? extends Message> messageList =
+                dispatchCommand(aggregate, envelopeOf(markLoanShouldReturnSoon));
 
-        final List<? extends Message> messageList = dispatchCommand(aggregate,
-                                                                    envelopeOf(markLoanOverdue));
         assertEquals(1, messageList.size());
-        assertEquals(LoanBecameOverdue.class, messageList.get(0)
-                                                         .getClass());
-        final LoanBecameOverdue loanBecameOverdue = (LoanBecameOverdue) messageList.get(0);
-
-        assertEquals(loanId, loanBecameOverdue.getLoanId());
+        assertEquals(LoanBecameShouldReturnSoon.class, messageList.get(0)
+                                                                  .getClass());
+        final LoanBecameShouldReturnSoon becameShouldReturnSoon =
+                (LoanBecameShouldReturnSoon) messageList.get(0);
+        assertEquals(loanId, becameShouldReturnSoon.getLoanId());
     }
 
     @Test
-    @DisplayName("marks loan as overdue")
+    @DisplayName("marks loan as should return soon")
     void markLoanPeriodAsOverdue() {
         final LoanId loanId = prepareLoan();
 
-        final MarkLoanOverdue markLoanOverdue = markLoanOverdue(loanId, inventoryId);
-
-        dispatchCommand(aggregate, envelopeOf(markLoanOverdue));
+        final MarkLoanShouldReturnSoon markLoanShouldReturnSoon = markLoanShouldReturnSoon(loanId,
+                                                                                           inventoryId);
+        dispatchCommand(aggregate, envelopeOf(markLoanShouldReturnSoon));
         final Inventory state = aggregate.getState();
 
         assertTrue(state.getInventoryItems(0)
                         .getBorrowed());
         assertEquals(state.getLoans(0)
-                          .getStatus(), LOAN_OVERDUE);
+                          .getStatus(), LOAN_SOULD_RETURN_SOON);
     }
 
     @SuppressWarnings("Duplicates")

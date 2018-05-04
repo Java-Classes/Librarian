@@ -23,6 +23,7 @@ package javaclasses.exlibris.c.inventory;
 import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
 import javaclasses.exlibris.Inventory;
+import javaclasses.exlibris.InventoryItem;
 import javaclasses.exlibris.InventoryItemId;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BookReturned;
@@ -38,9 +39,12 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -57,16 +61,6 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
         super.setUp();
     }
 
-    private void appendInventory() {
-        final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
-        dispatchCommand(aggregate, envelopeOf(appendInventory));
-    }
-
-    private void borrowBook() {
-        final BorrowBook borrowBook = InventoryCommandFactory.borrowBookInstance();
-        dispatchCommand(aggregate, envelopeOf(borrowBook));
-    }
-
     @Test
     @DisplayName("produce BookReturned event")
     void produceEvent() {
@@ -74,46 +68,34 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
         borrowBook();
 
         final ReturnBook returnBook = InventoryCommandFactory.returnBookInstance();
-
         final List<? extends Message> messageList = dispatchCommand(aggregate,
                                                                     envelopeOf(returnBook));
         assertNotNull(aggregate.getId());
-        assertEquals(2, messageList.size());
+        assertEquals(1, messageList.size());
         assertEquals(BookReturned.class, messageList.get(0)
                                                     .getClass());
 
         final BookReturned bookReturned = (BookReturned) messageList.get(0);
-
-        assertEquals(InventoryCommandFactory.inventoryId, bookReturned.getInventoryId());
+        assertEquals(inventoryId, bookReturned.getInventoryId());
     }
 
     @Test
-    @DisplayName("return book without reservation")
+    @DisplayName("set return book item as in library and remove the loan")
     void returnBookWithoutReservation() {
         appendInventory();
-
-        final Inventory inventoryAppended = aggregate.getState();
-        assertEquals(0, inventoryAppended.getLoansList()
-                                         .size());
-
         borrowBook();
-        final Inventory inventoryBorrowed = aggregate.getState();
-        assertEquals(1, inventoryBorrowed.getLoansList()
-                                         .size());
+        final Inventory inventory = aggregate.getState();
+        assertEquals(1, inventory.getLoansCount());
 
         final ReturnBook returnBook = InventoryCommandFactory.returnBookInstance();
         dispatchCommand(aggregate, envelopeOf(returnBook));
 
-        final Inventory inventoryReturned = aggregate.getState();
-        assertEquals(0, inventoryReturned.getLoansList()
-                                         .size());
-        assertTrue(inventoryReturned.getInventoryItemsList()
-                                    .get(0)
-                                    .getInLibrary());
-        assertEquals(1, inventoryReturned.getInventoryItemsList()
-                                         .get(0)
-                                         .getInventoryItemId()
-                                         .getItemNumber());
+        final Inventory updatedInventory = aggregate.getState();
+        assertEquals(0, updatedInventory.getLoansCount());
+        final InventoryItem returnedItem = updatedInventory.getInventoryItems(0);
+        assertTrue(returnedItem.getInLibrary());
+        assertFalse(returnedItem.getLost());
+        assertFalse(returnedItem.getBorrowed());
     }
 
     @Test
@@ -128,7 +110,6 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
                                          () -> dispatchCommand(aggregate,
                                                                envelopeOf(returnBook)));
         final Throwable cause = Throwables.getRootCause(t);
-
         assertThat(cause, instanceOf(CannotReturnNonBorrowedBook.class));
     }
 
@@ -138,19 +119,25 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
     void throwsCannotReturnMissingBook() {
         appendInventory();
         borrowBook();
+        final InventoryItemId fakeItemId = InventoryItemId.getDefaultInstance();
 
-        final InventoryItemId incorrectBookId = InventoryItemId.newBuilder()
-                                                               .setItemNumber(1323)
-                                                               .build();
-        final ReturnBook returnBook = InventoryCommandFactory.returnBookInstance(
-                InventoryCommandFactory.inventoryId,
-                incorrectBookId, InventoryCommandFactory.userId);
-
+        final ReturnBook returnBook = InventoryCommandFactory.returnBookInstance(inventoryId,
+                                                                                 fakeItemId,
+                                                                                 userId);
         final Throwable t = assertThrows(Throwable.class,
                                          () -> dispatchCommand(aggregate,
                                                                envelopeOf(returnBook)));
         final Throwable cause = Throwables.getRootCause(t);
-
         assertThat(cause, instanceOf(CannotReturnMissingBook.class));
+    }
+
+    private void appendInventory() {
+        final AppendInventory appendInventory = InventoryCommandFactory.appendInventoryInstance();
+        dispatchCommand(aggregate, envelopeOf(appendInventory));
+    }
+
+    private void borrowBook() {
+        final BorrowBook borrowBook = InventoryCommandFactory.borrowBookInstance();
+        dispatchCommand(aggregate, envelopeOf(borrowBook));
     }
 }

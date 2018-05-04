@@ -21,6 +21,7 @@
 package javaclasses.exlibris.c.inventory;
 
 import com.google.protobuf.Message;
+import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.c.MarkReservationExpired;
 import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 import javaclasses.exlibris.c.ReserveBook;
@@ -32,15 +33,13 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.reservationPickUpPeriodInstanceExpired;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Paul Ageyev
  */
-@DisplayName("ReservationPickUpPeriodExpiredCommandTest command should be interpreted by InventoryAggregate and")
-public class ReservationPickUpPeriodExpiredCommandTest extends InventoryCommandTest<ReservationPickUpPeriodExpired> {
+@DisplayName("MarkReservationExpiredCommandTest command should be interpreted by InventoryAggregate and")
+public class MarkReservationExpiredCommandTest extends InventoryCommandTest<MarkReservationExpired> {
 
     @Override
     @BeforeEach
@@ -49,31 +48,30 @@ public class ReservationPickUpPeriodExpiredCommandTest extends InventoryCommandT
     }
 
     @Test
-    @DisplayName("produce MarkReservationExpired event")
+    @DisplayName("produce ReservationPickUpPeriodExpired event")
     void produceEvent() {
         dispatchReserveBook();
 
-        final MarkReservationExpired reservationExpired = reservationPickUpPeriodInstanceExpired();
-        final List<? extends Message> messageList = dispatchCommand(aggregate,
-                                                                    envelopeOf(
-                                                                            reservationExpired));
-        assertNotNull(aggregate.getId());
+        final MarkReservationExpired markReservationExpired =
+                InventoryCommandFactory.markReservationExpiredInstance();
+        final List<? extends Message> messageList =
+                dispatchCommand(aggregate, envelopeOf(markReservationExpired));
         assertEquals(1, messageList.size());
         assertEquals(ReservationPickUpPeriodExpired.class, messageList.get(0)
                                                                       .getClass());
     }
 
     @Test
-    @DisplayName("mark reservation as expired")
+    @DisplayName("remove the expired reservation")
     void reservationPickUpPeriodExpired() {
         dispatchReserveBook();
 
-        final MarkReservationExpired reservationExpired = reservationPickUpPeriodInstanceExpired();
-
+        final MarkReservationExpired reservationExpired =
+                InventoryCommandFactory.markReservationExpiredInstance();
         dispatchCommand(aggregate, envelopeOf(reservationExpired));
-        assertEquals(0, aggregate.getDefaultState()
-                                 .getReservationsList()
-                                 .size());
+        final Inventory state = aggregate.getState();
+        final int reservationsCount = state.getReservationsCount();
+        assertEquals(0, reservationsCount);
     }
 
     void dispatchReserveBook() {
