@@ -34,7 +34,10 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.isbn62;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ID;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ITEM_ID_1;
+import static javaclasses.exlibris.testdata.TestValues.ISBN_62;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -67,9 +70,9 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
 
         final InventoryAppended inventoryAppended = (InventoryAppended) messageList.get(0);
 
-        assertEquals(InventoryCommandFactory.inventoryId, inventoryAppended.getInventoryId());
-        assertEquals(InventoryCommandFactory.userId, inventoryAppended.getLibrarianId());
-        assertEquals(InventoryCommandFactory.inventoryItemId,
+        assertEquals(INVENTORY_ID, inventoryAppended.getInventoryId());
+        assertEquals(USER_ID, inventoryAppended.getLibrarianId());
+        assertEquals(INVENTORY_ITEM_ID_1,
                      inventoryAppended.getInventoryItemId());
     }
 
@@ -95,7 +98,7 @@ public class AppendInventoryCommandTest extends InventoryCommandTest<AppendInven
 
         final InventoryItemId inventoryItemId = appendedItem.getInventoryItemId();
         assertEquals(1, inventoryItemId.getItemNumber());
-        assertEquals(isbn62, inventoryItemId.getBookId()
-                                            .getIsbn62());
+        assertEquals(ISBN_62, inventoryItemId.getBookId()
+                                             .getIsbn62());
     }
 }

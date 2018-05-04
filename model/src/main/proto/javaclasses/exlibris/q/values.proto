@@ -30,187 +30,263 @@ option java_outer_classname = "ValuesProjectionsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-import "google/protobuf/timestamp.proto";
 import "spine/net/url.proto";
+import "spine/net/email_address.proto";
+import "spine/time/time.proto";
+import "spine/people/person_name.proto";
+import "google/protobuf/timestamp.proto";
 import "javaclasses/exlibris/identifiers.proto";
 import "javaclasses/exlibris/values.proto";
 
-// Information about a book.
-// Contains authors, categories, and a status.
+// A library book status without reference to a user.
 //
-message BookItem {
+enum BookStatus {
+
+    // Used as an undefined value marker.
+    BIS_UNDEFINED = 0;
+
+    AVAILABLE = 1;
+
+    EXPECTED = 2;
+}
+
+// All information about a book that is expected in the library.
+//
+message ExpectedSoonItem {
 
     // The identifier of a book.
     BookId book_id = 1;
 
-    // The book cover.
-    spine.net.Url book_cover_url = 2;
+    // The International Standard Book Number.
+    Isbn isbn = 2;
 
     // The book title.
     BookTitle title = 3;
 
-    // Categories of a book.
-    repeated Category categories = 4;
+    // Authors’ full names.
+    AuthorName authors = 4;
+
+    // The book cover.
+    spine.net.Url cover_url = 5;
+
+    // The list of book categories.
+    repeated Category categories = 6;
+
+    // The book synopsis.
+    BookSynopsis synopsis = 7;
+
+    // The status of a book that is expected in the library.
+    ExpectedSoonItemStatus status = 8;
+}
+
+// A status of a book that is expected soon in the library.
+//
+enum ExpectedSoonItemStatus {
+
+    // Used as an undefined value marker.
+    ESIS_UNDEFINED = 0;
+
+    EXPECTED_SOON = 1;
+}
+
+// All information about a user's borrowed book.
+//
+message BorrowedBookItem {
+
+    // The identifier of a loan.
+    LoanId loan_id = 1;
+
+    // The identifier of a book.
+    BookId book_id = 2;
+
+    // The International Standard Book Number.
+    Isbn isbn = 3;
+
+    // The book title.
+    BookTitle title = 4;
 
     // Authors’ full names.
-    AuthorName author = 5;
+    AuthorName authors = 5;
 
-    // The book can has one of the following status:
-    //
-    // 1. Borrowed — when a book is borrowed by a user.
-    // 2. Reserved — when a book is reserved by a user.
-    // 3. Available — when a book is available to borrow or reserve.
-    // 4. Expected soon — when a book is not available now, but a user can reserve it.
-    // 5. Overdue — when a book was borrowed by a user but still not returned.
-    oneof book_status {
-        bool borrowed = 6;
-        bool reserved = 7;
-        bool available = 8;
-        bool expected_soon = 9;
-        bool overdue = 10;
+    // The book cover.
+    spine.net.Url cover_url = 6;
+
+    // The list of book categories.
+    repeated Category categories = 7;
+
+    // The book synopsis.
+    BookSynopsis synopsis = 8;
+
+    // The first day of a loan period.
+    spine.time.LocalDate when_borrowed = 9;
+
+    // The last day of a loan period.
+    spine.time.LocalDate due_date = 10;
+
+    // The borrowed book status.
+    BorrowedBookItemStatus status = 11;
+
+    // Shows whether there is a reservation for this book or not.
+    bool is_allowed_loan_extension = 12;
+}
+
+// A borrowed book item status values.
+//
+enum BorrowedBookItemStatus {
+
+    // Used as an undefined value marker.
+    BBIS_UNDEFINED = 0;
+
+    BORROWED = 1;
+
+    OVERDUE = 2;
+
+    SHOULD_RETURN_SOON = 3;
+}
+
+// All information about a user's reserved book.
+//
+message ReservedBookItem {
+
+    // The identifier of a book.
+    BookId book_id = 1;
+
+    // The International Standard Book Number.
+    Isbn isbn = 2;
+
+    // The book title.
+    BookTitle title = 3;
+
+    // Authors’ full names.
+    AuthorName authors = 4;
+
+    // The book cover.
+    spine.net.Url cover_url = 5;
+
+    // The list of book categories.
+    repeated Category categorie = 6;
+
+    // The book synopsis.
+    BookSynopsis synopsis = 7;
+
+    // Estimated date when the book becomes ready to pick up.
+    spine.time.LocalDate when_ready_to_pick_up = 8;
+
+    // The reserved book status.
+    ReservedBookItemStatus status = 9;
+}
+
+// A reserved book item status values.
+//
+enum ReservedBookItemStatus {
+
+    // Used as an undefined value marker.
+    RBIS_UNDEFINED = 0;
+
+    READY_TO_PICK_UP = 1;
+
+    RESERVED = 2;
+}
+
+// The single item of a readers list view.
+//
+message ReaderBooksCountItem {
+
+    // The identifier of a reader.
+    UserId user_id = 1;
+
+    // The name of a reader.
+    spine.people.PersonName user_name = 2;
+
+    // The email address of a reader.
+    spine.net.EmailAddress email = 3;
+
+    // The reader's currently reading books count.
+    int32 currently_reading_count = 4;
+
+    // The reader's reserved books count.
+    int32 reservations_count = 5;
+
+    // The reader's overdue loans count.
+    int32 overdue_count = 6;
+}
+
+// The single item of a book inventory.
+//
+// Represents the inventory item state.
+// Indicates the inventory item is in library, lost
+// or borrowed by a user. Contains loan details if borrowed.
+//
+message InventoryItemState {
+
+    // The identifier of an inventory item.
+    InventoryItemId item_id = 1;
+
+    // The item could have one of the following statuses.
+    oneof item_status {
+
+        // When the book stays in a library.
+        bool in_library = 2;
+
+        // When the book is borrowed by smb.
+        LoanDetails loan_details = 3;
+
+        // When the book is lost.
+        bool lost = 4;
     }
 }
 
-// Information about a loan of a book.
-//
-// Contains an inventory item,
-// users who borrowed a book and their taken on and due on dates.
+// The inventory item loan details.
 //
 message LoanDetails {
 
-    // The identifier of a book.
-    InventoryItemId inventory_item_id = 1;
-
-    // Represented by a user's email address.
-    UserId user_id = 2;
-
-    // The time when the book was borrowed.
-    google.protobuf.Timestamp when_taken = 3;
-
-    // The time when the book should be returned.
-    google.protobuf.Timestamp when_due = 4;
-}
-
-// The detailed information about an inventory.
-//
-// Contains a book title, authors, and a book location.
-//
-message InventoryDetails {
-
-    // The book title.
-    BookTitle book_title = 1;
-
-    // Authors’ full names.
-    AuthorName author_names = 2;
-
-    // A list of information about a location of books.
-    repeated InventoryItemLocation items = 3;
-}
-
-// Information about a book location.
-//
-message InventoryItemLocation {
-
-    // The location of a book.
-    oneof book_location {
-        LoanDetails loan = 1;
-        bool in_library_inventory = 2;
-        bool lost = 3;
-    }
-}
-
-// Information about reservations.
-//
-message ReservationDetails {
-
-    // Who reserved a book.
+    // The identifier of a reader.
     UserId user_id = 1;
 
-    // The time when a user reserved a book.
-    google.protobuf.Timestamp made_on = 2;
+    // The name of a reader.
+    spine.people.PersonName user_name = 2;
+
+    // The email address of a reader.
+    spine.net.EmailAddress email = 3;
+
+    // The date when a book was borrowed.
+    spine.time.LocalDate when_taken = 4;
+
+    // The date when a book should be returned.
+    spine.time.LocalDate when_due = 5;
+
+    // The loan status.
+    bool overdue = 6;
 }
 
-// Information about an inventory item record.
+// The single item of a book inventory view.
 //
-message InventoryItemRecord {
+// Represents the inventory item state.
+// Indicates the inventory item is in library, lost
+// or borrowed by user. Contains loan details if borrowed.
+// Contains the QR code and RFID mark of an item.
+//
+message InventoryItemFullState {
 
-    // Represented by a book identifier and an item number.
-    InventoryItemId inventory_item_id = 1;
+    // The identifier of an inventory item.
+    InventoryItemId item_id = 1;
 
-    // Represented by a user's email address.
-    UserId user_id = 2;
+    // The item could have one of the following statuses.
+    oneof item_status {
 
-    // One of the actions is assigned to an inventory item.
-    oneof book_record {
-        bool borrowed = 3;
-        bool reserved = 4;
-        bool loan_period_extended = 5;
-        bool returned = 6;
-        bool lost = 7;
+        // When the book stays in a library.
+        bool in_library = 2;
+
+        // When the book is borrowed by smb.
+        LoanDetails loan_details = 3;
+
+        // When the book is lost.
+        bool lost = 4;
     }
-    // The time when an action was did.
-    google.protobuf.Timestamp action_date = 8;
-}
 
-// Information about a history of a loan of a book.
-//
-// Contains an inventory item,
-// users who borrowed the book and their taken on, due on, and returned on dates.
-//
-message LoanDetailsHistory {
+    // The QR code URL.
+    spine.net.Url qr_code_url = 5;
 
-    // The identifier of a book.
-    InventoryItemId inventory_item_id = 1;
-
-    // Represented by a user's email address.
-    UserId user_id = 2;
-
-    // The time when a book was borrowed.
-    google.protobuf.Timestamp when_taken = 3;
-
-    // The time when a book should be returned.
-    google.protobuf.Timestamp when_due = 4;
-
-    // The time when a book was returned.
-    google.protobuf.Timestamp returned_on = 5;
-}
-
-// Informaton about a book that was lost.
-//
-message LostBook {
-
-    // The identifier of a book that was lost.
-    InventoryItemId inventory_item_id = 1;
-
-    // The title of a book that was lost.
-    BookTitle book_title = 2;
-
-    // Authors’ full names.
-    AuthorName author_names = 3;
-
-    // Who lost a book.
-    UserId user_id = 4;
-
-    // The time when was reported about book losing.
-    google.protobuf.Timestamp reported_on = 5;
-}
-
-// Information about the user.
-//
-message UserDetails {
-
-    // An identifier of the user.
-    UserId user_id = 1;
-
-    // A name of user in the library.
-    string username = 2;
-
-    // The count of borrowed by user books now.
-    int32 count_of_borrowed_books = 3;
-
-    // The count of reserved by user books now.
-    int32 count_of_reserved_books = 4;
-
-    // The count of books that user return with lateness or hasn’t return at all.
-    int32 count_of_overdue_books = 5;
+    // The radio-frequency identification mark of an item.
+    Rfid rfid = 6;
 }

@@ -39,9 +39,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.protobuf.TypeConverter.toMessage;
-import static javaclasses.exlibris.testdata.BookCommandFactory.bookId;
-import static javaclasses.exlibris.testdata.BookCommandFactory.bookTitle;
-import static javaclasses.exlibris.testdata.BookCommandFactory.userId;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_TITLE;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -74,9 +74,9 @@ public class SubscribersTest extends BookCommandTest<AddBook> {
 
         Rejections.BookAlreadyExists bookAlreadyExists = bookRejectionsSubscriber.getRejection();
 
-        assertEquals(userId, bookAlreadyExists.getLibrarianId());
-        assertEquals(bookId, bookAlreadyExists.getBookId());
-        assertEquals(bookTitle, bookAlreadyExists.getBookTitle());
+        assertEquals(USER_ID, bookAlreadyExists.getLibrarianId());
+        assertEquals(BOOK_ID, bookAlreadyExists.getBookId());
+        assertEquals(BOOK_TITLE, bookAlreadyExists.getBookTitle());
     }
 
     @Test
@@ -93,9 +93,9 @@ public class SubscribersTest extends BookCommandTest<AddBook> {
 
         commandBus.post(addBook, StreamObservers.noOpObserver());
         final BookAdded event = eventSubscriber.getEvent();
-        assertEquals(bookId, event.getBookId());
-        assertEquals(bookTitle, event.getDetails()
-                                     .getTitle());
-        assertEquals(userId, event.getLibrarianId());
+        assertEquals(BOOK_ID, event.getBookId());
+        assertEquals(BOOK_TITLE, event.getDetails()
+                                      .getTitle());
+        assertEquals(USER_ID, event.getLibrarianId());
     }
 }

@@ -40,8 +40,8 @@ import java.util.List;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.allowLoansExtensionInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.forbidLoansExtensionInstance;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ID;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -64,7 +64,7 @@ public class AllowLoansExtensionCommandTest extends InventoryCommandTest<AllowLo
     @DisplayName("produce LoansExtensionAllowed event")
     void produceEvent() {
         final AllowLoansExtension allowLoansExtension =
-                allowLoansExtensionInstance(inventoryId, Collections.singletonList(userId));
+                allowLoansExtensionInstance(INVENTORY_ID, Collections.singletonList(USER_ID));
         final List<? extends Message> messageList =
                 dispatchCommand(aggregate, envelopeOf(allowLoansExtension));
 
@@ -74,7 +74,7 @@ public class AllowLoansExtensionCommandTest extends InventoryCommandTest<AllowLo
         final LoansExtensionAllowed loansExtensionAllowed =
                 (LoansExtensionAllowed) messageList.get(0);
         final UserId borrower = loansExtensionAllowed.getBorrowers(0);
-        assertEquals(userId, borrower);
+        assertEquals(USER_ID, borrower);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class AllowLoansExtensionCommandTest extends InventoryCommandTest<AllowLo
         final Loan loan = stateBefore.getLoans(0);
         assertFalse(loan.getIsAllowedExtension());
         final AllowLoansExtension allowLoansExtension =
-                allowLoansExtensionInstance(inventoryId, Collections.singletonList(userId));
+                allowLoansExtensionInstance(INVENTORY_ID, Collections.singletonList(USER_ID));
         dispatchCommand(aggregate, envelopeOf(allowLoansExtension));
 
         final Inventory stateAfter = aggregate.getState();
@@ -103,8 +103,8 @@ public class AllowLoansExtensionCommandTest extends InventoryCommandTest<AllowLo
     }
 
     private void forbidLoansExtension() {
-        List<UserId> borrowers = Collections.singletonList(userId);
-        final ForbidLoansExtension forbidLoansExtension = forbidLoansExtensionInstance(inventoryId,
+        List<UserId> borrowers = Collections.singletonList(USER_ID);
+        final ForbidLoansExtension forbidLoansExtension = forbidLoansExtensionInstance(INVENTORY_ID,
                                                                                        borrowers);
         dispatchCommand(aggregate, envelopeOf(forbidLoansExtension));
     }

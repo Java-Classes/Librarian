@@ -24,12 +24,25 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import io.spine.server.BoundedContext;
 import io.spine.server.event.EventBus;
+import io.spine.server.event.EventEnricher;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import javaclasses.exlibris.c.book.BookRepository;
 import javaclasses.exlibris.c.inventory.InventoryRepository;
 import javaclasses.exlibris.c.procman.LoansExtensionProcmanRepository;
 import javaclasses.exlibris.c.procman.ReservationQueueProcmanRepository;
+import javaclasses.exlibris.q.admin.BookDetailsViewRepository;
+import javaclasses.exlibris.q.admin.BookEventLogViewRepository;
+import javaclasses.exlibris.q.admin.BookInventoryViewRepository;
+import javaclasses.exlibris.q.admin.BookLoanViewRepository;
+import javaclasses.exlibris.q.admin.BookReservationViewRepository;
+import javaclasses.exlibris.q.admin.LostBookViewRepository;
+import javaclasses.exlibris.q.admin.ReaderEventLogViewRepository;
+import javaclasses.exlibris.q.admin.ReaderLoanViewRepository;
+import javaclasses.exlibris.q.user.BookViewRepository;
+import javaclasses.exlibris.q.user.BorrowedBooksListViewRepository;
+import javaclasses.exlibris.q.user.ExpectedSoonBooksListViewRepository;
+import javaclasses.exlibris.q.user.ReservedBooksListViewRepository;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
@@ -77,19 +90,55 @@ public final class BoundedContexts {
         final ReservationQueueProcmanRepository reservationQueueRepository = new ReservationQueueProcmanRepository();
         final LoansExtensionProcmanRepository loansExtensionRepository = new LoansExtensionProcmanRepository();
 
-        final EventBus.Builder eventBus = createEventBus(storageFactory);
+        final BookViewRepository allBooksRepo = new BookViewRepository();
+        final ExpectedSoonBooksListViewRepository expectedSoonRepo = new ExpectedSoonBooksListViewRepository();
+        final BorrowedBooksListViewRepository borrowedRepo = new BorrowedBooksListViewRepository();
+        final ReservedBooksListViewRepository reservedRepo = new ReservedBooksListViewRepository();
+
+        final BookDetailsViewRepository bookDetailsViewRepo = new BookDetailsViewRepository();
+        final BookEventLogViewRepository bookEventLogViewRepo = new BookEventLogViewRepository();
+        final BookInventoryViewRepository bookInventoryViewRepo = new BookInventoryViewRepository();
+        final BookLoanViewRepository bookLoanViewRepository = new BookLoanViewRepository();
+        final BookReservationViewRepository bookReservationViewRepo = new BookReservationViewRepository();
+        final LostBookViewRepository lostBookViewRepo = new LostBookViewRepository();
+        final ReaderEventLogViewRepository readerEventLogViewRepo = new ReaderEventLogViewRepository();
+        final ReaderLoanViewRepository readerLoanViewRepo = new ReaderLoanViewRepository();
+
+        final EventBus.Builder eventBus = createEventBus(storageFactory, bookRepository);
 
         final BoundedContext boundedContext = createBoundedContext(eventBus);
 
         boundedContext.register(bookRepository);
         boundedContext.register(inventoryRepository);
+
         boundedContext.register(reservationQueueRepository);
         boundedContext.register(loansExtensionRepository);
+
+        boundedContext.register(allBooksRepo);
+        boundedContext.register(expectedSoonRepo);
+        boundedContext.register(borrowedRepo);
+        boundedContext.register(reservedRepo);
+
+        boundedContext.register(bookDetailsViewRepo);
+        boundedContext.register(bookEventLogViewRepo);
+        boundedContext.register(bookInventoryViewRepo);
+        boundedContext.register(bookLoanViewRepository);
+        boundedContext.register(bookReservationViewRepo);
+        boundedContext.register(lostBookViewRepo);
+        boundedContext.register(readerEventLogViewRepo);
+        boundedContext.register(readerLoanViewRepo);
+
         return boundedContext;
     }
 
-    private static EventBus.Builder createEventBus(StorageFactory storageFactory) {
+    private static EventBus.Builder createEventBus(StorageFactory storageFactory,
+                                                   BookRepository bookRepo) {
+        final EventEnricher enricher = ExlibrisEnrichments.newBuilder()
+                                                          .setBookRepository(bookRepo)
+                                                          .build()
+                                                          .createEnricher();
         final EventBus.Builder eventBus = EventBus.newBuilder()
+                                                  .setEnricher(enricher)
                                                   .setStorageFactory(storageFactory);
         return eventBus;
     }

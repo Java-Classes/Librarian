@@ -35,6 +35,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ID;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -75,8 +77,8 @@ public class CancelReservationCommandTest extends InventoryCommandTest<CancelRes
 
         final ReservationCanceled reservationCanceled = (ReservationCanceled) messageList.get(0);
 
-        assertEquals(InventoryCommandFactory.inventoryId, reservationCanceled.getInventoryId());
-        assertEquals(InventoryCommandFactory.userId, reservationCanceled.getWhoCanceled());
+        assertEquals(INVENTORY_ID, reservationCanceled.getInventoryId());
+        assertEquals(USER_ID, reservationCanceled.getWhoCanceled());
     }
 
     @Test

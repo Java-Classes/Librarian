@@ -37,9 +37,9 @@ import java.util.List;
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.reportLostBookInstance;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.userEmailAddress1;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ID;
+import static javaclasses.exlibris.testdata.TestValues.USER_EMAIL_1;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -73,9 +73,9 @@ public class ReportLostBookCommandTest extends InventoryCommandTest<ReportLostBo
 
         final BookLost bookLost = (BookLost) messageList.get(0);
 
-        assertEquals(inventoryId, bookLost.getInventoryId());
-        assertEquals(userEmailAddress1, bookLost.getWhoLost()
-                                                .getEmail());
+        assertEquals(INVENTORY_ID, bookLost.getInventoryId());
+        assertEquals(USER_EMAIL_1, bookLost.getWhoLost()
+                                           .getEmail());
     }
 
     @Test

@@ -36,7 +36,7 @@ import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.satisfyReservationInstance;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -72,7 +72,7 @@ public class SatisfyReservationCommandTest extends InventoryCommandTest<SatisfyR
         final long pickUpDeadline = bookReadyToPickup.getPickUpDeadline()
                                                      .getSeconds();
         assertEquals(whenBecame + OPEN_FOR_BORROW, pickUpDeadline);
-        assertEquals(userId, forWhom);
+        assertEquals(USER_ID, forWhom);
     }
 
     @Test

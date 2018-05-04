@@ -28,8 +28,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.spine.protobuf.TypeConverter.toMessage;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.markLoanOverdue;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ID;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -51,7 +51,7 @@ public class LoansExtensionProcmanTest extends ProcessManagerTest {
         final LoanId loanId = getAggregateState().getLoans(0)
                                                  .getLoanId();
         final Command markLoanOverdueUser1Item1 =
-                requestFactory.createCommand(toMessage(markLoanOverdue(loanId, inventoryId)));
+                requestFactory.createCommand(toMessage(markLoanOverdue(loanId, INVENTORY_ID)));
         commandBus.post(markLoanOverdueUser1Item1, observer);
         assertFalse(inventoryRejectionsSubscriber.wasCalled());
 

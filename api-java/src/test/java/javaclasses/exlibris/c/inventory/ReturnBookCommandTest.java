@@ -39,8 +39,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ID;
+import static javaclasses.exlibris.testdata.TestValues.USER_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -76,7 +76,7 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
                                                     .getClass());
 
         final BookReturned bookReturned = (BookReturned) messageList.get(0);
-        assertEquals(inventoryId, bookReturned.getInventoryId());
+        assertEquals(INVENTORY_ID, bookReturned.getInventoryId());
     }
 
     @Test
@@ -121,9 +121,9 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
         borrowBook();
         final InventoryItemId fakeItemId = InventoryItemId.getDefaultInstance();
 
-        final ReturnBook returnBook = InventoryCommandFactory.returnBookInstance(inventoryId,
+        final ReturnBook returnBook = InventoryCommandFactory.returnBookInstance(INVENTORY_ID,
                                                                                  fakeItemId,
-                                                                                 userId);
+                                                                                 USER_ID);
         final Throwable t = assertThrows(Throwable.class,
                                          () -> dispatchCommand(aggregate,
                                                                envelopeOf(returnBook)));

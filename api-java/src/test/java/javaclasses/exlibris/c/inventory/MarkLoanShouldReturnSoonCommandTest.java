@@ -38,8 +38,8 @@ import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchComma
 import static javaclasses.exlibris.LoanStatus.LOAN_SOULD_RETURN_SOON;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.markLoanShouldReturnSoon;
+import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -61,7 +61,7 @@ public class MarkLoanShouldReturnSoonCommandTest extends InventoryCommandTest<Ma
         final LoanId loanId = prepareLoan();
 
         final MarkLoanShouldReturnSoon markLoanShouldReturnSoon = markLoanShouldReturnSoon(loanId,
-                                                                                           inventoryId);
+                                                                                           INVENTORY_ID);
         final List<? extends Message> messageList =
                 dispatchCommand(aggregate, envelopeOf(markLoanShouldReturnSoon));
 
@@ -79,7 +79,7 @@ public class MarkLoanShouldReturnSoonCommandTest extends InventoryCommandTest<Ma
         final LoanId loanId = prepareLoan();
 
         final MarkLoanShouldReturnSoon markLoanShouldReturnSoon = markLoanShouldReturnSoon(loanId,
-                                                                                           inventoryId);
+                                                                                           INVENTORY_ID);
         dispatchCommand(aggregate, envelopeOf(markLoanShouldReturnSoon));
         final Inventory state = aggregate.getState();
 

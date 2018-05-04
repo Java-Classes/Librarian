@@ -31,267 +31,277 @@ option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
 import "spine/net/url.proto";
+import "spine/time/time.proto";
+import "spine/net/email_address.proto";
+import "spine/people/person_name.proto";
+import "google/protobuf/timestamp.proto";
 import "javaclasses/exlibris/values.proto";
 import "javaclasses/exlibris/identifiers.proto";
 import "javaclasses/exlibris/q/values.proto";
 
-// The view with the main book information and a synopsis.
-//
-// Subscribed on following events:
-// 1. `BookAdded`
-// 2. `BookRemoved`
-// 3. `BookUpdated`
-// 4. `InventoryAppended`
-// 5. `InventoryDecreased`
-// 6. `BookBorrowed`
-// 7. `BookReturned`
-// 8. `ReservationAdded`
-// 9. `LoanBecameOverdue`
-// 10. `BookLost`
-// 11. `LoanPeriodExtended`
-// 12. `ReservationCanceled`
-// 13. `ReservationPickupPeriodExpired`
-//
-message BookDetailsView {
+// **** Projections for the UI role User. ****
 
-    // The short book information.
-    BookItem book_item = 1;
-
-    // The full book synopsis.
-    BookSynopsis book_synopsis = 2;
-}
-
-// The view with a list of categories.
+// The projection state of one book from the library.
 //
-// Subscribed on following events:
-// 1. `BookAdded`
-// 2. `BookRemoved`
-// 3. `BookUpdated`
-//
-message CategoriesView {
+message BookView {
 
-    // A list of categories.
-    repeated Category categories = 1;
-}
-
-// The view with a compact information about book loans.
-//
-// The librarian sees all user’s loan periods.
-//
-// Subscribed on following events:
-// 1. `BookBorrowed`
-// 2. `BookReturned`
-// 3. `LoanPeriodExtended`
-// 4. `LoanBecameOverdue`
-//
-message CompactBookHistory {
-
-    // The identifier of an inventory.
-    InventoryId inventory_id = 1;
-
-    // The list of user's loan details.
-    repeated LoanDetails loans = 2;
-}
-
-// The view with full information about book records.
-//
-// The librarian sees all users that borrow a book,
-// reserve, lost, return, or extend a loan period with a date of an every record.
-//
-// Subscribed on following events:
-// 1. `BookBorrowed`
-// 2. `BookReturned`
-// 3. `LoanPeriodExtended`
-// 4. `LoanBecameOverdue`
-// 5. `BookLost`
-// 6. `BookReserved`
-// 7. `ReservationCanceled`
-//
-message FullBookHistory {
-
-    // The identifier of an inventory.
-    InventoryId inventory_id = 1;
-
-    // The list of the inventory item record.
-    repeated InventoryItemRecord inventory_item_record = 2;
-}
-
-// The extended information about a book.
-//
-// The view contains book information:
-// URL cover, book title, authors, ISBN, year of publication,
-// categories, and synopsis.
-//
-// Subscribed on following events:
-// 1. `BookAdded`
-// 2. `BookRemoved`
-// 3. `BookUpdated`
-//
-message BookExtendedView {
-
-    // The book identifier.
+    // The identifier of a book.
     BookId book_id = 1;
 
-    // The URL of a book cover.
-    spine.net.Url book_cover_url = 2;
+    // The International Standard Book Number.
+    Isbn isbn = 2;
 
     // The book title.
     BookTitle title = 3;
 
-    // The list of authors’ names.
-    AuthorName author_names = 4;
+    // Authors’ full names.
+    AuthorName authors = 4;
 
-    // The value that generated from an ISBN.
-    Isbn62 isbn = 5;
+    // The book cover.
+    spine.net.Url cover_url = 5;
 
-    // The year of the publication of a book.
-    Year year = 6;
+    // The list of book categories.
+    repeated Category categories = 6;
 
-    // The list of categories.
-    repeated Category categories = 7;
+    // The book synopsis.
+    BookSynopsis synopsis = 7;
 
-    // The full book synopsis.
-    BookSynopsis book_synopsis = 8;
+    // The number of available exemplars.
+    int32 available_count = 8;
+
+    // The book status.
+    BookStatus status = 9;
 }
 
-// The inventory state of a particular book.
+// The projection state of books that are expected in the library.
 //
-// Subscribed on following events:
-// 1. `InventoryAppended`
-// 2. `InventoryDecreased`
-// 3. `BookBorrowed`
-// 4. `BookReturned`
-// 5. `ReservationAdded`
-// 6. `LoanBecameOverdue`
-// 7. `BookLost`
-// 8. `LoanPeriodExtended`
-// 9. `ReservationCanceled`
-// 10. `ReservationPickupPeriodExpired`
-// 11. `BookBecameAvailable`
-// 12. `BookReadyToPickup`
-//
-message InventoryByBookView {
+message ExpectedSoonBooksListView {
 
-    // Information about a book loan.
-    InventoryDetails inventory_details = 1;
+    // The identifier of a list of books that are expected in the library.
+    ExpectedSoonBooksListViewId id = 1;
+
+    // The list of books that are expected in the library.
+    repeated ExpectedSoonItem book_item = 2;
 }
 
-// The view with information about an inventory.
+// The projection state of user's borrowed books.
 //
-// View contains a book title, authors,
-// available books, and number of the overdue books.
-//
-// Subscribed on following events:
-// 1. `InventoryAppended`
-// 2. `InventoryDecreased`
-// 3. `BookBorrowed`
-// 4. `BookReturned`
-// 5. `ReservationAdded`
-// 6. `LoanBecameOverdue`
-// 7. `BookLost`
-// 8. `LoanPeriodExtended`
-// 9. `ReservationCanceled`
-// 10. `ReservationPickupPeriodExpired`
-// 11. `BookBecameAvailable`
-// 12. `BookReadyToPickup`
-//
-message InventoryView {
+message BorrowedBooksListView {
 
-    // The list of inventory details.
-    repeated InventoryDetails inventory_details = 1;
+    // The identifier of a user.
+    UserId user_id = 1;
+
+    // The list of user's borrowed book.
+    repeated BorrowedBookItem book_item = 2;
+
+    // A size of a list of borrowed books.
+    int32 number_of_borrowed_books = 3;
+
+    // The number of books that are overdue by the user.
+    int32 number_of_overdue_books = 4;
 }
 
-// The wiew with information about lost books.
+// The projection state of user's reserved books.
 //
-// Subscribed on following events:
-// 1. `BookLost`
+message ReservedBooksListView {
+
+    // The identifier of a user.
+    UserId user_id = 1;
+
+    // The list of user's reserved book.
+    repeated ReservedBookItem book_item = 2;
+
+    // A size of a list of reserved books.
+    int32 number_of_reserved_books = 3;
+}
+
+// **** Projections for the UI role Admin. ****
+
+// The projection state of a one reader's loan.
+//
+message ReaderLoanView {
+
+    // The identifier of `ReaderLoanView` projection.
+    ReaderLoanViewId id = 1;
+
+    // The identifier of a reader.
+    UserId user_id = 2;
+
+    // The identifier of an inventory item.
+    InventoryItemId item_id = 3;
+
+    // The book title.
+    BookTitle title = 4;
+
+    // Authors’ full names.
+    AuthorName authors = 5;
+
+    // The date when a book was borrowed.
+    spine.time.LocalDate when_taken = 6;
+
+    // The date when a book should be returned.
+    spine.time.LocalDate when_due = 7;
+
+    // The time when a book was returned.
+    google.protobuf.Timestamp when_returned = 8;
+}
+
+// The projection state of one user's action.
+//
+// The event target identifier choise depends on the type of the event.
+// For the events between a user and an inventory item - the inventory item ID is chosen.
+// For the events between a user and a book - the book ID is chosen.
+//
+message ReaderEventLogView {
+
+    // The identifier of `ReaderEventLogView` projection.
+    ReaderEventLogViewId id = 1;
+
+    // The identifier of a reader.
+    UserId user_id = 2;
+
+    // The item could have one of the following identifiers.
+    oneof event_target_id {
+
+        // The identifier of an inventory item.
+        InventoryItemId item_id = 3;
+
+        // The identifier of a book.
+        BookId book_id = 4;
+    }
+
+    // The book title.
+    BookTitle title = 5;
+
+    // Authors’ full names.
+    AuthorName authors = 6;
+
+    // The type of an event.
+    string event_type = 7;
+
+    // The time when an event was emitted.
+    google.protobuf.Timestamp when_emitted = 8;
+}
+
+// The projection state of a one lost books.
 //
 message LostBookView {
 
-    // The list of all books that were lost.
-    repeated LostBook lost_books = 1;
+    // The identifier of an inventory item.
+    InventoryItemId item_id = 1;
+
+    // The book title.
+    BookTitle title = 2;
+
+    // Authors’ full names.
+    AuthorName authors = 3;
+
+    // The name of a reader who lost.
+    spine.people.PersonName user_name = 4;
+
+    // The email address of a reader who lost.
+    spine.net.EmailAddress email = 5;
+
+    // The date when reported.
+    spine.time.LocalDate when_reported = 6;
 }
 
-// All users and their summary.
+//  The projection state of an inventory.
 //
-// Subscribed on following events:
-// 1. `BookBorrowed`
-// 2. `BookReturned`
-// 3. `ReservationAdded`
-// 4. `LoanBecameOverdue`
-// 5. `BookLost`
-// 6. `LoanPeriodExtended`
-// 7. `ReservationCanceled`
-//
-message ReadersView {
-
-    // The list of a specific user’s summary.
-    repeated UserDetails user_details = 1;
-}
-
-// Contains information about all reservations of a particular book.
-//
-// Subscribed on following events:
-// 1. `ReservationAdded`
-// 2. `ReservationCanceled`
-//
-message ReservationView {
+message BookInventoryView {
 
     // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
-    // Details of a reservation.
-    ReservationDetails reservation_details = 2;
+    // The book title.
+    BookTitle title = 2;
+
+    // Authors' names.
+    AuthorName author = 3;
+
+    // The collection of inventory items.
+    repeated InventoryItemState item_state = 4;
 }
 
-// The full user’s history includes all user’s events.
+// The projection state of a book details view.
 //
-// Subscribed on following events:
-// 1. `BookBorrowed`
-// 2. `BookReturned`
-// 3. `LoanPeriodExtended`
-// 4. `LoanBecameOverdue`
-// 5. `BookLost`
-// 6. `BookReserved`
-// 7. `ReservationCanceled`
-//
-message ExtendedUserHistoryView {
+message BookDetailsView {
 
-    // The  identifier of a user.
-    UserId user_id = 1;
+    // The identifier of a book.
+    BookId id = 1;
 
-    // A list of all user’s actions.
-    repeated InventoryItemRecord inventory_item_record = 2;
+    // Book details.
+    BookDetails book_details = 2;
 }
 
-// The compact version of the a user history.
+// The projection state of a one book reservation.
 //
-// Contains all user's loans.
-//
-// Subscribed on following events:
-// 1. `BookBorrowed`
-// 2. `BookReturned`
-// 3. `ExtendLoanPeriod`
-// 4. `LoanBecameOverdue`
-//
-message CompactUserHistoryView {
+message BookReservationView {
 
-    // Details contains a taken on, due on, and returned on date.
-    repeated LoanDetailsHistory loan_details = 1;
+    // The identifier of a one book reservation.
+    BookReservationViewId id = 1;
+
+    // The identifier of a book.
+    BookId book_id = 2;
+
+    // The name of a reader.
+    spine.people.PersonName user_name = 3;
+
+    // The email address of a reader.
+    spine.net.EmailAddress email = 4;
+
+    // The time when a book was reserved.
+    google.protobuf.Timestamp when_reserved = 5;
 }
 
-// The view that contains a book cover.
+// The projection state of a one loan.
 //
-// Subscribed on following events:
-// 1. `BookAdded`
-// 2. `BookRemoved`
-// 3. `BookUpdated`
+message BookLoanView {
+
+    // The identifier of a one loan view.
+    BookLoanViewId id = 1;
+
+    // The identifier of a book.
+    BookId book_id = 2;
+
+    // The identifier of an inventory item.
+    InventoryItemId item_id = 3;
+
+    // The name of a reader.
+    spine.people.PersonName user_name = 4;
+
+    // The email address of a reader.
+    spine.net.EmailAddress email = 5;
+
+    // The date when a book was borrowed.
+    spine.time.LocalDate when_taken = 6;
+
+    // The date when a book should be returned.
+    spine.time.LocalDate when_due = 7;
+}
+
+// The projection state of a one action with book.
 //
-message CoverView {
+message BookEventLogView {
 
-    // The book identifier.
-    BookId book_id = 1;
+    // The identifier of a one action with book.
+    BookEventLogViewId id = 1;
 
-    // The URL for a book cover.
-    spine.net.Url book_cover_url = 2;
+    // The identifier of a book.
+    BookId book_id = 2;
+
+    // The identifier of an inventory item.
+    InventoryItemId item_id = 3;
+
+    // The name of a reader.
+    spine.people.PersonName user_name = 4;
+
+    // The email address of a reader.
+    spine.net.EmailAddress email = 5;
+
+    // The type of an event.
+    string event_type = 6;
+
+    // The time when an event was emitted.
+    google.protobuf.Timestamp when_emitted = 7;
 }
