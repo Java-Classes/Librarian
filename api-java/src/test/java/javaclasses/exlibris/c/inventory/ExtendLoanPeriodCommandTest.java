@@ -21,24 +21,34 @@
 package javaclasses.exlibris.c.inventory;
 
 import com.google.common.base.Throwables;
+import com.google.protobuf.Message;
 import javaclasses.exlibris.Inventory;
+import javaclasses.exlibris.LoanId;
+import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BorrowBook;
 import javaclasses.exlibris.c.ExtendLoanPeriod;
-import javaclasses.exlibris.c.ReserveBook;
+import javaclasses.exlibris.c.ForbidLoansExtension;
+import javaclasses.exlibris.c.LoanPeriodExtended;
+import javaclasses.exlibris.c.MarkLoanOverdue;
+import javaclasses.exlibris.c.MarkLoanShouldReturnSoon;
 import javaclasses.exlibris.c.rejection.CannotExtendLoanPeriod;
-import javaclasses.exlibris.testdata.InventoryCommandFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
+import java.util.List;
 
 import static io.spine.server.aggregate.AggregateMessageDispatcher.dispatchCommand;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.extendLoanPeriodInstance;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryItemId;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.forbidLoansExtensionInstance;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.inventoryId;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.markLoanOverdue;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.markLoanShouldReturnSoon;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.userId2;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,6 +56,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Paul Ageyev
+ * @author Yegor Udovchenko
  */
 @DisplayName("ExtendLoanPeriod command should be interpreted by InventoryAggregate and")
 public class ExtendLoanPeriodCommandTest extends InventoryCommandTest<ExtendLoanPeriod> {
@@ -57,17 +68,38 @@ public class ExtendLoanPeriodCommandTest extends InventoryCommandTest<ExtendLoan
     }
 
     @Test
-    @DisplayName("extend a loan period")
-    void extendLoanPeriod() {
-        dispatchAppendInventory();
-
-        final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
-
-        dispatchCommand(aggregate, envelopeOf(borrowBook));
+    @DisplayName("produce LoanPeriodExtended event")
+    void produceEvent() {
+        borrowBook();
         final Inventory state = aggregate.getState();
+        final LoanId loanId = state.getLoans(0)
+                                   .getLoanId();
+        makeLoanOverdue(loanId);
 
+        final ExtendLoanPeriod extendLoanPeriod = extendLoanPeriodInstance(inventoryId,
+                                                                           loanId,
+                                                                           userId);
+        final List<? extends Message> messageList = dispatchCommand(aggregate,
+                                                                    envelopeOf(extendLoanPeriod));
+        assertEquals(1, messageList.size());
+        assertEquals(LoanPeriodExtended.class, messageList.get(0)
+                                                          .getClass());
+
+        final LoanPeriodExtended loanExtended = (LoanPeriodExtended) messageList.get(0);
+
+        assertEquals(inventoryId, loanExtended.getInventoryId());
+        assertEquals(userId, loanExtended.getUserId());
+    }
+
+    @Test
+    @DisplayName("extend a loan period of overdue loan")
+    void extendLoanPeriodOfOverdueLoan() {
+        borrowBook();
+        final Inventory state = aggregate.getState();
+        final LoanId loanId = state.getLoans(0)
+                                   .getLoanId();
+        makeLoanOverdue(loanId);
         long secondsInTwoWeeks = 60 * 60 * 24 * 14;
-
         assertEquals(state.getLoans(0)
                           .getWhenDue()
                           .getSeconds(), state.getLoans(0)
@@ -82,52 +114,120 @@ public class ExtendLoanPeriodCommandTest extends InventoryCommandTest<ExtendLoan
                                                                            userId);
 
         dispatchCommand(aggregate, envelopeOf(extendLoanPeriod));
-
-        final Inventory state2 = aggregate.getState();
-
-        assertEquals(oldDueDate + secondsInTwoWeeks, state2.getLoans(0)
-                                                           .getWhenDue()
-                                                           .getSeconds());
+        final Inventory stateAfterExtension = aggregate.getState();
+        assertEquals(oldDueDate + secondsInTwoWeeks, stateAfterExtension.getLoans(0)
+                                                                        .getWhenDue()
+                                                                        .getSeconds());
     }
 
     @Test
-    @DisplayName("throw CannotExtendLoanPeriod rejection upon " +
-            "an attempt to extend loan period if the book has already been reserved or borrowed")
-    void notExtendLoanPeriod() {
-        dispatchAppendInventory();
-
-        final BorrowBook borrowBook = borrowBookInstance(inventoryId, inventoryItemId, userId);
-
-        dispatchCommand(aggregate, envelopeOf(borrowBook));
+    @DisplayName("extend a loan period of should return soon loan")
+    void extendLoanPeriodOfShouldReturnSoonLoan() {
+        borrowBook();
         final Inventory state = aggregate.getState();
-
+        final LoanId loanId = state.getLoans(0)
+                                   .getLoanId();
+        makeLoanShouldReturnSoon(loanId);
         long secondsInTwoWeeks = 60 * 60 * 24 * 14;
-
         assertEquals(state.getLoans(0)
                           .getWhenDue()
                           .getSeconds(), state.getLoans(0)
                                               .getWhenTaken()
                                               .getSeconds() + secondsInTwoWeeks);
-
-        final ReserveBook reserveBook = InventoryCommandFactory.reserveBookInstance(userId2, inventoryId);
-        dispatchCommand(aggregate, envelopeOf(reserveBook));
-
+        long oldDueDate = state.getLoans(0)
+                               .getWhenDue()
+                               .getSeconds();
         final ExtendLoanPeriod extendLoanPeriod = extendLoanPeriodInstance(inventoryId,
                                                                            state.getLoans(0)
                                                                                 .getLoanId(),
                                                                            userId);
 
+        dispatchCommand(aggregate, envelopeOf(extendLoanPeriod));
+        final Inventory stateAfterExtension = aggregate.getState();
+        assertEquals(oldDueDate + secondsInTwoWeeks, stateAfterExtension.getLoans(0)
+                                                                        .getWhenDue()
+                                                                        .getSeconds());
+    }
+
+    @Test
+    @DisplayName("throw CannotExtendLoanPeriod rejection upon " +
+            "an attempt to extend loan period of non existing loan")
+    void extendMissingLoan() {
+        final LoanId fakeLoanId = LoanId.newBuilder()
+                                        .setValue(0)
+                                        .build();
+        final ExtendLoanPeriod extendLoanPeriod = extendLoanPeriodInstance(inventoryId,
+                                                                           fakeLoanId,
+                                                                           userId);
         final Throwable t = assertThrows(Throwable.class,
                                          () -> dispatchCommand(aggregate,
                                                                envelopeOf(extendLoanPeriod)));
-
         final Throwable cause = Throwables.getRootCause(t);
-
         assertThat(cause, instanceOf(CannotExtendLoanPeriod.class));
     }
 
-    private void dispatchAppendInventory() {
+    @Test
+    @DisplayName("throw CannotExtendLoanPeriod rejection upon " +
+            "an attempt to extend loan period of a recent loan")
+    void extendRecentLoan() {
+        borrowBook();
+        final Inventory state = aggregate.getState();
+        final LoanId loanId = state.getLoans(0)
+                                   .getLoanId();
+        final ExtendLoanPeriod extendLoanPeriod = extendLoanPeriodInstance(inventoryId,
+                                                                           loanId,
+                                                                           userId);
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(extendLoanPeriod)));
+        final Throwable cause = Throwables.getRootCause(t);
+        assertThat(cause, instanceOf(CannotExtendLoanPeriod.class));
+    }
+
+    @Test
+    @DisplayName("throw CannotExtendLoanPeriod rejection upon " +
+            "an attempt to extend loan which is forbidden for extension")
+    void extendLoanNotAllowedForExtension() {
+        borrowBook();
+        final Inventory state = aggregate.getState();
+        final UserId whoBorrowed = state.getLoans(0)
+                                        .getWhoBorrowed();
+        final LoanId loanId = state.getLoans(0)
+                                   .getLoanId();
+        List<UserId> borrowers = Collections.singletonList(whoBorrowed);
+        final MarkLoanOverdue markLoanOverdue = markLoanOverdue(loanId, inventoryId);
+
+        dispatchCommand(aggregate, envelopeOf(markLoanOverdue));
+
+        final ForbidLoansExtension forbidLoansExtension = forbidLoansExtensionInstance(inventoryId,
+                                                                                       borrowers);
+        dispatchCommand(aggregate, envelopeOf(forbidLoansExtension));
+
+        final ExtendLoanPeriod extendLoanPeriod = extendLoanPeriodInstance(inventoryId,
+                                                                           loanId,
+                                                                           userId);
+        final Throwable t = assertThrows(Throwable.class,
+                                         () -> dispatchCommand(aggregate,
+                                                               envelopeOf(extendLoanPeriod)));
+        final Throwable cause = Throwables.getRootCause(t);
+        assertThat(cause, instanceOf(CannotExtendLoanPeriod.class));
+    }
+
+    private void borrowBook() {
         final AppendInventory appendInventory = appendInventoryInstance();
         dispatchCommand(aggregate, envelopeOf(appendInventory));
+        final BorrowBook borrowBook = borrowBookInstance();
+        dispatchCommand(aggregate, envelopeOf(borrowBook));
+    }
+
+    private void makeLoanOverdue(LoanId loanId) {
+        final MarkLoanOverdue markLoanOverdue = markLoanOverdue(loanId, inventoryId);
+        dispatchCommand(aggregate, envelopeOf(markLoanOverdue));
+    }
+
+    private void makeLoanShouldReturnSoon(LoanId loanId) {
+        final MarkLoanShouldReturnSoon markLoanOverdue = markLoanShouldReturnSoon(loanId,
+                                                                                  inventoryId);
+        dispatchCommand(aggregate, envelopeOf(markLoanOverdue));
     }
 }

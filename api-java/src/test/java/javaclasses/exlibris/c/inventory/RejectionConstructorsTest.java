@@ -29,6 +29,12 @@ import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 public class RejectionConstructorsTest {
 
     @Test
+    @DisplayName("InventoryAggregateRejections has a private constructor")
+    void InventoryAggregateRejectionsHasPrivateConstructor() {
+        assertHasPrivateParameterlessCtor(InventoryAggregateRejections.class);
+    }
+
+    @Test
     @DisplayName("ReturnBookRejection has a private constructor")
     void ReturnBookRejectionHasPrivateConstructor() {
         assertHasPrivateParameterlessCtor(InventoryAggregateRejections.ReturnBookRejection.class);
@@ -41,20 +47,14 @@ public class RejectionConstructorsTest {
     }
 
     @Test
-    @DisplayName("InventoryAggregateRejections has a private constructor")
-    void InventoryAggregateRejectionsHasPrivateConstructor() {
-        assertHasPrivateParameterlessCtor(InventoryAggregateRejections.class);
+    @DisplayName("BorrowBookRejection has a private constructor")
+    void BorrowBookRejectionHasPrivateConstructor() {
+        assertHasPrivateParameterlessCtor(InventoryAggregateRejections.BorrowBookRejection.class);
     }
 
     @Test
     @DisplayName("BookAggregateRejections has a private constructor")
     void  BookAggregateRejectionsHasPrivateConstructor() {
         assertHasPrivateParameterlessCtor(BookAggregateRejections.class);
-    }
-
-    @Test
-    @DisplayName("BorrowBookRejection has a private constructor")
-    void BorrowBookRejectionHasPrivateConstructor() {
-        assertHasPrivateParameterlessCtor(InventoryAggregateRejections.BorrowBookRejection.class);
     }
 }

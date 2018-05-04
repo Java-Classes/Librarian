@@ -67,11 +67,11 @@ public class InventoryRemovedTest extends InventoryCommandTest<AddBook> {
 
         final Optional<Repository> repository = sourceContext.findRepository(Inventory.class);
 
+        final InventoryId inventoryId = InventoryId.newBuilder()
+                                                   .setBookId(bookRemoved.getBookId())
+                                                   .build();
         final Optional<InventoryAggregate> optional = repository.get()
-                                                                .find(InventoryId.newBuilder()
-                                                                                 .setBookId(
-                                                                                         bookRemoved.getBookId())
-                                                                                 .build());
+                                                                .find(inventoryId);
 
         assertNotNull(optional);
 

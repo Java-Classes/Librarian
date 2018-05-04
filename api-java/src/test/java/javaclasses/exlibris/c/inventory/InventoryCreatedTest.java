@@ -70,11 +70,11 @@ public class InventoryCreatedTest {
 
         final Optional<Repository> repository = sourceContext.findRepository(Inventory.class);
 
+        final InventoryId inventoryId = InventoryId.newBuilder()
+                                                   .setBookId(bookAdded.getBookId())
+                                                   .build();
         final Optional<InventoryAggregate> optional = repository.get()
-                                                                .find(InventoryId.newBuilder()
-                                                                                 .setBookId(
-                                                                                         bookAdded.getBookId())
-                                                                                 .build());
+                                                                .find(inventoryId);
         assertNotNull(optional);
 
         assertEquals(optional.get()

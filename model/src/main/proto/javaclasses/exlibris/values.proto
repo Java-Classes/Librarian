@@ -55,20 +55,23 @@ message Isbn62 {
 //
 message BookDetails {
 
+    // The International Standard Book Number.
+    Isbn isbn = 1;
+
     // The URL of a book cover.
-    spine.net.Url book_cover_url = 1;
+    spine.net.Url book_cover_url = 2;
 
     // The DTO of a book title.
-    BookTitle title = 2;
+    BookTitle title = 3;
 
     // Authors' names.
-    AuthorName author = 3;
+    AuthorName author = 4;
 
     // The DTO of a book synopsis.
-    BookSynopsis synopsis = 4;
+    BookSynopsis synopsis = 5;
 
     // A list of book categories.
-    repeated Category categories = 5;
+    repeated Category categories = 6;
 }
 
 // The URL of a book cover.
@@ -76,6 +79,14 @@ message BookDetails {
 message BookCoverURL {
 
     // The link to the image storage place.
+    string value = 1;
+}
+
+// The URL of a book cover.
+//
+message QRcodeURL {
+
+    // The link to the QR-code storage place.
     string value = 1;
 }
 
@@ -145,7 +156,31 @@ message WriteOffReason {
 //
 message BookDetailsChange {
 
+    // The previous information about a book.
     BookDetails previous_book_details = 1;
-    BookDetails new_book_details = 2;
 
+    // The updated information about a book.
+    BookDetails new_book_details = 2;
+}
+
+//The International Standard Book Number.
+//
+message Isbn {
+
+    // The string value that contains an ISBN.
+    string value = 1;
+}
+
+// A book item loan status values.
+//
+enum LoanStatus {
+
+    // Used as an undefined value marker.
+    LOAN_UNDEFINED = 0;
+
+    LOAN_RECENT = 1;
+
+    LOAN_OVERDUE = 2;
+
+    LOAN_SOULD_RETURN_SOON = 3;
 }
