@@ -22,9 +22,8 @@ package javaclasses.exlibris.c.inventory;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
-import com.google.protobuf.Message;
 import io.spine.server.aggregate.AggregateRepository;
-import io.spine.server.route.EventRoute;
+import io.spine.server.route.EventRouting;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.c.BookAdded;
@@ -33,7 +32,6 @@ import javaclasses.exlibris.c.BookRemoved;
 import java.util.Set;
 
 import static com.google.common.collect.ImmutableSet.of;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
 
 /**
  * Repository for {@link javaclasses.exlibris.Inventory}
@@ -44,7 +42,7 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
 public class InventoryRepository extends AggregateRepository<InventoryId, InventoryAggregate> {
 
     /**
-     * Returns instance of the VendorRepository
+     * Returns instance of the InventoryRepository
      */
     public static InventoryRepository getRepository() {
         return InventoryRepositorySingleton.INSTANCE.value;
@@ -64,15 +62,14 @@ public class InventoryRepository extends AggregateRepository<InventoryId, Invent
     }
 
     private InventoryRepository() {
-        getEventRouting().replaceDefault((EventRoute<InventoryId, Message>) (message, context) -> {
-            if (message instanceof BookAdded) {
-                return getInventoryIds((BookAdded) message);
-            }
-            if (message instanceof BookRemoved) {
-                return getInventoryIds((BookRemoved) message);
-            }
-            throw newIllegalArgumentException("Cannot route the unreacted event.", message);
-        });
+        super();
+        setUpEventRouting();
+    }
+
+    private void setUpEventRouting() {
+        final EventRouting<InventoryId> routing = getEventRouting();
+        routing.route(BookAdded.class, (message, context) -> getInventoryIds(message));
+        routing.route(BookRemoved.class, (message, context) -> getInventoryIds(message));
     }
 
     private static Set<InventoryId> getInventoryIds(BookRemoved message) {

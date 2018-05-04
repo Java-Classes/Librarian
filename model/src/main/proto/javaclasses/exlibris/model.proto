@@ -92,7 +92,7 @@ message InventoryItem {
 
     // The user who is related to the book.
     //
-    // Is defined when a book is 'borrowed' or 'lost'
+    // Is defined when a book is 'borrowed' or 'lost'.
     UserId user_id = 7;
 }
 
@@ -111,6 +111,9 @@ message Reservation {
 
     // The time when a book was reserved.
     google.protobuf.Timestamp when_created = 4;
+
+    // The time when a reservation might be satisfied.
+    google.protobuf.Timestamp when_expected = 5;
 }
 
 // The model of a loan.
@@ -144,16 +147,30 @@ message Loan {
 
 // The model of a reservation queue process manager.
 //
+// Reacts on all aggregate events that signalize the available inventory item occurs in
+// the inventory. As a result of reacting to those events, process manager decides the
+// inventory item function: to become available for free borrowing(dispatch MarkBookAsAvailable)
+// or to satisfy someone's reservation(dispatch SatisfyReservation).
+//
+// The reservation choice depends on its position in the reservations list in the aggregate state.
+// The eldest one is chosen.
+//
 message ReservationQueue {
 
-    // The identifier of a process manager
+    // The identifier of a process manager.
     ReservationQueueId id = 1;
 }
 
 // The model of a loans extension process manager.
 //
+// Enters into work when the reservation list changes its state:
+// ReservationAdded, BookReadyToPickup, ReservationCanceled
+//
+// As a result of reacting to those events, process manager tries to provide each unsatisfied
+// reservation with one forbidden for extension loan.
+//
 message LoansExtension {
 
-    // The identifier of a process manager
+    // The identifier of a process manager.
     LoansExtensionId id = 1;
 }

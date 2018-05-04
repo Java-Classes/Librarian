@@ -132,11 +132,11 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     private static final int LOAN_PERIOD = 60 * 60 * 24 * 14;
 
     /**
-     * Borrow period.
+     * Borrow period. After this time satisfied reservation becomes expired.
      *
-     * <p>secondsInMinute * minutesInHours * hoursInTwoDays
+     * <p>secondsInMinute * minutesInHours * hoursInDay * twoDays
      */
-    private static final int OPEN_FOR_BORROW_PERIOD = 60 * 60 * 48;
+    private static final int OPEN_FOR_BORROW_PERIOD = 60 * 60 * 24 * 2;
 
     /**
      * Creates a new instance.
@@ -187,8 +187,9 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      *
      * @param cmd command to reserve a book.
      * @return a {@code ReservationAdded} event.
-     * @throws BookAlreadyBorrowed if a book is already borrowed by a user.
-     * @throws BookAlreadyReserved if a reservation already exists.
+     * @throws BookAlreadyBorrowed        if a book is already borrowed by a user.
+     * @throws BookAlreadyReserved        if a reservation already exists.
+     * @throws CannotReserveAvailableBook upon an attempt to reserve available book.
      */
     @Assign
     ReservationAdded handle(ReserveBook cmd) throws BookAlreadyBorrowed,
@@ -224,15 +225,15 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      *           allowed and book is reserved by a user (this reservation should be satisfied).
      * </ul>
      *
-     * @param cmd command to borrow book.
-     * @return the {@link Pair} of the events.
+     * @param cmd command to borrow the book.
+     * @return the {@link Pair} of events.
      * @throws BookAlreadyBorrowed if a book is already borrowed ba a user.
      * @throws NonAvailableBook in following cases:
      * <ul>
      *      <li>if this item is already borrowed by somebody
      *      <li>user has the reservation for this book and it is not satisfied
      *      <li>user has no reservation for this book but the satisfied reservations count for this
-     *          book is greater or equal the `in library` items count.
+     *          book is greater or equal the `in library` items count(no items free for borrowing).
      * </ul>
      */ 
     // @formatter:on
@@ -250,7 +251,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             throw nonAvailableBook(cmd);
         }
 
-        final BookBorrowed bookBorrowedEvent = createBookBorrowedEvent(cmd);
         final List<Reservation> reservations = getState().getReservationsList();
 
         if (isBookReservedByUser(userId)) {
@@ -258,15 +258,21 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
             if (!reservation.getIsSatisfied()) {
                 throw nonAvailableBook(cmd);
             }
+            final int availableItemsCount = getAvailableInventoryItemsCount();
+            final BookBorrowed bookBorrowedEvent =
+                    createBookBorrowedEvent(cmd, availableItemsCount);
             final ReservationBecameLoan reservationBecameLoanEvent =
                     createReservationBecameLoanEvent(cmd);
-            Pair result = Pair.of(bookBorrowedEvent, reservationBecameLoanEvent);
+            final Pair result = Pair.of(bookBorrowedEvent, reservationBecameLoanEvent);
             return result;
         }
 
         if (!isThereInventoryItemsFreeForBorrowing()) {
             throw nonAvailableBook(cmd);
         }
+        final int availableItemsCount = getAvailableInventoryItemsCount();
+        final BookBorrowed bookBorrowedEvent =
+                createBookBorrowedEvent(cmd, availableItemsCount - 1);
         final Pair result = Pair.withNullable(bookBorrowedEvent, null);
         return result;
     }
@@ -418,7 +424,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      *
      * <p>For details see {@link ForbidLoansExtension}.
      *
-     * @param cmd command to allow loans extension.
+     * @param cmd command to forbid loans extension.
      * @return a {@code LoansExtensionForbidden} event.
      */
     @Assign
@@ -433,7 +439,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      *
      * <p>For details see {@link SatisfyReservation}.
      *
-     * @param cmd command to allow loans extension.
+     * @param cmd command to satisfy users reservation.
      * @return a {@code BookReadyToPickup} event.
      */
     @Assign
@@ -447,7 +453,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      *
      * <p>For details see {@link MarkBookAsAvailable}.
      *
-     * @param cmd command to allow loans extension.
+     * @param cmd command to make book public available.
      * @return a {@code BookBecameAvailable} event.
      */
     @Assign
@@ -499,9 +505,10 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Apply
     void emptyEvent(Empty event) {
         // Applier for empty event.
-        // Used when BorrowBook handler returns two events:
+        //
+        // Used when BorrowBook command handler returns two events:
         // BookBorrowed, Empty
-        // to handle Empty event without changing aggregate state.
+        // Handle Empty event without changing aggregate state.
     }
 
     @Apply
@@ -530,7 +537,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     @Apply
     void bookBecameAvailable(BookBecameAvailable event) {
         // BookBecameAvailable event does not cause aggregate state changes.
-        // Used to notify application read side about free
+        // Used to notify application read side about available items count change
     }
 
     @Apply
@@ -573,32 +580,29 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                     .build();
         final Timestamp whenCreated = event.getWhenCreated();
         final UserId forWhomReserved = event.getForWhomReserved();
-        final Reservation newReservation = Reservation.newBuilder()
-                                                      .setBookId(bookId)
-                                                      .setWhenCreated(whenCreated)
-                                                      .setWhoReserved(forWhomReserved)
-                                                      .setIsSatisfied(false)
-                                                      .build();
-        getBuilder().addReservations(newReservation);
+        final Reservation.Builder reservation = Reservation.newBuilder()
+                                                           .setBookId(bookId)
+                                                           .setWhenCreated(whenCreated)
+                                                           .setWhoReserved(forWhomReserved)
+                                                           .setIsSatisfied(false);
+        if (event.hasWhenExpected()) {
+            final Timestamp whenExpected = event.getWhenExpected();
+            reservation.setWhenExpected(whenExpected);
+        }
+        getBuilder().addReservations(reservation.build());
     }
 
-    /**
-     * Applies a {@code BookBorrowed} event.
-     *
-     * <p>For details see {@link BookBorrowed}.
-     *
-     * @param event a {@code BookBorrowed} event message.
-     */
     @Apply
     void bookBorrowed(BookBorrowed event) {
         final List<InventoryItem> inventoryItems = getBuilder().getInventoryItems();
         final InventoryItemId inventoryItemId = event.getInventoryItemId();
         final int itemPosition = getInventoryItemIndexById(inventoryItemId, inventoryItems);
         final InventoryItem inventoryItem = inventoryItems.get(itemPosition);
+        final UserId whoBorrowed = event.getWhoBorrowed();
         final InventoryItem borrowedItem = InventoryItem.newBuilder(inventoryItem)
                                                         .clearInLibrary()
                                                         .setBorrowed(true)
-                                                        .setUserId(event.getWhoBorrowed())
+                                                        .setUserId(whoBorrowed)
                                                         .build();
         final Timestamp whenBorrowed = event.getWhenBorrowed();
         final Timestamp whenDue = event.getWhenDue();
@@ -607,7 +611,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                               .setLoanId(event.getLoanId())
                               .setInventoryItemId(inventoryItemId)
                               .setStatus(LOAN_RECENT)
-                              .setWhoBorrowed(event.getWhoBorrowed())
+                              .setWhoBorrowed(whoBorrowed)
                               .setWhenTaken(whenBorrowed)
                               .setWhenDue(whenDue)
                               .setIsAllowedExtension(true)
@@ -629,12 +633,12 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         updateLoanStatus(loanId, LOAN_SOULD_RETURN_SOON);
     }
 
-    private void updateLoanStatus(LoanId loanId, LoanStatus loanStatus) {
+    private void updateLoanStatus(LoanId loanId, LoanStatus newLoanStatus) {
         final List<Loan> loans = getBuilder().getLoans();
         final int loanPosition = getLoanIndexByLoanId(loanId, loans);
         final Loan loan = loans.get(loanPosition);
         final Loan updatedLoan = Loan.newBuilder(loan)
-                                     .setStatus(loanStatus)
+                                     .setStatus(newLoanStatus)
                                      .build();
         getBuilder().setLoans(loanPosition, updatedLoan);
     }
@@ -811,17 +815,23 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return inventoryDecreased;
     }
 
-    // TODO 4/26/2018[yegor.udovchenko]: Set when expected.
     private ReservationAdded createReservationAddedEvent(ReserveBook cmd) {
         final InventoryId inventoryId = cmd.getInventoryId();
         final UserId userId = cmd.getUserId();
-        final ReservationAdded reservationAdded = ReservationAdded.newBuilder()
-                                                                  .setInventoryId(inventoryId)
-                                                                  .setForWhomReserved(userId)
-                                                                  .setWhenCreated(getCurrentTime())
-//                                                                  .setWhenExpected()
-                                                                  .build();
-        return reservationAdded;
+        final List<Loan> loans = getState().getLoansList();
+        final List<Reservation> reservations = getState().getReservationsList();
+        final Optional<Timestamp> readyToPickUpExpectedTime =
+                getReadyToPickUpExpectedTime(loans, reservations);
+        final ReservationAdded.Builder reservationAddedBuilder =
+                ReservationAdded.newBuilder()
+                                .setInventoryId(inventoryId)
+                                .setForWhomReserved(userId)
+                                .setWhenCreated(getCurrentTime());
+
+        if (readyToPickUpExpectedTime.isPresent()) {
+            reservationAddedBuilder.setWhenExpected(readyToPickUpExpectedTime.get());
+        }
+        return reservationAddedBuilder.build();
     }
 
     private LoansExtensionAllowed createLoansExtensionAllowedEvent(List<UserId> borrowers) {
@@ -846,7 +856,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         return loansExtensionForbidden;
     }
 
-    private BookBorrowed createBookBorrowedEvent(BorrowBook cmd) {
+    private BookBorrowed createBookBorrowedEvent(BorrowBook cmd, int availableItemsCount) {
         final InventoryId inventoryId = cmd.getInventoryId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
         final UserId userId = cmd.getUserId();
@@ -857,9 +867,6 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final Timestamp whenDue = Timestamp.newBuilder()
                                            .setSeconds(whenBorrowed.getSeconds() + LOAN_PERIOD)
                                            .build();
-        // current available count should be decreased to match its value
-        // after applying this event.
-        final int availableItemsCount = getAvailableInventoryItemsCount() - 1;
         final BookBorrowed bookBorrowed = BookBorrowed.newBuilder()
                                                       .setInventoryId(inventoryId)
                                                       .setInventoryItemId(inventoryItemId)
@@ -1017,26 +1024,26 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
     private boolean isBookReservedByUser(UserId userId) {
         final List<Reservation> reservations = getState().getReservationsList();
-        final boolean any = Iterables.any(reservations, item -> item.getWhoReserved()
-                                                                    .equals(userId));
-        return any;
+        final boolean isReserved = Iterables.any(reservations, item -> item.getWhoReserved()
+                                                                           .equals(userId));
+        return isReserved;
     }
 
     private boolean isBookBorrowedByUser(UserId userId) {
         final List<Loan> loans = getState().getLoansList();
-        final boolean any = Iterables.any(loans, item -> item.getWhoBorrowed()
-                                                             .equals(userId));
-        return any;
+        final boolean isBorrowed = Iterables.any(loans, item -> item.getWhoBorrowed()
+                                                                    .equals(userId));
+        return isBorrowed;
     }
 
     private boolean isInventoryItemBorrowedByUser(InventoryItemId itemId, UserId userId) {
         final List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
-        final boolean any = Iterables.any(inventoryItems,
-                                          item -> item.getUserId()
-                                                      .equals(userId) &&
-                                                  item.getInventoryItemId()
-                                                      .equals(itemId));
-        return any;
+        final boolean isBorrowed = Iterables.any(inventoryItems,
+                                                 item -> item.getUserId()
+                                                             .equals(userId) &&
+                                                         item.getInventoryItemId()
+                                                             .equals(itemId));
+        return isBorrowed;
     }
 
     private boolean isInventoryItemBorrowed(InventoryItemId itemId) {
@@ -1048,16 +1055,16 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
     private boolean inventoryItemExists(InventoryItemId inventoryItemId) {
         final List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
-        final boolean any = Iterables.any(inventoryItems, item -> item.getInventoryItemId()
-                                                                      .equals(inventoryItemId));
-        return any;
+        final boolean exists = Iterables.any(inventoryItems, item -> item.getInventoryItemId()
+                                                                         .equals(inventoryItemId));
+        return exists;
     }
 
     private boolean loanExists(LoanId loanId) {
         final List<Loan> loans = getState().getLoansList();
-        final boolean any = Iterables.any(loans, item -> item.getLoanId()
-                                                             .equals(loanId));
-        return any;
+        final boolean exsists = Iterables.any(loans, item -> item.getLoanId()
+                                                                 .equals(loanId));
+        return exsists;
     }
 
     private Reservation getReservationByUserId(UserId userId, List<Reservation> reservations) {
@@ -1118,5 +1125,50 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                                        .filter(InventoryItem::getInLibrary)
                                                        .count();
         return inLibraryCount - satisfiedReservationsCount;
+    }
+
+    // @formatter:off
+    /**
+     * Calculates the expected time when the reservation should be satisfied upon
+     * the {@code ReserveBook} command handling.
+     *
+     * All following cases are provided when the reservation is allowed:
+     * <ul>
+     *      <li>if the loans list is empty(book has no items) the expected time cannot be calculated.
+     *          {@code Optional.absent()} is returned.
+     *      <li>if there are loans allowed for extension in the list, the expected time equals
+     *          to the first allowed for extension loan due time.
+     *      <li>if there are no loans allowed for extension, the expected time is calculated  as:
+     *          lastLoanDueTime + (unsatisfiedReservationsCount - loansCount + 1)*LOAN_PERIOD
+     *</ul>
+     *
+     * @param loans the list of loans
+     * @param reservations the list of reservations
+     * @return {@code Optional} expected time when the reservation should be satisfied.
+     */
+    // @formatter:on
+    private Optional<Timestamp> getReadyToPickUpExpectedTime(List<Loan> loans,
+                                                             List<Reservation> reservations) {
+        if (loans.isEmpty()) {
+            return Optional.absent();
+        }
+
+        final int index = Iterables.indexOf(loans, Loan::getIsAllowedExtension);
+        if (index != -1) {
+            final Loan firstAllowedForExtensionLoan = loans.get(index);
+            return Optional.of(firstAllowedForExtensionLoan.getWhenDue());
+        }
+
+        final Loan lastLoan = loans.get(loans.size() - 1);
+        final int unsatisfiedReservationsCount = (int) reservations.stream()
+                                                                   .filter(item -> !item.getIsSatisfied())
+                                                                   .count();
+        final long expectedTimeSeconds = lastLoan.getWhenDue()
+                                                 .getSeconds() +
+                (unsatisfiedReservationsCount - loans.size() + 1) * LOAN_PERIOD;
+        final Timestamp expectedTime = Timestamp.newBuilder()
+                                                .setSeconds(expectedTimeSeconds)
+                                                .build();
+        return Optional.of(expectedTime);
     }
 }

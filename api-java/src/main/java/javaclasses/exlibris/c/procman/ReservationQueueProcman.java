@@ -48,67 +48,82 @@ import java.util.List;
 public class ReservationQueueProcman extends ProcessManager<ReservationQueueId, ReservationQueue, ReservationQueueVBuilder> {
 
     /**
-     * Creates a new instance.
-     *
-     * @param id an ID for the new instance
-     * @throws IllegalArgumentException if the ID type is unsupported
+     * As long as the {@code ReservationQueueProcman} is an {@code InventoryAggregate}
+     * service and does not hold model state it is a singleton. All subscribed events
+     * are routed to the single instance.
      */
-    protected ReservationQueueProcman(ReservationQueueId id) {
-        super(id);
-    }
-
     protected static final ReservationQueueId ID =
             ReservationQueueId.newBuilder()
                               .setValue("ReservationQueueSingleton")
                               .build();
 
+    /**
+     * Creates a new instance.
+     *
+     * @param id an ID for the new instance
+     * @throws IllegalArgumentException if the ID type is unsupported
+     * @see ReservationQueue for more details.
+     */
+    protected ReservationQueueProcman(ReservationQueueId id) {
+        super(id);
+    }
+
     @React
-    CommandRouted on(BookReturned event, EventContext ctx) {
+    CommandRouted on(BookReturned event, EventContext eventContext) {
         final InventoryId inventoryId = event.getInventoryId();
-        final CommandContext commandContext = ctx.getCommandContext();
+        final CommandContext commandContext = eventContext.getCommandContext();
         final CommandRouter commandRouter =
                 markBookAsAvailableOrSatisfyReservationRouter(inventoryId, commandContext);
         return commandRouter.routeAll();
     }
 
     @React
-    CommandRouted on(InventoryAppended event, EventContext ctx) {
+    CommandRouted on(InventoryAppended event, EventContext eventContext) {
         final InventoryId inventoryId = event.getInventoryId();
-        final CommandContext commandContext = ctx.getCommandContext();
+        final CommandContext commandContext = eventContext.getCommandContext();
         final CommandRouter commandRouter =
                 markBookAsAvailableOrSatisfyReservationRouter(inventoryId, commandContext);
         return commandRouter.routeAll();
     }
 
     @React
-    CommandRouted on(ReservationPickUpPeriodExpired event, EventContext ctx) {
+    CommandRouted on(ReservationPickUpPeriodExpired event, EventContext eventContext) {
         final InventoryId inventoryId = event.getInventoryId();
-        final CommandContext commandContext = ctx.getCommandContext();
+        final CommandContext commandContext = eventContext.getCommandContext();
         final CommandRouter commandRouter =
                 markBookAsAvailableOrSatisfyReservationRouter(inventoryId, commandContext);
         return commandRouter.routeAll();
     }
 
+    /**
+     * Reacts on {@code ReservationCanceled} event.
+     *
+     * <p>Performs action only when the canceled reservation was satisfied (in that case available
+     * books count has changed).
+     *
+     * @param event        the {@code ReservationCanceled} event to react on.
+     * @param eventContext the event context
+     * @return routed command.
+     */
     @React
-    CommandRouted on(ReservationCanceled event, EventContext ctx) {
+    CommandRouted on(ReservationCanceled event, EventContext eventContext) {
         final boolean reservationWasSatisfied = event.getWasSatisfied();
         if (reservationWasSatisfied) {
             final InventoryId inventoryId = event.getInventoryId();
-            final CommandContext commandContext = ctx.getCommandContext();
+            final CommandContext commandContext = eventContext.getCommandContext();
             final CommandRouter commandRouter =
                     markBookAsAvailableOrSatisfyReservationRouter(inventoryId, commandContext);
             return commandRouter.routeAll();
         }
-
         return null;
     }
 
     /**
      * Checks the reservation queue for unsatisfied reservations.
      *
-     * <p>If there are unsatisfied reservations gets first and creates a {@link SatisfyReservation}
-     * command for it. If there are no reservations to satisfy creates a {@link MarkBookAsAvailable}
-     * command.
+     * <p>If there are unsatisfied reservations, gets the first one and creates a
+     * {@link SatisfyReservation} command for it. If there are no reservations to satisfy
+     * creates a {@link MarkBookAsAvailable} command.
      *
      * @param inventoryId    the inventory identifier to check its reservations.
      * @param commandContext the command context to route commands.

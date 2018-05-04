@@ -54,7 +54,7 @@ class InventoryAggregateRejections {
     }
 
     /**
-     * Holds 2 rejections:
+     * Holds 3 rejections:
      * <ol>
      * <li> {@link BookAlreadyBorrowed} a rejection when a user tries to reserve a book that he borrowed by himself.</li>
      * <li> {@link BookAlreadyReserved} a rejection when a user tries to reserve a book that he already reserved.</li>
@@ -82,7 +82,7 @@ class InventoryAggregateRejections {
         }
 
         /**
-         * Throws a rejection when a user tries to reserve a book that is available to borrow.
+         * Throws a rejection when a user tries to reserve a book that is available for borrowing.
          */
         static CannotReserveAvailableBook cannotReserveAvailableBook(ReserveBook cmd) throws
                                                                                       CannotReserveAvailableBook {
@@ -103,7 +103,7 @@ class InventoryAggregateRejections {
     }
 
     /**
-     * Throws a rejection when a librarian tries to write a missing book off.
+     * Throws a rejection when a librarian tries to write a missing book off or the book is borrowed.
      */
     static CannotWriteBookOff cannotWriteBookOff(WriteBookOff cmd)
             throws CannotWriteBookOff {
@@ -116,7 +116,8 @@ class InventoryAggregateRejections {
      * Holds two rejections:
      * <ol>
      * <li>{@link CannotReturnNonBorrowedBook} a rejection when a user tries to return a non-borrowed book.</li>
-     * <li>{@link CannotReturnMissingBook} a rejection when a user tries to return the missing {@link javaclasses.exlibris.InventoryItem}.</li>
+     * <li>{@link CannotReturnMissingBook} a rejection when a user tries to return the missing
+     * {@link javaclasses.exlibris.InventoryItem}.</li>
      * </ol>
      */
     static class ReturnBookRejection {
@@ -145,7 +146,7 @@ class InventoryAggregateRejections {
     }
 
     /**
-     * Throws a rejection when a user tries to extend loan period but another user has already reserved book.
+     * Throws a rejection when a user tries to extend loan period but it is not allowed for his loan.
      */
     static CannotExtendLoanPeriod cannotExtendLoanPeriod(ExtendLoanPeriod cmd)
             throws CannotExtendLoanPeriod {
