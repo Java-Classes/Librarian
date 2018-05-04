@@ -30,6 +30,7 @@ option java_outer_classname = "EventsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
+import "spine/time/time.proto";
 import "javaclasses/exlibris/identifiers.proto";
 import "javaclasses/exlibris/values.proto";
 import "google/protobuf/timestamp.proto";
@@ -59,8 +60,8 @@ message InventoryAppended {
     // The newly created item.
     InventoryItemId inventory_item_id = 2;
 
-    // Optional field: exists when book has RFID mark.
-    Rfid rfid = 3;
+    // The QR-code of an inventory item.
+    QRcodeURL qr_code_url = 3;
 
     // Who appended.
     UserId librarian_id = 4;
@@ -69,7 +70,8 @@ message InventoryAppended {
     google.protobuf.Timestamp when_appended = 5;
 }
 
-// The event appears when either an inventory appended or a book returned and there is no reservation.
+// The event appears when either an inventory appended, a book returned and there is no reservation,
+// a ready to pick up reservation was canceled and there are no more unsatisfied reservations.
 //
 // A book becomes public available.
 //
@@ -78,8 +80,8 @@ message BookBecameAvailable {
     // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
-    // The item which became available.
-    InventoryItemId inventory_item_id = 2;
+    // The number of public available books.
+    int32 available_books_count = 2;
 
     // When book became available.
     google.protobuf.Timestamp when_became_available = 3;
@@ -87,7 +89,7 @@ message BookBecameAvailable {
 
 // An event fired when a book is available for a user to take it.
 //
-// Appears when an inventory appended or a book returned.
+// Appears when an inventory appended or a book returned or someone canceles his reservation.
 //
 // In 2 days this opportunity disappears and a reservation expires.
 //
@@ -96,23 +98,17 @@ message BookReadyToPickup {
     // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
-    // The identifier of an inventory item which became ready to pickup.
-    InventoryItemId inventory_item_id = 2;
-
     // Who can take this book during 2 days.
-    UserId for_whom = 3;
+    UserId for_whom = 2;
 
     // When a book became ready to pickup.
-    google.protobuf.Timestamp when_became_ready_to_pickup = 4;
+    google.protobuf.Timestamp when_became_ready_to_pickup = 3;
 
     // The pickup deadline of a book.
-    google.protobuf.Timestamp pick_up_deadline = 5;
+    google.protobuf.Timestamp pick_up_deadline = 4;
 }
 
 // An event fired when a user reserves a book.
-//
-// If a queue on book exists then user will be added to the queue.
-// Else if book is available then user has 2 days to borrow book.
 //
 message ReservationAdded {
 
@@ -122,11 +118,14 @@ message ReservationAdded {
     // Who reserved a book.
     UserId for_whom_reserved = 2;
 
+    // The estimated time when the book becomes ready to pick up.
+    google.protobuf.Timestamp when_expected = 3;
+
     // The time when the reservation was added.
-    google.protobuf.Timestamp when_created = 3;
+    google.protobuf.Timestamp when_created = 4;
 }
 
-// An event fired when user borrows book.
+// An event fired when a user borrows a book.
 //
 // Triggers 'reservation became loan' if the book was reserved.
 //
@@ -141,11 +140,17 @@ message BookBorrowed {
     // Who borrowed a book.
     UserId who_borrowed = 3;
 
-    // The loan period.
+    // The loan idenifier.
     LoanId loan_id = 4;
 
+    // The number of public available books.
+    int32 available_books_count = 5;
+
     // The time when user borrowed a book.
-    google.protobuf.Timestamp when_borrowed = 5;
+    google.protobuf.Timestamp when_borrowed = 6;
+
+    // The time when the loan becomes overdue.
+    google.protobuf.Timestamp when_due = 7;
 }
 
 // An event when a reservation was successfully finished.
@@ -169,11 +174,49 @@ message LoanBecameOverdue {
     // The identifier of an inventory.
     InventoryId inventory_id = 1;
 
-    // The identifier of a loan.
-    LoanId loan_id = 2;
+    // The identifier of an item.
+    InventoryItemId inventory_item_id = 2;
 
-    // The date when a book was expected, so an overdue period can be calculated.
-    google.protobuf.Timestamp when_expected = 3;
+    // The loan owner.
+    UserId user_id = 3;
+
+    // The identifier of a loan.
+    LoanId loan_id = 4;
+
+    // Shows whether it is allowed to extend loan period.
+    //
+    // Depends on the state of the reservations query in the inventory aggregate.
+    //
+    bool is_allowed_extension = 5;
+
+    // The time when a loan became overdue.
+    google.protobuf.Timestamp when_became_overdue = 6;
+}
+
+// An event fired when a user's loan period time runs out.
+//
+message LoanBecameShouldReturnSoon {
+
+    // The identifier of an inventory.
+    InventoryId inventory_id = 1;
+
+    // The identifier of an item.
+    InventoryItemId inventory_item_id = 2;
+
+    // The loan owner.
+    UserId user_id = 3;
+
+    // The identifier of a loan.
+    LoanId loan_id = 4;
+
+    // Shows whether it is allowed to extend loan period.
+    //
+    // Depends on the state of the reservations query in the inventory aggregate.
+    //
+    bool is_allowed_extension = 5;
+
+    // The time when a loan became should return soon.
+    google.protobuf.Timestamp when_became_should_return_soon = 6;
 }
 
 // An event fired when user successfully extended his loan period.
@@ -189,11 +232,50 @@ message LoanPeriodExtended {
     // Who extended.
     UserId user_id = 3;
 
+    // The identifier of an item.
+    InventoryItemId inventory_item_id = 4;
+
     // The timestamp of a previous due date.
-    google.protobuf.Timestamp previous_due_date = 4;
+    google.protobuf.Timestamp previous_due_date = 5;
 
     // The timestamp of a new due date.
-    google.protobuf.Timestamp new_due_date = 5;
+    google.protobuf.Timestamp new_due_date = 6;
+
+    // The time when a loan period was extended.
+    google.protobuf.Timestamp when_extended = 7;
+}
+
+// An event fired when the book was reserved and this reservation was the first in the list.
+//
+// All recent loans of the specified book become not allowed for extension.
+//
+message LoansExtensionForbidden {
+
+    // The identifier of an inventory.
+    InventoryId inventory_id = 1;
+
+    // The collection of users' identifiers whos loans became not allowed for an extension.
+    repeated UserId borrowers = 2;
+
+    // The time when became not allowed.
+    google.protobuf.Timestamp when_became = 3;
+}
+
+// An event fired when the book reservations become satisfied or canceled
+// and there are no more active reservations for this book.
+//
+// All recent loans of the specified book become allowed for extension.
+//
+message LoansExtensionAllowed {
+
+    // The identifier of an inventory.
+    InventoryId inventory_id = 1;
+
+    // The collection of users' identifiers whos loans became allowed for an extension.
+    repeated UserId borrowers = 2;
+
+    // The time when became allowed.
+    google.protobuf.Timestamp when_became = 3;
 }
 
 // An event fired when a user returns a book.
@@ -213,8 +295,11 @@ message BookReturned {
     // Who returned a book.
     UserId who_returned = 3;
 
+    // The loan idenifier.
+    LoanId loan_id = 4;
+
     // The timestamp when user returned a book.
-    google.protobuf.Timestamp when_returned = 4;
+    google.protobuf.Timestamp when_returned = 5;
 }
 
 // An event fired when an user lost a borrowed book.
@@ -250,6 +335,9 @@ message ReservationCanceled {
 
     // The time when user canceled a reservation.
     google.protobuf.Timestamp when_canceled = 3;
+
+    // Shows whether the canceled reservation was satisfied or not.
+    bool was_satisfied = 4;
 }
 
 // An event fired when a librarian decreases a current inventory.
@@ -270,8 +358,11 @@ message InventoryDecreased {
     // The time when inventory was decreased.
     google.protobuf.Timestamp when_decreased = 4;
 
+    // The number of public available books.
+    int32 available_books_count = 5;
+
     // A book can be lost or outdated.
-    WriteOffReason write_off_reason = 5;
+    WriteOffReason write_off_reason = 6;
 }
 
 // An event fired when user had 2 days to take the book but he didn't.

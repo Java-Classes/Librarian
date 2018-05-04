@@ -30,9 +30,10 @@ import javaclasses.exlibris.c.rejection.BookAlreadyBorrowed;
 import javaclasses.exlibris.c.rejection.BookAlreadyReserved;
 import javaclasses.exlibris.c.rejection.CannotCancelMissingReservation;
 import javaclasses.exlibris.c.rejection.CannotExtendLoanPeriod;
+import javaclasses.exlibris.c.rejection.CannotReserveAvailableBook;
 import javaclasses.exlibris.c.rejection.CannotReturnMissingBook;
 import javaclasses.exlibris.c.rejection.CannotReturnNonBorrowedBook;
-import javaclasses.exlibris.c.rejection.CannotWriteMissingBookOff;
+import javaclasses.exlibris.c.rejection.CannotWriteBookOff;
 import javaclasses.exlibris.c.rejection.NonAvailableBook;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -53,10 +54,11 @@ class InventoryAggregateRejections {
     }
 
     /**
-     * Holds 2 rejections:
+     * Holds 3 rejections:
      * <ol>
      * <li> {@link BookAlreadyBorrowed} a rejection when a user tries to reserve a book that he borrowed by himself.</li>
      * <li> {@link BookAlreadyReserved} a rejection when a user tries to reserve a book that he already reserved.</li>
+     * <li> {@link CannotReserveAvailableBook} a rejection when a user tries to reserve a book that is available to borrow.</li>
      * </ol>
      */
     static class ReserveBookRejection {
@@ -78,6 +80,16 @@ class InventoryAggregateRejections {
             checkNotNull(cmd);
             throw new BookAlreadyReserved(cmd.getInventoryId(), cmd.getUserId(), getCurrentTime());
         }
+
+        /**
+         * Throws a rejection when a user tries to reserve a book that is available for borrowing.
+         */
+        static CannotReserveAvailableBook cannotReserveAvailableBook(ReserveBook cmd) throws
+                                                                                      CannotReserveAvailableBook {
+            checkNotNull(cmd);
+            throw new CannotReserveAvailableBook(cmd.getInventoryId(), cmd.getUserId(),
+                                                 getCurrentTime());
+        }
     }
 
     /**
@@ -91,20 +103,21 @@ class InventoryAggregateRejections {
     }
 
     /**
-     * Throws a rejection when a librarian tries to write a missing book off.
+     * Throws a rejection when a librarian tries to write a missing book off or the book is borrowed.
      */
-    static CannotWriteMissingBookOff cannotWriteMissingBookOff(WriteBookOff cmd)
-            throws CannotWriteMissingBookOff {
+    static CannotWriteBookOff cannotWriteBookOff(WriteBookOff cmd)
+            throws CannotWriteBookOff {
         checkNotNull(cmd);
-        throw new CannotWriteMissingBookOff(cmd.getInventoryId(), cmd.getLibrarianId(),
-                                            cmd.getInventoryItemId(), getCurrentTime());
+        throw new CannotWriteBookOff(cmd.getInventoryId(), cmd.getLibrarianId(),
+                                     cmd.getInventoryItemId(), getCurrentTime());
     }
 
     /**
      * Holds two rejections:
      * <ol>
      * <li>{@link CannotReturnNonBorrowedBook} a rejection when a user tries to return a non-borrowed book.</li>
-     * <li>{@link CannotReturnMissingBook} a rejection when a user tries to return the missing {@link javaclasses.exlibris.InventoryItem}.</li>
+     * <li>{@link CannotReturnMissingBook} a rejection when a user tries to return the missing
+     * {@link javaclasses.exlibris.InventoryItem}.</li>
      * </ol>
      */
     static class ReturnBookRejection {
@@ -133,7 +146,7 @@ class InventoryAggregateRejections {
     }
 
     /**
-     * Throws a rejection when a user tries to extend loan period but another user has already reserved book.
+     * Throws a rejection when a user tries to extend loan period but it is not allowed for his loan.
      */
     static CannotExtendLoanPeriod cannotExtendLoanPeriod(ExtendLoanPeriod cmd)
             throws CannotExtendLoanPeriod {

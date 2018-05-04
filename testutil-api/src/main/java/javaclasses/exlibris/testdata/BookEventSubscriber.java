@@ -26,18 +26,18 @@ import javaclasses.exlibris.c.BookAdded;
 
 public class BookEventSubscriber extends EventSubscriber {
 
-    private static BookAdded event = null;
+    private BookAdded event = null;
 
     @Subscribe
     public void on(BookAdded event) {
         this.event = event;
     }
 
-    public static BookAdded getEvent() {
+    public BookAdded getEvent() {
         return event;
     }
 
-    public static void clear() {
+    public void clear() {
         event = null;
     }
 }
