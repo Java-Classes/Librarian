@@ -93,8 +93,6 @@ public class BookViewProjection extends Projection<BookId, BookView, BookViewVBu
 
     @Subscribe
     public void on(BookBorrowed event) {
-        final BookId id = event.getInventoryId()
-                               .getBookId();
         final int inLibraryCount = event.getAvailableBooksCount();
         final BookStatus status =
                 inLibraryCount == 0 ? BookStatus.EXPECTED : BookStatus.AVAILABLE;

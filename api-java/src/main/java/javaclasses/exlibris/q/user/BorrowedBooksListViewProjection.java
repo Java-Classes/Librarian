@@ -103,7 +103,6 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
 
     @Subscribe
     public void on(LoanBecameOverdue event) {
-        final int numberOfOverdueBooks = getBuilder().getNumberOfOverdueBooks();
         final List<BorrowedBookItem> items = new ArrayList<>(getBuilder().getBookItem());
         final int index = getIndexByBookId(items, event.getInventoryId()
                                                        .getBookId());
@@ -141,7 +140,6 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
         final int index = getIndexByBookId(items, event.getInventoryId()
                                                        .getBookId());
         final BorrowedBookItem bookItem = items.get(index);
-        final BorrowedBookItemStatus status = bookItem.getStatus();
         final BorrowedBookItem newBookItem = BorrowedBookItem.newBuilder(bookItem)
                                                              .setStatus(
                                                                      BorrowedBookItemStatus.BORROWED)
