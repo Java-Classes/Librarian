@@ -81,7 +81,7 @@
                     return {
                         /**
                          * The book unique code.
-                         * Can be presented in the form of ISBN-10, ISBN-13 or ASIN.
+                         * Can be presented in the form of ISBN10, ISBN13 or ASIN.
                          */
                         bookCode: String,
 
@@ -123,10 +123,10 @@
                 /**
                  * Checks for the passed book code format.
                  *
-                 * If the `bookCode` matches the `ISBN-10` or `ASIN` pattern, generates
+                 * If the `bookCode` matches the `ISBN10` or `ASIN` pattern, generates
                  * the Amazon book search link.
                  *
-                 * If the `bookCode` matches the `ISBN-13` pattern, generates the Google Play Books
+                 * If the `bookCode` matches the `ISBN13` pattern, generates the Google Play Books
                  * search link.
                  *
                  * @param {string} bookCode the book unique code (ISBN, ASIN).
