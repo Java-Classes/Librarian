@@ -263,7 +263,7 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                     createBookBorrowedEvent(cmd, availableItemsCount);
             final ReservationBecameLoan reservationBecameLoanEvent =
                     createReservationBecameLoanEvent(cmd);
-            Pair result = Pair.of(bookBorrowedEvent, reservationBecameLoanEvent);
+            final Pair result = Pair.of(bookBorrowedEvent, reservationBecameLoanEvent);
             return result;
         }
 
@@ -1024,26 +1024,26 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
     private boolean isBookReservedByUser(UserId userId) {
         final List<Reservation> reservations = getState().getReservationsList();
-        final boolean any = Iterables.any(reservations, item -> item.getWhoReserved()
-                                                                    .equals(userId));
-        return any;
+        final boolean isReserved = Iterables.any(reservations, item -> item.getWhoReserved()
+                                                                           .equals(userId));
+        return isReserved;
     }
 
     private boolean isBookBorrowedByUser(UserId userId) {
         final List<Loan> loans = getState().getLoansList();
-        final boolean any = Iterables.any(loans, item -> item.getWhoBorrowed()
-                                                             .equals(userId));
-        return any;
+        final boolean isBorrowed = Iterables.any(loans, item -> item.getWhoBorrowed()
+                                                                    .equals(userId));
+        return isBorrowed;
     }
 
     private boolean isInventoryItemBorrowedByUser(InventoryItemId itemId, UserId userId) {
         final List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
-        final boolean any = Iterables.any(inventoryItems,
-                                          item -> item.getUserId()
-                                                      .equals(userId) &&
-                                                  item.getInventoryItemId()
-                                                      .equals(itemId));
-        return any;
+        final boolean isBorrowed = Iterables.any(inventoryItems,
+                                                 item -> item.getUserId()
+                                                             .equals(userId) &&
+                                                         item.getInventoryItemId()
+                                                             .equals(itemId));
+        return isBorrowed;
     }
 
     private boolean isInventoryItemBorrowed(InventoryItemId itemId) {
@@ -1055,16 +1055,16 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
 
     private boolean inventoryItemExists(InventoryItemId inventoryItemId) {
         final List<InventoryItem> inventoryItems = getState().getInventoryItemsList();
-        final boolean any = Iterables.any(inventoryItems, item -> item.getInventoryItemId()
-                                                                      .equals(inventoryItemId));
-        return any;
+        final boolean exists = Iterables.any(inventoryItems, item -> item.getInventoryItemId()
+                                                                         .equals(inventoryItemId));
+        return exists;
     }
 
     private boolean loanExists(LoanId loanId) {
         final List<Loan> loans = getState().getLoansList();
-        final boolean any = Iterables.any(loans, item -> item.getLoanId()
-                                                             .equals(loanId));
-        return any;
+        final boolean exsists = Iterables.any(loans, item -> item.getLoanId()
+                                                                 .equals(loanId));
+        return exsists;
     }
 
     private Reservation getReservationByUserId(UserId userId, List<Reservation> reservations) {

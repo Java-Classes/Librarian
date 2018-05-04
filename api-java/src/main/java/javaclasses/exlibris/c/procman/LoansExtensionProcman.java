@@ -65,6 +65,7 @@ public class LoansExtensionProcman extends ProcessManager<LoansExtensionId, Loan
      *
      * @param id an ID for the new instance
      * @throws IllegalArgumentException if the ID type is unsupported
+     * @see LoansExtension for more details.
      */
     protected LoansExtensionProcman(LoansExtensionId id) {
         super(id);
@@ -87,8 +88,8 @@ public class LoansExtensionProcman extends ProcessManager<LoansExtensionId, Loan
     /**
      * Reacts on {@code ReservationCanceled} event.
      *
-     * <p>Performs action only when the canceled reservation was unsatisfied (in that case available
-     * some loans should be allowed for extension).
+     * <p>Performs action only when the canceled reservation was unsatisfied (in that case some
+     * loans should be allowed for extension).
      *
      * @param event        the {@code ReservationCanceled} event to react on.
      * @param eventContext the event context
@@ -151,9 +152,9 @@ public class LoansExtensionProcman extends ProcessManager<LoansExtensionId, Loan
      * Creates routed command to forbid extension for as many loans as possible to rich the
      * {@code numberToForbid} count.
      *
-     * @param inventoryId the identifier of the {@code InventoryAggregate}
+     * @param inventoryId    the identifier of the {@code InventoryAggregate}
      * @param commandContext the command context
-     * @param loans the list of loans
+     * @param loans          the list of loans
      * @param numberToForbid the target number to forbid
      * @return the routed command to forbid loans extension
      */
@@ -191,12 +192,12 @@ public class LoansExtensionProcman extends ProcessManager<LoansExtensionId, Loan
 
     /**
      * Creates routed command to allow extension for as many loans as possible to rich the
-     * {@code numberToAllow} count. Loans extension goes from the end of the loans list.
+     * {@code numberToAllow} count. Loans extension permission goes from the end of the loans list.
      *
-     * @param inventoryId the identifier of the {@code InventoryAggregate}
+     * @param inventoryId    the identifier of the {@code InventoryAggregate}
      * @param commandContext the command context
-     * @param loans the list of loans
-     * @param numberToAllow the target number to allow
+     * @param loans          the list of loans
+     * @param numberToAllow  the target number to allow
      * @return the routed command to allow loans extension
      */
     private Optional<CommandRouter> allowLoansExtensionRouter(InventoryId inventoryId,

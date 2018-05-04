@@ -62,6 +62,7 @@ public class ReservationQueueProcman extends ProcessManager<ReservationQueueId, 
      *
      * @param id an ID for the new instance
      * @throws IllegalArgumentException if the ID type is unsupported
+     * @see ReservationQueue for more details.
      */
     protected ReservationQueueProcman(ReservationQueueId id) {
         super(id);
@@ -98,7 +99,7 @@ public class ReservationQueueProcman extends ProcessManager<ReservationQueueId, 
      * Reacts on {@code ReservationCanceled} event.
      *
      * <p>Performs action only when the canceled reservation was satisfied (in that case available
-     * books count changes).
+     * books count has changed).
      *
      * @param event        the {@code ReservationCanceled} event to react on.
      * @param eventContext the event context

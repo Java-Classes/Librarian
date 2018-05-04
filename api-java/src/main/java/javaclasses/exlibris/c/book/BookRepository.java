@@ -29,5 +29,4 @@ import javaclasses.exlibris.BookId;
  * @author Alexander Karpets
  */
 public class BookRepository extends AggregateRepository<BookId, BookAggregate> {
-
 }
