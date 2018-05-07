@@ -84,16 +84,19 @@ message InventoryItem {
         bool lost = 4;
     }
 
-    // The QR-code of an inventory item.
-    QRcodeURL qr_code_url = 5;
+    // The URL of an inventory item QR code image.
+    QRCodeImageURL qr_code_image_url = 5;
+
+    // The hashed part of the URL to recognize an inventory item.
+    InventoryItemRecognizeToken recognize_tocken = 6;
 
     // The RFID mark of an inventory item.
-    Rfid rfid = 6;
+    Rfid rfid = 7;
 
     // The user who is related to the book.
     //
     // Is defined when a book is 'borrowed' or 'lost'.
-    UserId user_id = 7;
+    UserId user_id = 8;
 }
 
 // The model of a reservation.
@@ -173,4 +176,12 @@ message LoansExtension {
 
     // The identifier of a process manager.
     LoansExtensionId id = 1;
+}
+
+// The model of a QR code generation process manager.
+//
+message QRGeneration {
+
+    // The identifier of a process manager.
+    QRGenerationId id = 1;
 }

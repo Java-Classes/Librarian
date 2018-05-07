@@ -83,11 +83,19 @@ message BookCoverURL {
     string value = 1;
 }
 
-// The URL of a book cover.
+// The URL of a QR code image.
 //
-message QRcodeURL {
+message QRCodeImageURL {
 
-    // The link to the QR-code storage place.
+    // The link to the QR code image storage place.
+    string value = 1;
+}
+
+// The hashed part of the URL to recognize an inventory item.
+//
+message InventoryItemRecognizeToken {
+
+    // The hashed inventory item identifier value.
     string value = 1;
 }
 

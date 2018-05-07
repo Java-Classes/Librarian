@@ -24,7 +24,6 @@ import com.google.protobuf.Timestamp;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.InventoryItemId;
 import javaclasses.exlibris.LoanId;
-import javaclasses.exlibris.QRcodeURL;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
 import javaclasses.exlibris.c.BookBecameAvailable;
@@ -55,7 +54,6 @@ import static javaclasses.exlibris.testdata.TestValues.DUE_TIMESTAMP;
 import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ID;
 import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ITEM_ID_1;
 import static javaclasses.exlibris.testdata.TestValues.LOAN_ID;
-import static javaclasses.exlibris.testdata.TestValues.QR_CODE_URL;
 import static javaclasses.exlibris.testdata.TestValues.USER_ID;
 import static javaclasses.exlibris.testdata.TestValues.WRITE_OFF_REASON;
 
@@ -75,7 +73,7 @@ public class InventoryEventFactory {
      * @return the {@link InventoryAppended} instance
      */
     public static InventoryAppended inventoryAppendedInstance() {
-        return inventoryAppendedInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1, QR_CODE_URL, USER_ID,
+        return inventoryAppendedInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1, USER_ID,
                                          getCurrentTime());
     }
 
@@ -85,20 +83,17 @@ public class InventoryEventFactory {
      *
      * @param inventoryId     the identifier of an inventory
      * @param inventoryItemId the identifier of an inventory item that was added
-     * @param qRcodeURL       the url to QR code image
      * @param userId          the identifier of a user who added a book
      * @param whenAppended    time when inventory was appended
      * @return the {@code InventoryAppended} instance
      */
     public static InventoryAppended inventoryAppendedInstance(InventoryId inventoryId,
                                                               InventoryItemId inventoryItemId,
-                                                              QRcodeURL qRcodeURL,
                                                               UserId userId,
                                                               Timestamp whenAppended) {
         final InventoryAppended result = InventoryAppended.newBuilder()
                                                           .setInventoryId(inventoryId)
                                                           .setInventoryItemId(inventoryItemId)
-                                                          .setQrCodeUrl(qRcodeURL)
                                                           .setLibrarianId(userId)
                                                           .setWhenAppended(whenAppended)
                                                           .build();

@@ -60,14 +60,32 @@ message InventoryAppended {
     // The newly created item.
     InventoryItemId inventory_item_id = 2;
 
-    // The QR-code of an inventory item.
-    QRcodeURL qr_code_url = 3;
-
     // Who appended.
-    UserId librarian_id = 4;
+    UserId librarian_id = 3;
 
     // When an inventory was appended.
-    google.protobuf.Timestamp when_appended = 5;
+    google.protobuf.Timestamp when_appended = 4;
+}
+
+// The event fired when a librarian adds a new item to an inventory and the QR generation
+// process manager provides the added inventory item with QR code and the recognize token.
+//
+message QRCodeSet {
+
+    // The identifier of an inventory.
+    InventoryId inventory_id = 1;
+
+    // The identifier of an item.
+    InventoryItemId inventory_item_id = 2;
+
+    // The URL of a QR code image.
+    QRCodeImageURL qr_image_url = 3;
+
+    // The hashed part of the URL to recognize an inventory item.
+    InventoryItemRecognizeToken recognize_token = 4;
+
+    // When a QR code was set.
+    google.protobuf.Timestamp when_set = 5;
 }
 
 // The event appears when either an inventory appended, a book returned and there is no reservation,

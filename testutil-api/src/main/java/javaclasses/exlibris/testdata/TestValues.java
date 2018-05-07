@@ -40,7 +40,7 @@ import javaclasses.exlibris.Isbn;
 import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.Loan;
 import javaclasses.exlibris.LoanId;
-import javaclasses.exlibris.QRcodeURL;
+import javaclasses.exlibris.QRCodeImageURL;
 import javaclasses.exlibris.Rfid;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
@@ -218,9 +218,9 @@ public class TestValues {
                                                                                     BOOK_DETAILS)
                                                                             .build();
 
-    public static final QRcodeURL QR_CODE_URL = QRcodeURL.newBuilder()
-                                                         .setValue("exlibris/4321")
-                                                         .build();
+    public static final QRCodeImageURL QR_CODE_URL = QRCodeImageURL.newBuilder()
+                                                                   .setValue("exlibris/4321")
+                                                                   .build();
     public static final WriteOffReason WRITE_OFF_REASON = WriteOffReason.newBuilder()
                                                                         .setCustomReason(
                                                                                 "Custom reason")
