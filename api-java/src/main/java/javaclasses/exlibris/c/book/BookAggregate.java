@@ -205,8 +205,7 @@ public class BookAggregate extends Aggregate<BookId, Book, BookVBuilder> {
      */
     @Apply
     void bookRemoved(BookRemoved event) {
-        getBuilder().clearBookId()
-                    .clearBookDetails();
+        setDeleted(true);
     }
 }
 

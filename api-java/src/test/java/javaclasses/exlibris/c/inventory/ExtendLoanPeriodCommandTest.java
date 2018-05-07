@@ -154,7 +154,7 @@ public class ExtendLoanPeriodCommandTest extends InventoryCommandTest<ExtendLoan
             "an attempt to extend loan period of non existing loan")
     void extendMissingLoan() {
         final LoanId fakeLoanId = LoanId.newBuilder()
-                                        .setValue(0)
+                                        .setValue(123)
                                         .build();
         final ExtendLoanPeriod extendLoanPeriod = extendLoanPeriodInstance(INVENTORY_ID,
                                                                            fakeLoanId,

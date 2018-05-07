@@ -39,16 +39,16 @@ import "javaclasses/exlibris/values.proto";
 message BookAlreadyExists {
 
     // The identifier of a book.
-    BookId book_id = 1;
+    BookId book_id = 1 [(required) = true];
 
     // The DTO of a book title.
-    BookTitle book_title = 2;
+    BookTitle book_title = 2 [(required) = true];
 
     // Who tried to add a book.
-    UserId librarian_id = 3;
+    UserId librarian_id = 3 [(required) = true];
 
     // The time when a librarian tried to add an existing book.
-    google.protobuf.Timestamp when_rejected = 4;
+    google.protobuf.Timestamp when_rejected = 4 [(required) = true];
 }
 
 // Rejection when a librarian tries to remove a missing book.
@@ -56,13 +56,13 @@ message BookAlreadyExists {
 message CannotRemoveMissingBook {
 
     // The identifier of a book.
-    BookId book_id = 1;
+    BookId book_id = 1 [(required) = true];
 
     // Who tried to remove a book.
-    UserId user_id = 2;
+    UserId user_id = 2 [(required) = true];
 
     // The time when a librarian tried to remove a missing book.
-    google.protobuf.Timestamp when_rejected = 3;
+    google.protobuf.Timestamp when_rejected = 3 [(required) = true];
 }
 
 // Rejection when a librarian tries to update a missing book.
@@ -70,13 +70,13 @@ message CannotRemoveMissingBook {
 message CannotUpdateMissingBook {
 
     // The identifier of a book.
-    BookId book_id = 1;
+    BookId book_id = 1 [(required) = true];
 
     // Who tried to update a book.
-    UserId librarian_id = 2;
+    UserId librarian_id = 2 [(required) = true];
 
     // The time when a librarian tried to update a missing book.
-    google.protobuf.Timestamp when_rejected = 3;
+    google.protobuf.Timestamp when_rejected = 3 [(required) = true];
 }
 
 // Rejection when a user tries to borrow non-available book.
@@ -84,16 +84,16 @@ message CannotUpdateMissingBook {
 message NonAvailableBook {
 
     // The identifier of an inventory.
-    InventoryId inventory_id = 1;
+    InventoryId inventory_id = 1 [(required) = true];
 
     // The item that a user tried to borrow.
-    InventoryItemId inventory_item_id = 2;
+    InventoryItemId inventory_item_id = 2 [(required) = true];
 
     // Who tried to borrow a book.
-    UserId user_id = 3;
+    UserId user_id = 3 [(required) = true];
 
     // The time when a user tried to borrow a book.
-    google.protobuf.Timestamp when_rejected = 4;
+    google.protobuf.Timestamp when_rejected = 4 [(required) = true];
 }
 
 // Rejection when a user tries to reserve a book that he already reserved.
@@ -101,13 +101,13 @@ message NonAvailableBook {
 message BookAlreadyReserved {
 
     // The identifier of an inventory.
-    InventoryId inventory_id = 1;
+    InventoryId inventory_id = 1 [(required) = true];
 
     // Who tried to reserve a book.
-    UserId user_id = 2;
+    UserId user_id = 2 [(required) = true];
 
     // The time when a user tried to reserve a book.
-    google.protobuf.Timestamp when_rejected = 3;
+    google.protobuf.Timestamp when_rejected = 3 [(required) = true];
 }
 
 // Rejection when a user tries to reserve a book that he borrowed by himself.
@@ -115,13 +115,13 @@ message BookAlreadyReserved {
 message BookAlreadyBorrowed {
 
     // The identifier of an inventory.
-    InventoryId inventory_id = 1;
+    InventoryId inventory_id = 1 [(required) = true];
 
     // Who tried to reserve a book.
-    UserId user_id = 2;
+    UserId user_id = 2 [(required) = true];
 
     // The time when a user tried to reserve a book.
-    google.protobuf.Timestamp when_rejected = 3;
+    google.protobuf.Timestamp when_rejected = 3 [(required) = true];
 }
 
 // Rejection when a user tries to reserve a book that is available to borrow.
@@ -129,13 +129,13 @@ message BookAlreadyBorrowed {
 message CannotReserveAvailableBook {
 
     // The identifier of an inventory.
-    InventoryId inventory_id = 1;
+    InventoryId inventory_id = 1 [(required) = true];
 
     // Who tried to reserve a book.
-    UserId user_id = 2;
+    UserId user_id = 2 [(required) = true];
 
     // The time when a user tried to borrow a book.
-    google.protobuf.Timestamp when_rejected = 3;
+    google.protobuf.Timestamp when_rejected = 3 [(required) = true];
 }
 
 // Rejection when a user tries to extend a loan period and a book is already reserved by another user.
@@ -143,16 +143,16 @@ message CannotReserveAvailableBook {
 message CannotExtendLoanPeriod {
 
     // The identifier of an inventory.
-    InventoryId inventory_id = 1;
+    InventoryId inventory_id = 1 [(required) = true];
 
     // The loan identifier.
-    LoanId loan_id = 2;
+    LoanId loan_id = 2 [(required) = true];
 
     // Who tried to extend loan period.
-    UserId user_id = 3;
+    UserId user_id = 3 [(required) = true];
 
     // The time when user tried to extend loan period.
-    google.protobuf.Timestamp when_rejected = 4;
+    google.protobuf.Timestamp when_rejected = 4 [(required) = true];
 }
 
 // Rejection when a user tries to return a non-borrowed book.
@@ -160,16 +160,16 @@ message CannotExtendLoanPeriod {
 message CannotReturnNonBorrowedBook {
 
     // The identifier of an inventory.
-    InventoryId inventory_id = 1;
+    InventoryId inventory_id = 1 [(required) = true];
 
     // The item that a user tried to return.
-    InventoryItemId inventory_item_id = 2;
+    InventoryItemId inventory_item_id = 2 [(required) = true];
 
     // Who tried to return a book.
-    UserId user_id = 3;
+    UserId user_id = 3 [(required) = true];
 
     // The time when user tried to return the book.
-    google.protobuf.Timestamp when_rejected = 4;
+    google.protobuf.Timestamp when_rejected = 4 [(required) = true];
 }
 
 // Rejection when a user tries to return the missing `InventoryItem`.
@@ -177,16 +177,16 @@ message CannotReturnNonBorrowedBook {
 message CannotReturnMissingBook {
 
     // The identifier of an inventory.
-    InventoryId inventory_id = 1;
+    InventoryId inventory_id = 1 [(required) = true];
 
     // The item that a user tried to return.
-    InventoryItemId inventory_item_id = 2;
+    InventoryItemId inventory_item_id = 2 [(required) = true];
 
     // Who tried to return the book.
-    UserId user_id = 3;
+    UserId user_id = 3 [(required) = true];
 
     // The time when user tried to return the book.
-    google.protobuf.Timestamp when_rejected = 4;
+    google.protobuf.Timestamp when_rejected = 4 [(required) = true];
 }
 
 // Rejection when a user tries to cancel a missing reservation.
@@ -194,13 +194,13 @@ message CannotReturnMissingBook {
 message CannotCancelMissingReservation {
 
     // The identifier of an inventory.
-    InventoryId inventory_id = 1;
+    InventoryId inventory_id = 1 [(required) = true];
 
     // Who tried to cancel the reservation.
-    UserId user_id = 2;
+    UserId user_id = 2 [(required) = true];
 
     // The time when user tried to cancel the reservation.
-    google.protobuf.Timestamp when_rejected = 3;
+    google.protobuf.Timestamp when_rejected = 3 [(required) = true];
 }
 
 // Rejection when a librarian tries to write a missing book off.
@@ -208,14 +208,14 @@ message CannotCancelMissingReservation {
 message CannotWriteBookOff {
 
     // The identifier of an inventory.
-    InventoryId inventory_id = 1;
+    InventoryId inventory_id = 1 [(required) = true];
 
     // Who tried to write missing book off.
-    UserId librarian_id = 2;
+    UserId librarian_id = 2 [(required) = true];
 
     // The inventory item identifier.
-    InventoryItemId inventory_item_id = 3;
+    InventoryItemId inventory_item_id = 3 [(required) = true];
 
     // The time when user tried to write missing book off.
-    google.protobuf.Timestamp when_rejected = 4;
+    google.protobuf.Timestamp when_rejected = 4 [(required) = true];
 }

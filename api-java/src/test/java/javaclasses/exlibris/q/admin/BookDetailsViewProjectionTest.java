@@ -20,6 +20,7 @@
 
 package javaclasses.exlibris.q.admin;
 
+import io.spine.server.entity.LifecycleFlags;
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.BookUpdated;
@@ -38,6 +39,7 @@ import static javaclasses.exlibris.testdata.TestValues.BOOK_DETAILS;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_DETAILS_2;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BookDetailsViewProjectionTest extends ProjectionTest {
 
@@ -94,8 +96,8 @@ class BookDetailsViewProjectionTest extends ProjectionTest {
             final BookRemoved bookRemoved = bookRemovedInstance();
             dispatch(projection, createEvent(bookRemoved));
 
-            final BookDetailsView state = projection.getState();
-            assertEquals("", state.toString());
+            final LifecycleFlags lifecycleFlags = projection.getLifecycleFlags();
+            assertTrue(lifecycleFlags.getDeleted());
         }
     }
 

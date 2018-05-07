@@ -38,7 +38,7 @@ import "javaclasses/exlibris/values.proto";
 message BookId {
 
     // The ISBN converted with the base62 algorithm.
-    Isbn62 isbn62 = 1;
+    Isbn62 isbn62 = 1 [(required) = true];
 }
 
 // The identifier of a user.
@@ -46,7 +46,7 @@ message BookId {
 message UserId {
 
     // Represented by user e-mail address.
-    spine.net.EmailAddress email = 1;
+    spine.net.EmailAddress email = 1 [(required) = true];
 }
 
 // The identifier of a inventory.
@@ -56,7 +56,7 @@ message UserId {
 message InventoryId {
 
     // The identifier of a book.
-    BookId book_id = 1;
+    BookId book_id = 1 [(required) = true];
 }
 
 // The identifier of an inventory item.
@@ -66,7 +66,7 @@ message InventoryId {
 message InventoryItemId {
 
     // The identifier of a book.
-    BookId book_id = 1;
+    BookId book_id = 1 [(required) = true];
 
     // The sequential number entered by a librarian.
     int32 item_number = 2;
@@ -90,7 +90,7 @@ message ExpectedSoonBooksListViewId {
 
     // String representation of UUID.
     //
-    string value = 1;
+    string value = 1 [(required) = true];
 }
 
 // The identifier of the `ReaderEventLogView` projection.
@@ -99,7 +99,7 @@ message ReaderEventLogViewId {
 
     // String representation of UUID.
     //
-    string value = 1;
+    string value = 1 [(required) = true];
 }
 
 // The identifier of the `ReaderLoanView` projection.
@@ -107,10 +107,10 @@ message ReaderEventLogViewId {
 message ReaderLoanViewId {
 
     // The identifier of a user.
-    UserId user_id = 1;
+    UserId user_id = 1 [(required) = true];
 
     // The identifier of a loan period.
-    LoanId loan_id = 2;
+    LoanId loan_id = 2 [(required) = true];
 }
 
 // The identifier of the `BookReservationView` projection.
@@ -118,10 +118,10 @@ message ReaderLoanViewId {
 message BookReservationViewId {
 
     // The identifier of a book.
-    BookId book_id = 1;
+    BookId book_id = 1 [(required) = true];
 
     // The identifier of a user.
-    UserId user_id = 2;
+    UserId user_id = 2 [(required) = true];
 }
 
 // The identifier of the `BookLoanView` projection.
@@ -130,7 +130,7 @@ message BookLoanViewId {
 
     // String representation of UUID.
     //
-    string value = 1;
+    string value = 1 [(required) = true];
 }
 
 // The identifier of the `BookEventLogView` projection.
@@ -139,7 +139,7 @@ message BookEventLogViewId {
 
     // String representation of UUID.
     //
-    string value = 1;
+    string value = 1 [(required) = true];
 }
 
 // The identifier of a reservation queue process manager.
@@ -148,7 +148,7 @@ message ReservationQueueId {
 
     // String representation of UUID.
     //
-    string value = 1;
+    string value = 1 [(required) = true];
 }
 
 // The identifier of a loans extension process manager.
@@ -157,7 +157,7 @@ message LoansExtensionId {
 
     // String representation of UUID.
     //
-    string value = 1;
+    string value = 1 [(required) = true];
 }
 
 // The identifier of a QR code generation process manager.

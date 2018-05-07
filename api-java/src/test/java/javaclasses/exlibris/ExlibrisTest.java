@@ -48,7 +48,6 @@ import javaclasses.exlibris.q.ReservedBooksListView;
 import javaclasses.exlibris.q.admin.BookDetailsViewProjection;
 import javaclasses.exlibris.q.admin.BookInventoryViewProjection;
 import javaclasses.exlibris.q.admin.BookReservationViewProjection;
-import javaclasses.exlibris.q.admin.LostBookViewProjection;
 import javaclasses.exlibris.q.admin.ReaderLoanViewProjection;
 import javaclasses.exlibris.q.user.BookViewProjection;
 import javaclasses.exlibris.q.user.BorrowedBooksListViewProjection;
@@ -86,6 +85,7 @@ import static javaclasses.exlibris.testdata.TestValues.USER_ID;
 import static javaclasses.exlibris.testdata.TestValues.USER_ID_2;
 import static javaclasses.exlibris.testdata.TestValues.USER_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Exlibris Integration Test")
@@ -235,12 +235,9 @@ public class ExlibrisTest {
             final Optional<Repository> repository = boundedContext.findRepository(
                     LostBookView.class);
             assertTrue(repository.isPresent());
-            final LostBookViewProjection projection =
-                    (LostBookViewProjection) repository.get()
-                                                       .find(INVENTORY_ITEM_ID_1)
-                                                       .get();
-            final LostBookView state = projection.getState();
-            assertEquals("", state.toString());
+            final Optional repositoryOpt = repository.get()
+                                                     .find(INVENTORY_ITEM_ID_1);
+            assertFalse(repositoryOpt.isPresent());
         }
     }
 

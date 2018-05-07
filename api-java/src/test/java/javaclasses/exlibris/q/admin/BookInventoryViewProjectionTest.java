@@ -20,6 +20,7 @@
 
 package javaclasses.exlibris.q.admin;
 
+import io.spine.server.entity.LifecycleFlags;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookReturned;
@@ -53,6 +54,7 @@ import static javaclasses.exlibris.testdata.TestValues.IN_LIBRARY_ITEM_STATE;
 import static javaclasses.exlibris.testdata.TestValues.LOST_ITEM_STATE;
 import static javaclasses.exlibris.testdata.TestValues.OVERDUE_ITEM_STATE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BookInventoryViewProjectionTest extends ProjectionTest {
 
@@ -94,8 +96,8 @@ class BookInventoryViewProjectionTest extends ProjectionTest {
                     inventoryRemovedInstance();
             dispatch(projection, createEvent(inventoryRemoved));
 
-            final BookInventoryView state = projection.getState();
-            assertEquals("", state.toString());
+            final LifecycleFlags lifecycleFlags = projection.getLifecycleFlags();
+            assertTrue(lifecycleFlags.getDeleted());
         }
     }
 

@@ -20,6 +20,7 @@
 
 package javaclasses.exlibris.q.user;
 
+import io.spine.server.entity.LifecycleFlags;
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.BookBecameAvailable;
 import javaclasses.exlibris.c.BookBorrowed;
@@ -47,6 +48,7 @@ import static javaclasses.exlibris.testdata.TestValues.BOOK_TITLE;
 import static javaclasses.exlibris.testdata.TestValues.COVER_URL;
 import static javaclasses.exlibris.testdata.TestValues.ISBN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BookViewProjectionTest extends ProjectionTest {
 
@@ -92,8 +94,8 @@ class BookViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(bookAdded));
             dispatch(projection, createEvent(bookRemoved));
 
-            final BookView bookView = projection.getState();
-            assertEquals("", bookView.toString());
+            final LifecycleFlags lifecycleFlags = projection.getLifecycleFlags();
+            assertTrue(lifecycleFlags.getDeleted());
         }
     }
 
