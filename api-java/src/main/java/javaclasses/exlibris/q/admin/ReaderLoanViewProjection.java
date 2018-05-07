@@ -70,8 +70,12 @@ public class ReaderLoanViewProjection extends Projection<ReaderLoanViewId, Reade
                                                   .getBookDetails();
         final AuthorName authorName = bookDetails.getAuthor();
         final BookTitle title = bookDetails.getTitle();
-
-        getBuilder().setUserId(userId)
+        final ReaderLoanViewId readerLoanViewId = ReaderLoanViewId.newBuilder()
+                                                                  .setUserId(userId)
+                                                                  .setLoanId(event.getLoanId())
+                                                                  .build();
+        getBuilder().setId(readerLoanViewId)
+                    .setUserId(userId)
                     .setTitle(title)
                     .setAuthors(authorName)
                     .setItemId(inventoryItemId)

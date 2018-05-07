@@ -82,12 +82,7 @@ public class LostBookViewProjection extends Projection<InventoryItemId, LostBook
 
     @Subscribe
     public void on(InventoryDecreased event) {
-        getBuilder().clearItemId()
-                    .clearAuthors()
-                    .clearTitle()
-                    .clearUserName()
-                    .clearEmail()
-                    .clearWhenReported();
+        setDeleted(true);
     }
 
 }

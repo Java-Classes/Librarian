@@ -65,15 +65,7 @@ public class BookViewProjection extends Projection<BookId, BookView, BookViewVBu
 
     @Subscribe
     public void on(BookRemoved event) {
-        getBuilder().clearBookId()
-                    .clearIsbn()
-                    .clearTitle()
-                    .clearAuthors()
-                    .clearCoverUrl()
-                    .clearCategories()
-                    .clearSynopsis()
-                    .clearAvailableCount()
-                    .clearStatus();
+        setDeleted(true);
     }
 
     @Subscribe

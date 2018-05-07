@@ -47,7 +47,8 @@ public class BookDetailsViewProjection extends Projection<BookId, BookDetailsVie
     @Subscribe
     public void on(BookAdded event) {
         final BookDetails bookDetails = event.getDetails();
-        getBuilder().setBookDetails(bookDetails);
+        getBuilder().setId(event.getBookId())
+                    .setBookDetails(bookDetails);
     }
 
     @Subscribe
@@ -59,7 +60,6 @@ public class BookDetailsViewProjection extends Projection<BookId, BookDetailsVie
 
     @Subscribe
     public void on(BookRemoved event) {
-        getBuilder().clearBookDetails()
-                    .clearId();
+        setDeleted(true);
     }
 }

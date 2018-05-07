@@ -38,7 +38,10 @@ import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.server.command.TestEventFactory.newInstance;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static javaclasses.exlibris.BoundedContexts.create;
+import static javaclasses.exlibris.testdata.TestValues.BOOK_DETAILS;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
+import static javaclasses.exlibris.testdata.TestValues.DEFAULT_TIMESTAMP1;
+import static javaclasses.exlibris.testdata.TestValues.LIBRARIAN_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -53,6 +56,9 @@ public class InventoryCreatedTest {
                                                           BookAggregate.class);
         return eventFactory.createEvent(BookAdded.newBuilder()
                                                  .setBookId(BOOK_ID)
+                                                 .setDetails(BOOK_DETAILS)
+                                                 .setLibrarianId(LIBRARIAN_ID)
+                                                 .setWhenAdded(DEFAULT_TIMESTAMP1)
                                                  .build()
         );
     }

@@ -231,13 +231,11 @@ public class TestValues {
 
     private static final int LOAN_PERIOD = 60 * 60 * 24 * 14;
 
-    // Timestamp on 01.01.1970 00:00
+    // Timestamp on 01.01.1970 00:01
     public static final Timestamp DEFAULT_TIMESTAMP1 = Timestamp.newBuilder()
-                                                                .setNanos(0)
-                                                                .setSeconds(0)
+                                                                .setSeconds(1)
                                                                 .build();
     public static final Timestamp DEFAULT_TIMESTAMP2 = Timestamp.newBuilder()
-                                                                .setNanos(0)
                                                                 .setSeconds(213456789)
                                                                 .build();
 

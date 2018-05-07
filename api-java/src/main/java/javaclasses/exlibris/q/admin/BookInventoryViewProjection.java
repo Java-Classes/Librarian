@@ -81,17 +81,15 @@ public class BookInventoryViewProjection extends Projection<InventoryId, BookInv
                                                            .setItemId(itemId)
                                                            .setInLibrary(true)
                                                            .build();
-        getBuilder().setTitle(title)
+        getBuilder().setInventoryId(event.getInventoryId())
+                    .setTitle(title)
                     .setAuthor(authorName)
                     .addItemState(state);
     }
 
     @Subscribe
     public void on(InventoryRemoved event) {
-        getBuilder().clearInventoryId()
-                    .clearTitle()
-                    .clearAuthor()
-                    .clearItemState();
+        setDeleted(true);
     }
 
     @Subscribe
