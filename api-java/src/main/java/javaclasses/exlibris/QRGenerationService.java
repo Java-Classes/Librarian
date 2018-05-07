@@ -35,10 +35,10 @@ import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class QRGenerator {
+public class QRGenerationService {
     private static final int QR_BORDER_SIZE = 250;
 
-    private QRGenerator() {
+    private QRGenerationService() {
     }
 
     public static void generateQRCode(String sourceText, String filePath) {

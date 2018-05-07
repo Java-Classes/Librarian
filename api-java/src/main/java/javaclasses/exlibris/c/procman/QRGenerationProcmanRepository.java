@@ -18,22 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package javaclasses.exlibris;
+package javaclasses.exlibris.c.procman;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.spine.server.procman.ProcessManagerRepository;
+import javaclasses.exlibris.QRGeneration;
+import javaclasses.exlibris.QRGenerationId;
 
-/**
- * @author Yegor Udovchenko
- */
-@DisplayName("QRGenerator should")
-public class QRGeneratorTest {
+import static java.util.Collections.singleton;
+import static javaclasses.exlibris.c.procman.QRGenerationProcman.ID;
 
-    @Test
-    @DisplayName("generate QR code.")
-    void generateQR() {
-        String sourceText = "lkhriseluligheasligheraewfgu;sahguer;gah;eworha;geouhgeairufhv;he;svh;oheb";
-        String filePath = "D:\\qr\\test.png";
-        QRGenerator.generateQRCode(sourceText, filePath);
+public class QRGenerationProcmanRepository extends ProcessManagerRepository<QRGenerationId, QRGenerationProcman, QRGeneration> {
+    public QRGenerationProcmanRepository() {
+        super();
+        setUpEventRoute();
+    }
+
+    protected void setUpEventRoute() {
+        getEventRouting().replaceDefault(((message, context) -> singleton(ID)));
     }
 }
