@@ -35,14 +35,20 @@ import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class QRGenerationService {
+public class QRGenerator {
+
+    /**
+     * The QR code image border size.
+     */
     private static final int QR_BORDER_SIZE = 250;
 
-    private QRGenerationService() {
+    private static final String FILE_TYPE = "PNG";
+
+    private QRGenerator() {
+        // Prevent instantiation of this utility class.
     }
 
     public static void generateQRCode(String sourceText, String filePath) {
-        String fileType = "png";
         File resultFile = new File(filePath);
         try {
 
@@ -76,7 +82,7 @@ public class QRGenerationService {
                     }
                 }
             }
-            ImageIO.write(image, fileType, resultFile);
+            ImageIO.write(image, FILE_TYPE, resultFile);
         } catch (WriterException e) {
             e.printStackTrace();
         } catch (IOException e) {

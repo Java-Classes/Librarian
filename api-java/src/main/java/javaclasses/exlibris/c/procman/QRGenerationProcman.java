@@ -32,12 +32,16 @@ import javaclasses.exlibris.InventoryItemRecognizeToken;
 import javaclasses.exlibris.QRCodeImageURL;
 import javaclasses.exlibris.QRGeneration;
 import javaclasses.exlibris.QRGenerationId;
-import javaclasses.exlibris.QRGenerationService;
 import javaclasses.exlibris.QRGenerationVBuilder;
+import javaclasses.exlibris.QRGenerator;
 import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.c.SetBookQRCode;
 
+/**
+ * @author Yegor Udovchenko
+ */
 public class QRGenerationProcman extends ProcessManager<QRGenerationId, QRGeneration, QRGenerationVBuilder> {
+
     /**
      * As long as the {@code QRGenerationProcman} is an {@code InventoryAggregate}
      * service and does not hold model state it is a singleton. All subscribed events
@@ -66,8 +70,8 @@ public class QRGenerationProcman extends ProcessManager<QRGenerationId, QRGenera
                                                  .getIsbn62()
                                                  .getValue() + "/" +
                 inventoryItemId.getItemNumber();
-        String filePath = "D:\\qr\\" + recognizeToken + ".png";
-        QRGenerationService.generateQRCode(recognizeToken, filePath);
+        String filePath = "D:\\qr\\" + recognizeToken.hashCode() + ".png";
+        QRGenerator.generateQRCode(recognizeToken, filePath);
 
         final QRCodeImageURL qrCodeImageURL = QRCodeImageURL.newBuilder()
                                                             .setValue(filePath)

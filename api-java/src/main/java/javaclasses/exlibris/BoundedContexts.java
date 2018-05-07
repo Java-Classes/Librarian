@@ -30,6 +30,7 @@ import io.spine.server.storage.memory.InMemoryStorageFactory;
 import javaclasses.exlibris.c.book.BookRepository;
 import javaclasses.exlibris.c.inventory.InventoryRepository;
 import javaclasses.exlibris.c.procman.LoansExtensionProcmanRepository;
+import javaclasses.exlibris.c.procman.QRGenerationProcmanRepository;
 import javaclasses.exlibris.c.procman.ReservationQueueProcmanRepository;
 import javaclasses.exlibris.q.admin.BookDetailsViewRepository;
 import javaclasses.exlibris.q.admin.BookEventLogViewRepository;
@@ -89,6 +90,7 @@ public final class BoundedContexts {
         final InventoryRepository inventoryRepository = InventoryRepository.getRepository();
         final ReservationQueueProcmanRepository reservationQueueRepository = new ReservationQueueProcmanRepository();
         final LoansExtensionProcmanRepository loansExtensionRepository = new LoansExtensionProcmanRepository();
+        final QRGenerationProcmanRepository qrGenerationRepository = new QRGenerationProcmanRepository();
 
         final BookViewRepository allBooksRepo = new BookViewRepository();
         final ExpectedSoonBooksListViewRepository expectedSoonRepo = new ExpectedSoonBooksListViewRepository();
@@ -113,6 +115,7 @@ public final class BoundedContexts {
 
         boundedContext.register(reservationQueueRepository);
         boundedContext.register(loansExtensionRepository);
+        boundedContext.register(qrGenerationRepository);
 
         boundedContext.register(allBooksRepo);
         boundedContext.register(expectedSoonRepo);

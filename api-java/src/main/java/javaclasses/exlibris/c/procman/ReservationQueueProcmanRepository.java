@@ -27,6 +27,9 @@ import javaclasses.exlibris.ReservationQueueId;
 import static java.util.Collections.singleton;
 import static javaclasses.exlibris.c.procman.ReservationQueueProcman.ID;
 
+/**
+ * @author Yegor Udovchenko
+ */
 public class ReservationQueueProcmanRepository extends ProcessManagerRepository<ReservationQueueId, ReservationQueueProcman, ReservationQueue> {
 
     public ReservationQueueProcmanRepository() {

@@ -27,6 +27,9 @@ import javaclasses.exlibris.LoansExtensionId;
 import static java.util.Collections.singleton;
 import static javaclasses.exlibris.c.procman.LoansExtensionProcman.ID;
 
+/**
+ * @author Yegor Udovchenko
+ */
 public class LoansExtensionProcmanRepository extends ProcessManagerRepository<LoansExtensionId, LoansExtensionProcman, LoansExtension> {
     public LoansExtensionProcmanRepository() {
         super();

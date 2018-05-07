@@ -48,6 +48,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author Yegor Udovchenko
+ */
 public class LoansExtensionProcman extends ProcessManager<LoansExtensionId, LoansExtension, LoansExtensionVBuilder> {
 
     /**

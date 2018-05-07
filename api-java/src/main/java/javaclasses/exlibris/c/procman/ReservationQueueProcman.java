@@ -45,6 +45,9 @@ import javaclasses.exlibris.c.inventory.InventoryRepository;
 
 import java.util.List;
 
+/**
+ * @author Yegor Udovchenko
+ */
 public class ReservationQueueProcman extends ProcessManager<ReservationQueueId, ReservationQueue, ReservationQueueVBuilder> {
 
     /**

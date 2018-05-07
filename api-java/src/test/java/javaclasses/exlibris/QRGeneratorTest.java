@@ -26,14 +26,14 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Yegor Udovchenko
  */
-@DisplayName("QRGenerationService should")
-public class QRGenerationServiceTest {
+@DisplayName("QRGenerator should")
+public class QRGeneratorTest {
 
     @Test
     @DisplayName("generate QR code.")
     void generateQR() {
         String sourceText = "lkhriseluligheasligheraewfgu;sahguer;gah;eworha;geouhgeairufhv;he;svh;oheb";
         String filePath = "D:\\qr\\test.png";
-        QRGenerationService.generateQRCode(sourceText, filePath);
+        QRGenerator.generateQRCode(sourceText, filePath);
     }
 }

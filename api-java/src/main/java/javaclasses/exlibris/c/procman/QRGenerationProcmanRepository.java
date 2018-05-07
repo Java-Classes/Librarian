@@ -27,6 +27,9 @@ import javaclasses.exlibris.QRGenerationId;
 import static java.util.Collections.singleton;
 import static javaclasses.exlibris.c.procman.QRGenerationProcman.ID;
 
+/**
+ * @author Yegor Udovchenko
+ */
 public class QRGenerationProcmanRepository extends ProcessManagerRepository<QRGenerationId, QRGenerationProcman, QRGeneration> {
     public QRGenerationProcmanRepository() {
         super();
