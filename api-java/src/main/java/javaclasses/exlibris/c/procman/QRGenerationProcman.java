@@ -33,7 +33,7 @@ import javaclasses.exlibris.QRCodeImageURL;
 import javaclasses.exlibris.QRGeneration;
 import javaclasses.exlibris.QRGenerationId;
 import javaclasses.exlibris.QRGenerationVBuilder;
-import javaclasses.exlibris.QRGenerator;
+import javaclasses.exlibris.ServiceFactory;
 import javaclasses.exlibris.c.InventoryAppended;
 import javaclasses.exlibris.c.SetBookQRCode;
 
@@ -66,20 +66,15 @@ public class QRGenerationProcman extends ProcessManager<QRGenerationId, QRGenera
         final InventoryId inventoryId = event.getInventoryId();
         final CommandContext commandContext = eventContext.getCommandContext();
         final InventoryItemId inventoryItemId = event.getInventoryItemId();
-        final String recognizeToken = inventoryId.getBookId()
-                                                 .getIsbn62()
-                                                 .getValue() + "/" +
-                inventoryItemId.getItemNumber();
-        String filePath = "D:\\qr\\" + recognizeToken.hashCode() + ".png";
-        QRGenerator.generateQRCode(recognizeToken, filePath);
 
-        final QRCodeImageURL qrCodeImageURL = QRCodeImageURL.newBuilder()
-                                                            .setValue(filePath)
-                                                            .build();
         final InventoryItemRecognizeToken itemRecognizeToken =
-                InventoryItemRecognizeToken.newBuilder()
-                                           .setValue(recognizeToken)
-                                           .build();
+                ServiceFactory.getTokenGenerator()
+                              .generateRecognizeToken(inventoryItemId);
+
+        final QRCodeImageURL qrCodeImageURL = ServiceFactory.getQRGenerator()
+                                                            .generateQRCode(itemRecognizeToken,
+                                                                            inventoryItemId);
+
         final SetBookQRCode setBookQRCode = SetBookQRCode.newBuilder()
                                                          .setInventoryId(inventoryId)
                                                          .setInventoryItemId(inventoryItemId)

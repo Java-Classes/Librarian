@@ -35,6 +35,11 @@ import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
 
+/**
+ * The utility class for the QR code generation.
+ *
+ * @author Yegor Udovchenko
+ */
 public class QRGenerator {
 
     /**
@@ -42,35 +47,55 @@ public class QRGenerator {
      */
     private static final int QR_BORDER_SIZE = 250;
 
-    private static final String FILE_TYPE = "PNG";
+    private static final String FILE_TYPE = "png";
 
-    private QRGenerator() {
-        // Prevent instantiation of this utility class.
-    }
+    private static final String FILE_NAME_PATTERN = "%s_%d." + FILE_TYPE;
 
-    public static void generateQRCode(String sourceText, String filePath) {
-        File resultFile = new File(filePath);
+    // TODO 5/7/2018[yegor.udovchenko]: Find out should it be the FileSystem path or not.
+    private static final String FILE_ROOT_PATH = "D:\\qr\\";
+
+    /**
+     * Creates the QR code image file for an inventory item.
+     *
+     * @param recognizeToken  the unique token to identify inventory item
+     * @param inventoryItemId the identifier of inventory item
+     * @return {@code QRCodeImageURL} the URL of the QR code image file
+     */
+    public QRCodeImageURL generateQRCode(InventoryItemRecognizeToken recognizeToken,
+                                         InventoryItemId inventoryItemId) {
+        final String isbn62Value = inventoryItemId.getBookId()
+                                                  .getIsbn62()
+                                                  .getValue();
+        final int itemNumber = inventoryItemId.getItemNumber();
+
+        final String fileName = String.format(FILE_NAME_PATTERN, isbn62Value, itemNumber);
+        final String filePath = FILE_ROOT_PATH + fileName;
+
+        // TODO 5/7/2018[yegor.udovchenko]: Find out how to form URL.
+        final String sourceURL = "exlibris/book-qr-scan/" + recognizeToken.getValue();
+        final File resultFile = new File(filePath);
+
         try {
 
-            Map<EncodeHintType, Object> hintMap = new EnumMap<EncodeHintType, Object>(
+            final Map<EncodeHintType, Object> hintMap = new EnumMap<EncodeHintType, Object>(
                     EncodeHintType.class);
             hintMap.put(EncodeHintType.CHARACTER_SET, "UTF-8");
 
             hintMap.put(EncodeHintType.MARGIN, 1);
             hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
 
-            QRCodeWriter qrCodeWriter = new QRCodeWriter();
-            BitMatrix byteMatrix = qrCodeWriter.encode(sourceText,
-                                                       BarcodeFormat.QR_CODE,
-                                                       QR_BORDER_SIZE,
-                                                       QR_BORDER_SIZE,
-                                                       hintMap);
-            int crunchifyWidth = byteMatrix.getWidth();
-            BufferedImage image = new BufferedImage(crunchifyWidth, crunchifyWidth,
-                                                    BufferedImage.TYPE_INT_RGB);
+            final QRCodeWriter qrCodeWriter = new QRCodeWriter();
+            final BitMatrix byteMatrix = qrCodeWriter.encode(sourceURL,
+                                                             BarcodeFormat.QR_CODE,
+                                                             QR_BORDER_SIZE,
+                                                             QR_BORDER_SIZE,
+                                                             hintMap);
+            final int crunchifyWidth = byteMatrix.getWidth();
+            final BufferedImage image = new BufferedImage(crunchifyWidth, crunchifyWidth,
+                                                          BufferedImage.TYPE_INT_RGB);
             image.createGraphics();
 
-            Graphics2D graphics = (Graphics2D) image.getGraphics();
+            final Graphics2D graphics = (Graphics2D) image.getGraphics();
             graphics.setColor(Color.WHITE);
             graphics.fillRect(0, 0, crunchifyWidth, crunchifyWidth);
             graphics.setColor(Color.BLACK);
@@ -88,5 +113,12 @@ public class QRGenerator {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // TODO 5/7/2018[yegor.udovchenko]: find out how to generate.
+        final QRCodeImageURL qrCodeImageURL = QRCodeImageURL.newBuilder()
+                                                            .setValue(
+                                                                    "The url of the stored QR code image file.")
+                                                            .build();
+        return qrCodeImageURL;
     }
 }

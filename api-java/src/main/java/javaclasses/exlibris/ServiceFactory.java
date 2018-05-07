@@ -20,20 +20,38 @@
 
 package javaclasses.exlibris;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 /**
+ * The utility class representing service factory.
+ *
+ * <p>Used by {@code QRGenerationProcman} upon creation of
+ * a QR code and recognizing token for an inventory item.
+ *
  * @author Yegor Udovchenko
  */
-@DisplayName("QRGenerator should")
-public class QRGeneratorTest {
+public class ServiceFactory {
 
-    @Test
-    @DisplayName("generate QR code.")
-    void generateQR() {
-        String sourceText = "lkhriseluligheasligheraewfgu;sahguer;gah;eworha;geouhgeairufhv;he;svh;oheb";
-        String filePath = "D:\\qr\\test.png";
-        QRGenerator.generateQRCode(sourceText, filePath);
+    private static QRGenerator qrGenerator = new QRGenerator();
+    private static RecognizeTokenGenerator tokenGenerator = new RecognizeTokenGenerator();
+
+    private ServiceFactory() {
+        // Prevent instantiation of this utility class.
+    }
+
+    /**
+     * Provides instance of {@link QRGenerator}
+     *
+     * @return {@code QRGenerator} default instance.
+     */
+    public static QRGenerator getQRGenerator() {
+        return qrGenerator;
+    }
+
+    /**
+     * Provides instance of {@link RecognizeTokenGenerator}
+     *
+     * @return {@code RecognizeTokenGenerator} default instance.
+     */
+    public static RecognizeTokenGenerator getTokenGenerator() {
+        return tokenGenerator;
     }
 }
