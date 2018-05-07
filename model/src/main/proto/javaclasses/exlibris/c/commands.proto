@@ -123,13 +123,13 @@ message SetBookQRCode {
     InventoryId inventory_id = 1;
 
     // The identifier of an added item.
-    InventoryItemId inventory_item_id = 2;
+    InventoryItemId inventory_item_id = 2 [(required) = true];
 
     // The URL of a QR code image.
-    QRCodeImageURL qr_image_url = 3;
+    QRCodeImageURL qr_image_url = 3 [(required) = true];
 
     // The hashed part of the URL to recognize an inventory item.
-    InventoryItemRecognizeToken recognize_token = 4;
+    InventoryItemRecognizeToken recognize_token = 4 [(required) = true];
 }
 
 // An attempt to borrow a book.
