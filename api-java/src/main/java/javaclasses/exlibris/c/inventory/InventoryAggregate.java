@@ -34,11 +34,13 @@ import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.InventoryId;
 import javaclasses.exlibris.InventoryItem;
 import javaclasses.exlibris.InventoryItemId;
+import javaclasses.exlibris.InventoryItemRecognizeToken;
 import javaclasses.exlibris.InventoryVBuilder;
 import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.Loan;
 import javaclasses.exlibris.LoanId;
 import javaclasses.exlibris.LoanStatus;
+import javaclasses.exlibris.QRCodeImageURL;
 import javaclasses.exlibris.Reservation;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.WriteOffReason;
@@ -68,6 +70,7 @@ import javaclasses.exlibris.c.MarkBookAsAvailable;
 import javaclasses.exlibris.c.MarkLoanOverdue;
 import javaclasses.exlibris.c.MarkLoanShouldReturnSoon;
 import javaclasses.exlibris.c.MarkReservationExpired;
+import javaclasses.exlibris.c.QRCodeSet;
 import javaclasses.exlibris.c.ReportLostBook;
 import javaclasses.exlibris.c.ReservationAdded;
 import javaclasses.exlibris.c.ReservationBecameLoan;
@@ -76,6 +79,7 @@ import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 import javaclasses.exlibris.c.ReserveBook;
 import javaclasses.exlibris.c.ReturnBook;
 import javaclasses.exlibris.c.SatisfyReservation;
+import javaclasses.exlibris.c.SetBookQRCode;
 import javaclasses.exlibris.c.WriteBookOff;
 import javaclasses.exlibris.c.rejection.BookAlreadyBorrowed;
 import javaclasses.exlibris.c.rejection.BookAlreadyReserved;
@@ -159,6 +163,20 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     InventoryAppended handle(AppendInventory cmd) {
         final InventoryAppended inventoryAppended = createInventoryAppendedEvent(cmd);
         return inventoryAppended;
+    }
+
+    /**
+     * Handles a {@code SetBookQRCode} command.
+     *
+     * <p>For details see {@link SetBookQRCode}.
+     *
+     * @param cmd command with the identifier of a specific item.
+     * @return the {@link QRCodeSet} event.
+     */
+    @Assign
+    QRCodeSet handle(SetBookQRCode cmd) {
+        final QRCodeSet qrCodeSet = createQRCodeSetEvent(cmd);
+        return qrCodeSet;
     }
 
     /**
@@ -713,6 +731,21 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
     }
 
     @Apply
+    void bookLost(QRCodeSet event) {
+        final InventoryItemId inventoryItemId = event.getInventoryItemId();
+        final QRCodeImageURL qrImageUrl = event.getQrImageUrl();
+        final InventoryItemRecognizeToken recognizeToken = event.getRecognizeToken();
+        final List<InventoryItem> inventoryItems = getBuilder().getInventoryItems();
+        final int itemIndex = getInventoryItemIndexById(inventoryItemId, inventoryItems);
+        final InventoryItem inventoryItem = inventoryItems.get(itemIndex);
+        final InventoryItem updatedItem = InventoryItem.newBuilder(inventoryItem)
+                                                       .setQrCodeImageUrl(qrImageUrl)
+                                                       .setRecognizeToken(recognizeToken)
+                                                       .build();
+        getBuilder().setInventoryItems(itemIndex, updatedItem);
+    }
+
+    @Apply
     void loansExtensionAllowed(LoansExtensionAllowed event) {
         final List<UserId> borrowersList = event.getBorrowersList();
         final List<Loan> loans = getBuilder().getLoans();
@@ -1020,6 +1053,21 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
                                           .setWhenReported(getCurrentTime())
                                           .build();
         return bookLost;
+    }
+
+    private QRCodeSet createQRCodeSetEvent(SetBookQRCode cmd) {
+        final InventoryId inventoryId = cmd.getInventoryId();
+        final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
+        final QRCodeImageURL qrImageUrl = cmd.getQrImageUrl();
+        final InventoryItemRecognizeToken recognizeToken = cmd.getRecognizeToken();
+        final QRCodeSet qrCodeSetEvent = QRCodeSet.newBuilder()
+                                                  .setInventoryId(inventoryId)
+                                                  .setInventoryItemId(inventoryItemId)
+                                                  .setQrImageUrl(qrImageUrl)
+                                                  .setRecognizeToken(recognizeToken)
+                                                  .setWhenSet(getCurrentTime())
+                                                  .build();
+        return qrCodeSetEvent;
     }
 
     private boolean isBookReservedByUser(UserId userId) {

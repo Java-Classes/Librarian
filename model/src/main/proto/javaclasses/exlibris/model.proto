@@ -88,7 +88,7 @@ message InventoryItem {
     QRCodeImageURL qr_code_image_url = 5;
 
     // The hashed part of the URL to recognize an inventory item.
-    InventoryItemRecognizeToken recognize_tocken = 6;
+    InventoryItemRecognizeToken recognize_token = 6;
 
     // The RFID mark of an inventory item.
     Rfid rfid = 7;
