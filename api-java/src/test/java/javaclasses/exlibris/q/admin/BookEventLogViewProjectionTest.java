@@ -213,7 +213,7 @@ class BookEventLogViewProjectionTest extends ProjectionTest {
     class BookReadyToPickUpEvent {
 
         @Test
-        @DisplayName("add information about book lost event")
+        @DisplayName("add information about BookReadyToPickUp event")
         void addInformation() {
             final BookReadyToPickup bookReadyToPickup =
                     bookReadyToPickUpInstance();

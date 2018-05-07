@@ -213,7 +213,7 @@ public class InventoryEventFactory {
      */
     public static BookReturned bookReturnedInstance() {
         return bookReturnedInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1, USER_ID,
-                                    DEFAULT_TIMESTAMP1);
+                                    DEFAULT_TIMESTAMP1, LOAN_ID);
     }
 
     /**
@@ -228,11 +228,12 @@ public class InventoryEventFactory {
     public static BookReturned bookReturnedInstance(InventoryId inventoryId,
                                                     InventoryItemId inventoryItemId,
                                                     UserId userId,
-                                                    Timestamp whenReturned) {
+                                                    Timestamp whenReturned, LoanId loanId) {
         final BookReturned result = BookReturned.newBuilder()
                                                 .setInventoryId(inventoryId)
                                                 .setInventoryItemId(inventoryItemId)
                                                 .setWhoReturned(userId)
+                                                .setLoanId(loanId)
                                                 .setWhenReturned(whenReturned)
                                                 .build();
         return result;
@@ -448,7 +449,7 @@ public class InventoryEventFactory {
     public static LoanPeriodExtended loanPeriodExtendedInstance() {
         return loanPeriodExtendedInstance(INVENTORY_ID, INVENTORY_ITEM_ID_1, LOAN_ID, USER_ID,
                                           DEFAULT_TIMESTAMP1,
-                                          DEFAULT_TIMESTAMP2);
+                                          DEFAULT_TIMESTAMP2, DEFAULT_TIMESTAMP1);
     }
 
     /**
@@ -467,7 +468,8 @@ public class InventoryEventFactory {
                                                                 LoanId loanId,
                                                                 UserId userId,
                                                                 Timestamp previousDueDate,
-                                                                Timestamp newDueDate) {
+                                                                Timestamp newDueDate,
+                                                                Timestamp whenExtended) {
         final LoanPeriodExtended result = LoanPeriodExtended.newBuilder()
                                                             .setInventoryId(inventoryId)
                                                             .setInventoryItemId(inventoryItemId)
@@ -475,6 +477,7 @@ public class InventoryEventFactory {
                                                             .setUserId(userId)
                                                             .setPreviousDueDate(previousDueDate)
                                                             .setNewDueDate(newDueDate)
+                                                            .setWhenExtended(whenExtended)
                                                             .build();
         return result;
     }

@@ -49,7 +49,7 @@ message Isbn62 {
     // Example:
     // Original ISBN in decimal notation:    9780134685991,
     // Generated ISBN62 in base62 notation:  2mBSCRqZ.
-    string value = 1;
+    string value = 1 [(required) = true];
 }
 
 // The information about a book.
@@ -57,16 +57,16 @@ message Isbn62 {
 message BookDetails {
 
     // The International Standard Book Number.
-    Isbn isbn = 1;
+    Isbn isbn = 1 [(required) = true];
 
     // The URL of a book cover.
     spine.net.Url book_cover_url = 2;
 
     // The DTO of a book title.
-    BookTitle title = 3;
+    BookTitle title = 3 [(required) = true];
 
     // Authors' names.
-    AuthorName author = 4;
+    AuthorName author = 4 [(required) = true];
 
     // The DTO of a book synopsis.
     BookSynopsis synopsis = 5;
@@ -80,15 +80,15 @@ message BookDetails {
 message BookCoverURL {
 
     // The link to the image storage place.
-    string value = 1;
+    string value = 1 [(required) = true];
 }
 
-// The URL of a book cover.
+// The URL of a QR code image.
 //
 message QRcodeURL {
 
     // The link to the QR-code storage place.
-    string value = 1;
+    string value = 1 [(required) = true];
 }
 
 // The book title.
@@ -96,7 +96,7 @@ message QRcodeURL {
 message BookTitle {
 
     // The book title and the book subtitle concatenation.
-    string title = 1;
+    string title = 1 [(required) = true];
 }
 
 // The list of authors' names.
@@ -104,7 +104,7 @@ message BookTitle {
 message AuthorName {
 
     // The list of authors' names.
-    repeated spine.people.PersonName author_name = 1;
+    repeated spine.people.PersonName author_name = 1 [(required) = true];
 }
 
 // The synopsis is a brief summary of a book.
@@ -112,7 +112,7 @@ message AuthorName {
 message BookSynopsis {
 
     // Book synopsis.
-    string book_synopsis = 1;
+    string book_synopsis = 1 [(required) = true];
 }
 
 // The tag that is used to classify a book.
@@ -123,7 +123,7 @@ message BookSynopsis {
 message Category {
 
     // The name of a category.
-    string value = 1;
+    string value = 1 [(required) = true];
 }
 
 // The radio-frequency identification mark of a book.
@@ -131,7 +131,7 @@ message Category {
 message Rfid {
 
     // Contains the numeric code for simplifying reading.
-    string value = 1;
+    string value = 1 [(required) = true];
 }
 
 // The book publication year.
@@ -158,10 +158,10 @@ message WriteOffReason {
 message BookDetailsChange {
 
     // The previous information about a book.
-    BookDetails previous_book_details = 1;
+    BookDetails previous_book_details = 1 [(required) = true];
 
     // The updated information about a book.
-    BookDetails new_book_details = 2;
+    BookDetails new_book_details = 2 [(required) = true];
 }
 
 //The International Standard Book Number.
@@ -169,7 +169,7 @@ message BookDetailsChange {
 message Isbn {
 
     // The string value that contains an ISBN.
-    string value = 1;
+    string value = 1 [(required) = true];
 }
 
 // A book item loan status values.

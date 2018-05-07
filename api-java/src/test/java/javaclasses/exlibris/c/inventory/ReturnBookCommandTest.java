@@ -22,9 +22,11 @@ package javaclasses.exlibris.c.inventory;
 
 import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
+import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.Inventory;
 import javaclasses.exlibris.InventoryItem;
 import javaclasses.exlibris.InventoryItemId;
+import javaclasses.exlibris.Isbn62;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.BorrowBook;
@@ -119,7 +121,14 @@ public class ReturnBookCommandTest extends InventoryCommandTest<AppendInventory>
     void throwsCannotReturnMissingBook() {
         appendInventory();
         borrowBook();
-        final InventoryItemId fakeItemId = InventoryItemId.getDefaultInstance();
+        final InventoryItemId fakeItemId =
+                InventoryItemId.newBuilder()
+                               .setBookId(BookId.newBuilder()
+                                                .setIsbn62(Isbn62.newBuilder()
+                                                                 .setValue("123456780")
+                                                                 .build())
+                                                .build())
+                               .build();
 
         final ReturnBook returnBook = InventoryCommandFactory.returnBookInstance(INVENTORY_ID,
                                                                                  fakeItemId,

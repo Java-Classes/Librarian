@@ -87,7 +87,8 @@ public class ReservedBooksListViewProjection extends Projection<UserId, Reserved
                                                           .setWhenReadyToPickUp(whenExpected)
                                                           .setStatus(status)
                                                           .build();
-        getBuilder().addBookItem(bookItem)
+        getBuilder().setUserId(event.getForWhomReserved())
+                    .addBookItem(bookItem)
                     .setNumberOfReservedBooks((getBuilder().getBookItem()
                                                            .size()));
     }

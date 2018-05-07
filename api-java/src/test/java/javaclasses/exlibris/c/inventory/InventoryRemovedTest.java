@@ -39,6 +39,8 @@ import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.server.command.TestEventFactory.newInstance;
 import static javaclasses.exlibris.BoundedContexts.create;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
+import static javaclasses.exlibris.testdata.TestValues.DEFAULT_TIMESTAMP1;
+import static javaclasses.exlibris.testdata.TestValues.LIBRARIAN_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -90,6 +92,8 @@ public class InventoryRemovedTest extends InventoryCommandTest<AddBook> {
                                                           BookAggregate.class);
         return eventFactory.createEvent(BookRemoved.newBuilder()
                                                    .setBookId(BOOK_ID)
+                                                   .setLibrarianId(LIBRARIAN_ID)
+                                                   .setWhenRemoved(DEFAULT_TIMESTAMP1)
                                                    .build()
         );
     }

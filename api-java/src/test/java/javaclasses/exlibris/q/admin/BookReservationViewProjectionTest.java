@@ -20,6 +20,7 @@
 
 package javaclasses.exlibris.q.admin;
 
+import io.spine.server.entity.LifecycleFlags;
 import javaclasses.exlibris.BookReservationViewId;
 import javaclasses.exlibris.c.ReservationAdded;
 import javaclasses.exlibris.c.ReservationBecameLoan;
@@ -43,6 +44,7 @@ import static javaclasses.exlibris.testdata.TestValues.USER_EMAIL_1;
 import static javaclasses.exlibris.testdata.TestValues.USER_ID;
 import static javaclasses.exlibris.testdata.TestValues.USER_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BookReservationViewProjectionTest extends ProjectionTest {
 
@@ -90,8 +92,8 @@ class BookReservationViewProjectionTest extends ProjectionTest {
             final ReservationCanceled reservationCanceled = reservationCanceledInstance();
             dispatch(projection, createEvent(reservationCanceled));
 
-            final BookReservationView state = projection.getState();
-            assertEquals("", state.toString());
+            final LifecycleFlags lifecycleFlags = projection.getLifecycleFlags();
+            assertTrue(lifecycleFlags.getDeleted());
         }
     }
 
@@ -110,8 +112,8 @@ class BookReservationViewProjectionTest extends ProjectionTest {
                     reservationPickUpPeriodExpiredInstance();
             dispatch(projection, createEvent(reservationPickUpPeriodExpired));
 
-            final BookReservationView state = projection.getState();
-            assertEquals("", state.toString());
+            final LifecycleFlags lifecycleFlags = projection.getLifecycleFlags();
+            assertTrue(lifecycleFlags.getDeleted());
         }
     }
 
@@ -130,8 +132,8 @@ class BookReservationViewProjectionTest extends ProjectionTest {
                     reservationBecameLoanInstance();
             dispatch(projection, createEvent(reservationBecameLoan));
 
-            final BookReservationView state = projection.getState();
-            assertEquals("", state.toString());
+            final LifecycleFlags lifecycleFlags = projection.getLifecycleFlags();
+            assertTrue(lifecycleFlags.getDeleted());
         }
     }
 }
