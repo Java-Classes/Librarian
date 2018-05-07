@@ -199,7 +199,7 @@
                                                              book-title="[[book.title]]"></exlibris-book-details-redirect-link>
                         <div id="status-message">[[statusMessage]]</div>
                     </div>
-                    <div class="details-action-part" hidden="true">
+                    <div class="details-action-part">
                         <paper-button raised
                                       on-click="_handleButtonClick"
                                       hidden="[[!button]]">
@@ -310,7 +310,7 @@
 
                     /**
                      * The URL part that defines the book Id.
-                     * Should match the pattern `/:title/:id`
+                     * Should match the pattern `/:id/:title`
                      */
                     route: String,
 

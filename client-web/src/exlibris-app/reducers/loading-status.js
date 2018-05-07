@@ -18,8 +18,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* exported LoadingStatus */
-
 ExlibrisApp.LoadingStatus = {
     IN_PROGRESS: "IN_PROGRESS",
     COMPLETED: "COMPLETED",
