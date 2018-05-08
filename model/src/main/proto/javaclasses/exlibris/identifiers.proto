@@ -168,3 +168,11 @@ message QRGenerationId {
     //
     string value = 1;
 }
+
+// The identifier of an inventory item recognizer.
+//
+message InventoryItemRecognizerId {
+
+    // The hashed part of the URL to recognize an inventory item.
+    InventoryItemRecognizeToken value = 1;
+}

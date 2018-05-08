@@ -219,3 +219,17 @@ message CannotWriteBookOff {
     // The time when user tried to write missing book off.
     google.protobuf.Timestamp when_rejected = 4 [(required) = true];
 }
+
+// Rejection when a user tries to borrow or return book with not valid token.
+//
+message ThereIsNoItemForThisToken {
+
+    // The hashed part of the URL to recognize an inventory item.
+    InventoryItemRecognizeToken token = 1;
+
+    // Who tried to return or borrow a book.
+    UserId user_id = 2 [(required) = true];
+
+    // The time when a user tried to borrow or terun a book.
+    google.protobuf.Timestamp when_rejected = 3 [(required) = true];
+}

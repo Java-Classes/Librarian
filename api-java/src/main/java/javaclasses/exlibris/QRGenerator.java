@@ -27,11 +27,9 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -107,12 +105,13 @@ public class QRGenerator {
                     }
                 }
             }
-            ImageIO.write(image, FILE_TYPE, resultFile);
+//            ImageIO.write(image, FILE_TYPE, resultFile);
         } catch (WriterException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         // TODO 5/7/2018[yegor.udovchenko]: find out how to generate.
         final QRCodeImageURL qrCodeImageURL = QRCodeImageURL.newBuilder()

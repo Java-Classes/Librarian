@@ -324,3 +324,16 @@ message MarkBookAsAvailable {
     // The identifier of an inventory.
     InventoryId inventory_id = 1;
 }
+
+// An attempt to borrow or return a book.
+//
+// In case of a successful command propagation, a book is borrowed or returned by a user.
+//
+message BorrowOrReturnBook {
+
+    // The hashed part of the URL to recognize an inventory item.
+    InventoryItemRecognizeToken token = 1;
+
+    // Who borrows or return the book.
+    UserId user_id = 2 [(required) = true];
+}

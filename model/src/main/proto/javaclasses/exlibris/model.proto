@@ -185,3 +185,17 @@ message QRGeneration {
     // The identifier of a process manager.
     QRGenerationId id = 1;
 }
+
+// The model of an inventory item recognizer process manager.
+//
+message InventoryItemRecognizer {
+
+    // The identifier of an inventory item recognizer.
+    InventoryItemRecognizerId id = 1;
+
+    // The identifier of an inventory.
+    InventoryId inventory_id = 2;
+
+    // The identifier of an inventory item.
+    InventoryItemId inventory_item_id = 3;
+}
