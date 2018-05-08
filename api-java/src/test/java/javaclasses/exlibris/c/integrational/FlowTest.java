@@ -32,7 +32,6 @@ import io.spine.server.commandbus.CommandBus;
 import javaclasses.exlibris.BookDetailsChange;
 import javaclasses.exlibris.BoundedContexts;
 import javaclasses.exlibris.Inventory;
-import javaclasses.exlibris.c.RemoveBook;
 import javaclasses.exlibris.c.inventory.InventoryAggregate;
 import javaclasses.exlibris.c.inventory.InventoryCommandTest;
 import javaclasses.exlibris.c.inventory.InventoryRepository;
@@ -44,21 +43,17 @@ import org.junit.jupiter.api.Test;
 
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static javaclasses.exlibris.testdata.BookCommandFactory.createBookInstance;
-import static javaclasses.exlibris.testdata.BookCommandFactory.removeBookInstance;
 import static javaclasses.exlibris.testdata.BookCommandFactory.updateBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.extendLoanPeriodInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.reserveBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.returnBookInstance;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.writeBookOffInstance;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_DETAILS_2;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
 import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ID;
 import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ITEM_ID_1;
 import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ITEM_ID_2;
-import static javaclasses.exlibris.testdata.TestValues.LIBRARIAN_ID;
-import static javaclasses.exlibris.testdata.TestValues.LOAN;
 import static javaclasses.exlibris.testdata.TestValues.USER_ID;
 import static javaclasses.exlibris.testdata.TestValues.USER_ID_2;
 import static javaclasses.exlibris.testdata.TestValues.USER_ID_3;
@@ -117,21 +112,8 @@ public class FlowTest extends InventoryCommandTest<Message> {
     private final Command returnBook3 = requestFactory.createCommand(
             toMessage(returnBookInstance(INVENTORY_ID, INVENTORY_ITEM_ID_2, USER_ID_2)));
 
-    private final Command writeBookOff = requestFactory.createCommand(
-            toMessage(writeBookOffInstance()));
-
-    private final Command removeBook = requestFactory.createCommand(
-            toMessage(removeBookInstance(BOOK_ID,
-                                         LIBRARIAN_ID,
-                                         RemoveBook.BookRemovalReasonCase.OUTDATED)));
-
     private final Command extendLoanPeriod = requestFactory.createCommand(
             toMessage(extendLoanPeriodInstance()));
-
-    private final Command extendLoanPeriod2 = requestFactory.createCommand(
-            toMessage(extendLoanPeriodInstance(INVENTORY_ID,
-                                               LOAN.getLoanId(),
-                                               USER_ID_2)));
 
     @Override
     @BeforeEach

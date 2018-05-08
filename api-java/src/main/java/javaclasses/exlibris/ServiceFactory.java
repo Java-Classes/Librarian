@@ -20,6 +20,10 @@
 
 package javaclasses.exlibris;
 
+import io.spine.Environment;
+
+import static io.spine.util.Exceptions.newIllegalStateException;
+
 /**
  * The utility class representing service factory.
  *
@@ -53,5 +57,27 @@ public class ServiceFactory {
      */
     public static RecognizeTokenGenerator getTokenGenerator() {
         return tokenGenerator;
+    }
+
+    /**
+     * Setter method is used to substitute {@code QRGenerator}
+     * with a mock instance for tests.
+     *
+     * <p>Applicable only in test runtime environment.
+     *
+     * @param qrGenerator QR generator mock mock
+     * @throws IllegalStateException if this method is called not from test
+     */
+    public static void setQrGenerator(
+            QRGenerator qrGenerator) {
+        if (Environment.getInstance()
+                       .isTests()) {
+            ServiceFactory.qrGenerator = qrGenerator;
+        } else {
+            throw newIllegalStateException("This setter method can only be called from tests. " +
+                                                   "Current `isTests` value is `%s`.",
+                                           Environment.getInstance()
+                                                      .isTests());
+        }
     }
 }

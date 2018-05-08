@@ -72,7 +72,7 @@ public class QRGenerator {
         final String filePath = FILE_ROOT_PATH + fileName;
 
         // TODO 5/7/2018[yegor.udovchenko]: Find out how to form URL.
-        final String sourceURL = "exlibris/book-qr-scan/" + recognizeToken.getValue();
+        final String urlForEncryption = "exlibris/book-qr-scan/" + recognizeToken.getValue();
         final File resultFile = new File(filePath);
 
         try {
@@ -85,7 +85,7 @@ public class QRGenerator {
             hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
 
             final QRCodeWriter qrCodeWriter = new QRCodeWriter();
-            final BitMatrix byteMatrix = qrCodeWriter.encode(sourceURL,
+            final BitMatrix byteMatrix = qrCodeWriter.encode(urlForEncryption,
                                                              BarcodeFormat.QR_CODE,
                                                              QR_BORDER_SIZE,
                                                              QR_BORDER_SIZE,
