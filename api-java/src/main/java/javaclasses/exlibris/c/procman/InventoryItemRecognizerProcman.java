@@ -57,14 +57,14 @@ public class InventoryItemRecognizerProcman extends ProcessManager<InventoryItem
     CommandRouted handle(BorrowOrReturnBook cmd, CommandContext context) throws
                                                                          ThereIsNoItemForThisToken {
         if (!getState().hasInventoryItemId()) {
-            throw new ThereIsNoItemForThisToken(cmd.getToken(), cmd.getUserId(), getCurrentTime());
+            throw new ThereIsNoItemForThisToken(cmd.getId().getValue(), cmd.getUserId(), getCurrentTime());
         }
         final InventoryId inventoryId = getState().getInventoryId();
         final InventoryRepository inventoryRepository = InventoryRepository.getRepository();
         final Optional<InventoryAggregate> inventoryOptional = inventoryRepository.find(
                 inventoryId);
         if (!inventoryOptional.isPresent()) {
-            throw new ThereIsNoItemForThisToken(cmd.getToken(), cmd.getUserId(), getCurrentTime());
+            throw new ThereIsNoItemForThisToken(cmd.getId().getValue(), cmd.getUserId(), getCurrentTime());
         }
         InventoryAggregate inventory = inventoryOptional.get();
         final InventoryItemId inventoryItemId = getState().getInventoryItemId();

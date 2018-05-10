@@ -61,6 +61,7 @@ import static io.spine.protobuf.TypeConverter.toMessage;
 import static javaclasses.exlibris.testdata.BookCommandFactory.createBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
+import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowOrReturnBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.extendLoanPeriodInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.markLoanOverdue;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.markLoanShouldReturnSoon;
@@ -114,8 +115,10 @@ public class ExlibrisTest {
             final Command appendInventory = createCommand(appendInventoryInstance());
             commandBus.post(appendInventory, StreamObservers.noOpObserver());
 
-            final Command borrowBook = createCommand(borrowBookInstance());
-            commandBus.post(borrowBook, StreamObservers.noOpObserver());
+            final InventoryItemRecognizeToken token = getRecognizeToken();
+
+            final Command borrowOrReturnBook = createCommand(borrowOrReturnBookInstance(token, USER_ID));
+            commandBus.post(borrowOrReturnBook, StreamObservers.noOpObserver());
         }
 
         @Test
@@ -176,8 +179,10 @@ public class ExlibrisTest {
             final Command appendInventory = createCommand(appendInventoryInstance());
             commandBus.post(appendInventory, StreamObservers.noOpObserver());
 
-            final Command borrowBook = createCommand(borrowBookInstance());
-            commandBus.post(borrowBook, StreamObservers.noOpObserver());
+            final InventoryItemRecognizeToken token = getRecognizeToken();
+
+            final Command borrowOrReturnBook = createCommand(borrowOrReturnBookInstance(token, USER_ID));
+            commandBus.post(borrowOrReturnBook, StreamObservers.noOpObserver());
 
             final LoanId loanId = getLoanId();
 
@@ -259,8 +264,10 @@ public class ExlibrisTest {
             final Command appendInventory = createCommand(appendInventoryInstance());
             commandBus.post(appendInventory, StreamObservers.noOpObserver());
 
-            final Command borrowBook = createCommand(borrowBookInstance());
-            commandBus.post(borrowBook, StreamObservers.noOpObserver());
+            final InventoryItemRecognizeToken token = getRecognizeToken();
+
+            final Command borrowOrReturnBook = createCommand(borrowOrReturnBookInstance(token, USER_ID));
+            commandBus.post(borrowOrReturnBook, StreamObservers.noOpObserver());
 
             final LoanId loanId = getLoanId();
 
@@ -432,6 +439,17 @@ public class ExlibrisTest {
         return inventoryAggregate.getState()
                                  .getLoans(0)
                                  .getLoanId();
+    }
+
+    private InventoryItemRecognizeToken getRecognizeToken() {
+        final Repository inventoryRepo = boundedContext.findRepository(Inventory.class)
+                                                       .get();
+        final InventoryAggregate inventoryAggregate =
+                (InventoryAggregate) inventoryRepo.find(INVENTORY_ID)
+                                                  .get();
+        return inventoryAggregate.getState()
+                                 .getInventoryItems(0)
+                                 .getRecognizeToken();
     }
 
     private Command createCommand(GeneratedMessageV3 message) {

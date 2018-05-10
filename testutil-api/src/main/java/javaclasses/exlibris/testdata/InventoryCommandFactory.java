@@ -20,14 +20,11 @@
 
 package javaclasses.exlibris.testdata;
 
-import javaclasses.exlibris.InventoryId;
-import javaclasses.exlibris.InventoryItemId;
-import javaclasses.exlibris.LoanId;
-import javaclasses.exlibris.UserId;
-import javaclasses.exlibris.WriteOffReason;
+import javaclasses.exlibris.*;
 import javaclasses.exlibris.c.AllowLoansExtension;
 import javaclasses.exlibris.c.AppendInventory;
 import javaclasses.exlibris.c.BorrowBook;
+import javaclasses.exlibris.c.BorrowOrReturnBook;
 import javaclasses.exlibris.c.CancelReservation;
 import javaclasses.exlibris.c.ExtendLoanPeriod;
 import javaclasses.exlibris.c.ForbidLoansExtension;
@@ -287,6 +284,16 @@ public class InventoryCommandFactory {
                                                       .setUserId(userId)
                                                       .setLoanId(loanId)
                                                       .build();
+        return result;
+    }
+
+    public static BorrowOrReturnBook borrowOrReturnBookInstance(InventoryItemRecognizeToken token,
+                                                                UserId userId) {
+        final InventoryItemRecognizerId id = InventoryItemRecognizerId.newBuilder().setValue(token).build();
+        final BorrowOrReturnBook result = BorrowOrReturnBook.newBuilder()
+                                                            .setId(id)
+                                                            .setUserId(userId)
+                                                            .build();
         return result;
     }
 }

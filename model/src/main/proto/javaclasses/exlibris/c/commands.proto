@@ -332,7 +332,7 @@ message MarkBookAsAvailable {
 message BorrowOrReturnBook {
 
     // The hashed part of the URL to recognize an inventory item.
-    InventoryItemRecognizeToken token = 1;
+    InventoryItemRecognizerId id = 1;
 
     // Who borrows or return the book.
     UserId user_id = 2 [(required) = true];
