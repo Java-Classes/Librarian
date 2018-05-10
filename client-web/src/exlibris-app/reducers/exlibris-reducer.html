@@ -84,11 +84,11 @@
                     const allBooks = [...state.overdueBooks, ...libraryTestBooks]
                     return Object.assign({}, state, {allBooks: allBooks});
                 }
-                case ExlibrisApp.ExlibrisActions.FIND_INVENTORY_ITEM_BY_ID: {
-                    const bookId = action.id.bookId;
-                    const itemNumber = action.id.itemNumber;
-                    const inventoryItem = testInventoryItems.find(b => b.id.bookId === bookId && b.id.itemNumber == itemNumber);
-                    return Object.assign({}, state, {currentInventoryItem: inventoryItem});
+                case ExlibrisApp.ExlibrisActions.BORROW_OR_RETURN_ITEM: {
+                    const token = action.token;
+                    //TODO:2018-28-10:yurii.haidamaka  Add requests to the server
+                    // Put a test book item into the currentInventoryItem
+                    return Object.assign({}, state, {currentInventoryItem: testInventoryItems[0]});
                 }
                 default:
                     return state;
