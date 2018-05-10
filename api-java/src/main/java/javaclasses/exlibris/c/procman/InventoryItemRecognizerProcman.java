@@ -59,11 +59,8 @@ public class InventoryItemRecognizerProcman extends ProcessManager<InventoryItem
         if (!getState().hasInventoryItemId()) {
             throw new ThereIsNoItemForThisToken(cmd.getToken(), cmd.getUserId(), getCurrentTime());
         }
-
         final InventoryId inventoryId = getState().getInventoryId();
-
         final InventoryRepository inventoryRepository = InventoryRepository.getRepository();
-
         final Optional<InventoryAggregate> inventoryOptional = inventoryRepository.find(
                 inventoryId);
         if (!inventoryOptional.isPresent()) {
@@ -71,12 +68,8 @@ public class InventoryItemRecognizerProcman extends ProcessManager<InventoryItem
         }
         InventoryAggregate inventory = inventoryOptional.get();
         final InventoryItemId inventoryItemId = getState().getInventoryItemId();
-        final List<InventoryItem> inventoryItemsList = inventory.getState()
-                                                                .getInventoryItemsList();
-        final java.util.Optional<InventoryItem> inventoryItem = inventoryItemsList.stream()
-                                                                                  .filter(i -> i.getInventoryItemId()
-                                                                                                .equals(inventoryItemId))
-                                                                                  .findFirst();
+        final java.util.Optional<InventoryItem> inventoryItem = getInventoryItem(inventory,
+                                                                                 inventoryItemId);
         CommandRouted commandRouted;
         if (inventoryItem.get()
                          .getBorrowed()) {
@@ -99,6 +92,16 @@ public class InventoryItemRecognizerProcman extends ProcessManager<InventoryItem
         }
 
         return commandRouted;
+    }
+
+    private java.util.Optional<InventoryItem> getInventoryItem(InventoryAggregate inventory,
+                                                               InventoryItemId inventoryItemId) {
+        final List<InventoryItem> inventoryItemsList = inventory.getState()
+                                                                .getInventoryItemsList();
+        return inventoryItemsList.stream()
+                                 .filter(i -> i.getInventoryItemId()
+                                               .equals(inventoryItemId))
+                                 .findFirst();
     }
 
     @React
