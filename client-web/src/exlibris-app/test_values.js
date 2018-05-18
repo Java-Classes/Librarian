@@ -771,7 +771,7 @@ const testInventoryItems = [{
     userId: {
         email: "yurii.haidamaka@teamdev.com"
     },
-    status: "AVAILABLE"
+    status: "RETURNED"
 }, {
     id: {
         bookId: "8535902723",
@@ -779,7 +779,7 @@ const testInventoryItems = [{
     },
     title: "Elon Musk: How the Billionaire CEO of SpaceX and Tesla is Shaping our Future",
     image: "https://books.google.com/books/content/images/frontcover/_LFSBgAAQBAJ?fife=w200-h300",
-    author: "Ashlee Vance",
+    authors: "Ashlee Vance",
     userId: {
         email: "yurii.haidamaka@teamdev.com"
     },
@@ -791,22 +791,10 @@ const testInventoryItems = [{
     },
     title: "React.js. Быстрый старт",
     image: "https://books.google.com/books/content/images/frontcover/g79TDgAAQBAJ?fife=w200-h300",
-    author: "Стоян Стефанов",
+    authors: "Стоян Стефанов",
     userId: {
         email: "yurii.haidamaka@teamdev.com"
     },
-    status: "RESERVED"
-}, {
-    id: {
-        bookId: "1484228073",
-        itemNumber: 3
-    },
-    title: "Pro Spring 5: An In-Depth Guide to the Spring Framework and Its Tools, Edition 5",
-    image: "https://books.google.com/books/content/images/frontcover/N-U5DwAAQBAJ?fife=w200-h300",
-    author: "Iuliana CosminaRob HarropChris SchaeferClarence Ho",
-    userId: {
-        email: "yegor.udovchenko@teamdev.com"
-    },
-    status: "RESERVED"
+    status: "RETURNED"
 }];
 

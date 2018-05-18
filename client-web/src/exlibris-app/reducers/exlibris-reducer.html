@@ -38,7 +38,8 @@
                 loadingStatus: {}
             },
             categories: testCategories,
-            currentInventoryItem: {}
+            currentInventoryItem: {},
+            responseStatus: undefined
         };
 
         ExlibrisApp.reducer = (state = initialState, action) => {
@@ -88,7 +89,10 @@
                     const token = action.token;
                     //TODO:2018-28-10:yurii.haidamaka  Add requests to the server
                     // Put a test book item into the currentInventoryItem
-                    return Object.assign({}, state, {currentInventoryItem: testInventoryItems[0]});
+                    return Object.assign({}, state, {
+                        currentInventoryItem: testInventoryItems[2],
+                        responseStatus: 200
+                    });
                 }
                 default:
                     return state;

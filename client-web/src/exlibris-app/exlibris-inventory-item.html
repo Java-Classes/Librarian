@@ -20,19 +20,101 @@
 
 <link rel="import" href="./shell/exlibris-app-namespace.html">
 <link rel="import" href="./../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="./../../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="./shell/redux-store.html">
 
 <dom-module id="exlibris-inventory-item">
     <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            #info {
+                margin-top: 20px;
+                @apply --layout-horizontal;
+            }
+
+            #image {
+                width: 40%;
+                height: 150px;
+                border-right: 1px solid var(--paper-grey-500);;
+            }
+
+            #synopsis {
+                margin-left: 10px;
+                width: 60%;
+                height: 100px;
+            }
+
+            #header {
+                @apply --paper-font-title;
+                margin-bottom: 10px;
+            }
+
+            #status {
+                text-transform: lowercase;
+            }
+
+            #title {
+                width: 100%;
+                margin-top: 8px;
+                font-weight: bold;
+            }
+
+            #author {
+                @apply --paper-font-caption;
+                margin-top: 5px;
+                width: 250px;
+            }
+
+            paper-button {
+                background-color: var(--exlibris-app-primary-color);
+                color: var(--dark-theme-text-color);
+                height: 30px;
+                width: 120px;
+                margin-left: 60%;
+                margin-top: 10px;
+                margin-right: 20px;
+            }
+            a {
+                text-decoration: none;
+            }
+
+
+            iron-image {
+                border-radius: 3px 3px 0 0;
+                height: 100%;
+                width: 100%;
+            }
+        </style>
 
         <app-route
                 route="{{route}}"
                 pattern="/:token"
                 data="{{routeData}}"></app-route>
+        <div id="info">
+            <div id="image">
+                <iron-image sizing="contain"
+                            src="[[inventoryItem.image]]">
+                </iron-image>
+            </div>
+            <div id="synopsis">
+                <div id="header">[[header]]</div>
+                <div id="text">You have <span id="status">[[inventoryItem.status]]</span></div>
+                <div id="title">[[inventoryItem.title]]</div>
+                <div id="author">[[inventoryItem.authors]]</div>
+            </div>
+        </div>
+        <link rel="stylesheet" href="">
+        <a href="#/all-books/">
+            <paper-button>ok</paper-button>
+        </a>
     </template>
-
-
     <script>
         /**
          *
@@ -51,9 +133,17 @@
                         type: Object,
                         statePath: 'currentInventoryItem'
                     },
+                    responseStatus: {
+                        type: Number,
+                        statePath: 'responseStatus'
+                    },
                     routeData: {
                         type: Object,
                         observer: "_routeDataChanged"
+                    },
+                    header: {
+                        type: String,
+                        computed: '_computeHeader(inventoryItem)'
                     }
                 };
             }
@@ -70,7 +160,7 @@
             }
 
             /**
-             * Dispatches the action to find the inventory item by ID.
+             * Dispatches the action to borrow or return item.
              *
              * @param {Object} routeData the resolved route parameters.
              * @private
@@ -79,6 +169,10 @@
                 if (this.route && this.route.prefix === '/inventory-item') {
                     this.dispatch('borrowOrReturnItem', routeData.token);
                 }
+            }
+
+            _computeHeader(inventoryItem) {
+                return inventoryItem.status.charAt(0) + inventoryItem.status.substr(1).toLowerCase() + " Successfully";
             }
 
         }
