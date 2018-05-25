@@ -24,6 +24,7 @@ import com.google.common.base.Optional;
 import com.google.protobuf.Message;
 import io.spine.core.Enrichments;
 import io.spine.core.EventContext;
+import io.spine.core.RejectionContext;
 
 /**
  * Utility class for working with enrichments.
@@ -46,6 +47,24 @@ public class EnrichmentHelper {
     // and uses {@code Optional} from Google Guava.
     public static <T extends Message, E extends Class<T>>
     T getEnrichment(E enrichmentClass, EventContext context) {
+        final Optional<T> enrichmentOptional = Enrichments.getEnrichment(enrichmentClass, context);
+        if (enrichmentOptional.isPresent()) {
+            return enrichmentOptional.get();
+        }
+        throw new EnrichmentNotFoundException(enrichmentClass + " not found");
+    }
+
+    /**
+     * Obtains enrichment from the {@link RejectionContext} according to the enrichment class.
+     *
+     * @param enrichmentClass the class of the enrichment
+     * @param context         the {@code RejectionContext}
+     * @return the enrichment if it is present, throws {@code EnrichmentNotFoundException} otherwise
+     */
+    @SuppressWarnings("Guava") // Spine API is Java 7-based
+    // and uses {@code Optional} from Google Guava.
+    public static <T extends Message, E extends Class<T>>
+    T getEnrichment(E enrichmentClass, RejectionContext context) {
         final Optional<T> enrichmentOptional = Enrichments.getEnrichment(enrichmentClass, context);
         if (enrichmentOptional.isPresent()) {
             return enrichmentOptional.get();

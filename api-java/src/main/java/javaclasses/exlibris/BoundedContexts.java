@@ -23,8 +23,11 @@ package javaclasses.exlibris;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import io.spine.server.BoundedContext;
+import io.spine.server.commandbus.CommandBus;
 import io.spine.server.event.EventBus;
 import io.spine.server.event.EventEnricher;
+import io.spine.server.rejection.RejectionBus;
+import io.spine.server.rejection.RejectionEnricher;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import javaclasses.exlibris.c.book.BookRepository;
@@ -112,8 +115,9 @@ public final class BoundedContexts {
         final ReaderLoanViewRepository readerLoanViewRepo = new ReaderLoanViewRepository();
 
         final EventBus.Builder eventBus = createEventBus(storageFactory, bookRepository);
+        final RejectionBus.Builder rejectionBus = createRejectionBus(bookRepository);
 
-        final BoundedContext boundedContext = createBoundedContext(eventBus);
+        final BoundedContext boundedContext = createBoundedContext(eventBus, rejectionBus);
 
         boundedContext.register(bookRepository);
         boundedContext.register(inventoryRepository);
@@ -153,8 +157,18 @@ public final class BoundedContexts {
         return eventBus;
     }
 
+    private static RejectionBus.Builder createRejectionBus(BookRepository bookRepo) {
+        final RejectionEnricher enricher = ExlibrisEnrichments.newBuilder()
+                                                              .setBookRepository(bookRepo)
+                                                              .build()
+                                                              .createRejectionEnricher();
+        final RejectionBus.Builder rejectionBus = RejectionBus.newBuilder()
+                                                              .setEnricher(enricher);
+        return rejectionBus;
+    }
+
     @VisibleForTesting
-    static BoundedContext createBoundedContext(EventBus.Builder eventBus) {
+    static BoundedContext createBoundedContext(EventBus.Builder eventBus, RejectionBus.Builder rejectionBus) {
         checkNotNull(eventBus);
 
         final Optional<StorageFactory> storageFactory = eventBus.getStorageFactory();
@@ -166,7 +180,7 @@ public final class BoundedContexts {
         return BoundedContext.newBuilder()
                              .setStorageFactorySupplier(storageFactory::get)
                              .setName(NAME)
-                             .setEventBus(eventBus)
+                             .setEventBus(eventBus).setCommandBus(CommandBus.newBuilder().setRejectionBus(rejectionBus.build()))
                              .build();
     }
 }

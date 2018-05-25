@@ -31,6 +31,7 @@ import io.spine.server.commandbus.CommandBus;
 import io.spine.server.entity.Repository;
 import javaclasses.exlibris.c.inventory.InventoryAggregate;
 import javaclasses.exlibris.c.inventory.InventoryRepository;
+import javaclasses.exlibris.q.ActionResultNotification;
 import javaclasses.exlibris.q.BookDetailsView;
 import javaclasses.exlibris.q.BookInventoryView;
 import javaclasses.exlibris.q.BookReservationView;
@@ -49,6 +50,7 @@ import javaclasses.exlibris.q.admin.BookDetailsViewProjection;
 import javaclasses.exlibris.q.admin.BookInventoryViewProjection;
 import javaclasses.exlibris.q.admin.BookReservationViewProjection;
 import javaclasses.exlibris.q.admin.ReaderLoanViewProjection;
+import javaclasses.exlibris.q.user.ActionResultNotificationProjection;
 import javaclasses.exlibris.q.user.BookViewProjection;
 import javaclasses.exlibris.q.user.BorrowedBooksListViewProjection;
 import javaclasses.exlibris.q.user.ReservedBooksListViewProjection;
@@ -60,7 +62,6 @@ import org.junit.jupiter.api.Test;
 import static io.spine.protobuf.TypeConverter.toMessage;
 import static javaclasses.exlibris.testdata.BookCommandFactory.createBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.appendInventoryInstance;
-import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.borrowOrReturnBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.extendLoanPeriodInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.markLoanOverdue;
@@ -117,7 +118,8 @@ public class ExlibrisTest {
 
             final InventoryItemRecognizeToken token = getRecognizeToken();
 
-            final Command borrowOrReturnBook = createCommand(borrowOrReturnBookInstance(token, USER_ID));
+            final Command borrowOrReturnBook = createCommand(
+                    borrowOrReturnBookInstance(token, USER_ID));
             commandBus.post(borrowOrReturnBook, StreamObservers.noOpObserver());
         }
 
@@ -181,7 +183,8 @@ public class ExlibrisTest {
 
             final InventoryItemRecognizeToken token = getRecognizeToken();
 
-            final Command borrowOrReturnBook = createCommand(borrowOrReturnBookInstance(token, USER_ID));
+            final Command borrowOrReturnBook = createCommand(
+                    borrowOrReturnBookInstance(token, USER_ID));
             commandBus.post(borrowOrReturnBook, StreamObservers.noOpObserver());
 
             final LoanId loanId = getLoanId();
@@ -266,7 +269,8 @@ public class ExlibrisTest {
 
             final InventoryItemRecognizeToken token = getRecognizeToken();
 
-            final Command borrowOrReturnBook = createCommand(borrowOrReturnBookInstance(token, USER_ID));
+            final Command borrowOrReturnBook = createCommand(
+                    borrowOrReturnBookInstance(token, USER_ID));
             commandBus.post(borrowOrReturnBook, StreamObservers.noOpObserver());
 
             final LoanId loanId = getLoanId();
@@ -349,13 +353,56 @@ public class ExlibrisTest {
         }
     }
 
+    @Nested
+    @DisplayName("Add Book -> Append inventory -> User1: Borrow Book -> User2: Borrow the same book  ")
+    class FourthFlow {
+
+        @BeforeEach
+        public void setUp() {
+            InventoryRepository.setNewInstance();
+
+            boundedContext = BoundedContexts.create();
+            commandBus = boundedContext.getCommandBus();
+
+            final Command addBook = createCommand(createBookInstance());
+            commandBus.post(addBook, StreamObservers.noOpObserver());
+
+            final Command appendInventory = createCommand(appendInventoryInstance());
+            commandBus.post(appendInventory, StreamObservers.noOpObserver());
+
+            final InventoryItemRecognizeToken token = getRecognizeToken();
+
+            final Command borrowOrReturnBookUser1 = createCommand(
+                    borrowOrReturnBookInstance(token, USER_ID));
+            commandBus.post(borrowOrReturnBookUser1, StreamObservers.noOpObserver());
+
+            final Command borrowOrReturnBookUser2 = createCommand(
+                    borrowOrReturnBookInstance(token, USER_ID_2));
+            commandBus.post(borrowOrReturnBookUser2, StreamObservers.noOpObserver());
+        }
+
+        @Test
+        @DisplayName("Add information into the ActionResultNotification")
+        void updateActionResultNotificationProjection() {
+
+//            final Optional<Repository> repository = boundedContext.findRepository(
+//                    ActionResultNotification.class);
+//            assertTrue(repository.isPresent());
+//            final ActionResultNotificationProjection actionResultNotificationProjection = (ActionResultNotificationProjection) repository.get()
+//                                                                                                                                         .find(USER_ID_2)
+//                                                                                                                                         .get();
+//            final ActionResultNotification state = actionResultNotificationProjection.getState();
+
+        }
+
+    }
+
     private void testBorrowedBooksListView() {
         final Optional<Repository> repository = boundedContext.findRepository(
                 BorrowedBooksListView.class);
         assertTrue(repository.isPresent());
         final BorrowedBooksListViewProjection borrowedBooksListViewProjection =
                 (BorrowedBooksListViewProjection) repository.get()
-
                                                             .find(USER_ID)
                                                             .get();
         final BorrowedBooksListView state = borrowedBooksListViewProjection.getState();

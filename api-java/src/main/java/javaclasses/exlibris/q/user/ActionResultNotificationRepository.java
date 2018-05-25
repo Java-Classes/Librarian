@@ -22,6 +22,7 @@ package javaclasses.exlibris.q.user;
 
 import io.spine.server.projection.ProjectionRepository;
 import io.spine.server.route.EventRouting;
+import io.spine.server.route.RejectionRoute;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookReturned;
@@ -45,8 +46,6 @@ public class ActionResultNotificationRepository extends ProjectionRepository<Use
     /**
      * Adds the {@link io.spine.server.route.EventRoute EventRoute}s to the repository.
      *
-     * <p>Override this method in successor classes, otherwise all successors will use
-     * {@code BookViewProjection.ID}.
      */
     protected void setUpEventRoute() {
         final EventRouting<UserId> routing = getEventRouting();
