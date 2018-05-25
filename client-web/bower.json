@@ -23,7 +23,7 @@
     "paper-dialog-behavior": "PolymerElements/paper-dialog-behavior#^2.2.0",
     "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^2.2.0",
     "iron-test-helpers": "PolymerElements/iron-test-helpers#^2.0.0",
-    "iron-a11y-keys-behavior": "PolymerElements/iron-a11y-keys-behavior#^2.1.0"
+    "iron-a11y-keys-behavior": "PolymerElements/iron-a11y-keys-behavior#^2.1.0",
     "paper-input": "PolymerElements/paper-input#^2.2.1",
     "vaadin-upload": "vaadin/vaadin-upload#^3.0.2",
     "paper-checkbox": "PolymerElements/paper-checkbox#^2.0.3"
