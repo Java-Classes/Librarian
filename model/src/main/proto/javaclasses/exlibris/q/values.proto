@@ -188,6 +188,20 @@ enum ReservedBookItemStatus {
     RESERVED = 2;
 }
 
+// A status of an action after scanning QR code.
+//
+enum ActionStatus {
+
+    // Used as an undefined value marker.
+    AS_UNDEFINED = 0;
+
+    BORROW = 1;
+
+    RETURN = 2;
+
+    ERROR = 3;
+}
+
 // The single item of a readers list view.
 //
 message ReaderBooksCountItem {

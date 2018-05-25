@@ -115,6 +115,33 @@ message ReservedBooksListView {
     int32 number_of_reserved_books = 3;
 }
 
+// The projection state that is shown after scanning QR code.
+//
+message ActionResultNotification {
+
+    // The identifier of a user.
+    UserId user_id = 1 [(required) = true];
+
+    // The book title.
+    BookTitle title = 2 [(required) = true];
+
+    // Authors’ full names.
+    AuthorName authors = 3 [(required) = true];
+
+    // The book cover.
+    spine.net.Url cover_url = 4 [(required) = true];
+
+    // The status of an action.
+    ActionStatus status = 5 [(required) = true];
+
+    // The identifier of an inventory.
+    InventoryId inventory_id = 6 [(required) = true];
+
+    // The date when book should be returned.
+    spine.time.LocalDate due_date = 7;
+}
+
+
 // **** Projections for the UI role Admin. ****
 
 // The projection state of a one reader's loan.
