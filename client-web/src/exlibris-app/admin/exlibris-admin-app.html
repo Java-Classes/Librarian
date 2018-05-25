@@ -21,7 +21,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="./../../exlibris-app/shell/redux-store.html">
-
+<link rel="import" href="../../../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import"
       href="../../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../../../bower_components/app-layout/app-header/app-header.html">
@@ -37,6 +37,8 @@
 <link rel="import" href="../../../bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
 
+<link rel="import" href="./exlibris-admin-menu-drawer.html">
+
 
 <dom-module id="exlibris-admin-app">
     <template>
@@ -48,10 +50,14 @@
                 --app-drawer-width: 250px;
                 display: block;
             }
+            app-drawer {
+                --app-drawer-content-container: {
+                    background-color: var(--exlibris-app-background-color);
+                }
+            }
 
             app-toolbar {
                 background-color: var(--exlibris-app-primary-color);
-                box-shadow: 3px 3px 12px #888888;
                 color: #fff;
             }
 
@@ -70,6 +76,9 @@
                 color: white;
                 margin-top: 30px;
             }
+            paper-tabs[no-bar] paper-tab.iron-selected {
+                color: #ffff8d;
+            }
 
         </style>
 
@@ -84,22 +93,15 @@
 
         <app-drawer-layout fullbleed narrow="{{narrow}}">
 
+            <!-- Drawer content -->
+            <app-drawer id="drawer" swipe-open="[[narrow]]" slot="drawer" on-click="_toggleDrawer">
+                <exlibris-admin-menu-drawer selected="[[routeData.page]]"></exlibris-admin-menu-drawer>
+            </app-drawer>
+
             <!-- Main content -->
             <app-header-layout has-scrolling-region>
                 <app-header slot="header" fixed>
                     <app-toolbar>
-                        <div>Exlibris</div>
-                        <paper-tabs selected="0">
-                            <paper-tab>
-                                <a href="#/inventory">Inventory</a>
-                            </paper-tab>
-                            <paper-tab>
-                                <a href="#/readers">Readers</a>
-                            </paper-tab>
-                            <paper-tab>
-                                <a href="#/lost-books">Lost Books</a>
-                            </paper-tab>
-                        </paper-tabs>
                     </app-toolbar>
                 </app-header>
 
