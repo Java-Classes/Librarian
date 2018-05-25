@@ -41,6 +41,7 @@ import javaclasses.exlibris.q.admin.BookReservationViewRepository;
 import javaclasses.exlibris.q.admin.LostBookViewRepository;
 import javaclasses.exlibris.q.admin.ReaderEventLogViewRepository;
 import javaclasses.exlibris.q.admin.ReaderLoanViewRepository;
+import javaclasses.exlibris.q.user.ActionResultNotificationRepository;
 import javaclasses.exlibris.q.user.BookViewRepository;
 import javaclasses.exlibris.q.user.BorrowedBooksListViewRepository;
 import javaclasses.exlibris.q.user.ExpectedSoonBooksListViewRepository;
@@ -52,7 +53,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * Utilities for creation the {@link BoundedContext} instances.
  *
- * @author Alexander Karpets
+ * @author Alexander Karpets, Yurii Haidamaka
  */
 public final class BoundedContexts {
 
@@ -99,6 +100,7 @@ public final class BoundedContexts {
         final ExpectedSoonBooksListViewRepository expectedSoonRepo = new ExpectedSoonBooksListViewRepository();
         final BorrowedBooksListViewRepository borrowedRepo = new BorrowedBooksListViewRepository();
         final ReservedBooksListViewRepository reservedRepo = new ReservedBooksListViewRepository();
+        final ActionResultNotificationRepository actionResultNotificationRepo = new ActionResultNotificationRepository();
 
         final BookDetailsViewRepository bookDetailsViewRepo = new BookDetailsViewRepository();
         final BookEventLogViewRepository bookEventLogViewRepo = new BookEventLogViewRepository();
@@ -125,6 +127,7 @@ public final class BoundedContexts {
         boundedContext.register(expectedSoonRepo);
         boundedContext.register(borrowedRepo);
         boundedContext.register(reservedRepo);
+        boundedContext.register(actionResultNotificationRepo);
 
         boundedContext.register(bookDetailsViewRepo);
         boundedContext.register(bookEventLogViewRepo);
