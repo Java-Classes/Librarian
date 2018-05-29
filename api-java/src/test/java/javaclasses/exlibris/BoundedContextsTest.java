@@ -37,10 +37,10 @@ class BoundedContextsTest {
         assertHasPrivateParameterlessCtor(BoundedContexts.class);
     }
 
-//    @Test
-//    @DisplayName("not create BoundedContext from EventBus.Builder without a StorageFactory")
-//    void notCreateBoundedContextWithoutStorageFactory() {
-//        final EventBus.Builder builder = EventBus.newBuilder();
-//        assertThrows(IllegalStateException.class, () -> createBoundedContext(builder));
-//    }
+    @Test
+    @DisplayName("not create BoundedContext from EventBus.Builder without a StorageFactory")
+    void notCreateBoundedContextWithoutStorageFactory() {
+        final EventBus.Builder builder = EventBus.newBuilder();
+        assertThrows(IllegalStateException.class, () -> createBoundedContext(builder));
+    }
 }

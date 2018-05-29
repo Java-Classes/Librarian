@@ -80,25 +80,25 @@ public class ActionResultNotificationProjection extends Projection<UserId, Actio
                     .setInventoryId(inventoryId);
     }
 
-    @Subscribe
-    public void on(NonAvailableBook rejection, RejectionContext context) {
-        final BookEnrichment enrichment = getEnrichment(BookEnrichment.class, context);
-        final BookDetails bookDetails = enrichment.getBook()
-                                                  .getBookDetails();
-
-        final UserId userId = rejection.getUserId();
-        final BookTitle title = bookDetails.getTitle();
-        final AuthorName author = bookDetails.getAuthor();
-        final Url bookCoverUrl = bookDetails.getBookCoverUrl();
-        final ActionStatus status = ActionStatus.ERROR;
-        final InventoryId inventoryId = rejection.getInventoryId();
-
-        getBuilder().setUserId(userId)
-                    .setTitle(title)
-                    .setAuthors(author)
-                    .setCoverUrl(bookCoverUrl)
-                    .setStatus(status)
-                    .setInventoryId(inventoryId);
-
-    }
+//    @Subscribe
+//    public void on(NonAvailableBook rejection, RejectionContext context) {
+//        final BookEnrichment enrichment = getEnrichment(BookEnrichment.class, context);
+//        final BookDetails bookDetails = enrichment.getBook()
+//                                                  .getBookDetails();
+//
+//        final UserId userId = rejection.getUserId();
+//        final BookTitle title = bookDetails.getTitle();
+//        final AuthorName author = bookDetails.getAuthor();
+//        final Url bookCoverUrl = bookDetails.getBookCoverUrl();
+//        final ActionStatus status = ActionStatus.ERROR;
+//        final InventoryId inventoryId = rejection.getInventoryId();
+//
+//        getBuilder().setUserId(userId)
+//                    .setTitle(title)
+//                    .setAuthors(author)
+//                    .setCoverUrl(bookCoverUrl)
+//                    .setStatus(status)
+//                    .setInventoryId(inventoryId);
+//
+//    }
 }

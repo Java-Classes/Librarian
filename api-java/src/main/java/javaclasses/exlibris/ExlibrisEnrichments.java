@@ -24,7 +24,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import io.spine.server.event.EventBus;
 import io.spine.server.event.EventEnricher;
-import io.spine.server.rejection.RejectionEnricher;
 import javaclasses.exlibris.c.book.BookAggregate;
 import javaclasses.exlibris.c.book.BookRepository;
 
@@ -50,14 +49,6 @@ public class ExlibrisEnrichments {
                 EventEnricher.newBuilder()
                              .add(InventoryId.class, Book.class, inventoryIdToBook())
                              .build();
-        return enricher;
-    }
-
-    RejectionEnricher createRejectionEnricher() {
-        final RejectionEnricher enricher =
-                RejectionEnricher.newBuilder()
-                                 .add(InventoryId.class, Book.class, inventoryIdToBook())
-                                 .build();
         return enricher;
     }
 

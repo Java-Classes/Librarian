@@ -53,22 +53,4 @@ public class EnrichmentHelper {
         }
         throw new EnrichmentNotFoundException(enrichmentClass + " not found");
     }
-
-    /**
-     * Obtains enrichment from the {@link RejectionContext} according to the enrichment class.
-     *
-     * @param enrichmentClass the class of the enrichment
-     * @param context         the {@code RejectionContext}
-     * @return the enrichment if it is present, throws {@code EnrichmentNotFoundException} otherwise
-     */
-    @SuppressWarnings("Guava") // Spine API is Java 7-based
-    // and uses {@code Optional} from Google Guava.
-    public static <T extends Message, E extends Class<T>>
-    T getEnrichment(E enrichmentClass, RejectionContext context) {
-        final Optional<T> enrichmentOptional = Enrichments.getEnrichment(enrichmentClass, context);
-        if (enrichmentOptional.isPresent()) {
-            return enrichmentOptional.get();
-        }
-        throw new EnrichmentNotFoundException(enrichmentClass + " not found");
-    }
 }
