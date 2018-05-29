@@ -179,7 +179,7 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
     }
 
     @Test
-    @DisplayName("throw NonAvailableBook rejection upon " +
+    @DisplayName("throw BookAlreadyBorrowed rejection upon " +
             "an attempt to borrow a book item that is already borrowed")
     void borrowingSomeonesBook() {
         dispatchAppendInventory();
@@ -196,7 +196,7 @@ public class BorrowBookCommandTest extends InventoryCommandTest<BorrowBook> {
                                                                envelopeOf(borrowSomeOnesBook)));
 
         final Throwable cause = Throwables.getRootCause(t);
-        assertThat(cause, instanceOf(NonAvailableBook.class));
+        assertThat(cause, instanceOf(BookAlreadyBorrowed.class));
     }
 
     @Test

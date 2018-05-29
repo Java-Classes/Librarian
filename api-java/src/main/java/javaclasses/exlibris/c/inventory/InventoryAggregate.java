@@ -245,15 +245,18 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
      *
      * @param cmd command to borrow the book.
      * @return the {@link Pair} of events.
-     * @throws BookAlreadyBorrowed if a book is already borrowed ba a user.
+     * @throws BookAlreadyBorrowed in the following cases:
+     * <ul>
+     *     <li> if this item is already borrowed by somebody
+     *     <li> if any item of this book is borrowed by a user
+     * </ul>.
      * @throws NonAvailableBook in following cases:
      * <ul>
-     *      <li>if this item is already borrowed by somebody
      *      <li>user has the reservation for this book and it is not satisfied
      *      <li>user has no reservation for this book but the satisfied reservations count for this
      *          book is greater or equal the `in library` items count(no items free for borrowing).
      * </ul>
-     */ 
+     */
     // @formatter:on
     @Assign
     Pair<BookBorrowed, Optional<ReservationBecameLoan>> handle(BorrowBook cmd) throws
@@ -262,11 +265,10 @@ public class InventoryAggregate extends Aggregate<InventoryId, Inventory, Invent
         final UserId userId = cmd.getUserId();
         final InventoryItemId inventoryItemId = cmd.getInventoryItemId();
 
-        if (isBookBorrowedByUser(userId)) {
+        if (isBookBorrowedByUser(userId) ||
+                (inventoryItemExists(inventoryItemId) &&
+                        isInventoryItemBorrowed(inventoryItemId))) {
             throw bookAlreadyBorrowed(cmd);
-        }
-        if (inventoryItemExists(inventoryItemId) && isInventoryItemBorrowed(inventoryItemId)) {
-            throw nonAvailableBook(cmd);
         }
 
         final List<Reservation> reservations = getState().getReservationsList();
