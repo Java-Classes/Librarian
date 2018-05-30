@@ -46,7 +46,8 @@ message BookEnrichment {
                                 "javaclasses.exlibris.c.LoanBecameOverdue,"
                                 "javaclasses.exlibris.c.LoanBecameShouldReturnSoon,"
                                 "javaclasses.exlibris.c.LoanPeriodExtended,"
-                                "javaclasses.exlibris.c.NonAvailableBook";
+                                "javaclasses.exlibris.c.NonAvailableBook,"
+                                "javaclasses.exlibris.c.BookWasNotBorrowed";
 
     Book book = 1 [(by) = "inventory_id"];
 }

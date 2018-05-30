@@ -26,6 +26,7 @@ import io.spine.server.route.RejectionRoute;
 import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookReturned;
+import javaclasses.exlibris.c.BookWasNotBorrowed;
 import javaclasses.exlibris.q.ActionResultNotification;
 
 import java.util.Collections;
@@ -53,5 +54,7 @@ public class ActionResultNotificationRepository extends ProjectionRepository<Use
                       (message, context) -> Collections.singleton(message.getWhoBorrowed()));
         routing.route(BookReturned.class,
                       (message, context) -> Collections.singleton(message.getWhoReturned()));
+        routing.route(BookWasNotBorrowed.class,
+                      (message, context) -> Collections.singleton(message.getUserId()));
     }
 }

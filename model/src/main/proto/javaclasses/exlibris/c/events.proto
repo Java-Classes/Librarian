@@ -483,7 +483,7 @@ message BookWasNotBorrowed {
     UserId user_id = 2 [(required) = true];
 
     // The time when a user tried to borrow.
-    google.protobuf.Timestamp when_rejected = 3 [(required) = true];
+    google.protobuf.Timestamp when_emitted = 3 [(required) = true];
 
     // Rejection reason.
     string cause = 4 [(required) = true];

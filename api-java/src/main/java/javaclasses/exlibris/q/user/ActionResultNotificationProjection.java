@@ -1,7 +1,6 @@
 package javaclasses.exlibris.q.user;
 
 import io.spine.core.EventContext;
-import io.spine.core.RejectionContext;
 import io.spine.core.Subscribe;
 import io.spine.net.Url;
 import io.spine.server.projection.Projection;
@@ -14,13 +13,13 @@ import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookEnrichment;
 import javaclasses.exlibris.c.BookReturned;
+import javaclasses.exlibris.c.BookWasNotBorrowed;
 import javaclasses.exlibris.q.ActionResultNotification;
 import javaclasses.exlibris.q.ActionResultNotificationVBuilder;
 import javaclasses.exlibris.q.ActionStatus;
 
 import static javaclasses.exlibris.EnrichmentHelper.getEnrichment;
 import static javaclasses.exlibris.Timestamps.toLocalDate;
-import static javaclasses.exlibris.c.rejection.Rejections.NonAvailableBook;
 
 /**
  * A projection state of a result of an action after scanning OR code.
@@ -80,25 +79,23 @@ public class ActionResultNotificationProjection extends Projection<UserId, Actio
                     .setInventoryId(inventoryId);
     }
 
-//    @Subscribe
-//    public void on(NonAvailableBook rejection, RejectionContext context) {
-//        final BookEnrichment enrichment = getEnrichment(BookEnrichment.class, context);
-//        final BookDetails bookDetails = enrichment.getBook()
-//                                                  .getBookDetails();
-//
-//        final UserId userId = rejection.getUserId();
-//        final BookTitle title = bookDetails.getTitle();
-//        final AuthorName author = bookDetails.getAuthor();
-//        final Url bookCoverUrl = bookDetails.getBookCoverUrl();
-//        final ActionStatus status = ActionStatus.ERROR;
-//        final InventoryId inventoryId = rejection.getInventoryId();
-//
-//        getBuilder().setUserId(userId)
-//                    .setTitle(title)
-//                    .setAuthors(author)
-//                    .setCoverUrl(bookCoverUrl)
-//                    .setStatus(status)
-//                    .setInventoryId(inventoryId);
-//
-//    }
+    @Subscribe
+    public void on(BookWasNotBorrowed event, EventContext context) {
+        final BookEnrichment enrichment = getEnrichment(BookEnrichment.class, context);
+        final BookDetails bookDetails = enrichment.getBook()
+                                                  .getBookDetails();
+        final UserId userId = event.getUserId();
+        final BookTitle title = bookDetails.getTitle();
+        final AuthorName author = bookDetails.getAuthor();
+        final Url bookCoverUrl = bookDetails.getBookCoverUrl();
+        final ActionStatus status = ActionStatus.ERROR;
+        final InventoryId inventoryId = event.getInventoryId();
+
+        getBuilder().setUserId(userId)
+                    .setTitle(title)
+                    .setAuthors(author)
+                    .setCoverUrl(bookCoverUrl)
+                    .setStatus(status)
+                    .setInventoryId(inventoryId);
+    }
 }
