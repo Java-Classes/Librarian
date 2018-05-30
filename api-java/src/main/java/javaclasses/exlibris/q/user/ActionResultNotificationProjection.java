@@ -47,6 +47,8 @@ public class ActionResultNotificationProjection extends Projection<UserId, Actio
         final ActionStatus status = ActionStatus.BORROW;
         final InventoryId inventoryId = event.getInventoryId();
         final LocalDate dueDate = toLocalDate(event.getWhenDue());
+        final String message = "Please return before " + dueDate.getDay() + "." +
+                dueDate.getMonth().getNumber() + "." + dueDate.getYear();
 
         getBuilder().setUserId(userId)
                     .setTitle(title)
@@ -54,6 +56,7 @@ public class ActionResultNotificationProjection extends Projection<UserId, Actio
                     .setCoverUrl(bookCoverUrl)
                     .setStatus(status)
                     .setInventoryId(inventoryId)
+                    .setMessage(message)
                     .setDueDate(dueDate);
 
     }
@@ -76,6 +79,7 @@ public class ActionResultNotificationProjection extends Projection<UserId, Actio
                     .setAuthors(author)
                     .setCoverUrl(bookCoverUrl)
                     .setStatus(status)
+                    .setMessage("")
                     .setInventoryId(inventoryId);
     }
 
@@ -90,12 +94,14 @@ public class ActionResultNotificationProjection extends Projection<UserId, Actio
         final Url bookCoverUrl = bookDetails.getBookCoverUrl();
         final ActionStatus status = ActionStatus.ERROR;
         final InventoryId inventoryId = event.getInventoryId();
+        final String message = event.getCause();
 
         getBuilder().setUserId(userId)
                     .setTitle(title)
                     .setAuthors(author)
                     .setCoverUrl(bookCoverUrl)
                     .setStatus(status)
+                    .setMessage(message)
                     .setInventoryId(inventoryId);
     }
 }

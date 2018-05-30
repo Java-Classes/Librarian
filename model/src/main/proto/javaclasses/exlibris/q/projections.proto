@@ -137,10 +137,12 @@ message ActionResultNotification {
     // The identifier of an inventory.
     InventoryId inventory_id = 6 [(required) = true];
 
-    // The date when book should be returned.
-    spine.time.LocalDate due_date = 7;
-}
+    // A message that will be shown after action.
+    string message = 7;
 
+    // The date when book should be returned.
+    spine.time.LocalDate due_date = 8;
+}
 
 // **** Projections for the UI role Admin. ****
 
