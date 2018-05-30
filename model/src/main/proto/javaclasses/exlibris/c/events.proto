@@ -471,3 +471,20 @@ message BookRemoved {
     // The time when book was removed.
     google.protobuf.Timestamp when_removed = 5 [(required) = true];
 }
+
+// An event fired when a user could not borrow a book.
+//
+message BookWasNotBorrowed {
+
+    // The identifier of an inventory.
+    InventoryId inventory_id = 1 [(required) = true];
+
+    // Who tried to borrow a book.
+    UserId user_id = 2 [(required) = true];
+
+    // The time when a user tried to borrow.
+    google.protobuf.Timestamp when_rejected = 3 [(required) = true];
+
+    // Rejection reason.
+    string cause = 4 [(required) = true];
+}

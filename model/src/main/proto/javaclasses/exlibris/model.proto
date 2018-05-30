@@ -199,3 +199,11 @@ message InventoryItemRecognizer {
     // The identifier of an inventory item.
     InventoryItemId inventory_item_id = 3;
 }
+
+// The model of an inventory rejection inspector process manager.
+message InventoryRejectionInspector {
+
+    // The identifier of a process manager.
+    InventoryRejectionInspectorId id = 1;
+
+}

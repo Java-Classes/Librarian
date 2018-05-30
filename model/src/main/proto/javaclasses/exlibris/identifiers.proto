@@ -176,3 +176,12 @@ message InventoryItemRecognizerId {
     // The hashed part of the URL to recognize an inventory item.
     InventoryItemRecognizeToken value = 1;
 }
+
+// The identifier of an inventory rejection inspector.
+//
+message InventoryRejectionInspectorId {
+
+    // String representation of UUID.
+    //
+    string value = 1;
+}
