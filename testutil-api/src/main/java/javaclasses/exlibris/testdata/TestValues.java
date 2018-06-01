@@ -26,7 +26,7 @@ import io.spine.net.Url;
 import io.spine.people.PersonName;
 import io.spine.time.LocalDate;
 import io.spine.time.MonthOfYear;
-import javaclasses.exlibris.AuthorName;
+import javaclasses.exlibris.Author;
 import javaclasses.exlibris.Book;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookDetailsChange;
@@ -93,14 +93,14 @@ public class TestValues {
                                                         .setValue("Refactoring")
                                                         .build();
 
-    public static final AuthorName AUTHOR_NAME = AuthorName.newBuilder()
-                                                           .addValue(
-                                                                   PersonName.newBuilder()
-                                                                             .setFamilyName(
-                                                                                     "Fowler")
-                                                                             .setGivenName(
-                                                                                     "Martin"))
-                                                           .build();
+    public static final Author AUTHOR = Author.newBuilder()
+                                              .setPersonName(
+                                                      PersonName.newBuilder()
+                                                                .setFamilyName(
+                                                                        "Fowler")
+                                                                .setGivenName(
+                                                                        "Martin"))
+                                              .build();
 
     public static final Url COVER_URL = Url.newBuilder()
                                            .setRaw("http://library.teamdev.com/book/1")
@@ -119,14 +119,14 @@ public class TestValues {
                                                           .setValue("WHY SOFTWARE SUX")
                                                           .build();
 
-    public static final AuthorName AUTHOR_NAME_2 = AuthorName.newBuilder()
-                                                             .addValue(
-                                                                     PersonName.newBuilder()
-                                                                               .setFamilyName(
-                                                                                       "Cartman")
-                                                                               .setGivenName(
-                                                                                       "Eric"))
-                                                             .build();
+    public static final Author AUTHOR_2 = Author.newBuilder()
+                                                .setPersonName(
+                                                        PersonName.newBuilder()
+                                                                  .setFamilyName(
+                                                                          "Cartman")
+                                                                  .setGivenName(
+                                                                          "Eric"))
+                                                .build();
 
     public static final Url COVER_URL_2 = Url.newBuilder()
                                              .setRaw("http://library.teamdev.com/book/144")
@@ -163,7 +163,7 @@ public class TestValues {
     public static final BookDetails BOOK_DETAILS = BookDetails.newBuilder()
                                                               .setIsbn(ISBN)
                                                               .setTitle(BOOK_TITLE)
-                                                              .setAuthor(AUTHOR_NAME)
+                                                              .addAuthor(AUTHOR)
                                                               .setBookCoverUrl(COVER_URL)
                                                               .setSynopsis(BOOK_SYNOPSIS)
                                                               .addCategories(BOOK_CATEGORY)
@@ -171,7 +171,7 @@ public class TestValues {
 
     public static final BookDetails BOOK_DETAILS_2 = BookDetails.newBuilder()
                                                                 .setTitle(BOOK_TITLE_2)
-                                                                .setAuthor(AUTHOR_NAME_2)
+                                                                .addAuthor(AUTHOR_2)
                                                                 .setBookCoverUrl(COVER_URL_2)
                                                                 .setSynopsis(BOOK_SYNOPSIS_2)
                                                                 .addCategories(BOOK_CATEGORY_2)

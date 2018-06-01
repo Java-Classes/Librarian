@@ -38,7 +38,7 @@ import static io.spine.Identifier.newUuid;
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
 import static javaclasses.exlibris.testdata.BookEventFactory.bookAddedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.inventoryAppendedInstance;
-import static javaclasses.exlibris.testdata.TestValues.AUTHOR_NAME;
+import static javaclasses.exlibris.testdata.TestValues.AUTHOR;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_CATEGORY;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_SYNOPSIS;
@@ -76,7 +76,8 @@ class ExpectedSoonBooksListViewProjectionTest extends ProjectionTest {
             final ExpectedSoonItem bookItem = books.get(0);
             assertEquals(BOOK_ID, bookItem.getBookId());
             assertEquals(BOOK_TITLE, bookItem.getTitle());
-            assertEquals(AUTHOR_NAME, bookItem.getAuthors());
+            assertEquals(AUTHOR, bookItem.getAuthorsList()
+                                         .get(0));
             assertEquals(ISBN, bookItem.getIsbn());
             assertEquals(COVER_URL, bookItem.getCoverUrl());
             assertEquals(BOOK_CATEGORY, bookItem.getCategories(0));

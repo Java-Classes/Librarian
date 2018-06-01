@@ -25,7 +25,7 @@ import io.spine.core.EventContext;
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
 import io.spine.time.LocalDate;
-import javaclasses.exlibris.AuthorName;
+import javaclasses.exlibris.Author;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookTitle;
 import javaclasses.exlibris.InventoryItemId;
@@ -37,6 +37,8 @@ import javaclasses.exlibris.c.BookReturned;
 import javaclasses.exlibris.c.LoanPeriodExtended;
 import javaclasses.exlibris.q.ReaderLoanView;
 import javaclasses.exlibris.q.ReaderLoanViewVBuilder;
+
+import java.util.ArrayList;
 
 import static javaclasses.exlibris.EnrichmentHelper.getEnrichment;
 import static javaclasses.exlibris.Timestamps.toLocalDate;
@@ -68,7 +70,7 @@ public class ReaderLoanViewProjection extends Projection<ReaderLoanViewId, Reade
         final BookEnrichment enrichment = getEnrichment(BookEnrichment.class, context);
         final BookDetails bookDetails = enrichment.getBook()
                                                   .getBookDetails();
-        final AuthorName authorName = bookDetails.getAuthor();
+        final ArrayList<Author> authors = new ArrayList<>(bookDetails.getAuthorList());
         final BookTitle title = bookDetails.getTitle();
         final ReaderLoanViewId readerLoanViewId = ReaderLoanViewId.newBuilder()
                                                                   .setUserId(userId)
@@ -77,7 +79,7 @@ public class ReaderLoanViewProjection extends Projection<ReaderLoanViewId, Reade
         getBuilder().setId(readerLoanViewId)
                     .setUserId(userId)
                     .setTitle(title)
-                    .setAuthors(authorName)
+                    .addAllAuthor(authors)
                     .setItemId(inventoryItemId)
                     .setWhenTaken(whenTaken)
                     .setWhenDue(whenDue);
