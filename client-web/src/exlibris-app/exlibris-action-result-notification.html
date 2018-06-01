@@ -27,7 +27,7 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="./shell/redux-store.html">
 
-<dom-module id="exlibris-inventory-item">
+<dom-module id="exlibris-action-result-notification">
     <template>
         <style>
             :host {
@@ -40,24 +40,31 @@
             }
 
             #image {
-                width: 40%;
+                min-width: 150px;
                 height: 150px;
-                border-right: 1px solid var(--paper-grey-500);;
+            }
+
+            iron-image {
+                width: 100%;
+                flex: none;
+            }
+
+            #right-part {
+                @apply --layout-vertical;
+                display: inline-block;
+                border-left: 1px solid var(--paper-grey-500);
             }
 
             #synopsis {
+                @apply --layout-vertical;
                 margin-left: 10px;
-                width: 60%;
-                height: 100px;
+                width: 100%;
+                min-height: 150px;
             }
 
             #header {
                 @apply --paper-font-title;
                 margin-bottom: 10px;
-            }
-
-            #status {
-                text-transform: lowercase;
             }
 
             #title {
@@ -69,7 +76,17 @@
             #author {
                 @apply --paper-font-caption;
                 margin-top: 5px;
-                width: 250px;
+                width: 100%;
+            }
+
+            #message {
+                margin-top: 10px;
+                width: 100%;
+            }
+
+            #nav {
+                @apply --layout-horizontal;
+                @apply --layout-end-justified;
             }
 
             paper-button {
@@ -77,17 +94,15 @@
                 color: var(--dark-theme-text-color);
                 height: 30px;
                 width: 120px;
-                margin-left: 60%;
-                margin-top: 10px;
                 margin-right: 20px;
+                margin-top: 30px;
             }
+
             a {
                 text-decoration: none;
             }
 
-
             iron-image {
-                border-radius: 3px 3px 0 0;
                 height: 100%;
                 width: 100%;
             }
@@ -100,20 +115,29 @@
         <div id="info">
             <div id="image">
                 <iron-image sizing="contain"
-                            src="[[inventoryItem.image]]">
+                            src="[[notification.coverUrl.raw]]">
                 </iron-image>
             </div>
-            <div id="synopsis">
-                <div id="header">[[header]]</div>
-                <div id="text">You have <span id="status">[[inventoryItem.status]]</span></div>
-                <div id="title">[[inventoryItem.title]]</div>
-                <div id="author">[[inventoryItem.authors]]</div>
+            <div id="right-part">
+                <div id="synopsis">
+                    <div id="header">[[header]]</div>
+                    <div id="text">[[subheader]]</div>
+                    <div id="title">[[notification.title.value]]</div>
+                    <div id="author">[[authorsNames]]</div>
+                    <div id="message">[[notification.message]]</div>
+                </div>
+
             </div>
+
         </div>
-        <link rel="stylesheet" href="">
-        <a href="#/all-books/">
-            <paper-button>ok</paper-button>
-        </a>
+        <div id="nav">
+            <paper-button hidden="[[_hideReservation(notification.status)]]" id="reserve-btn">
+                reserve
+            </paper-button>
+            <a href="#/all-books/">
+                <paper-button>ok</paper-button>
+            </a>
+        </div>
     </template>
     <script>
         /**
@@ -122,20 +146,16 @@
          * @polymer
          * @appliesMixin ExlibrisApp.ReduxMixin
          */
-        class ExlibrisInventoryItem extends ExlibrisApp.ReduxMixin(Polymer.Element) {
+        class ExlibrisActionResultNotification extends ExlibrisApp.ReduxMixin(Polymer.Element) {
             static get is() {
-                return 'exlibris-inventory-item';
+                return 'exlibris-action-result-notification';
             }
 
             static get properties() {
                 return {
-                    inventoryItem: {
+                    notification: {
                         type: Object,
-                        statePath: 'currentInventoryItem'
-                    },
-                    responseStatus: {
-                        type: Number,
-                        statePath: 'responseStatus'
+                        statePath: 'actionResultNotification'
                     },
                     routeData: {
                         type: Object,
@@ -143,7 +163,15 @@
                     },
                     header: {
                         type: String,
-                        computed: '_computeHeader(inventoryItem)'
+                        computed: '_computeHeader(notification)'
+                    },
+                    subheader: {
+                        type: String,
+                        computed: '_computeSubheader(notification)'
+                    },
+                    authorsNames: {
+                        type: String,
+                        computed: '_computeAuthorNames(notification.author)'
                     }
                 };
             }
@@ -166,17 +194,51 @@
              * @private
              */
             _routeDataChanged(routeData) {
-                if (this.route && this.route.prefix === '/inventory-item') {
+                if (this.route && this.route.prefix === '/action') {
                     this.dispatch('borrowOrReturnItem', routeData.token);
                 }
             }
 
-            _computeHeader(inventoryItem) {
-                return inventoryItem.status.charAt(0) + inventoryItem.status.substr(1).toLowerCase() + " Successfully";
+            _computeHeader(notification) {
+                switch (notification.status) {
+                    case "RETURN": {
+                        return "Returned Successfully";
+                    }
+                    case "BORROW": {
+                        return "Borrowed Successfully";
+                    }
+                    case "ERROR": {
+                        return "Cannot Borrow the Book";
+                    }
+                }
             }
 
+            _computeSubheader(notification) {
+                switch (notification.status) {
+                    case "RETURN": {
+                        return "You have returned";
+                    }
+                    case "BORROW": {
+                        return "You have borrowed";
+                    }
+                    case "ERROR": {
+                        return "You attempted to borrow";
+                    }
+                }
+            }
+
+            _computeAuthorNames(authors) {
+                const fullNames = authors.map(author => {
+                    return author.authorName.givenName + " " + author.authorName.familyName;
+                });
+                return fullNames.join(', ')
+            }
+
+            _hideReservation(status) {
+                return status !== "ERROR";
+            }
         }
 
-        window.customElements.define(ExlibrisInventoryItem.is, ExlibrisInventoryItem);
+        window.customElements.define(ExlibrisActionResultNotification.is, ExlibrisActionResultNotification);
     </script>
 </dom-module>

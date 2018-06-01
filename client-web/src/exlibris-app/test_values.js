@@ -776,6 +776,12 @@ const actionResultNotification = {
                 givenName: "Kyle",
                 familyName: "Sympson"
             }
+        },
+        {
+            authorName: {
+                givenName: "Djack",
+                familyName: "Tompson"
+            }
         }
     ],
     coverUrl: {

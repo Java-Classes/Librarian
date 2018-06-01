@@ -38,8 +38,7 @@
                 loadingStatus: {}
             },
             categories: testCategories,
-            currentInventoryItem: {},
-            responseStatus: undefined
+            actionResultNotification: {},
         };
 
         ExlibrisApp.reducer = (state = initialState, action) => {
@@ -88,10 +87,8 @@
                 case ExlibrisApp.ExlibrisActions.BORROW_OR_RETURN_ITEM: {
                     const token = action.token;
                     //TODO:2018-28-10:yurii.haidamaka  Add requests to the server
-                    // Put a test book item into the currentInventoryItem
                     return Object.assign({}, state, {
-                        currentInventoryItem: testInventoryItems[2],
-                        responseStatus: 200
+                        actionResultNotification: actionResultNotification
                     });
                 }
                 default:
