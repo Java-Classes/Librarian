@@ -5,7 +5,7 @@ import io.spine.core.Subscribe;
 import io.spine.net.Url;
 import io.spine.server.projection.Projection;
 import io.spine.time.LocalDate;
-import javaclasses.exlibris.AuthorName;
+import javaclasses.exlibris.Author;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookTitle;
 import javaclasses.exlibris.InventoryId;
@@ -17,6 +17,8 @@ import javaclasses.exlibris.c.BookWasNotBorrowed;
 import javaclasses.exlibris.q.ActionResultNotification;
 import javaclasses.exlibris.q.ActionResultNotificationVBuilder;
 import javaclasses.exlibris.q.ActionStatus;
+
+import java.util.ArrayList;
 
 import static javaclasses.exlibris.EnrichmentHelper.getEnrichment;
 import static javaclasses.exlibris.Timestamps.toLocalDate;
@@ -42,17 +44,18 @@ public class ActionResultNotificationProjection extends Projection<UserId, Actio
                                                   .getBookDetails();
         final UserId userId = event.getWhoBorrowed();
         final BookTitle title = bookDetails.getTitle();
-        final AuthorName author = bookDetails.getAuthor();
+        final ArrayList<Author> authors = new ArrayList<>(bookDetails.getAuthorList());
         final Url bookCoverUrl = bookDetails.getBookCoverUrl();
         final ActionStatus status = ActionStatus.BORROW;
         final InventoryId inventoryId = event.getInventoryId();
         final LocalDate dueDate = toLocalDate(event.getWhenDue());
         final String message = "Please return before " + dueDate.getDay() + "." +
-                dueDate.getMonth().getNumber() + "." + dueDate.getYear();
+                dueDate.getMonth()
+                       .getNumber() + "." + dueDate.getYear();
 
         getBuilder().setUserId(userId)
                     .setTitle(title)
-                    .setAuthors(author)
+                    .addAllAuthor(authors)
                     .setCoverUrl(bookCoverUrl)
                     .setStatus(status)
                     .setInventoryId(inventoryId)
@@ -69,14 +72,14 @@ public class ActionResultNotificationProjection extends Projection<UserId, Actio
 
         final UserId userId = event.getWhoReturned();
         final BookTitle title = bookDetails.getTitle();
-        final AuthorName author = bookDetails.getAuthor();
+        final ArrayList<Author> authors = new ArrayList<>(bookDetails.getAuthorList());
         final Url bookCoverUrl = bookDetails.getBookCoverUrl();
         final ActionStatus status = ActionStatus.RETURN;
         final InventoryId inventoryId = event.getInventoryId();
 
         getBuilder().setUserId(userId)
                     .setTitle(title)
-                    .setAuthors(author)
+                    .addAllAuthor(authors)
                     .setCoverUrl(bookCoverUrl)
                     .setStatus(status)
                     .setMessage("")
@@ -90,7 +93,7 @@ public class ActionResultNotificationProjection extends Projection<UserId, Actio
                                                   .getBookDetails();
         final UserId userId = event.getUserId();
         final BookTitle title = bookDetails.getTitle();
-        final AuthorName author = bookDetails.getAuthor();
+        final ArrayList<Author> authors = new ArrayList<>(bookDetails.getAuthorList());
         final Url bookCoverUrl = bookDetails.getBookCoverUrl();
         final ActionStatus status = ActionStatus.ERROR;
         final InventoryId inventoryId = event.getInventoryId();
@@ -98,7 +101,7 @@ public class ActionResultNotificationProjection extends Projection<UserId, Actio
 
         getBuilder().setUserId(userId)
                     .setTitle(title)
-                    .setAuthors(author)
+                    .addAllAuthor(authors)
                     .setCoverUrl(bookCoverUrl)
                     .setStatus(status)
                     .setMessage(message)

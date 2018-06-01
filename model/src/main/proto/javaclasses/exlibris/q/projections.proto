@@ -125,8 +125,8 @@ message ActionResultNotification {
     // The book title.
     BookTitle title = 2 [(required) = true];
 
-    // Authors’ full names.
-    AuthorName authors = 3 [(required) = true];
+    // The list of authors.
+    repeated Author author = 3 [(required) = true];
 
     // The book cover.
     spine.net.Url cover_url = 4 [(required) = true];
