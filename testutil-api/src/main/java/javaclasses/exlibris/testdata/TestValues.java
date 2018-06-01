@@ -72,34 +72,27 @@ public class TestValues {
                                                .build();
 
     public static final EmailAddress USER_EMAIL_1 = EmailAddress.newBuilder()
-                                                                .setValue(
-                                                                        "paulageyev@gmail.com")
+                                                                .setValue("paulageyev@gmail.com")
                                                                 .build();
 
     public static final EmailAddress USER_EMAIL_2 = EmailAddress.newBuilder()
-                                                                .setValue(
-                                                                        "petrVase4kin@gmail.com")
+                                                                .setValue("petrVase4kin@gmail.com")
                                                                 .build();
     private static final EmailAddress USER_EMAIL_3 = EmailAddress.newBuilder()
-                                                                 .setValue(
-                                                                         "petr3@gmail.com")
+                                                                 .setValue("petr3@gmail.com")
                                                                  .build();
 
     public static final EmailAddress LIBRARIAN_EMAIL = EmailAddress.newBuilder()
-                                                                   .setValue(
-                                                                           "smb@teamdev.com")
+                                                                   .setValue("smb@teamdev.com")
                                                                    .build();
     public static final BookTitle BOOK_TITLE = BookTitle.newBuilder()
                                                         .setValue("Refactoring")
                                                         .build();
 
     public static final Author AUTHOR = Author.newBuilder()
-                                              .setPersonName(
-                                                      PersonName.newBuilder()
-                                                                .setFamilyName(
-                                                                        "Fowler")
-                                                                .setGivenName(
-                                                                        "Martin"))
+                                              .setPersonName(PersonName.newBuilder()
+                                                                       .setFamilyName("Fowler")
+                                                                       .setGivenName("Martin"))
                                               .build();
 
     public static final Url COVER_URL = Url.newBuilder()
@@ -120,12 +113,9 @@ public class TestValues {
                                                           .build();
 
     public static final Author AUTHOR_2 = Author.newBuilder()
-                                                .setPersonName(
-                                                        PersonName.newBuilder()
-                                                                  .setFamilyName(
-                                                                          "Cartman")
-                                                                  .setGivenName(
-                                                                          "Eric"))
+                                                .setPersonName(PersonName.newBuilder()
+                                                                         .setFamilyName("Cartman")
+                                                                         .setGivenName("Eric"))
                                                 .build();
 
     public static final Url COVER_URL_2 = Url.newBuilder()

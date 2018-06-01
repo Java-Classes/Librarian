@@ -103,7 +103,7 @@ message BookTitle {
 //
 message Author {
 
-    // The list of authors' names.
+    // Author's person name.
     spine.people.PersonName person_name = 1 [(required) = true];
 }
 
