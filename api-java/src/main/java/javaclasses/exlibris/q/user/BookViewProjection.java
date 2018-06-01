@@ -55,7 +55,7 @@ public class BookViewProjection extends Projection<BookId, BookView, BookViewVBu
         getBuilder().setBookId(event.getBookId())
                     .setIsbn(bookDetails.getIsbn())
                     .setTitle(bookDetails.getTitle())
-                    .setAuthors(bookDetails.getAuthor())
+                    .addAllAuthor(bookDetails.getAuthorList())
                     .setCoverUrl(bookDetails.getBookCoverUrl())
                     .addAllCategories(bookDetails.getCategoriesList())
                     .setSynopsis(bookDetails.getSynopsis())

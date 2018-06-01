@@ -26,7 +26,7 @@ import io.spine.net.Url;
 import io.spine.people.PersonName;
 import io.spine.time.LocalDate;
 import io.spine.time.MonthOfYear;
-import javaclasses.exlibris.AuthorName;
+import javaclasses.exlibris.Author;
 import javaclasses.exlibris.Book;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookDetailsChange;
@@ -72,42 +72,35 @@ public class TestValues {
                                                .build();
 
     public static final EmailAddress USER_EMAIL_1 = EmailAddress.newBuilder()
-                                                                .setValue(
-                                                                        "paulageyev@gmail.com")
+                                                                .setValue("paulageyev@gmail.com")
                                                                 .build();
 
     public static final EmailAddress USER_EMAIL_2 = EmailAddress.newBuilder()
-                                                                .setValue(
-                                                                        "petrVase4kin@gmail.com")
+                                                                .setValue("petrVase4kin@gmail.com")
                                                                 .build();
     private static final EmailAddress USER_EMAIL_3 = EmailAddress.newBuilder()
-                                                                 .setValue(
-                                                                         "petr3@gmail.com")
+                                                                 .setValue("petr3@gmail.com")
                                                                  .build();
 
     public static final EmailAddress LIBRARIAN_EMAIL = EmailAddress.newBuilder()
-                                                                   .setValue(
-                                                                           "smb@teamdev.com")
+                                                                   .setValue("smb@teamdev.com")
                                                                    .build();
     public static final BookTitle BOOK_TITLE = BookTitle.newBuilder()
-                                                        .setTitle("Refactoring")
+                                                        .setValue("Refactoring")
                                                         .build();
 
-    public static final AuthorName AUTHOR_NAME = AuthorName.newBuilder()
-                                                           .addAuthorName(
-                                                                   PersonName.newBuilder()
-                                                                             .setFamilyName(
-                                                                                     "Fowler")
-                                                                             .setGivenName(
-                                                                                     "Martin"))
-                                                           .build();
+    public static final Author AUTHOR = Author.newBuilder()
+                                              .setPersonName(PersonName.newBuilder()
+                                                                       .setFamilyName("Fowler")
+                                                                       .setGivenName("Martin"))
+                                              .build();
 
     public static final Url COVER_URL = Url.newBuilder()
                                            .setRaw("http://library.teamdev.com/book/1")
                                            .build();
 
     public static final BookSynopsis BOOK_SYNOPSIS = BookSynopsis.newBuilder()
-                                                                 .setBookSynopsis(
+                                                                 .setValue(
                                                                          "As the application of object " +
                                                                                  "technology--particularly the Java programming language")
                                                                  .build();
@@ -116,24 +109,21 @@ public class TestValues {
                                                          .setValue("Programming")
                                                          .build();
     public static final BookTitle BOOK_TITLE_2 = BookTitle.newBuilder()
-                                                          .setTitle("WHY SOFTWARE SUX")
+                                                          .setValue("WHY SOFTWARE SUX")
                                                           .build();
 
-    public static final AuthorName AUTHOR_NAME_2 = AuthorName.newBuilder()
-                                                             .addAuthorName(
-                                                                     PersonName.newBuilder()
-                                                                               .setFamilyName(
-                                                                                       "Cartman")
-                                                                               .setGivenName(
-                                                                                       "Eric"))
-                                                             .build();
+    public static final Author AUTHOR_2 = Author.newBuilder()
+                                                .setPersonName(PersonName.newBuilder()
+                                                                         .setFamilyName("Cartman")
+                                                                         .setGivenName("Eric"))
+                                                .build();
 
     public static final Url COVER_URL_2 = Url.newBuilder()
                                              .setRaw("http://library.teamdev.com/book/144")
                                              .build();
 
     public static final BookSynopsis BOOK_SYNOPSIS_2 = BookSynopsis.newBuilder()
-                                                                   .setBookSynopsis(
+                                                                   .setValue(
                                                                            "Some info about software and why it sucks ")
                                                                    .build();
 
@@ -163,7 +153,7 @@ public class TestValues {
     public static final BookDetails BOOK_DETAILS = BookDetails.newBuilder()
                                                               .setIsbn(ISBN)
                                                               .setTitle(BOOK_TITLE)
-                                                              .setAuthor(AUTHOR_NAME)
+                                                              .addAuthor(AUTHOR)
                                                               .setBookCoverUrl(COVER_URL)
                                                               .setSynopsis(BOOK_SYNOPSIS)
                                                               .addCategories(BOOK_CATEGORY)
@@ -171,7 +161,7 @@ public class TestValues {
 
     public static final BookDetails BOOK_DETAILS_2 = BookDetails.newBuilder()
                                                                 .setTitle(BOOK_TITLE_2)
-                                                                .setAuthor(AUTHOR_NAME_2)
+                                                                .addAuthor(AUTHOR_2)
                                                                 .setBookCoverUrl(COVER_URL_2)
                                                                 .setSynopsis(BOOK_SYNOPSIS_2)
                                                                 .addCategories(BOOK_CATEGORY_2)

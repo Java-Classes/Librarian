@@ -24,7 +24,7 @@ import com.google.protobuf.Timestamp;
 import io.spine.core.EventContext;
 import io.spine.core.Subscribe;
 import io.spine.server.projection.Projection;
-import javaclasses.exlibris.AuthorName;
+import javaclasses.exlibris.Author;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.BookTitle;
@@ -44,6 +44,8 @@ import javaclasses.exlibris.c.ReservationCanceled;
 import javaclasses.exlibris.c.ReservationPickUpPeriodExpired;
 import javaclasses.exlibris.q.ReaderEventLogView;
 import javaclasses.exlibris.q.ReaderEventLogViewVBuilder;
+
+import java.util.ArrayList;
 
 import static javaclasses.exlibris.EnrichmentHelper.getEnrichment;
 
@@ -210,10 +212,10 @@ public class ReaderEventLogViewProjection extends Projection<ReaderEventLogViewI
         final BookEnrichment enrichment = getEnrichment(BookEnrichment.class, context);
         final BookDetails bookDetails = enrichment.getBook()
                                                   .getBookDetails();
-        final AuthorName authorName = bookDetails.getAuthor();
+        final ArrayList<Author> authors = new ArrayList<>(bookDetails.getAuthorList());
         final BookTitle title = bookDetails.getTitle();
         getBuilder().setTitle(title)
-                    .setAuthors(authorName);
+                    .addAllAuthor(authors);
 
     }
 }

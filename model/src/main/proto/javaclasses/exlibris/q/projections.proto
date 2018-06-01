@@ -54,8 +54,8 @@ message BookView {
     // The book title.
     BookTitle title = 3 [(required) = true];
 
-    // Authors’ full names.
-    AuthorName authors = 4 [(required) = true];
+    // The list of authors.
+    repeated Author author = 4 [(required) = true];
 
     // The book cover.
     spine.net.Url cover_url = 5;
@@ -162,8 +162,8 @@ message ReaderLoanView {
     // The book title.
     BookTitle title = 4 [(required) = true];
 
-    // Authors’ full names.
-    AuthorName authors = 5 [(required) = true];
+    // The list of authors.
+    repeated Author author = 5 [(required) = true];
 
     // The date when a book was borrowed.
     spine.time.LocalDate when_taken = 6 [(required) = true];
@@ -202,8 +202,8 @@ message ReaderEventLogView {
     // The book title.
     BookTitle title = 5 [(required) = true];
 
-    // Authors’ full names.
-    AuthorName authors = 6 [(required) = true];
+    // The list of authors.
+    repeated Author author = 6 [(required) = true];
 
     // The type of an event.
     string event_type = 7;
@@ -222,8 +222,8 @@ message LostBookView {
     // The book title.
     BookTitle title = 2 [(required) = true];
 
-    // Authors’ full names.
-    AuthorName authors = 3 [(required) = true];
+    // The list of authors.
+    repeated Author author = 3 [(required) = true];
 
     // The name of a reader who lost.
     spine.people.PersonName user_name = 4 [(required) = true];
@@ -245,8 +245,8 @@ message BookInventoryView {
     // The book title.
     BookTitle title = 2 [(required) = true];
 
-    // Authors' names.
-    AuthorName author = 3 [(required) = true];
+    // The list of authors.
+    repeated Author author = 3 [(required) = true];
 
     // The collection of inventory items.
     repeated InventoryItemState item_state = 4;

@@ -69,7 +69,7 @@ import static javaclasses.exlibris.testdata.InventoryCommandFactory.markLoanShou
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.reportLostBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.reserveBookInstance;
 import static javaclasses.exlibris.testdata.InventoryCommandFactory.writeBookOffInstance;
-import static javaclasses.exlibris.testdata.TestValues.AUTHOR_NAME;
+import static javaclasses.exlibris.testdata.TestValues.AUTHOR;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_CATEGORY;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_DETAILS;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
@@ -304,7 +304,8 @@ public class ExlibrisTest {
             assertEquals(BOOK_ID, bookItem.getBookId());
             assertEquals(ISBN, bookItem.getIsbn());
             assertEquals(BOOK_TITLE, bookItem.getTitle());
-            assertEquals(AUTHOR_NAME, bookItem.getAuthors());
+            assertEquals(AUTHOR, bookItem.getAuthorsList()
+                                         .get(0));
             assertEquals(COVER_URL, bookItem.getCoverUrl());
             assertEquals(BOOK_CATEGORY, bookItem.getCategorie(0));
             assertEquals(BOOK_SYNOPSIS, bookItem.getSynopsis());
@@ -411,7 +412,8 @@ public class ExlibrisTest {
         assertEquals(BOOK_ID, bookItem.getBookId());
         assertEquals(ISBN, bookItem.getIsbn());
         assertEquals(BOOK_TITLE, bookItem.getTitle());
-        assertEquals(AUTHOR_NAME, bookItem.getAuthors());
+        assertEquals(AUTHOR, bookItem.getAuthorList()
+                                     .get(0));
         assertEquals(COVER_URL, bookItem.getCoverUrl());
         assertEquals(BOOK_CATEGORY, bookItem.getCategoriesList()
                                             .get(0));
@@ -432,7 +434,8 @@ public class ExlibrisTest {
                                                         .get();
         final BookInventoryView state = projection.getState();
         assertEquals(BOOK_TITLE, state.getTitle());
-        assertEquals(AUTHOR_NAME, state.getAuthor());
+        assertEquals(AUTHOR, state.getAuthorList()
+                                  .get(0));
         assertEquals(borrowedItemStateToday2, state.getItemState(0));
     }
 
@@ -447,7 +450,8 @@ public class ExlibrisTest {
 
         assertEquals(ISBN, state.getIsbn());
         assertEquals(BOOK_TITLE, state.getTitle());
-        assertEquals(AUTHOR_NAME, state.getAuthors());
+        assertEquals(AUTHOR, state.getAuthorList()
+                                  .get(0));
         assertEquals(COVER_URL, state.getCoverUrl());
         assertEquals(BOOK_CATEGORY, state.getCategories(0));
         assertEquals(BOOK_SYNOPSIS, state.getSynopsis());
@@ -472,7 +476,8 @@ public class ExlibrisTest {
                                                          .get();
         final ReaderLoanView state = projection.getState();
         assertEquals(BOOK_TITLE, state.getTitle());
-        assertEquals(AUTHOR_NAME, state.getAuthors());
+        assertEquals(AUTHOR, state.getAuthorList()
+                                  .get(0));
         assertEquals(INVENTORY_ITEM_ID_1, state.getItemId());
         assertEquals(CURRENT_DATE, state.getWhenTaken());
     }

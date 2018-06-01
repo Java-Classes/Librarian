@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookLostInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.inventoryDecreasedInstance;
-import static javaclasses.exlibris.testdata.TestValues.AUTHOR_NAME;
+import static javaclasses.exlibris.testdata.TestValues.AUTHOR;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_TITLE;
 import static javaclasses.exlibris.testdata.TestValues.DEFAULT_DATE1;
 import static javaclasses.exlibris.testdata.TestValues.INVENTORY_ITEM_ID_1;
@@ -66,7 +66,8 @@ class LostBookViewProjectionTest extends ProjectionTest {
             assertEquals(BOOK_TITLE, state.getTitle());
             assertEquals(USER_NAME, state.getUserName());
             assertEquals(USER_EMAIL_1, state.getEmail());
-            assertEquals(AUTHOR_NAME, state.getAuthors());
+            assertEquals(AUTHOR, state.getAuthorList()
+                                      .get(0));
             assertEquals(INVENTORY_ITEM_ID_1, state.getItemId());
             assertEquals(DEFAULT_DATE1, state.getWhenReported());
         }
