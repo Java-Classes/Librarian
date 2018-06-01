@@ -90,11 +90,11 @@ public class TestValues {
                                                                            "smb@teamdev.com")
                                                                    .build();
     public static final BookTitle BOOK_TITLE = BookTitle.newBuilder()
-                                                        .setTitle("Refactoring")
+                                                        .setValue("Refactoring")
                                                         .build();
 
     public static final AuthorName AUTHOR_NAME = AuthorName.newBuilder()
-                                                           .addAuthorName(
+                                                           .addValue(
                                                                    PersonName.newBuilder()
                                                                              .setFamilyName(
                                                                                      "Fowler")
@@ -107,7 +107,7 @@ public class TestValues {
                                            .build();
 
     public static final BookSynopsis BOOK_SYNOPSIS = BookSynopsis.newBuilder()
-                                                                 .setBookSynopsis(
+                                                                 .setValue(
                                                                          "As the application of object " +
                                                                                  "technology--particularly the Java programming language")
                                                                  .build();
@@ -116,11 +116,11 @@ public class TestValues {
                                                          .setValue("Programming")
                                                          .build();
     public static final BookTitle BOOK_TITLE_2 = BookTitle.newBuilder()
-                                                          .setTitle("WHY SOFTWARE SUX")
+                                                          .setValue("WHY SOFTWARE SUX")
                                                           .build();
 
     public static final AuthorName AUTHOR_NAME_2 = AuthorName.newBuilder()
-                                                             .addAuthorName(
+                                                             .addValue(
                                                                      PersonName.newBuilder()
                                                                                .setFamilyName(
                                                                                        "Cartman")
@@ -133,7 +133,7 @@ public class TestValues {
                                              .build();
 
     public static final BookSynopsis BOOK_SYNOPSIS_2 = BookSynopsis.newBuilder()
-                                                                   .setBookSynopsis(
+                                                                   .setValue(
                                                                            "Some info about software and why it sucks ")
                                                                    .build();
 

@@ -96,7 +96,7 @@ message QRcodeURL {
 message BookTitle {
 
     // The book title and the book subtitle concatenation.
-    string title = 1 [(required) = true];
+    string value = 1 [(required) = true];
 }
 
 // The list of authors' names.
@@ -104,7 +104,7 @@ message BookTitle {
 message AuthorName {
 
     // The list of authors' names.
-    repeated spine.people.PersonName author_name = 1 [(required) = true];
+    repeated spine.people.PersonName value = 1 [(required) = true];
 }
 
 // The synopsis is a brief summary of a book.
@@ -112,7 +112,7 @@ message AuthorName {
 message BookSynopsis {
 
     // Book synopsis.
-    string book_synopsis = 1 [(required) = true];
+    string value = 1 [(required) = true];
 }
 
 // The tag that is used to classify a book.
@@ -138,7 +138,7 @@ message Rfid {
 message Year {
 
     // The book publication year.
-    int32 year = 1;
+    int32 value = 1;
 }
 
 // Reasons to write the book off.
