@@ -759,42 +759,35 @@ const userTestBooks = {
 /*exported testCategories*/
 const testCategories = ["Java Programming", "Web Design", "Business", "JavaScript", "Programming", "Biography", "Fiction", "C++"].sort();
 
+
 /*exported testInventoryItems*/
-const testInventoryItems = [{
-    id: {
-        bookId: "1491904240",
-        itemNumber: 1
-    },
-    title: "You Don't Know JS: ES6 & Beyond",
-    image: "https://books.google.com/books/content/images/frontcover/iOc6CwAAQBAJ?fife=w200-h300",
-    authors: "Kyle Simpson",
+const actionResultNotification = {
     userId: {
-        email: "yurii.haidamaka@teamdev.com"
+        email: {
+            value: "yurii.haidamaka@teamdev.com"
+        }
     },
-    status: "RETURNED"
-}, {
-    id: {
-        bookId: "8535902723",
-        itemNumber: 2
+    title: {
+        value: "You Don't Know JS: ES6 & Beyond"
     },
-    title: "Elon Musk: How the Billionaire CEO of SpaceX and Tesla is Shaping our Future",
-    image: "https://books.google.com/books/content/images/frontcover/_LFSBgAAQBAJ?fife=w200-h300",
-    authors: "Ashlee Vance",
-    userId: {
-        email: "yurii.haidamaka@teamdev.com"
+    author: [
+        {
+            authorName: {
+                givenName: "Kyle",
+                familyName: "Sympson"
+            }
+        }
+    ],
+    coverUrl: {
+        raw: "https://books.google.com/books/content/images/frontcover/iOc6CwAAQBAJ?fife=w200-h300"
     },
-    status: "BORROWED"
-}, {
-    id: {
-        bookId: "9781491931776",
-        itemNumber: 3
+    status: "RETURN",
+
+    inventoryId: {
+        bookId: {
+            isbn62: "1491904240"
+        }
     },
-    title: "React.js. Быстрый старт",
-    image: "https://books.google.com/books/content/images/frontcover/g79TDgAAQBAJ?fife=w200-h300",
-    authors: "Стоян Стефанов",
-    userId: {
-        email: "yurii.haidamaka@teamdev.com"
-    },
-    status: "RETURNED"
-}];
+    message: ""
+};
 
