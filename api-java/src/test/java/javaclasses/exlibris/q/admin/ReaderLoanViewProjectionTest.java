@@ -35,7 +35,7 @@ import static io.spine.server.projection.ProjectionEventDispatcher.dispatch;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookBorrowedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookReturnedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loanPeriodExtendedInstance;
-import static javaclasses.exlibris.testdata.TestValues.AUTHOR_NAME;
+import static javaclasses.exlibris.testdata.TestValues.AUTHOR;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_TITLE;
 import static javaclasses.exlibris.testdata.TestValues.DEFAULT_DATE1;
 import static javaclasses.exlibris.testdata.TestValues.DEFAULT_DATE2;
@@ -71,7 +71,8 @@ class ReaderLoanViewProjectionTest extends ProjectionTest {
 
             final ReaderLoanView state = projection.getState();
             assertEquals(BOOK_TITLE, state.getTitle());
-            assertEquals(AUTHOR_NAME, state.getAuthors());
+            assertEquals(AUTHOR, state.getAuthorList()
+                                      .get(0));
             assertEquals(INVENTORY_ITEM_ID_1, state.getItemId());
             assertEquals(DEFAULT_DATE1, state.getWhenTaken());
         }
@@ -93,7 +94,8 @@ class ReaderLoanViewProjectionTest extends ProjectionTest {
 
             final ReaderLoanView state = projection.getState();
             assertEquals(BOOK_TITLE, state.getTitle());
-            assertEquals(AUTHOR_NAME, state.getAuthors());
+            assertEquals(AUTHOR, state.getAuthorList()
+                                      .get(0));
             assertEquals(INVENTORY_ITEM_ID_1, state.getItemId());
             assertEquals(DEFAULT_DATE1, state.getWhenTaken());
             assertEquals(DEFAULT_DUE_DATE, state.getWhenDue());
@@ -116,7 +118,8 @@ class ReaderLoanViewProjectionTest extends ProjectionTest {
 
             final ReaderLoanView state = projection.getState();
             assertEquals(BOOK_TITLE, state.getTitle());
-            assertEquals(AUTHOR_NAME, state.getAuthors());
+            assertEquals(AUTHOR, state.getAuthorList()
+                                      .get(0));
             assertEquals(INVENTORY_ITEM_ID_1, state.getItemId());
             assertEquals(DEFAULT_DATE1, state.getWhenTaken());
             assertEquals(DEFAULT_DATE2, state.getWhenDue());

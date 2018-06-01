@@ -48,7 +48,7 @@ import static javaclasses.exlibris.testdata.InventoryEventFactory.loanBecameShou
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loanPeriodExtendedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loansExtensionAllowedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loansExtensionForbiddenInstance;
-import static javaclasses.exlibris.testdata.TestValues.AUTHOR_NAME;
+import static javaclasses.exlibris.testdata.TestValues.AUTHOR;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_CATEGORY;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_SYNOPSIS;
@@ -92,7 +92,8 @@ class BorrowedBooksListViewProjectionTest extends ProjectionTest {
             assertEquals(BOOK_ID, bookItem.getBookId());
             assertEquals(ISBN, bookItem.getIsbn());
             assertEquals(BOOK_TITLE, bookItem.getTitle());
-            assertEquals(AUTHOR_NAME, bookItem.getAuthors());
+            assertEquals(AUTHOR, bookItem.getAuthorList()
+                                         .get(0));
             assertEquals(COVER_URL, bookItem.getCoverUrl());
             assertEquals(BOOK_CATEGORY, bookItem.getCategoriesList()
                                                 .get(0));

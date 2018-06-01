@@ -63,8 +63,8 @@ message ExpectedSoonItem {
     // The book title.
     BookTitle title = 3;
 
-    // Authors’ full names.
-    AuthorName authors = 4;
+    // The list of authors.
+    repeated Author authors = 4;
 
     // The book cover.
     spine.net.Url cover_url = 5;
@@ -105,8 +105,8 @@ message BorrowedBookItem {
     // The book title.
     BookTitle title = 4;
 
-    // Authors’ full names.
-    AuthorName authors = 5;
+    // The list of authors.
+    repeated Author author = 5;
 
     // The book cover.
     spine.net.Url cover_url = 6;
@@ -157,8 +157,8 @@ message ReservedBookItem {
     // The book title.
     BookTitle title = 3;
 
-    // Authors’ full names.
-    AuthorName authors = 4;
+    // The list of authors.
+    repeated Author authors = 4;
 
     // The book cover.
     spine.net.Url cover_url = 5;

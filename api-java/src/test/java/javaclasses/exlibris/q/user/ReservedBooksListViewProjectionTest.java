@@ -42,7 +42,7 @@ import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationAdd
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationBecameLoanInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationCanceledInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.reservationPickUpPeriodExpiredInstance;
-import static javaclasses.exlibris.testdata.TestValues.AUTHOR_NAME;
+import static javaclasses.exlibris.testdata.TestValues.AUTHOR;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_CATEGORY;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_SYNOPSIS;
@@ -80,7 +80,8 @@ class ReservedBooksListViewProjectionTest extends ProjectionTest {
             assertEquals(BOOK_ID, bookItem.getBookId());
             assertEquals(ISBN, bookItem.getIsbn());
             assertEquals(BOOK_TITLE, bookItem.getTitle());
-            assertEquals(AUTHOR_NAME, bookItem.getAuthors());
+            assertEquals(AUTHOR, bookItem.getAuthorsList()
+                                         .get(0));
             assertEquals(COVER_URL, bookItem.getCoverUrl());
             assertEquals(BOOK_CATEGORY, bookItem.getCategorieList()
                                                 .get(0));
