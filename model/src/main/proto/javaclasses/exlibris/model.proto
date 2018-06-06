@@ -42,7 +42,7 @@ message Book {
     BookId book_id = 1;
 
     // Book details.
-    BookDetails book_details = 2;
+    BookDetails book_details = 2 [(required) = true];
 }
 
 // `Inventory` aggregate.
@@ -69,7 +69,7 @@ message Inventory {
 message InventoryItem {
 
     // The identifier of an item.
-    InventoryItemId inventory_item_id = 1;
+    InventoryItemId inventory_item_id = 1 [(required) = true];
 
     // Item could have one of the following statuses.
     oneof item_status {
@@ -101,16 +101,16 @@ message InventoryItem {
 message Reservation {
 
     // The identifier of a book.
-    BookId book_id = 1;
+    BookId book_id = 1 [(required) = true];
 
     // The user who reserved a book.
-    UserId who_reserved = 2;
+    UserId who_reserved = 2 [(required) = true];
 
     // Indicates is reserved book ready to pick up or not.
     bool is_satisfied = 3;
 
     // The time when a book was reserved.
-    google.protobuf.Timestamp when_created = 4;
+    google.protobuf.Timestamp when_created = 4 [(required) = true];
 
     // The time when a reservation might be satisfied.
     google.protobuf.Timestamp when_expected = 5;
@@ -121,22 +121,22 @@ message Reservation {
 message Loan {
 
     // The identifier of a loan period.
-    LoanId loan_id = 1;
+    LoanId loan_id = 1 [(required) = true];
 
     // The identifier of an item.
-    InventoryItemId inventory_item_id = 2;
+    InventoryItemId inventory_item_id = 2 [(required) = true];
 
     // The user who borrowed a book.
-    UserId who_borrowed = 3;
+    UserId who_borrowed = 3 [(required) = true];
 
     // The loan status.
-    LoanStatus status = 4;
+    LoanStatus status = 4 [(required) = true];
 
     // The time when a book was borrowed.
-    google.protobuf.Timestamp when_taken = 5;
+    google.protobuf.Timestamp when_taken = 5 [(required) = true];
 
     // The time when a book should be returned.
-    google.protobuf.Timestamp when_due = 6;
+    google.protobuf.Timestamp when_due = 6 [(required) = true];
 
     // Shows whether it is allowed to extend loan period.
     //
@@ -158,7 +158,7 @@ message Loan {
 message ReservationQueue {
 
     // The identifier of a process manager.
-    ReservationQueueId id = 1;
+    ReservationQueueId id = 1 [(required) = true];
 }
 
 // The model of a loans extension process manager.
@@ -172,5 +172,5 @@ message ReservationQueue {
 message LoansExtension {
 
     // The identifier of a process manager.
-    LoansExtensionId id = 1;
+    LoansExtensionId id = 1 [(required) = true];
 }

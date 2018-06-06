@@ -27,7 +27,7 @@ import io.spine.net.EmailAddress;
 import io.spine.people.PersonName;
 import io.spine.server.projection.Projection;
 import io.spine.time.LocalDate;
-import javaclasses.exlibris.AuthorName;
+import javaclasses.exlibris.Author;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookTitle;
 import javaclasses.exlibris.InventoryItemId;
@@ -36,6 +36,8 @@ import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.InventoryDecreased;
 import javaclasses.exlibris.q.LostBookView;
 import javaclasses.exlibris.q.LostBookViewVBuilder;
+
+import java.util.ArrayList;
 
 import static javaclasses.exlibris.EnrichmentHelper.getEnrichment;
 import static javaclasses.exlibris.Timestamps.toLocalDate;
@@ -69,11 +71,11 @@ public class LostBookViewProjection extends Projection<InventoryItemId, LostBook
         final BookEnrichment enrichment = getEnrichment(BookEnrichment.class, context);
         final BookDetails bookDetails = enrichment.getBook()
                                                   .getBookDetails();
-        final AuthorName authorName = bookDetails.getAuthor();
+        final ArrayList<Author> authors = new ArrayList(bookDetails.getAuthorList());
         final BookTitle title = bookDetails.getTitle();
 
         getBuilder().setItemId(itemId)
-                    .setAuthors(authorName)
+                    .addAllAuthor(authors)
                     .setTitle(title)
                     .setUserName(userName)
                     .setEmail(userEmail)
@@ -82,12 +84,7 @@ public class LostBookViewProjection extends Projection<InventoryItemId, LostBook
 
     @Subscribe
     public void on(InventoryDecreased event) {
-        getBuilder().clearItemId()
-                    .clearAuthors()
-                    .clearTitle()
-                    .clearUserName()
-                    .clearEmail()
-                    .clearWhenReported();
+        setDeleted(true);
     }
 
 }

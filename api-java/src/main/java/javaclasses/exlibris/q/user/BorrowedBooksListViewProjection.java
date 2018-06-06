@@ -84,7 +84,7 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
                                                           .setBookId(bookId)
                                                           .setIsbn(bookDetails.getIsbn())
                                                           .setTitle(bookDetails.getTitle())
-                                                          .setAuthors(bookDetails.getAuthor())
+                                                          .addAllAuthor(bookDetails.getAuthorList())
                                                           .setCoverUrl(
                                                                   bookDetails.getBookCoverUrl())
                                                           .addAllCategories(
@@ -95,7 +95,8 @@ public class BorrowedBooksListViewProjection extends Projection<UserId, Borrowed
                                                           .setStatus(status)
                                                           .setIsAllowedLoanExtension(false)
                                                           .build();
-        getBuilder().addBookItem(bookItem)
+        getBuilder().setUserId(event.getWhoBorrowed())
+                    .addBookItem(bookItem)
                     .setNumberOfBorrowedBooks(getBuilder().getBookItem()
                                                           .size());
     }

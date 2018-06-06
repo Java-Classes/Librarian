@@ -46,16 +46,16 @@ import "javaclasses/exlibris/q/values.proto";
 message BookView {
 
     // The identifier of a book.
-    BookId book_id = 1;
+    BookId book_id = 1 [(required) = true];
 
     // The International Standard Book Number.
-    Isbn isbn = 2;
+    Isbn isbn = 2 [(required) = true];
 
     // The book title.
-    BookTitle title = 3;
+    BookTitle title = 3 [(required) = true];
 
-    // Authors’ full names.
-    AuthorName authors = 4;
+    // The list of authors.
+    repeated Author author = 4 [(required) = true];
 
     // The book cover.
     spine.net.Url cover_url = 5;
@@ -70,7 +70,7 @@ message BookView {
     int32 available_count = 8;
 
     // The book status.
-    BookStatus status = 9;
+    BookStatus status = 9 [(required) = true];
 }
 
 // The projection state of books that are expected in the library.
@@ -89,7 +89,7 @@ message ExpectedSoonBooksListView {
 message BorrowedBooksListView {
 
     // The identifier of a user.
-    UserId user_id = 1;
+    UserId user_id = 1 [(required) = true];
 
     // The list of user's borrowed book.
     repeated BorrowedBookItem book_item = 2;
@@ -106,7 +106,7 @@ message BorrowedBooksListView {
 message ReservedBooksListView {
 
     // The identifier of a user.
-    UserId user_id = 1;
+    UserId user_id = 1 [(required) = true];
 
     // The list of user's reserved book.
     repeated ReservedBookItem book_item = 2;
@@ -122,25 +122,25 @@ message ReservedBooksListView {
 message ReaderLoanView {
 
     // The identifier of `ReaderLoanView` projection.
-    ReaderLoanViewId id = 1;
+    ReaderLoanViewId id = 1 [(required) = true];
 
     // The identifier of a reader.
-    UserId user_id = 2;
+    UserId user_id = 2 [(required) = true];
 
     // The identifier of an inventory item.
-    InventoryItemId item_id = 3;
+    InventoryItemId item_id = 3 [(required) = true];
 
     // The book title.
-    BookTitle title = 4;
+    BookTitle title = 4 [(required) = true];
 
-    // Authors’ full names.
-    AuthorName authors = 5;
+    // The list of authors.
+    repeated Author author = 5 [(required) = true];
 
     // The date when a book was borrowed.
-    spine.time.LocalDate when_taken = 6;
+    spine.time.LocalDate when_taken = 6 [(required) = true];
 
     // The date when a book should be returned.
-    spine.time.LocalDate when_due = 7;
+    spine.time.LocalDate when_due = 7 [(required) = true];
 
     // The time when a book was returned.
     google.protobuf.Timestamp when_returned = 8;
@@ -158,7 +158,7 @@ message ReaderEventLogView {
     ReaderEventLogViewId id = 1;
 
     // The identifier of a reader.
-    UserId user_id = 2;
+    UserId user_id = 2 [(required) = true];
 
     // The item could have one of the following identifiers.
     oneof event_target_id {
@@ -171,16 +171,16 @@ message ReaderEventLogView {
     }
 
     // The book title.
-    BookTitle title = 5;
+    BookTitle title = 5 [(required) = true];
 
-    // Authors’ full names.
-    AuthorName authors = 6;
+    // The list of authors.
+    repeated Author author = 6 [(required) = true];
 
     // The type of an event.
     string event_type = 7;
 
     // The time when an event was emitted.
-    google.protobuf.Timestamp when_emitted = 8;
+    google.protobuf.Timestamp when_emitted = 8 [(required) = true];
 }
 
 // The projection state of a one lost books.
@@ -188,22 +188,22 @@ message ReaderEventLogView {
 message LostBookView {
 
     // The identifier of an inventory item.
-    InventoryItemId item_id = 1;
+    InventoryItemId item_id = 1 [(required) = true];
 
     // The book title.
-    BookTitle title = 2;
+    BookTitle title = 2 [(required) = true];
 
-    // Authors’ full names.
-    AuthorName authors = 3;
+    // The list of authors.
+    repeated Author author = 3 [(required) = true];
 
     // The name of a reader who lost.
-    spine.people.PersonName user_name = 4;
+    spine.people.PersonName user_name = 4 [(required) = true];
 
     // The email address of a reader who lost.
-    spine.net.EmailAddress email = 5;
+    spine.net.EmailAddress email = 5 [(required) = true];
 
     // The date when reported.
-    spine.time.LocalDate when_reported = 6;
+    spine.time.LocalDate when_reported = 6 [(required) = true];
 }
 
 //  The projection state of an inventory.
@@ -211,13 +211,13 @@ message LostBookView {
 message BookInventoryView {
 
     // The identifier of an inventory.
-    InventoryId inventory_id = 1;
+    InventoryId inventory_id = 1 [(required) = true];
 
     // The book title.
-    BookTitle title = 2;
+    BookTitle title = 2 [(required) = true];
 
-    // Authors' names.
-    AuthorName author = 3;
+    // The list of authors.
+    repeated Author author = 3 [(required) = true];
 
     // The collection of inventory items.
     repeated InventoryItemState item_state = 4;
@@ -228,10 +228,10 @@ message BookInventoryView {
 message BookDetailsView {
 
     // The identifier of a book.
-    BookId id = 1;
+    BookId id = 1 [(required) = true];
 
     // Book details.
-    BookDetails book_details = 2;
+    BookDetails book_details = 2 [(required) = true];
 }
 
 // The projection state of a one book reservation.
@@ -239,19 +239,19 @@ message BookDetailsView {
 message BookReservationView {
 
     // The identifier of a one book reservation.
-    BookReservationViewId id = 1;
+    BookReservationViewId id = 1 [(required) = true];
 
     // The identifier of a book.
-    BookId book_id = 2;
+    BookId book_id = 2 [(required) = true];
 
     // The name of a reader.
-    spine.people.PersonName user_name = 3;
+    spine.people.PersonName user_name = 3 [(required) = true];
 
     // The email address of a reader.
-    spine.net.EmailAddress email = 4;
+    spine.net.EmailAddress email = 4 [(required) = true];
 
     // The time when a book was reserved.
-    google.protobuf.Timestamp when_reserved = 5;
+    google.protobuf.Timestamp when_reserved = 5 [(required) = true];
 }
 
 // The projection state of a one loan.
@@ -262,22 +262,22 @@ message BookLoanView {
     BookLoanViewId id = 1;
 
     // The identifier of a book.
-    BookId book_id = 2;
+    BookId book_id = 2 [(required) = true];
 
     // The identifier of an inventory item.
-    InventoryItemId item_id = 3;
+    InventoryItemId item_id = 3 [(required) = true];
 
     // The name of a reader.
-    spine.people.PersonName user_name = 4;
+    spine.people.PersonName user_name = 4 [(required) = true];
 
     // The email address of a reader.
-    spine.net.EmailAddress email = 5;
+    spine.net.EmailAddress email = 5 [(required) = true];
 
     // The date when a book was borrowed.
-    spine.time.LocalDate when_taken = 6;
+    spine.time.LocalDate when_taken = 6 [(required) = true];
 
     // The date when a book should be returned.
-    spine.time.LocalDate when_due = 7;
+    spine.time.LocalDate when_due = 7 [(required) = true];
 }
 
 // The projection state of a one action with book.
@@ -288,20 +288,20 @@ message BookEventLogView {
     BookEventLogViewId id = 1;
 
     // The identifier of a book.
-    BookId book_id = 2;
+    BookId book_id = 2 [(required) = true];
 
     // The identifier of an inventory item.
     InventoryItemId item_id = 3;
 
     // The name of a reader.
-    spine.people.PersonName user_name = 4;
+    spine.people.PersonName user_name = 4 [(required) = true];
 
     // The email address of a reader.
-    spine.net.EmailAddress email = 5;
+    spine.net.EmailAddress email = 5 [(required) = true];
 
     // The type of an event.
-    string event_type = 6;
+    string event_type = 6 [(required) = true];
 
     // The time when an event was emitted.
-    google.protobuf.Timestamp when_emitted = 7;
+    google.protobuf.Timestamp when_emitted = 7 [(required) = true];
 }

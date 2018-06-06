@@ -72,7 +72,7 @@ public class ExpectedSoonBooksListViewProjection extends Projection<ExpectedSoon
                                                           .setBookId(event.getBookId())
                                                           .setIsbn(bookDetails.getIsbn())
                                                           .setTitle(bookDetails.getTitle())
-                                                          .setAuthors(bookDetails.getAuthor())
+                                                          .addAllAuthors(bookDetails.getAuthorList())
                                                           .setCoverUrl(
                                                                   bookDetails.getBookCoverUrl())
                                                           .addAllCategories(

@@ -27,6 +27,7 @@ import io.spine.people.PersonName;
 import io.spine.server.projection.Projection;
 import javaclasses.exlibris.BookId;
 import javaclasses.exlibris.BookReservationViewId;
+import javaclasses.exlibris.UserId;
 import javaclasses.exlibris.c.ReservationAdded;
 import javaclasses.exlibris.c.ReservationBecameLoan;
 import javaclasses.exlibris.c.ReservationCanceled;
@@ -57,10 +58,16 @@ public class BookReservationViewProjection extends Projection<BookReservationVie
                                               .setGivenName("Ivan")
                                               .setFamilyName("Petrov")
                                               .build();
-        final EmailAddress email = event.getForWhomReserved()
-                                        .getEmail();
+        final UserId userId = event.getForWhomReserved();
+        final EmailAddress email = userId.getEmail();
         final Timestamp whenReserved = event.getWhenCreated();
-        getBuilder().setBookId(bookId)
+
+        final BookReservationViewId id = BookReservationViewId.newBuilder()
+                                                              .setUserId(userId)
+                                                              .setBookId(bookId)
+                                                              .build();
+        getBuilder().setId(id)
+                    .setBookId(bookId)
                     .setUserName(userName)
                     .setEmail(email)
                     .setWhenReserved(whenReserved);
@@ -68,25 +75,16 @@ public class BookReservationViewProjection extends Projection<BookReservationVie
 
     @Subscribe
     public void on(ReservationCanceled event) {
-        getBuilder().clearBookId()
-                    .clearUserName()
-                    .clearEmail()
-                    .clearWhenReserved();
+        setDeleted(true);
     }
 
     @Subscribe
     public void on(ReservationPickUpPeriodExpired event) {
-        getBuilder().clearBookId()
-                    .clearUserName()
-                    .clearEmail()
-                    .clearWhenReserved();
+        setDeleted(true);
     }
 
     @Subscribe
     public void on(ReservationBecameLoan event) {
-        getBuilder().clearBookId()
-                    .clearUserName()
-                    .clearEmail()
-                    .clearWhenReserved();
+        setDeleted(true);
     }
 }

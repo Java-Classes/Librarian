@@ -78,7 +78,7 @@ public class ReservedBooksListViewProjection extends Projection<UserId, Reserved
                                                           .setBookId(bookId)
                                                           .setIsbn(bookDetails.getIsbn())
                                                           .setTitle(bookDetails.getTitle())
-                                                          .setAuthors(bookDetails.getAuthor())
+                                                          .addAllAuthors(bookDetails.getAuthorList())
                                                           .setCoverUrl(
                                                                   bookDetails.getBookCoverUrl())
                                                           .addAllCategorie(
@@ -87,7 +87,8 @@ public class ReservedBooksListViewProjection extends Projection<UserId, Reserved
                                                           .setWhenReadyToPickUp(whenExpected)
                                                           .setStatus(status)
                                                           .build();
-        getBuilder().addBookItem(bookItem)
+        getBuilder().setUserId(event.getForWhomReserved())
+                    .addBookItem(bookItem)
                     .setNumberOfReservedBooks((getBuilder().getBookItem()
                                                            .size()));
     }

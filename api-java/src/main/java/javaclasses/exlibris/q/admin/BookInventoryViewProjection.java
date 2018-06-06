@@ -27,7 +27,7 @@ import io.spine.net.EmailAddress;
 import io.spine.people.PersonName;
 import io.spine.server.projection.Projection;
 import io.spine.time.LocalDate;
-import javaclasses.exlibris.AuthorName;
+import javaclasses.exlibris.Author;
 import javaclasses.exlibris.BookDetails;
 import javaclasses.exlibris.BookTitle;
 import javaclasses.exlibris.InventoryId;
@@ -74,24 +74,22 @@ public class BookInventoryViewProjection extends Projection<InventoryId, BookInv
         final BookEnrichment enrichment = getEnrichment(BookEnrichment.class, context);
         final BookDetails bookDetails = enrichment.getBook()
                                                   .getBookDetails();
-        final AuthorName authorName = bookDetails.getAuthor();
+        final ArrayList<Author> authors = new ArrayList<>(bookDetails.getAuthorList());
         final BookTitle title = bookDetails.getTitle();
         final InventoryItemId itemId = event.getInventoryItemId();
         final InventoryItemState state = InventoryItemState.newBuilder()
                                                            .setItemId(itemId)
                                                            .setInLibrary(true)
                                                            .build();
-        getBuilder().setTitle(title)
-                    .setAuthor(authorName)
+        getBuilder().setInventoryId(event.getInventoryId())
+                    .setTitle(title)
+                    .addAllAuthor(authors)
                     .addItemState(state);
     }
 
     @Subscribe
     public void on(InventoryRemoved event) {
-        getBuilder().clearInventoryId()
-                    .clearTitle()
-                    .clearAuthor()
-                    .clearItemState();
+        setDeleted(true);
     }
 
     @Subscribe

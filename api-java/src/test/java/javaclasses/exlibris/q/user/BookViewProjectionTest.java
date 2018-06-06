@@ -20,6 +20,7 @@
 
 package javaclasses.exlibris.q.user;
 
+import io.spine.server.entity.LifecycleFlags;
 import javaclasses.exlibris.c.BookAdded;
 import javaclasses.exlibris.c.BookBecameAvailable;
 import javaclasses.exlibris.c.BookBorrowed;
@@ -39,7 +40,7 @@ import static javaclasses.exlibris.testdata.BookEventFactory.bookRemovedInstance
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookBecameAvailableInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.bookBorrowedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.inventoryDecreasedInstance;
-import static javaclasses.exlibris.testdata.TestValues.AUTHOR_NAME;
+import static javaclasses.exlibris.testdata.TestValues.AUTHOR;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_CATEGORY;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_ID;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_SYNOPSIS;
@@ -47,6 +48,7 @@ import static javaclasses.exlibris.testdata.TestValues.BOOK_TITLE;
 import static javaclasses.exlibris.testdata.TestValues.COVER_URL;
 import static javaclasses.exlibris.testdata.TestValues.ISBN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BookViewProjectionTest extends ProjectionTest {
 
@@ -70,7 +72,8 @@ class BookViewProjectionTest extends ProjectionTest {
             final BookView book = projection.getState();
             assertEquals(BOOK_ID, book.getBookId());
             assertEquals(BOOK_TITLE, book.getTitle());
-            assertEquals(AUTHOR_NAME, book.getAuthors());
+            assertEquals(AUTHOR, book.getAuthorList()
+                                     .get(0));
             assertEquals(ISBN, book.getIsbn());
             assertEquals(COVER_URL, book.getCoverUrl());
             assertEquals(BOOK_CATEGORY, book.getCategories(0));
@@ -92,8 +95,8 @@ class BookViewProjectionTest extends ProjectionTest {
             dispatch(projection, createEvent(bookAdded));
             dispatch(projection, createEvent(bookRemoved));
 
-            final BookView bookView = projection.getState();
-            assertEquals("", bookView.toString());
+            final LifecycleFlags lifecycleFlags = projection.getLifecycleFlags();
+            assertTrue(lifecycleFlags.getDeleted());
         }
     }
 

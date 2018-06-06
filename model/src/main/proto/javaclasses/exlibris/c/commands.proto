@@ -45,7 +45,7 @@ message AddBook {
     BookId book_id = 1;
 
     // Who adds.
-    UserId librarian_id = 2;
+    UserId librarian_id = 2 [(required) = true];
 
     // Details of the new book.
     BookDetails book_details = 3;
@@ -62,10 +62,10 @@ message UpdateBook {
     BookId book_id = 1;
 
     // Who updates.
-    UserId librarian_id = 2;
+    UserId librarian_id = 2 [(required) = true];
 
     // New details for the existed book.
-    BookDetailsChange book_details = 3;
+    BookDetailsChange book_details = 3 [(required) = true];
 }
 
 // An attempt to remove a book.
@@ -79,7 +79,7 @@ message RemoveBook {
     BookId book_id = 1;
 
     // Who removes.
-    UserId librarian_id = 2;
+    UserId librarian_id = 2 [(required) = true];
 
     // The reason of removing book.
     //
@@ -92,7 +92,7 @@ message RemoveBook {
     }
 
     // The time when a book was removed.
-    google.protobuf.Timestamp when_removed = 5;
+    google.protobuf.Timestamp when_removed = 5 [(required) = true];
 }
 
 // Append a book inventory.
@@ -106,10 +106,10 @@ message AppendInventory {
     InventoryId inventory_id = 1;
 
     // The identifier of an added item.
-    InventoryItemId inventory_item_id = 2;
+    InventoryItemId inventory_item_id = 2 [(required) = true];
 
     // Who tries to append.
-    UserId librarian_id = 3;
+    UserId librarian_id = 3 [(required) = true];
 }
 
 // An attempt to borrow a book.
@@ -125,10 +125,10 @@ message BorrowBook {
     InventoryId inventory_id = 1;
 
     // The item that is planned to borrow.
-    InventoryItemId inventory_item_id = 2;
+    InventoryItemId inventory_item_id = 2 [(required) = true];
 
     // Who borrows the book.
-    UserId user_id = 3;
+    UserId user_id = 3 [(required) = true];
 }
 
 // An attempt to reserve a book.
@@ -142,7 +142,7 @@ message ReserveBook {
     InventoryId inventory_id = 1;
 
     // Who reserves the book.
-    UserId user_id = 2;
+    UserId user_id = 2 [(required) = true];
 }
 
 // An attempt to cancel the reservation.
@@ -156,7 +156,7 @@ message CancelReservation {
     InventoryId inventory_id = 1;
 
     // Who cancels the book reservation.
-    UserId user_id = 2;
+    UserId user_id = 2 [(required) = true];
 }
 
 // An attempt to extend a loan period.
@@ -170,10 +170,10 @@ message ExtendLoanPeriod {
     InventoryId inventory_id = 1;
 
     // The identifier of a loan that is planned to extend.
-    LoanId loan_id = 2;
+    LoanId loan_id = 2 [(required) = true];
 
     // Who extends the loan.
-    UserId user_id = 3;
+    UserId user_id = 3 [(required) = true];
 }
 
 //  Marks the loan period as overdue if the user hasn't return a book in time.
@@ -184,7 +184,7 @@ message MarkLoanOverdue {
     InventoryId inventory_id = 1;
 
     // The loan that is overdue.
-    LoanId loan_id = 2;
+    LoanId loan_id = 2 [(required) = true];
 }
 
 //  Marks the loan period as should return soon.
@@ -195,7 +195,7 @@ message MarkLoanShouldReturnSoon {
     InventoryId inventory_id = 1;
 
     // The identifier of a loan which period runs out.
-    LoanId loan_id = 2;
+    LoanId loan_id = 2 [(required) = true];
 }
 
 // Mark the reservation as expired.
@@ -206,7 +206,7 @@ message MarkReservationExpired {
     InventoryId inventory_id = 1;
 
     // Whose book reservation expires.
-    UserId user_id = 2;
+    UserId user_id = 2 [(required) = true];
 }
 
 // An attempt to return a book.
@@ -222,10 +222,10 @@ message ReturnBook {
     InventoryId inventory_id = 1;
 
     // The item of the book that is planned to return.
-    InventoryItemId inventory_item_id = 2;
+    InventoryItemId inventory_item_id = 2 [(required) = true];
 
     // Who returns the book.
-    UserId user_id = 3;
+    UserId user_id = 3 [(required) = true];
 }
 
 // An attempt to report a lost book.
@@ -238,10 +238,10 @@ message ReportLostBook {
     InventoryId inventory_id = 1;
 
     // The identifier of a lost book.
-    InventoryItemId inventory_item_id = 2;
+    InventoryItemId inventory_item_id = 2 [(required) = true];
 
     // Who has lost the book.
-    UserId who_lost = 3;
+    UserId who_lost = 3 [(required) = true];
 }
 
 // An attempt to write a book off.
@@ -255,13 +255,13 @@ message WriteBookOff {
     InventoryId inventory_id = 1;
 
     // The book that is planned to write off.
-    InventoryItemId inventory_item_id = 2;
+    InventoryItemId inventory_item_id = 2 [(required) = true];
 
     // The reason to write a book off.
-    WriteOffReason write_book_off_reason = 3;
+    WriteOffReason write_book_off_reason = 3 [(required) = true];
 
     // Who tries to write a book off.
-    UserId librarian_id = 4;
+    UserId librarian_id = 4 [(required) = true];
 }
 
 // An attempt to mark corresponding loans as allowed for extension.
@@ -272,7 +272,7 @@ message AllowLoansExtension {
     InventoryId inventory_id = 1;
 
     // The collection of users' identifiers whos loans became allowed for an extension.
-    repeated UserId borrowers = 2;
+    repeated UserId borrowers = 2 [(required) = true];
 }
 
 // An attempt to mark corresponding loans as forbidden for extension.
@@ -283,7 +283,7 @@ message ForbidLoansExtension {
     InventoryId inventory_id = 1;
 
     // The collection of users' identifiers whos loans became not allowed for an extension.
-    repeated UserId borrowers = 2;
+    repeated UserId borrowers = 2 [(required) = true];
 }
 
 // An attempt to satisfy reservation for the specific user.
@@ -294,7 +294,7 @@ message SatisfyReservation {
     InventoryId inventory_id = 1;
 
     // For whom reservation should be satisfied.
-    UserId user_id = 2;
+    UserId user_id = 2 [(required) = true];
 }
 
 // An attempt to increase available for borrowing books count.

@@ -20,6 +20,7 @@
 
 package javaclasses.exlibris.q.admin;
 
+import io.spine.server.entity.LifecycleFlags;
 import javaclasses.exlibris.c.BookBorrowed;
 import javaclasses.exlibris.c.BookLost;
 import javaclasses.exlibris.c.BookReturned;
@@ -44,7 +45,7 @@ import static javaclasses.exlibris.testdata.InventoryEventFactory.inventoryDecre
 import static javaclasses.exlibris.testdata.InventoryEventFactory.inventoryRemovedInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loanBecameOverdueInstance;
 import static javaclasses.exlibris.testdata.InventoryEventFactory.loanPeriodExtendedInstance;
-import static javaclasses.exlibris.testdata.TestValues.AUTHOR_NAME;
+import static javaclasses.exlibris.testdata.TestValues.AUTHOR;
 import static javaclasses.exlibris.testdata.TestValues.BOOK_TITLE;
 import static javaclasses.exlibris.testdata.TestValues.BORROWED_ITEM_STATE;
 import static javaclasses.exlibris.testdata.TestValues.DEFAULT_DATE2;
@@ -53,6 +54,7 @@ import static javaclasses.exlibris.testdata.TestValues.IN_LIBRARY_ITEM_STATE;
 import static javaclasses.exlibris.testdata.TestValues.LOST_ITEM_STATE;
 import static javaclasses.exlibris.testdata.TestValues.OVERDUE_ITEM_STATE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BookInventoryViewProjectionTest extends ProjectionTest {
 
@@ -75,7 +77,8 @@ class BookInventoryViewProjectionTest extends ProjectionTest {
 
             final BookInventoryView state = projection.getState();
             assertEquals(BOOK_TITLE, state.getTitle());
-            assertEquals(AUTHOR_NAME, state.getAuthor());
+            assertEquals(AUTHOR, state.getAuthorList()
+                                      .get(0));
             assertEquals(IN_LIBRARY_ITEM_STATE, state.getItemState(0));
         }
     }
@@ -94,8 +97,8 @@ class BookInventoryViewProjectionTest extends ProjectionTest {
                     inventoryRemovedInstance();
             dispatch(projection, createEvent(inventoryRemoved));
 
-            final BookInventoryView state = projection.getState();
-            assertEquals("", state.toString());
+            final LifecycleFlags lifecycleFlags = projection.getLifecycleFlags();
+            assertTrue(lifecycleFlags.getDeleted());
         }
     }
 

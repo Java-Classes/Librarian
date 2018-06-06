@@ -22,7 +22,7 @@ package javaclasses.exlibris.c.book;
 
 import com.google.common.base.Throwables;
 import com.google.protobuf.Message;
-import javaclasses.exlibris.Book;
+import io.spine.server.entity.LifecycleFlags;
 import javaclasses.exlibris.c.AddBook;
 import javaclasses.exlibris.c.BookRemoved;
 import javaclasses.exlibris.c.RemoveBook;
@@ -45,6 +45,7 @@ import static javaclasses.exlibris.testdata.TestValues.LIBRARIAN_ID;
 import static javaclasses.exlibris.testdata.TestValues.USER_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Dmytry Dyachenko
@@ -60,7 +61,7 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
     }
 
     @Test
-    @DisplayName("remove a book with a outdated reason")
+    @DisplayName("remove a book with an outdated reason")
     void removeBookWithOutdatedReason() {
         dispatchAddBookCmd();
 
@@ -68,13 +69,8 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
                                                          BookCommandFactory.removalOutdatedReason);
 
         dispatchCommand(aggregate, envelopeOf(removeBook));
-        final Book state = aggregate.getState();
-
-        assertEquals("", state.getBookId()
-                              .toString());
-
-        assertEquals("", state.getBookDetails()
-                              .toString());
+        final LifecycleFlags lifecycleFlags = aggregate.getLifecycleFlags();
+        assertTrue(lifecycleFlags.getDeleted());
     }
 
     @Test
@@ -86,13 +82,8 @@ public class RemoveBookCommandTest extends BookCommandTest<RemoveBook> {
                                                          removalCustomReason);
 
         dispatchCommand(aggregate, envelopeOf(removeBook));
-        final Book state = aggregate.getState();
-
-        assertEquals("", state.getBookDetails()
-                              .toString());
-
-        assertEquals("", state.getBookId()
-                              .toString());
+        final LifecycleFlags lifecycleFlags = aggregate.getLifecycleFlags();
+        assertTrue(lifecycleFlags.getDeleted());
     }
 
     @Test
