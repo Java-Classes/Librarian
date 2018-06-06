@@ -27,12 +27,12 @@
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
 
 <link rel="import" href="../shell/redux-store.html">
 <link rel="import" href="./book-values.html">
 <link rel="import" href="../actions/exlibris-actions.html">
 <link rel="import" href="./exlibris-book-details-redirect-link.html">
-<script src="../reducers/loading-status.js"></script>
 
 <dom-module id="exlibris-book-details">
     <template>
@@ -187,38 +187,38 @@
         <app-route
                 route="{{route}}"
                 pattern="/:id/:title"
-                data="{{routeData}}"></app-route>
+                data="{{_routeData}}"></app-route>
         <div class="book-card">
             <div class="head-part">
-                <iron-image id="book-cover" src="[[book.image]]"></iron-image>
+                <iron-image id="book-cover" src="[[_book.image]]"></iron-image>
                 <div class="book-details">
                     <div class="details-text-part">
-                        <div id="title">[[book.title]]</div>
-                        <div id="author">[[book.author]]</div>
-                        <exlibris-book-details-redirect-link book-code="[[book.isbn]]"
-                                                             book-title="[[book.title]]"></exlibris-book-details-redirect-link>
-                        <div id="status-message">[[statusMessage]]</div>
+                        <div id="title">[[_book.title]]</div>
+                        <div id="author">[[_book.author]]</div>
+                        <exlibris-book-details-redirect-link book-code="[[_book.isbn]]"
+                                                             book-title="[[_book.title]]"></exlibris-book-details-redirect-link>
+                        <div id="status-message">[[_statusMessage]]</div>
                     </div>
                     <div class="details-action-part">
                         <paper-button raised
                                       on-click="_handleButtonClick"
-                                      hidden="[[!button]]">
-                            [[button.title]]
+                                      hidden="[[!_button]]">
+                            [[_button.title]]
                         </paper-button>
-                        <div class="action-part-message">[[actionUnsupportedMessage]]</div>
+                        <div class="action-part-message">[[_actionUnsupportedMessage]]</div>
                     </div>
                 </div>
             </div>
             <div class="narrow-screen-action-part">
                 <paper-button class="small"
                               on-click="_handleButtonClick"
-                              hidden="[[!button]]">
-                    [[button.title]]
+                              hidden="[[!_button]]">
+                    [[_button.title]]
                 </paper-button>
-                <div class="action-part-message">[[actionUnsupportedMessage]]</div>
+                <div class="action-part-message">[[_actionUnsupportedMessage]]</div>
             </div>
             <div id="description">
-                [[book.description]]
+                [[_book.description]]
             </div>
         </div>
     </template>
@@ -240,73 +240,18 @@
                 return 'exlibris-book-details';
             }
 
+            static get observers() {
+                return ['_loadingStatusChanged(_book.*, _loaded)'];
+            }
+
             static get properties() {
                 return {
                     /**
                      * Fired when the book loading process has completed with failure.
                      *
                      * @event exlibris-book-details-not-found
-                     * @param {detail.path} the route path which caused the book loading failure.
+                     * @param {{detail.path: string}} the route path which caused the book loading failure.
                      */
-
-                    /**
-                     * The book object to display.
-                     *
-                     * @typedef {Object} Book
-                     * @property {string} id
-                     * @property {string} title the title of a book
-                     * @property {string} image the book cover URL
-                     * @property {string} author authors of the book
-                     * @property {string} category the book category
-                     * @property {number} availableCount the number of items available for borrowing.
-                     * @property {boolean} isAllowedLoanExtension true if the loan extension is provided.
-                     * @property {Date} date the date when the book is expected to become available.
-                     * @property {Date} dueDate the date when the book should be returned.
-                     * @property {BookStatus} status  one of the BookStatus values.
-                     */
-                    book: {
-                        type: Object,
-                        statePath: 'bookDetails.book'
-                    },
-
-                    /**
-                     * The book loading status.
-                     *
-                     * @typedef {ExlibrisApp.LoadingStatus}
-                     */
-                    loadingStatus: {
-                        type: Object,
-                        statePath: "bookDetails.loadingStatus",
-                        observer: "_loadingStatusChanged"
-                    },
-
-                    /**
-                     * The book details button.
-                     *
-                     * @property {string} title the button title
-                     * @property {function} clickHandler the button click handler function
-                     */
-                    button: {
-                        type: Object,
-                        computed: '_chooseButton(book)'
-                    },
-
-                    /**
-                     * The message about the status of the book.
-                     */
-                    statusMessage: {
-                        type: String,
-                        computed: '_calculateStatusMessage(book)'
-                    },
-
-                    /**
-                     * The message about the status of the book.
-                     * Shown instead of the button when it is not supported for the book.
-                     */
-                    actionUnsupportedMessage: {
-                        type: String,
-                        computed: '_calculateActionUnsupportedMessage(book)'
-                    },
 
                     /**
                      * The URL part that defines the book Id.
@@ -315,12 +260,66 @@
                     route: String,
 
                     /**
-                     * Contains the book Id passed in the route.
+                     * The book object to display.
                      *
-                     * @property {string} title the title of the book
-                     * @property {string} id the Id of the book
+                     * @type {{
+                     *          id: string,
+                     *          title: string,
+                     *          image: string,
+                     *          author: string,
+                     *          category: string,
+                     *          availableCount: number,
+                     *          isAllowedLoanExtension: boolean|undefined,
+                     *          date: Date|undefined,
+                     *          dueDate: Date|undefined,
+                     *          status: string
+                     *        }}
                      */
-                    routeData: {
+                    _book: {
+                        statePath: 'bookDetails.book'
+                    },
+
+                    /**
+                     * The book loading status.
+                     */
+                    _loaded: {
+                        type: Boolean,
+                        statePath: "bookDetails.loaded"
+                    },
+
+                    /**
+                     * The book details button.
+                     *
+                     * @type {{title: string, clickHandler: function} | null}
+                     */
+                    _button: {
+                        type: Object,
+                        computed: '_chooseButton(_book.status, _book.isAllowedLoanExtension)'
+                    },
+
+                    /**
+                     * The message reflecting the status of the book.
+                     */
+                    _statusMessage: {
+                        type: String,
+                        computed: '_calculateStatusMessage(_book)'
+                    },
+
+                    /**
+                     * The message about the status of the book.
+                     * Shown instead of the button when it is not supported for the book.
+                     */
+                    _actionUnsupportedMessage: {
+                        type: String,
+                        computed: '_calculateActionUnsupportedMessage(_book)'
+                    },
+
+                    /**
+                     * Contains the resolved route parameters.
+                     *
+                     * @type {{title: string, id: string} | null}
+                     */
+                    _routeData: {
                         type: Object,
                         observer: "_routeDataChanged"
                     }
@@ -359,7 +358,7 @@
             /**
              * Dispatches the action to find the book by Id.
              *
-             * @param {Object} routeData the resolved route parameters.
+             * @param {{title: string, id: string}} routeData the resolved route parameters.
              * @private
              */
             _routeDataChanged(routeData) {
@@ -372,43 +371,46 @@
              * Sets the appropriate button title and the click handler function
              * according to the passed book parameters.
              *
-             * @param {Book} book the book object to choose a button.
-             * @returns {Object} the title and the click function of the button for the specified book.
+             * @param {string} status
+             *              the book status represented by one of the ExlibrisApp.BookStatus values.
+             * @param {boolean} isAllowedLoanExtension
+             *              indicates loan extension possibility for borrowed books.
+             * @returns {{title: string, clickHandler: function}}
+             *              the title and the click handler function of the button for the specified
+             *              book parameters.
              * @private
              */
-            _chooseButton(book) {
-                if (book) {
-                    switch (book.status) {
-                        case ExlibrisApp.BookStatus.EXPECTED_SOON:
-                        case ExlibrisApp.BookStatus.EXPECTED: {
-                            return {
-                                title: 'RESERVE',
-                                clickHandler: this._requestReservation.bind(this)
-                            };
-                        }
-
-                        case ExlibrisApp.BookStatus.OVERDUE:
-                        case ExlibrisApp.BookStatus.BORROWED:
-                        case ExlibrisApp.BookStatus.SHOULD_RETURN_SOON: {
-                            if (book.isAllowedLoanExtension) {
-                                return {
-                                    title: 'EXTEND LOAN PERIOD',
-                                    clickHandler: this._requestLoanExtension.bind(this)
-                                };
-                            }
-                            break;
-                        }
-
-                        case ExlibrisApp.BookStatus.RESERVED:
-                        case ExlibrisApp.BookStatus.READY_TO_PICK_UP: {
-                            return {
-                                title: 'CANCEL RESERVATION',
-                                clickHandler: this._requestCancelReservation.bind(this)
-                            };
-                        }
-                        default:
-                            return null;
+            _chooseButton(status, isAllowedLoanExtension) {
+                switch (status) {
+                    case ExlibrisApp.BookStatus.EXPECTED_SOON:
+                    case ExlibrisApp.BookStatus.EXPECTED: {
+                        return {
+                            title: 'RESERVE',
+                            clickHandler: this._requestReservation.bind(this)
+                        };
                     }
+
+                    case ExlibrisApp.BookStatus.OVERDUE:
+                    case ExlibrisApp.BookStatus.BORROWED:
+                    case ExlibrisApp.BookStatus.SHOULD_RETURN_SOON: {
+                        if (isAllowedLoanExtension) {
+                            return {
+                                title: 'EXTEND LOAN PERIOD',
+                                clickHandler: this._requestLoanExtension.bind(this)
+                            };
+                        }
+                        break;
+                    }
+
+                    case ExlibrisApp.BookStatus.RESERVED:
+                    case ExlibrisApp.BookStatus.READY_TO_PICK_UP: {
+                        return {
+                            title: 'CANCEL RESERVATION',
+                            clickHandler: this._requestCancelReservation.bind(this)
+                        };
+                    }
+                    default:
+                        return null;
                 }
             }
 
@@ -485,20 +487,10 @@
              * @param {ExlibrisApp.LoadingStatus} loadingStatus the status of the book loading.
              * @private
              */
-            _loadingStatusChanged(loadingStatus) {
-                switch (loadingStatus) {
-                    case ExlibrisApp.LoadingStatus.NOT_FOUND: {
-                        this.dispatchEvent(new CustomEvent('exlibris-book-details-not-found', {detail: {path: this.route.path}}));
-                        break;
-                    }
-                    case ExlibrisApp.LoadingStatus.IN_PROGRESS: {
-                        //TODO:2018-35-16:yegor.udovchenko: Show loading progress
-                        break;
-                    }
-                    case ExlibrisApp.LoadingStatus.COMPLETED: {
-                        //TODO:2018-36-16:yegor.udovchenko: End display `loading in progress` view
-                        break;
-                    }
+            _loadingStatusChanged(book, loaded) {
+                if (!book.id && !loaded) {
+                    this.dispatchEvent(new CustomEvent('exlibris-book-details-not-found', {detail: {path: this.route.path}}));
+                    console.log('not found');
                 }
             }
 
@@ -509,7 +501,7 @@
              * @private
              */
             _handleButtonClick() {
-                this.button.clickHandler();
+                this._button.clickHandler();
             }
 
             /**
@@ -518,7 +510,7 @@
              * @private
              */
             _requestCancelReservation() {
-                this.dispatch('cancelBookReservation', this.book.id);
+                this.dispatch('cancelBookReservation', this._book.id);
             }
 
             /**
@@ -527,7 +519,7 @@
              * @private
              */
             _requestReservation() {
-                this.dispatch('reserveBook', this.book.id);
+                this.dispatch('reserveBook', this._book.id);
             }
 
             /**
@@ -536,7 +528,7 @@
              * @private
              */
             _requestLoanExtension() {
-                this.dispatch('extendBookLoanPeriod', this.book.id);
+                this.dispatch('extendBookLoanPeriod', this._book.id);
             }
         }
 
