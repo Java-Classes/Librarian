@@ -38,68 +38,44 @@
     <template>
         <style>
             :host {
-                display: flex;
-                justify-content: center;
+                @apply --layout;
+                @apply --layout-center-justified;
+                margin-top: 10px;
             }
 
-            .book-card {
+            #book-card {
                 @apply --layout-vertical;
                 @apply --shadow-elevation-8dp;
                 border-radius: 3px;
-                margin: 10px;
+                padding: 25px 36px 30px;
                 max-width: 700px;
                 background-color: var(--primary-background-color);
                 color: var(--light-theme-text-color);
             }
 
-            .book-card .head-part {
-                display: flex;
-                flex-direction: row;
-                justify-content: flex-start;
-                align-items: flex-start;
-                width: 100%;
-                height: fit-content;
+            #head-part {
+                @apply --layout-horizontal;
             }
 
             #book-cover {
                 @apply --shadow-elevation-4dp;
                 --iron-image-width: 100%;
-                margin-left: 36px;
-                margin-top: 25px;
             }
 
-            .book-card .head-part .book-details {
-                display: flex;
+            #book-details {
+                @apply --layout-vertical;
+                @apply --layout-justified;
                 width: 70%;
-                height: 100%;
                 padding-left: 30px;
-                padding-right: 35px;
-                flex-direction: column;
-                justify-content: space-between;
             }
 
-            .book-card .head-part .book-details .details-text-part {
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start;
-                padding-top: 35px;
-            }
-
-            .book-card .head-part .book-details .details-action-part {
-                display: block;
-                width: 100%;
-                margin: 0;
-            }
-
-            .book-card .narrow-screen-action-part {
-                display: none;
-                width: fit-content;
-                margin: 15px 0 0 15px;
-            }
-
-            .action-part-message {
+            #narrow-screen-action-part, #wide-screen-action-part {
                 @apply --paper-font-button;
                 color: var(--light-theme-secondary-color);
+            }
+
+            #narrow-screen-action-part {
+                display: none;
             }
 
             paper-button {
@@ -115,13 +91,10 @@
                 @apply --paper-font-body1;
                 color: var(--exlibris-app-secondary-color);
                 margin-top: 30px;
-                margin-bottom: 30px;
-                padding: 0 36px 0 36px;
             }
 
             #title {
                 @apply --paper-font-headline;
-                text-align: left;
             }
 
             #author {
@@ -132,46 +105,37 @@
             #status-message {
                 @apply --paper-font-body2;
                 white-space: pre;
-                margin: 20px 0 5px 0;
+                margin-top: 20px;
             }
 
             @media only screen and (max-width: 900px) {
                 :host {
-                    margin-left: unset;
+                    margin-top: unset;
                 }
 
-                .book-card {
+                #book-card {
                     border-radius: 0;
                     box-shadow: unset;
                     background-color: unset;
-                    margin: 0;
+                    padding: 15px 15px 0;
                 }
 
-                #book-cover {
-                    margin-left: 15px;
-                    margin-top: 15px;
+                #book-details {
+                    padding-left: 12px;
                 }
 
-                .book-card .head-part .book-details .details-action-part {
+                #wide-screen-action-part {
                     display: none;
                 }
 
-                .book-card .narrow-screen-action-part {
+                #narrow-screen-action-part {
                     display: block;
-                }
-
-                .book-card .head-part .book-details {
-                    padding-left: 10px;
-                    padding-right: 15px;
-                }
-
-                .book-card .head-part .book-details .details-text-part {
-                    padding-top: 15px;
+                    margin-top: 15px;
                 }
 
                 #description {
                     margin-top: 8px;
-                    padding: 0 15px 0 15px;
+                    color: var(--light-theme-text-color);
                 }
 
                 #title {
@@ -180,6 +144,7 @@
 
                 #author {
                     @apply --paper-font-body1;
+                    color: var(--light-theme-text-color);
                 }
             }
         </style>
@@ -188,34 +153,33 @@
                 route="{{route}}"
                 pattern="/:id/:title"
                 data="{{_routeData}}"></app-route>
-        <div class="book-card">
-            <div class="head-part">
+        <div id="book-card">
+            <div id="head-part">
                 <iron-image id="book-cover" src="[[_book.image]]"></iron-image>
-                <div class="book-details">
-                    <div class="details-text-part">
+                <div id="book-details">
+                    <div>
                         <div id="title">[[_book.title]]</div>
                         <div id="author">[[_book.author]]</div>
                         <exlibris-book-details-redirect-link book-code="[[_book.isbn]]"
                                                              book-title="[[_book.title]]"></exlibris-book-details-redirect-link>
                         <div id="status-message">[[_statusMessage]]</div>
                     </div>
-                    <div class="details-action-part">
+                    <div id="wide-screen-action-part">
                         <paper-button raised
                                       on-click="_handleButtonClick"
                                       hidden="[[!_button]]">
                             [[_button.title]]
                         </paper-button>
-                        <div class="action-part-message">[[_actionUnsupportedMessage]]</div>
+                        [[_actionUnsupportedMessage]]
                     </div>
                 </div>
             </div>
-            <div class="narrow-screen-action-part">
-                <paper-button class="small"
-                              on-click="_handleButtonClick"
+            <div id="narrow-screen-action-part">
+                <paper-button on-click="_handleButtonClick"
                               hidden="[[!_button]]">
                     [[_button.title]]
                 </paper-button>
-                <div class="action-part-message">[[_actionUnsupportedMessage]]</div>
+                [[_actionUnsupportedMessage]]
             </div>
             <div id="description">
                 [[_book.description]]
