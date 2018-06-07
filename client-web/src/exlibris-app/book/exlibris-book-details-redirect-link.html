@@ -19,30 +19,36 @@
   -->
 
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
 
 <dom-module id="exlibris-book-details-redirect-link">
     <template>
         <style>
             :host {
-                display: flex;
+                @apply --paper-font-body1;
+                white-space: nowrap;
                 margin: 5px 0 5px 0;
             }
 
             #link {
-                @apply --paper-font-body1;
-                display: flex;
                 text-decoration: none;
                 color: var(--paper-blue-600);
             }
 
             #link:hover {
                 text-decoration: underline;
+                text-underline-position: under;
             }
         </style>
 
-        <a id="link" target="_blank" href="[[reference.value]]">
-            [[reference.title]]
-        </a>
+        <template is="dom-if" if="[[_reference.value]]">
+            <a id="link" target="_blank" href="[[_reference.value]]">
+                [[_reference.title]]
+            </a>
+        </template>
+        <template is="dom-if" if="[[!_reference.value]]">
+            [[_reference.title]]
+        </template>
     </template>
 
     <script>
@@ -51,13 +57,13 @@
                 return [...arguments].reduce((p, c) => p.replace(/%s/, c), this);
             };
 
-            const BookCodePattern = {
+            const BOOK_CODE_PATTERN = {
                 ISBN_10: /^\d{10}$/g,
                 ISBN_13: /^\d{13}$/g,
                 ASIN: /^[\d, A-Z]{10}$/g
             };
 
-            const ExternalLinkTemplate = {
+            const EXTERNAL_LINK_TEMPLATE = {
                 AMAZON: 'https://www.amazon.com/%s/dp/%s/',
                 PLAY_BOOKS: 'https://play.google.com/store/search?q=%s&c=books'
             };
@@ -93,18 +99,18 @@
                         /**
                          * The enum of book code patterns for ISBN10, ISBN13 and ASIN.
                          */
-                        bookCodePattern: {
+                        _bookCodePattern: {
                             type: Object,
-                            value: BookCodePattern
+                            value: BOOK_CODE_PATTERN
                         },
 
                         /**
                          * The enum of external links patterns. Each value is used to
                          * generate redirect link depending on book code format.
                          */
-                        externalLinkTemplate: {
+                        _externalLinkTemplate: {
                             type: Object,
-                            value: ExternalLinkTemplate
+                            value: EXTERNAL_LINK_TEMPLATE
                         },
 
                         /**
@@ -113,7 +119,7 @@
                          * @property {string} title the reference title.
                          * @property {string} value  the link to open in the new tab.
                          */
-                        reference: {
+                        _reference: {
                             type: Object,
                             computed: "_calculateReference(bookCode, bookTitle)"
                         }
@@ -129,31 +135,35 @@
                  * If the `bookCode` matches the `ISBN13` pattern, generates the Google Play Books
                  * search link.
                  *
+                 * If the `bookCode` doesn't match any pattern, returns reference title and
+                 * value of `undefined`.
+                 *
                  * @param {string} bookCode the book unique code (ISBN, ASIN).
                  * @param {string} bookTitle the book title.
-                 * @returns {Object} the title and the value of link.
+                 * @returns {{title: string, value: string|undefined}} the title and the value of link.
                  * @private
                  */
                 _calculateReference(bookCode, bookTitle) {
-                    if (bookCode && bookTitle) {
-                        if (bookCode.match(this.bookCodePattern.ISBN_10)) {
+                    if (bookCode) {
+                        if (bookCode.match(this._bookCodePattern.ISBN_10)) {
                             return {
                                 title: 'ISBN: ' + bookCode,
-                                value: this.externalLinkTemplate.AMAZON.format(bookTitle, bookCode)
-                            }
+                                value: this._externalLinkTemplate.AMAZON.format(bookTitle, bookCode)
+                            };
                         }
-                        if (bookCode.match(this.bookCodePattern.ISBN_13)) {
+                        if (bookCode.match(this._bookCodePattern.ISBN_13)) {
                             return {
                                 title: 'ISBN: ' + bookCode,
-                                value: this.externalLinkTemplate.PLAY_BOOKS.format(bookCode)
-                            }
+                                value: this._externalLinkTemplate.PLAY_BOOKS.format(bookCode)
+                            };
                         }
-                        if (bookCode.match(this.bookCodePattern.ASIN)) {
+                        if (bookCode.match(this._bookCodePattern.ASIN)) {
                             return {
                                 title: 'ASIN: ' + bookCode,
-                                value: this.externalLinkTemplate.AMAZON.format(bookTitle, bookCode)
-                            }
+                                value: this._externalLinkTemplate.AMAZON.format(bookTitle, bookCode)
+                            };
                         }
+                        return {title: 'ISBN: ' + bookCode};
                     }
                 }
             }

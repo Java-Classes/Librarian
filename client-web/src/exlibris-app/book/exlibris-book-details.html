@@ -18,10 +18,8 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<link rel="import" href="../shell/exlibris-app-namespace.html">
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/polymer-redux/polymer-redux.html">
-<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="../../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
@@ -30,8 +28,8 @@
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
 
 <link rel="import" href="../shell/redux-store.html">
-<link rel="import" href="./book-values.html">
 <link rel="import" href="../actions/exlibris-actions.html">
+<link rel="import" href="./book-values.html">
 <link rel="import" href="./exlibris-book-details-redirect-link.html">
 
 <dom-module id="exlibris-book-details">
@@ -205,7 +203,7 @@
             }
 
             static get observers() {
-                return ['_loadingStatusChanged(_book.*, _loaded)'];
+                return ['_loadingStatusChanged(_book.*, _loading)'];
             }
 
             static get properties() {
@@ -240,13 +238,14 @@
                      *        }}
                      */
                     _book: {
+                        type: Object,
                         statePath: 'bookDetails.book'
                     },
 
                     /**
                      * The book loading status.
                      */
-                    _loaded: {
+                    _loading: {
                         type: Boolean,
                         statePath: "bookDetails.loaded"
                     },
@@ -353,7 +352,6 @@
                             clickHandler: this._requestReservation.bind(this)
                         };
                     }
-
                     case ExlibrisApp.BookStatus.OVERDUE:
                     case ExlibrisApp.BookStatus.BORROWED:
                     case ExlibrisApp.BookStatus.SHOULD_RETURN_SOON: {
@@ -365,7 +363,6 @@
                         }
                         break;
                     }
-
                     case ExlibrisApp.BookStatus.RESERVED:
                     case ExlibrisApp.BookStatus.READY_TO_PICK_UP: {
                         return {
@@ -392,15 +389,12 @@
                         case ExlibrisApp.BookStatus.AVAILABLE: {
                             return book.availableCount ? book.availableCount + ' available.\nScan QR code to borrow.' : '';
                         }
-
                         case ExlibrisApp.BookStatus.EXPECTED: {
                             return 'Book not available.';
                         }
-
                         case ExlibrisApp.BookStatus.EXPECTED_SOON: {
                             return 'Arriving to library shortly.';
                         }
-
                         case ExlibrisApp.BookStatus.OVERDUE: {
                             if (book.dueDate) {
                                 const now = new Date();
@@ -409,15 +403,12 @@
                             }
                             break;
                         }
-
                         case ExlibrisApp.BookStatus.READY_TO_PICK_UP: {
                             return book.date ? 'Book is ready to pick up.\nBorrow it before ' + book.date.toLocaleDateString() : '';
                         }
-
                         case ExlibrisApp.BookStatus.RESERVED: {
                             return book.date ? 'Reserved for you.\nExpected on ' + book.date.toLocaleDateString() : '';
                         }
-
                         case ExlibrisApp.BookStatus.BORROWED:
                         case ExlibrisApp.BookStatus.SHOULD_RETURN_SOON: {
                             return book.dueDate ? 'Borrowed by you.\nReturn before ' + book.dueDate.toLocaleDateString() : '';
@@ -448,19 +439,20 @@
              * Observes the loading status of the book to choose the appropriate
              * way to display book details page.
              *
-             * @param {ExlibrisApp.LoadingStatus} loadingStatus the status of the book loading.
+             * @param {Book} book the received book.
+             * @param {boolean} loading the book loading status
              * @private
              */
-            _loadingStatusChanged(book, loaded) {
-                if (!book.id && !loaded) {
+            // TODO:2018-06-07:yegor.udovchenko: Add book loading status handling
+            _loadingStatusChanged(book, loading) {
+                if (!book.id && !loading) {
                     this.dispatchEvent(new CustomEvent('exlibris-book-details-not-found', {detail: {path: this.route.path}}));
-                    console.log('not found');
                 }
             }
 
             /**
              * Handles the button click.
-             * Calls the button `clickHandler` function.
+             * Calls the button's `clickHandler` function.
              *
              * @private
              */
