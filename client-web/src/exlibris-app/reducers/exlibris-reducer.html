@@ -32,8 +32,9 @@
             allBooks: [...userTestBooks.overdue, ...libraryTestBooks],
             expectedSoonBooks: expectedSoonLibraryBooks,
             bookDetails: {
-                book: {},
-                loaded: false
+                book: null,
+                loading: false,
+                notFound: false
             }
         };
 
@@ -44,20 +45,36 @@
                     return state;
                 }
                 case ExlibrisApp.ExlibrisActions.FIND_BOOK_BY_ID: {
-                    const id = action.bookId;
-                    const book = findElement(id, state.allBooks, state.expectedSoonBooks, state.borrowedBooks, state.reservedBooks);
-                    if (book) {
-                        return Object.assign({}, state, {
-                            bookDetails: {
-                                book: book,
-                                loaded: true
-                            }
-                        });
-                    }
+                    // TODO:2018-06-11:yegor.udovchenko: Request book from the server by id
                     return Object.assign({}, state, {
                         bookDetails: {
-                            book: {},
-                            loaded: false
+                            book: null,
+                            loading: true,
+                            notFound: false
+                        }
+                    });
+                }
+
+                case ExlibrisApp.ExlibrisActions.BOOK_RECEIVED: {
+                    // Searching for a book in a local data.
+                    // Should be removed when implement server response
+                    const id = action.bookId;
+                    const book = findElement(id, state.allBooks, state.expectedSoonBooks, state.borrowedBooks, state.reservedBooks);
+                    return Object.assign({}, state, {
+                        bookDetails: {
+                            book: book,
+                            loading: false,
+                            notFound: false
+                        }
+                    });
+                }
+
+                case ExlibrisApp.ExlibrisActions.BOOK_NOT_FOUND: {
+                    return Object.assign({}, state, {
+                        bookDetails: {
+                            book: null,
+                            loading: false,
+                            notFound: true
                         }
                     });
                 }

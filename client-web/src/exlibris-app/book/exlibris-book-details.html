@@ -51,6 +51,10 @@
                 color: var(--light-theme-text-color);
             }
 
+            #book-card[hidden] {
+                display: none;
+            }
+
             #head-part {
                 @apply --layout-horizontal;
             }
@@ -151,7 +155,8 @@
                 route="{{route}}"
                 pattern="/:id/:title"
                 data="{{_routeData}}"></app-route>
-        <div id="book-card">
+        <div hidden="[[!_loading]]">Loading</div>
+        <div id="book-card" hidden="[[_loading]]">
             <div id="head-part">
                 <iron-image id="book-cover" src="[[_book.image]]"></iron-image>
                 <div id="book-details">
@@ -202,10 +207,6 @@
                 return 'exlibris-book-details';
             }
 
-            static get observers() {
-                return ['_loadingStatusChanged(_book.*, _loading)'];
-            }
-
             static get properties() {
                 return {
                     /**
@@ -247,7 +248,16 @@
                      */
                     _loading: {
                         type: Boolean,
-                        statePath: "bookDetails.loaded"
+                        statePath: "bookDetails.loading"
+                    },
+
+                    /**
+                     * Indicates the book loading failure.
+                     */
+                    _notFound: {
+                        type: Boolean,
+                        statePath: "bookDetails.notFound",
+                        observer: "_notFoundChanged"
                     },
 
                     /**
@@ -327,6 +337,7 @@
             _routeDataChanged(routeData) {
                 if (this.route && this.route.prefix === '/book-details' && routeData.id) {
                     this.dispatch('findBookById', routeData.id);
+                    this.__imitateServerResponse(routeData.id);
                 }
             }
 
@@ -436,16 +447,13 @@
             }
 
             /**
-             * Observes the loading status of the book to choose the appropriate
-             * way to display book details page.
+             * Fires the custom event when the book loading process has completed with failure.
              *
-             * @param {Book} book the received book.
-             * @param {boolean} loading the book loading status
+             * @param {boolean} notFound shows is the book loading process has completed with failure.
              * @private
              */
-            // TODO:2018-06-07:yegor.udovchenko: Add book loading status handling
-            _loadingStatusChanged(book, loading) {
-                if (!book.id && !loading) {
+            _notFoundChanged(notFound) {
+                if (notFound) {
                     this.dispatchEvent(new CustomEvent('exlibris-book-details-not-found', {detail: {path: this.route.path}}));
                 }
             }
@@ -485,6 +493,25 @@
              */
             _requestLoanExtension() {
                 this.dispatch('extendBookLoanPeriod', this._book.id);
+            }
+
+            // The temporary server response imitation
+            __imitateServerResponse(bookId) {
+                const random = Math.floor(Math.random() * 4) + 1;
+                if (random % 4 === 0) {
+                    setTimeout(() => {
+                        this.dispatch({
+                            type: ExlibrisApp.ExlibrisActions.BOOK_NOT_FOUND,
+                        });
+                    }, 1000);
+                } else {
+                    setTimeout(() => {
+                        this.dispatch({
+                            type: ExlibrisApp.ExlibrisActions.BOOK_RECEIVED,
+                            bookId: bookId
+                        });
+                    }, 1000);
+                }
             }
         }
 
