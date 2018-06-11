@@ -19,11 +19,8 @@
   -->
 
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../../../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../../bower_components/paper-spinner/paper-spinner-lite.html">
@@ -123,7 +120,7 @@
                     border-radius: 0;
                     box-shadow: unset;
                     background-color: unset;
-                    padding: 15px 15px 0;
+                    padding: 15px;
                 }
 
                 #book-details {
@@ -290,7 +287,7 @@
                      */
                     _actionUnsupportedMessage: {
                         type: String,
-                        computed: '_calculateActionUnsupportedMessage(_book)'
+                        computed: '_calculateActionUnsupportedMessage(_book.status, _book.isAllowedLoanExtension)'
                     },
 
                     /**
@@ -448,18 +445,17 @@
              * Calculates the appropriate message if the button is not supported
              * for the passed book.
              *
-             * @param {Book} book the book object.
+             * @param {string} bookStatus the book status represented by one of the ExlibrisApp.BookStatus values.
+             * @param {boolean} isAllowedLoanExtension indicates is there ability to extend loan or not.
              * @returns {string} the message to show when the action button is not supported
              *                   for the specified book.
              * @private
              */
-            _calculateActionUnsupportedMessage(book) {
-                if (book) {
-                    if ((ExlibrisApp.BookStatus.BORROWED === book.status
-                            || ExlibrisApp.BookStatus.SHOULD_RETURN_SOON === book.status
-                            || ExlibrisApp.BookStatus.OVERDUE === book.status) &&
-                        !book.isAllowedLoanExtension) return 'RESERVED BY ANOTHER READER';
-                }
+            _calculateActionUnsupportedMessage(bookStatus, isAllowedLoanExtension) {
+                if ((ExlibrisApp.BookStatus.BORROWED === bookStatus
+                        || ExlibrisApp.BookStatus.SHOULD_RETURN_SOON === bookStatus
+                        || ExlibrisApp.BookStatus.OVERDUE === bookStatus) &&
+                    !isAllowedLoanExtension) return 'RESERVED BY ANOTHER READER';
             }
 
             /**

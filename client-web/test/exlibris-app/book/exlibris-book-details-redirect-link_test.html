@@ -29,7 +29,6 @@
 
     <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <script src="../../../bower_components/web-component-tester/browser.js"></script>
-
     <link rel="import"
           href="../../../src/exlibris-app/book/exlibris-book-details-redirect-link.html">
 </head>
@@ -78,7 +77,7 @@
         test('should generate Play Books redirect link when code matches the `ISBN_13` pattern.', function (done) {
             element.bookCode = TEST_BOOK_CODES.ISBN_13;
             element.bookTitle = TEST_BOOK_TITLE;
-            const expectedLink = 'https://play.google.com/store/search?q=' + TEST_BOOK_CODES.ISBN_13 + '&c=books'
+            const expectedLink = 'https://play.google.com/store/search?q=' + TEST_BOOK_CODES.ISBN_13 + '&c=books';
 
             flush(() => {
                 const link = element.shadowRoot.querySelector(LINK_SELECTOR);

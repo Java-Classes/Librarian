@@ -60,105 +60,105 @@
             NARROW_SCREEN_MESSAGE: '#narrow-screen-action-part span'
         };
 
-        let booksAndButtonsCombinations;
+        const BOOKS_AND_BUTTONS_COMBINATIONS = [
+            {
+                book: {status: ExlibrisApp.BookStatus.EXPECTED},
+                button: BUTTON_TITLES.RESERVE,
+                actionUnsupportedMessage: ''
+            },
+            {
+                book: {status: ExlibrisApp.BookStatus.EXPECTED_SOON},
+                button: BUTTON_TITLES.RESERVE,
+                actionUnsupportedMessage: ''
+            },
+            {
+                book: {status: ExlibrisApp.BookStatus.AVAILABLE},
+                button: '',
+                actionUnsupportedMessage: ''
+            },
+            {
+                book: {
+                    status: ExlibrisApp.BookStatus.BORROWED,
+                    isAllowedLoanExtension: true
+                },
+                button: BUTTON_TITLES.EXTEND_LOAN_PERIOD,
+                actionUnsupportedMessage: ''
+            },
+            {
+                book: {
+                    status: ExlibrisApp.BookStatus.OVERDUE,
+                    isAllowedLoanExtension: true
+                },
+                button: BUTTON_TITLES.EXTEND_LOAN_PERIOD,
+                actionUnsupportedMessage: ''
+            },
+            {
+                book: {
+                    status: ExlibrisApp.BookStatus.SHOULD_RETURN_SOON,
+                    isAllowedLoanExtension: true
+                },
+                button: BUTTON_TITLES.EXTEND_LOAN_PERIOD,
+                actionUnsupportedMessage: ''
+            },
+            {
+                book: {
+                    status: ExlibrisApp.BookStatus.BORROWED,
+                    isAllowedLoanExtension: false
+                },
+                button: '',
+                actionUnsupportedMessage: ACTION_UNSUPPORTED_MESSAGE
+            },
+            {
+                book: {
+                    status: ExlibrisApp.BookStatus.OVERDUE,
+                    isAllowedLoanExtension: false
+                },
+                button: '',
+                actionUnsupportedMessage: ACTION_UNSUPPORTED_MESSAGE
+            },
+            {
+                book: {
+                    status: ExlibrisApp.BookStatus.SHOULD_RETURN_SOON,
+                    isAllowedLoanExtension: false
+                },
+                button: '',
+                actionUnsupportedMessage: ACTION_UNSUPPORTED_MESSAGE
+            },
+            {
+                book: {status: ExlibrisApp.BookStatus.RESERVED},
+                button: BUTTON_TITLES.CANCEL_RESERVATION,
+                actionUnsupportedMessage: ''
+            },
+            {
+                book: {status: ExlibrisApp.BookStatus.READY_TO_PICK_UP},
+                button: BUTTON_TITLES.CANCEL_RESERVATION,
+                actionUnsupportedMessage: ''
+            }
+        ];
 
-        setup(() => {
-            booksAndButtonsCombinations = [
-                {
-                    book: {status: ExlibrisApp.BookStatus.EXPECTED},
-                    button: BUTTON_TITLES.RESERVE,
-                    actionUnsupportedMessage: ''
-                },
-                {
-                    book: {status: ExlibrisApp.BookStatus.EXPECTED_SOON},
-                    button: BUTTON_TITLES.RESERVE,
-                    actionUnsupportedMessage: ''
-                },
-                {
-                    book: {status: ExlibrisApp.BookStatus.AVAILABLE},
-                    button: '',
-                    actionUnsupportedMessage: ''
-                },
-                {
-                    book: {
-                        status: ExlibrisApp.BookStatus.BORROWED,
-                        isAllowedLoanExtension: true
-                    },
-                    button: BUTTON_TITLES.EXTEND_LOAN_PERIOD,
-                    actionUnsupportedMessage: ''
-                },
-                {
-                    book: {
-                        status: ExlibrisApp.BookStatus.OVERDUE,
-                        isAllowedLoanExtension: true
-                    },
-                    button: BUTTON_TITLES.EXTEND_LOAN_PERIOD,
-                    actionUnsupportedMessage: ''
-                },
-                {
-                    book: {
-                        status: ExlibrisApp.BookStatus.SHOULD_RETURN_SOON,
-                        isAllowedLoanExtension: true
-                    },
-                    button: BUTTON_TITLES.EXTEND_LOAN_PERIOD,
-                    actionUnsupportedMessage: ''
-                },
-                {
-                    book: {
-                        status: ExlibrisApp.BookStatus.BORROWED,
-                        isAllowedLoanExtension: false
-                    },
-                    button: '',
-                    actionUnsupportedMessage: ACTION_UNSUPPORTED_MESSAGE
-                },
-                {
-                    book: {
-                        status: ExlibrisApp.BookStatus.OVERDUE,
-                        isAllowedLoanExtension: false
-                    },
-                    button: '',
-                    actionUnsupportedMessage: ACTION_UNSUPPORTED_MESSAGE
-                },
-                {
-                    book: {
-                        status: ExlibrisApp.BookStatus.SHOULD_RETURN_SOON,
-                        isAllowedLoanExtension: false
-                    },
-                    button: '',
-                    actionUnsupportedMessage: ACTION_UNSUPPORTED_MESSAGE
-                },
-                {
-                    book: {status: ExlibrisApp.BookStatus.RESERVED},
-                    button: BUTTON_TITLES.CANCEL_RESERVATION,
-                    actionUnsupportedMessage: ''
-                },
-                {
-                    book: {status: ExlibrisApp.BookStatus.READY_TO_PICK_UP},
-                    button: BUTTON_TITLES.CANCEL_RESERVATION,
-                    actionUnsupportedMessage: ''
-                }
-            ];
-        });
-
-        test('should display the book action button with the appropriate title.', function () {
-            booksAndButtonsCombinations.forEach(function (combination) {
+        BOOKS_AND_BUTTONS_COMBINATIONS.forEach(function (combination) {
+            const testMessagePart = combination.button ? combination.button : 'empty';
+            test(`should have ${testMessagePart} button title for the book with status ${combination.book.status}`, done => {
                 const element = fixture('BasicTestFixture');
                 element.set('_book', combination.book);
                 const wideScreenButton = element.shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.WIDE_SCREEN_BUTTON);
                 const narrowScreenButton = element.shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.NARROW_SCREEN_BUTTON);
                 assert.equal(wideScreenButton.innerHTML.trim(), combination.button);
                 assert.equal(narrowScreenButton.innerHTML.trim(), combination.button);
+                done();
             });
         });
 
-        test('should display the appropriate message when actions with the book are unsupported.', function () {
-            booksAndButtonsCombinations.forEach(function (combination) {
+        BOOKS_AND_BUTTONS_COMBINATIONS.forEach(function (combination) {
+            const testMessagePart = combination.actionUnsupportedMessage ? combination.actionUnsupportedMessage : 'empty';
+            test(`should have ${testMessagePart} action unsupported message for the book with status ${combination.book.status}`, done => {
                 const element = fixture('BasicTestFixture');
                 element.set('_book', combination.book);
                 const wideScreenMessage = element.shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.WIDE_SCREEN_MESSAGE);
                 const narrowScreenMessage = element.shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.NARROW_SCREEN_MESSAGE);
                 assert.equal(wideScreenMessage.innerHTML.trim(), combination.actionUnsupportedMessage);
                 assert.equal(narrowScreenMessage.innerHTML.trim(), combination.actionUnsupportedMessage);
+                done();
             });
         });
     });

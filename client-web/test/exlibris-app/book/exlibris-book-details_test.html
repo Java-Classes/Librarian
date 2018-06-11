@@ -44,7 +44,7 @@
 <script>
     suite('exlibris-book-details', function () {
         let element;
-        let testBook;
+        const TEST_BOOK = ExlibrisAppTest.BOOKS[0];
         const BOOK_DETAILS_SELECTORS = {
             LOADING_IN_PROGRESS_CONTENT: '#loading-spinner',
             BOOK_DETAILS_CARD: '#book-card',
@@ -58,7 +58,6 @@
 
         setup(() => {
             element = fixture('BasicTestFixture');
-            testBook = ExlibrisAppTest.BOOKS[0];
         });
 
         test('should display the loading spinner when the book is not ready to display.', function () {
@@ -80,29 +79,29 @@
         });
 
         test('component content is correct.', function () {
-            element.set('_book', testBook);
+            element.set('_book', TEST_BOOK);
             element.set('_isBookReadyToDisplay', true);
             const shadowRoot = element.shadowRoot;
 
             const bookCover = shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.BOOK_COVER);
-            assert.equal(bookCover.src, testBook.image, 'Expecting the correct image to be rendered.');
+            assert.equal(bookCover.src, TEST_BOOK.image, 'Expecting the correct image to be rendered.');
 
             const bookTitle = shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.BOOK_TITLE);
-            assert.equal(bookTitle.innerHTML.trim(), testBook.title, 'Expecting the correct title to be rendered.');
+            assert.equal(bookTitle.innerHTML.trim(), TEST_BOOK.title, 'Expecting the correct title to be rendered.');
 
             const bookAuthor = shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.BOOK_AUTHOR);
-            assert.equal(bookAuthor.innerHTML.trim(), testBook.author, 'Expecting the correct author to be rendered.');
+            assert.equal(bookAuthor.innerHTML.trim(), TEST_BOOK.author, 'Expecting the correct author to be rendered.');
 
             const bookCodeLink = shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.BOOK_CODE_LINK);
-            assert.equal(bookCodeLink.bookCode, testBook.isbn, 'Expecting the correct isbn to be set.');
-            assert.equal(bookCodeLink.bookTitle, testBook.title, 'Expecting the correct title to be set.');
+            assert.equal(bookCodeLink.bookCode, TEST_BOOK.isbn, 'Expecting the correct isbn to be set.');
+            assert.equal(bookCodeLink.bookTitle, TEST_BOOK.title, 'Expecting the correct title to be set.');
 
             const bookStatusMessage = shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.STATUS_MESSAGE);
             assert.equal(bookStatusMessage.innerHTML.trim(), '3 available.\nScan QR code to borrow.',
                 'Expecting the correct status message to be rendered.');
 
             const bookDescription = shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.BOOK_DESCRIPTION);
-            assert.equal(bookDescription.innerHTML.trim(), testBook.description, 'Expecting the correct description to be rendered.');
+            assert.equal(bookDescription.innerHTML.trim(), TEST_BOOK.description, 'Expecting the correct description to be rendered.');
         });
     });
 </script>
