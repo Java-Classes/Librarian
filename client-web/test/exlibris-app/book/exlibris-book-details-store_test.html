@@ -54,7 +54,7 @@
         };
 
         const BOOK_DETAILS_SELECTORS = {
-            WIDE_SCREEN_BUTTON: '.book-card .head-part .book-details .details-action-part paper-button',
+            WIDE_SCREEN_BUTTON: '#wide-screen-action-part paper-button',
         };
 
         let mockStore;
@@ -129,8 +129,7 @@
             const bookForReservation = Object.assign({}, TEST_BOOK, {status: ExlibrisApp.BookStatus.BORROWED, isAllowedLoanExtension: true});
             const testState = {
                 bookDetails: {
-                    book: bookForReservation,
-                    loadingStatus: ExlibrisApp.LoadingStatus.COMPLETED
+                    book: bookForReservation
                 }
             };
 
@@ -143,11 +142,10 @@
             mockStore.verify();
         });
 
-        test('should react on `loadingStatus` change and dispatch the custom event when the value is `LoadingStatus.NOT_FOUND`.', function (done) {
+        test('should react on `notFound` change and dispatch the custom event when the value is `true`.', function (done) {
             const testState = {
                 bookDetails: {
-                    book: {},
-                    loadingStatus: ExlibrisApp.LoadingStatus.NOT_FOUND
+                    notFound: true
                 }
             };
             const stub = sinon.stub(ExlibrisApp.store, "getState");
