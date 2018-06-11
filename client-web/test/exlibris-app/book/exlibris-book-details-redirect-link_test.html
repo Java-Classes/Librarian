@@ -53,44 +53,72 @@
         };
         const TEST_BOOK_TITLE = 'TITLE';
         const LINK_SELECTOR = '#link';
+        const TEXT_SELECTOR = 'span';
 
         setup(() => {
             element = fixture('BasicTestFixture');
         });
 
-        test('should generate Amazon redirect link when code matches the `ISBN_10` pattern.', function () {
+        test('should generate Amazon redirect link when code matches the `ISBN_10` pattern.', function (done) {
             element.bookCode = TEST_BOOK_CODES.ISBN_10;
             element.bookTitle = TEST_BOOK_TITLE;
             const expectedLink = 'https://www.amazon.com/' + TEST_BOOK_TITLE + '/dp/' + TEST_BOOK_CODES.ISBN_10 + '/';
 
-            const link = element.shadowRoot.querySelector(LINK_SELECTOR);
-            assert.equal(link.href, expectedLink);
+            flush(() => {
+                const link = element.shadowRoot.querySelector(LINK_SELECTOR);
+                const text = element.shadowRoot.querySelector(TEXT_SELECTOR);
+
+                assert.isNull(text);
+                assert.equal(link.innerHTML.trim(), 'ISBN: ' + TEST_BOOK_CODES.ISBN_10);
+                assert.equal(link.href, expectedLink);
+                done();
+            });
         });
 
-        test('should generate Play Books redirect link when code matches the `ISBN_13` pattern.', function () {
+        test('should generate Play Books redirect link when code matches the `ISBN_13` pattern.', function (done) {
             element.bookCode = TEST_BOOK_CODES.ISBN_13;
             element.bookTitle = TEST_BOOK_TITLE;
             const expectedLink = 'https://play.google.com/store/search?q=' + TEST_BOOK_CODES.ISBN_13 + '&c=books'
 
-            const link = element.shadowRoot.querySelector(LINK_SELECTOR);
-            assert.equal(link.href, expectedLink);
+            flush(() => {
+                const link = element.shadowRoot.querySelector(LINK_SELECTOR);
+                const text = element.shadowRoot.querySelector(TEXT_SELECTOR);
+
+                assert.isNull(text);
+                assert.equal(link.innerHTML.trim(), 'ISBN: ' + TEST_BOOK_CODES.ISBN_13);
+                assert.equal(link.href, expectedLink);
+                done();
+            });
         });
 
-        test('should generate Amazon redirect link when code matches the `ASIN` pattern.', function () {
+        test('should generate Amazon redirect link when code matches the `ASIN` pattern.', function (done) {
             element.bookCode = TEST_BOOK_CODES.ASIN;
             element.bookTitle = TEST_BOOK_TITLE;
             const expectedLink = 'https://www.amazon.com/' + TEST_BOOK_TITLE + '/dp/' + TEST_BOOK_CODES.ASIN + '/';
 
-            const link = element.shadowRoot.querySelector(LINK_SELECTOR);
-            assert.equal(link.href, expectedLink);
+            flush(() => {
+                const link = element.shadowRoot.querySelector(LINK_SELECTOR);
+                const text = element.shadowRoot.querySelector(TEXT_SELECTOR);
+
+                assert.isNull(text);
+                assert.equal(link.innerHTML.trim(), 'ASIN: ' + TEST_BOOK_CODES.ASIN);
+                assert.equal(link.href, expectedLink);
+                done();
+            });
         });
 
-        test('should not generate link when the passed code does not match to any pattern.', function () {
+        test('should not display link and display the text label when the passed code does not match to any pattern.', function (done) {
             element.bookCode = TEST_BOOK_CODES.INVALID;
             element.bookTitle = TEST_BOOK_TITLE;
 
-            const link = element.shadowRoot.querySelector(LINK_SELECTOR);
-            assert.equal(link.href, '');
+            flush(() => {
+                const link = element.shadowRoot.querySelector(LINK_SELECTOR);
+                const text = element.shadowRoot.querySelector(TEXT_SELECTOR);
+
+                assert.isNull(link);
+                assert.equal(text.innerHTML, 'ISBN: ' + TEST_BOOK_CODES.INVALID);
+                done();
+            });
         });
     });
 </script>
