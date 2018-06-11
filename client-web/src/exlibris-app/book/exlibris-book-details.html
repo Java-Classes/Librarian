@@ -26,6 +26,7 @@
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../../bower_components/paper-spinner/paper-spinner-lite.html">
 
 <link rel="import" href="../shell/redux-store.html">
 <link rel="import" href="../actions/exlibris-actions.html">
@@ -55,6 +56,9 @@
                 display: none;
             }
 
+            #loading-spinner {
+                margin-top: 20%;
+            }
             #head-part {
                 @apply --layout-horizontal;
             }
@@ -155,10 +159,12 @@
                 route="{{route}}"
                 pattern="/:id/:title"
                 data="{{_routeData}}"></app-route>
-        <div hidden="[[!_loading]]">Loading</div>
-        <div id="book-card" hidden="[[_loading]]">
+        <paper-spinner-lite id="loading-spinner" class="thick"
+                            active="[[!_isBookReadyToDisplay]]"></paper-spinner-lite>
+        <div id="book-card" hidden="[[!_isBookReadyToDisplay]]">
             <div id="head-part">
-                <iron-image id="book-cover" src="[[_book.image]]"></iron-image>
+                <iron-image id="book-cover" src="[[_book.image]]"
+                            on-loading-changed="_coverLoadingChanged"></iron-image>
                 <div id="book-details">
                     <div>
                         <div id="title">[[_book.title]]</div>
@@ -295,6 +301,16 @@
                     _routeData: {
                         type: Object,
                         observer: "_routeDataChanged"
+                    },
+
+                    /**
+                     * Indicates that the book was loaded and its cover image is ready to be displayed.
+                     *
+                     * Used as a trigger to show `loading in progress` spinner.
+                     */
+                    _isBookReadyToDisplay: {
+                        type: Boolean,
+                        value: false
                     }
                 };
             }
@@ -456,6 +472,21 @@
                 if (notFound) {
                     this.dispatchEvent(new CustomEvent('exlibris-book-details-not-found', {detail: {path: this.route.path}}));
                 }
+            }
+
+            /**
+             * Monitors the book cover loading changes.
+             *
+             * This process is the most time-consuming after the book has been received. Sets the
+             * `_isBookReadyToDisplay` property to `true` when the book is received without failures
+             * and the cover loading process has finished.
+             *
+             * @param {CustomEvent} e fired when the book cover `loading` property changes.
+             * @private
+             */
+            _coverLoadingChanged(e) {
+                const imageIsLoading = e.detail.value;
+                this._isBookReadyToDisplay = !this._loading && !this._notFound && this._book && !imageIsLoading;
             }
 
             /**
