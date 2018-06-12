@@ -19,6 +19,7 @@
   -->
 
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="../../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/iron-image/iron-image.html">
@@ -54,8 +55,9 @@
             }
 
             #loading-spinner {
-                margin-top: 20%;
+                margin-top: 10%;
             }
+
             #head-part {
                 @apply --layout-horizontal;
             }
@@ -156,8 +158,10 @@
                 route="{{route}}"
                 pattern="/:id/:title"
                 data="{{_routeData}}"></app-route>
-        <paper-spinner-lite id="loading-spinner" class="thick"
-                            active="[[!_isBookReadyToDisplay]]"></paper-spinner-lite>
+
+        <template is="dom-if" if="[[!_isBookReadyToDisplay]]">
+            <paper-spinner-lite id="loading-spinner" class="thick" active></paper-spinner-lite>
+        </template>
         <div id="book-card" hidden="[[!_isBookReadyToDisplay]]">
             <div id="head-part">
                 <iron-image id="book-cover" src="[[_book.image]]"
@@ -191,6 +195,8 @@
                 [[_book.description]]
             </div>
         </div>
+
+
     </template>
 
     <script>
@@ -524,20 +530,21 @@
 
             // The temporary server response imitation
             __imitateServerResponse(bookId) {
-                const random = Math.floor(Math.random() * 4) + 1;
-                if (random % 4 === 0) {
+                const random = Math.round(Math.random());
+                const SERVER_RESPONSE_DELAY = 1000;
+                if (random) {
                     setTimeout(() => {
                         this.dispatch({
                             type: ExlibrisApp.ExlibrisActions.BOOK_NOT_FOUND,
                         });
-                    }, 1000);
+                    }, SERVER_RESPONSE_DELAY);
                 } else {
                     setTimeout(() => {
                         this.dispatch({
                             type: ExlibrisApp.ExlibrisActions.BOOK_RECEIVED,
                             bookId: bookId
                         });
-                    }, 1000);
+                    }, SERVER_RESPONSE_DELAY);
                 }
             }
         }
