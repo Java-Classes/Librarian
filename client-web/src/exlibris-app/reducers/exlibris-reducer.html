@@ -59,7 +59,11 @@
                     // Searching for a book in a local data.
                     // Should be removed when implement server response
                     const id = action.bookId;
-                    const book = findElement(id, state.allBooks, state.expectedSoonBooks, state.borrowedBooks, state.reservedBooks);
+                    const book = [
+                        ...state.allBooks,
+                        ...state.expectedSoonBooks,
+                        ...state.borrowedBooks,
+                        ...state.reservedBooks].find((item) => item.id === id);
                     return Object.assign({}, state, {
                         bookDetails: {
                             book: book,
@@ -98,17 +102,5 @@
                     return state;
             }
         };
-
-        function findElement(id) {
-            let element;
-            let i = 1;
-            while (!element && i < arguments.length) {
-                if (Array.isArray(arguments[i])) {
-                    element = arguments[i].find(el => el.id === id);
-                }
-                i++;
-            }
-            return element;
-        }
     }
 </script>
