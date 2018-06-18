@@ -201,9 +201,9 @@
         /**
          * The book details page component.
          *
-         * This component allows to display the book details page with the book
-         * specific messages, the book cover and the button when it is supported.
-         * The book is specified by the route which contains the book Id.
+         * This component allows to display a book details page with a book
+         * specific messages, a book cover and a button when it is supported.
+         * A book is specified by a route which contains a book Id.
          *
          * @customElement
          * @polymer
@@ -220,17 +220,17 @@
                      * Fired when the book loading process has completed with failure.
                      *
                      * @event exlibris-book-details-not-found
-                     * @param {{detail.path: string}} the route path which caused the book loading failure.
+                     * @param {{detail.path: string}} a route path which caused a book loading failure.
                      */
 
                     /**
-                     * The URL part that defines the book Id.
+                     * A URL part that defines the book Id.
                      * Should match the pattern `/:id/:title`
                      */
                     route: String,
 
                     /**
-                     * The book object to display.
+                     * A book object to display.
                      *
                      * @type {{
                      *          id: string,
@@ -251,7 +251,7 @@
                     },
 
                     /**
-                     * The book loading status.
+                     * A book loading status.
                      */
                     _loading: {
                         type: Boolean,
@@ -259,7 +259,7 @@
                     },
 
                     /**
-                     * Indicates the book loading failure.
+                     * Indicates a book loading failure.
                      */
                     _notFound: {
                         type: Boolean,
@@ -268,7 +268,7 @@
                     },
 
                     /**
-                     * The book details button.
+                     * A book details button.
                      *
                      * @type {{title: string, clickHandler: function} | null}
                      */
@@ -278,7 +278,7 @@
                     },
 
                     /**
-                     * The message reflecting the status of the book.
+                     * A message reflecting a status of a book.
                      */
                     _statusMessage: {
                         type: String,
@@ -286,8 +286,8 @@
                     },
 
                     /**
-                     * The message about the status of the book.
-                     * Shown instead of the button when it is not supported for the book.
+                     * A message about a status of a book.
+                     * Shown instead of a button when it is not supported for a book.
                      */
                     _actionUnsupportedMessage: {
                         type: String,
@@ -295,7 +295,7 @@
                     },
 
                     /**
-                     * Contains the resolved route parameters.
+                     * Contains a resolved route parameters.
                      *
                      * @type {{title: string, id: string} | null}
                      */
@@ -346,7 +346,7 @@
             }
 
             /**
-             * Dispatches the action to find the book by Id.
+             * Dispatches an action to find the book by Id.
              *
              * @param {{title: string, id: string}} routeData the resolved route parameters.
              * @private
@@ -359,15 +359,15 @@
             }
 
             /**
-             * Sets the appropriate button title and the click handler function
+             * Sets an appropriate button title and a click handler function
              * according to the passed book parameters.
              *
              * @param {string} status
-             *              the book status represented by one of the ExlibrisApp.BookStatus values.
+             *              a book status represented by one of the ExlibrisApp.BookStatus values.
              * @param {boolean} isAllowedLoanExtension
              *              indicates loan extension possibility for borrowed books.
              * @returns {{title: string, clickHandler: function}}
-             *              the title and the click handler function of the button for the specified
+             *              a title and a click handler function of a button for the specified
              *              book parameters.
              * @private
              */
@@ -404,11 +404,11 @@
             }
 
             /**
-             * Calculates the appropriate status message
+             * Calculates an appropriate status message
              * according to the passed book.
              *
-             * @param {Book} book the book object.
-             * @returns {string} the status message for the specified book.
+             * @param {Book} book a book object.
+             * @returns {string} a status message for the specified book.
              * @private
              */
             _calculateStatusMessage(book) {
@@ -446,12 +446,12 @@
             }
 
             /**
-             * Calculates the appropriate message if the button is not supported
+             * Calculates an appropriate message if a button is not supported
              * for the passed book.
              *
-             * @param {string} bookStatus the book status represented by one of the ExlibrisApp.BookStatus values.
+             * @param {string} bookStatus a book status represented by one of the ExlibrisApp.BookStatus values.
              * @param {boolean} isAllowedLoanExtension indicates is there ability to extend loan or not.
-             * @returns {string} the message to show when the action button is not supported
+             * @returns {string} a message to show when an action button is not supported
              *                   for the specified book.
              * @private
              */
@@ -463,9 +463,9 @@
             }
 
             /**
-             * Fires the custom event when the book loading process has completed with failure.
+             * Fires a custom event when a book loading process has completed with failure.
              *
-             * @param {boolean} notFound shows is the book loading process has completed with failure.
+             * @param {boolean} notFound shows is a book loading process has completed with failure.
              * @private
              */
             _notFoundChanged(notFound) {
@@ -475,13 +475,13 @@
             }
 
             /**
-             * Monitors the book cover loading changes.
+             * Monitors a book cover loading changes.
              *
              * This process is the most time-consuming after the book has been received. Sets the
              * `_isBookReadyToDisplay` property to `true` when the book is received without failures
              * and the cover loading process has finished.
              *
-             * @param {CustomEvent} e fired when the book cover `loading` property changes.
+             * @param {CustomEvent} e fired when a book cover `loading` property changes.
              * @private
              */
             _coverLoadingChanged(e) {
