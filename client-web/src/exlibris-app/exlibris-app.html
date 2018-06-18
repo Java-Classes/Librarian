@@ -39,8 +39,8 @@
 <link rel="import" href="./menu/exlibris-menu-drawer.html">
 <link rel="import" href="./shell/redux-store.html">
 <link rel="import" href="./global-style.html">
-<link rel="import" href="./exlibris-book-grid.html">
-
+<link rel="import" href="./book/exlibris-book-details.html">
+<link rel="import" href="./book/exlibris-book-grid.html">
 <dom-module id="exlibris-app">
     <template>
         <style>
@@ -75,7 +75,8 @@
         <app-route
                 route="{{route}}"
                 pattern="/:page"
-                data="{{routeData}}"></app-route>
+                data="{{routeData}}"
+                tail="{{subRoute}}"></app-route>
 
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
@@ -86,6 +87,7 @@
                                       reserved-count="[[reservedBooks.length]]"
                                       borrowed-count="[[borrowedBooks.length]]"></exlibris-menu-drawer>
             </app-drawer>
+
             <!-- Main content -->
             <app-header-layout has-scrolling-region>
                 <app-header slot="header" fixed>
@@ -96,6 +98,7 @@
                     </app-toolbar>
                 </app-header>
                 <iron-pages
+                        id="pages"
                         selected="[[routeData.page]]"
                         attr-for-selected="data-page"
                         fallback-selection="view404"
@@ -119,11 +122,15 @@
                     <exlibris-book-grid data-page="should-return-books"
                                         books="[[shouldReturnBooks]]"
                                         no-books-message="[[noBooksMessage.SHOULD_RETURN_SOON]]"></exlibris-book-grid>
+                    <exlibris-book-details data-page="book-details"
+                                           route="[[subRoute]]"
+                                           on-exlibris-book-details-not-found="_showView404"></exlibris-book-details>
                     <div data-page="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
     </template>
+
     <script>
         {
             const EmptyArrayMessage = {
@@ -235,7 +242,8 @@
                                 ['borrowed-books']: 'Borrowed Books',
                                 ['reserved-books']: 'Reserved Books',
                                 ['should-return-books']: 'Should Return Books',
-                                ['overdue-books']: 'Overdue Books'
+                                ['overdue-books']: 'Overdue Books',
+                                ['book-details']: 'Book Details'
                             }
                         }
                     };
@@ -289,6 +297,10 @@
                  */
                 _handleLowerThreshold() {
                     this.dispatch('fetchBooks');
+                }
+
+                _showView404(){
+                    this.$.pages.select('view404');
                 }
             }
 

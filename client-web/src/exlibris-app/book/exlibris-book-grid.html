@@ -18,12 +18,12 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<link rel="import" href="../../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../../bower_components/iron-list/iron-list.html">
-<link rel="import" href="../../bower_components/paper-styles/typography.html">
-<link rel="import" href="../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
-
-<link rel="import" href="../exlibris-app/exlibris-book-tile.html">
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../../../bower_components/iron-list/iron-list.html">
+<link rel="import"
+      href="../../../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="./exlibris-book-tile.html">
 <link rel="import" href="./book-values.html">
 
 <dom-module id="exlibris-book-grid">
@@ -44,10 +44,9 @@
 
         <iron-list items="[[books]]" as="book" scroll-target="document" grid>
             <template>
-                    <exlibris-book-tile book="[[book]]"></exlibris-book-tile>
+                <exlibris-book-tile book="[[book]]"></exlibris-book-tile>
             </template>
         </iron-list>
-
 
         <!-- this element loads more books when the user scrolls down and reached the lower threshold -->
         <iron-scroll-threshold lower-threshold="30"

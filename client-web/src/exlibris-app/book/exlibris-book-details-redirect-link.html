@@ -1,0 +1,175 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
+
+<dom-module id="exlibris-book-details-redirect-link">
+    <template>
+        <style>
+            :host {
+                @apply --paper-font-body1;
+                white-space: nowrap;
+                margin: 5px 0 5px 0;
+            }
+
+            #link {
+                text-decoration: none;
+                color: var(--paper-blue-600);
+            }
+
+            #link:hover {
+                text-decoration: underline;
+                text-underline-position: under;
+            }
+        </style>
+
+        <template is="dom-if" if="[[_reference.value]]">
+            <a id="link" target="_blank" href="[[_reference.value]]">
+                [[_reference.title]]
+            </a>
+        </template>
+        <template is="dom-if" if="[[!_reference.value]]">
+            <span>[[_reference.title]]</span>
+        </template>
+    </template>
+
+    <script>
+        {
+            String.prototype.format = function () {
+                return [...arguments].reduce((p, c) => p.replace(/%s/, c), this);
+            };
+
+            const BOOK_CODE_PATTERN = {
+                ISBN_10: /^\d{10}$/g,
+                ISBN_13: /^\d{13}$/g,
+                ASIN: /^[\d, A-Z]{10}$/g
+            };
+
+            const EXTERNAL_LINK_TEMPLATE = {
+                AMAZON: 'https://www.amazon.com/%s/dp/%s/',
+                PLAY_BOOKS: 'https://play.google.com/store/search?q=%s&c=books'
+            };
+
+            /**
+             * The book external link component.
+             *
+             * Generates the link to the one of the global book services to
+             * open it in the new tab. The external service choice depends
+             * on the book code format. If the passed code does not satisfy
+             * any pattern, shows it as a plain text.
+             *
+             * @customElement
+             * @polymer
+             */
+            class ExlibrisBookDetailsRedirectLink extends Polymer.Element {
+                static get is() {
+                    return 'exlibris-book-details-redirect-link';
+                }
+
+                static get properties() {
+                    return {
+                        /**
+                         * The book unique code.
+                         * Can be presented in the form of ISBN10, ISBN13 or ASIN.
+                         */
+                        bookCode: String,
+
+                        /**
+                         * The book title.
+                         */
+                        bookTitle: String,
+
+                        /**
+                         * The enum of book code patterns for ISBN10, ISBN13 and ASIN.
+                         */
+                        _bookCodePattern: {
+                            type: Object,
+                            value: BOOK_CODE_PATTERN
+                        },
+
+                        /**
+                         * The enum of external links patterns. Each value is used to
+                         * generate redirect link depending on book code format.
+                         */
+                        _externalLinkTemplate: {
+                            type: Object,
+                            value: EXTERNAL_LINK_TEMPLATE
+                        },
+
+                        /**
+                         * The book external link reference and its title.
+                         *
+                         * @property {string} title the reference title.
+                         * @property {string} value  the link to open in the new tab.
+                         */
+                        _reference: {
+                            type: Object,
+                            computed: "_calculateReference(bookCode, bookTitle)"
+                        }
+                    };
+                }
+
+                /**
+                 * Checks for the passed book code format.
+                 *
+                 * If the `bookCode` matches the `ISBN10` or `ASIN` pattern, generates
+                 * the Amazon book search link.
+                 *
+                 * If the `bookCode` matches the `ISBN13` pattern, generates the Google Play Books
+                 * search link.
+                 *
+                 * If the `bookCode` doesn't match any pattern, returns reference title and
+                 * value of `undefined`.
+                 *
+                 * @param {string} bookCode the book unique code (ISBN, ASIN).
+                 * @param {string} bookTitle the book title.
+                 * @returns {Object} the title and the value of link.
+                 * @private
+                 */
+                _calculateReference(bookCode, bookTitle) {
+                    if (bookCode) {
+                        if (bookCode.match(this._bookCodePattern.ISBN_10)) {
+                            return {
+                                title: 'ISBN: ' + bookCode,
+                                value: this._externalLinkTemplate.AMAZON.format(bookTitle, bookCode)
+                            };
+                        }
+                        if (bookCode.match(this._bookCodePattern.ISBN_13)) {
+                            return {
+                                title: 'ISBN: ' + bookCode,
+                                value: this._externalLinkTemplate.PLAY_BOOKS.format(bookCode)
+                            };
+                        }
+                        if (bookCode.match(this._bookCodePattern.ASIN)) {
+                            return {
+                                title: 'ASIN: ' + bookCode,
+                                value: this._externalLinkTemplate.AMAZON.format(bookTitle, bookCode)
+                            };
+                        }
+                        return {title: 'ISBN: ' + bookCode};
+                    }
+                }
+            }
+
+            window.customElements.define(ExlibrisBookDetailsRedirectLink.is, ExlibrisBookDetailsRedirectLink);
+        }
+    </script>
+</dom-module>

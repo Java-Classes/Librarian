@@ -32,6 +32,7 @@ const libraryTestBooks = [
         title: "Прежде Чем Он Согрешит ",
         image: "https://books.google.com/books/content/images/frontcover/uVVMDwAAQBAJ?fife=w200-h300",
         author: "Блейк Пирс",
+        isbn: "9781640293663dsd",
         category: "Fiction ",
         description: "Блейк Пирс, автор бестселлера «КОГДА ОНА УШЛА» (бестселлера #1 с более чем 900 отзывов с высшей оценкой), представляет книгу #7 в увлекательной серии детективных романов о Макензи Уайт.\n" +
         "В «ПРЕЖДЕ ЧЕМ ОН СОГРЕШИТ» (Загадки Макензи Уайт—Книга 7) по всему Вашингтону полиция находит тела священников, распятые перед входом в храмы. Что это, акт возмездия? Искать ли преступника среди служителей церкви? Или это серийный убийца, открывший охоту на священников и движимый более зловещими мотивами?\n" +
@@ -48,6 +49,7 @@ const libraryTestBooks = [
         title: "The Martian",
         image: "https://books.google.com/books/content/images/frontcover/gdxlAQAAQBAJ?fife=w200-h300",
         author: "Andy Weir",
+        isbn: "B017PNMYSK",
         category: "Fiction",
         description: "The Sunday Times Bestseller behind the major new film from Ridley Scott starring Matt Damon and Jessica Chastain.\n" +
         "I’m stranded on Mars.\n" +
@@ -65,10 +67,11 @@ const libraryTestBooks = [
         status: "EXPECTED"
     }, {
 
-        id: "8535902772",
+        id: "0132350882",
         title: "Clean Code: A Handbook of Agile Software Craftsmanship",
         image: "https://books.google.com/books/content/images/frontcover/_i6bDeoCQzsC?fife=w200-h300",
         author: "Robert C. Martin",
+        isbn: "0132350882",
         category: "Programming",
         description: "Even bad code can function. But if code isn’t clean, it can bring a development organization to its knees. Every year, countless hours and significant resources are lost because of poorly written code. But it doesn’t have to be that way.\n" +
         "\n" +
@@ -89,10 +92,11 @@ const libraryTestBooks = [
         availableCount: 4,
         status: "AVAILABLE"
     }, {
-        id: "8535902773",
+        id: "0596527756",
         title: "Java Generics and Collections: Speed Up the Java Development Process",
         image: "https://books.google.com/books/content/images/frontcover/zaoK0Z2STlkC?fife=w200-h300",
         author: "Maurice Naftalin",
+        isbn: "0596527756",
         category: "Java programming",
         description: "This comprehensive guide shows you how to master the most importantchanges to Java since it was first released. Generics and the greatlyexpanded collection libraries have tremendously increased the power ofJava 5 and Java 6. But they have also confused many developers whohaven't known how to take advantage of these new features.\n" +
         "Java Generics and Collections covers everything from the mostbasic uses of generics to the strangest corner cases. It teaches youeverything you need to know about the collections libraries, so you'llalways know which collection is appropriate for any given task, andhow to use it.\n" +
@@ -113,10 +117,11 @@ const libraryTestBooks = [
         status: "EXPECTED"
     }, {
 
-        id: "8535902774",
+        id: "0321563840",
         title: "The C++ Programming Language: Edition 4",
         image: "https://books.google.com/books/content/images/frontcover/PSUNAAAAQBAJ?fife=w200-h300",
         author: "Bjarne Stroustrup",
+        isbn: "0321563840",
         category: "C++",
         description: "The new C++11 standard allows programmers to express ideas more clearly, simply, and directly, and to write faster, more efficient code. Bjarne Stroustrup, the designer and original implementer of C++, has reorganized, extended, and completely rewritten his definitive reference and tutorial for programmers who want to use C++ most effectively.\n" +
         "The C++ Programming Language, Fourth Edition, delivers meticulous, richly explained, and integrated coverage of the entire language—its facilities, abstraction mechanisms, standard libraries, and key design techniques. Throughout, Stroustrup presents concise, “pure C++11” examples, which have been carefully crafted to clarify both usage and program design. To promote deeper understanding, the author provides extensive cross-references, both within the book and to the ISO standard.\n" +
@@ -141,10 +146,11 @@ const libraryTestBooks = [
         availableCount: 6,
         status: "AVAILABLE"
     }, {
-        id: "8535902776",
+        id: "0753555638",
         title: "Elon Musk: How the Billionaire CEO of SpaceX and Tesla is Shaping our Future",
         image: "https://books.google.com/books/content/images/frontcover/_LFSBgAAQBAJ?fife=w200-h300",
         author: "Ashlee Vance",
+        isbn: "0753555638",
         category: "Biography",
         description: "Explore the whole new world of web development and create responsive web apps using PolymerAbout This Book\n" +
         "Get to grips with the principles of Material Design and Google Web components\n" +
@@ -173,10 +179,11 @@ const libraryTestBooks = [
         status: "AVAILABLE"
     }, {
 
-        id: "8535902777",
+        id: "0321965515",
         title: "Don't Make Me Think, Revisited: A Common Sense Approach to Web Usability, Edition 3",
         image: "https://books.google.com/books/content/images/frontcover/QlduAgAAQBAJ?fife=w200-h300",
         author: "Steve Krug",
+        isbn: "0321965515",
         category: "Web Design",
         description: "Since Don’t Make Me Think was first published in 2000, hundreds of thousands of Web designers and developers have relied on usability guru Steve Krug’s guide to help them understand the principles of intuitive navigation and information design. Witty, commonsensical, and eminently practical, it’s one of the best-loved and most recommended books on the subject.\n" +
         "\n" +
@@ -190,28 +197,31 @@ const libraryTestBooks = [
         availableCount: 10,
         status: "AVAILABLE"
     }, {
-        id: "8535902778",
+        id: "1617292575",
         title: "Node.js в действии. 2-е издание",
         image: "https://books.google.com/books/content/images/frontcover/s9VMDwAAQBAJ?fife=w200-h300",
         author: "Кантелон МайкХартер МаркГоловайчук TJРайлих Натан",
+        isbn: "1617292575",
         description: "Реактивное программирование - совершенно новая и многообещающая парадигма, позволяющая эффективно решать задачи, связанные с созданием распределенных систем и программированием для JVM. Эта книга расскажет, как организовать поток задач, наладить обмен сообщениями между элементами программы, обеспечить параллельную и конкурентную обработку и создавать надежные, отказоустойчивые и гибкие приложения. Перед вами - основополагающая работа по шаблонам проектирования (design patterns) этой парадигмы. Книга проиллюстрирована многочисленными примерами и ориентирована на опытных Java- и Scala-разработчиков",
         availableCount: 11,
         status: "AVAILABLE"
     }, {
 
-        id: "8535902779",
+        id: "9781491931776",
         title: "React.js. Быстрый старт",
         image: "https://books.google.com/books/content/images/frontcover/g79TDgAAQBAJ?fife=w200-h300",
         author: "Стоян Стефанов",
+        isbn: "9781491931776",
         description: "Незаменимая вводная книга по технологии React для взыскательных JavaScript-разработчиков. Все самое интересное о сверхпопулярном инструменте от компании Facebook. В книге рассмотрены основные концепции высокопроизводительного программирования при помощи React, реальные примеры кода и доступные блок-схемы. Прочитав ее, вы научитесь: • Создавать и использовать собственные компоненты React наряду с универсальными компонентами DOM • Писать компоненты для таблиц данных, позволяющие редактировать, сортировать таблицу, выполнять в ней поиск и экспортировать ее содержимое • Использовать дополнительный синтаксис JSX в качестве альтернативы для вызовов функций • Запускать низкоуровневый гибкий процесс сборки, который освободит вам время и поможет сосредоточиться на работе с React • Работать с инструментами ESLint, Flow и Jest, позволяющими проверять и тестировать код по мере разработки приложения • Обеспечивать коммуникацию между компонентами при помощи Flux В итоге у вас получится полноценное веб-приложение, позволяющее сохранять данные на стороне клиента.",
         availableCount: 0,
         status: "EXPECTED"
     }, {
 
-        id: "8535902710",
+        id: "1782168877",
         title: "Game Programming Using Qt: Beginner's Guide",
         image: "https://books.google.com/books/content/images/frontcover/6F0dDAAAQBAJ?fife=w200-h300",
         author: "Witold WysotaLorenz Haas",
+        isbn: "1782168877",
         category: "Programming",
         description: "A complete guide to designing and building fun games with Qt and Qt Quick 2 using associated toolsetsAbout This Book\n" +
         "Learn to create simple 2D to complex 3D graphics and games using all possible tools and widgets available for game development in Qt\n" +
@@ -241,19 +251,21 @@ const libraryTestBooks = [
         status: "AVAILABLE"
     }, {
 
-        id: "8535902711",
+        id: "1484228073",
         title: "Pro Spring 5: An In-Depth Guide to the Spring Framework and Its Tools, Edition 5",
         image: "https://books.google.com/books/content/images/frontcover/N-U5DwAAQBAJ?fife=w200-h300",
         author: "Iuliana CosminaRob HarropChris SchaeferClarence Ho",
+        isbn: "1484228073",
         category: "Java Programming",
         description: "",
         availableCount: 286,
         status: "AVAILABLE"
     }, {
-        id: "8535902712",
+        id: "0596517742",
         title: "JavaScript: The Good Parts: The Good Parts",
         image: "https://books.google.com/books/content/images/frontcover/PXa2bby0oQ0C?fife=w200-h300",
         author: "Douglas Crockford",
+        isbn: "0596517742",
         category: "JavaScript",
         description: "Most programming languages contain good and bad parts, but JavaScript has more than its share of the bad, having been developed and released in a hurry before it could be refined. This authoritative book scrapes away these bad features to reveal a subset of JavaScript that's more reliable, readable, and maintainable than the language as a whole—a subset you can use to create truly extensible and efficient code.\n" +
         "Considered the JavaScript expert by many people in the development community, author Douglas Crockford identifies the abundance of good ideas that make JavaScript an outstanding object-oriented programming language-ideas such as functions, loose typing, dynamic objects, and an expressive object literal notation. Unfortunately, these good ideas are mixed in with bad and downright awful ideas, like a programming model based on global variables.\n" +
@@ -275,10 +287,11 @@ const libraryTestBooks = [
         availableCount: 15,
         status: "AVAILABLE"
     }, {
-        id: "8535902713",
+        id: "9351108511",
         title: "Java in a Nutshell: A Desktop Quick Reference, Edition 6",
         image: "https://books.google.com/books/content/images/frontcover/trDXBAAAQBAJ?fife=w200-h300",
         author: "Benjamin J EvansDavid Flanagan",
+        isbn: "9351108511",
         category: "Java Programming",
         description: "The latest edition of Java in a Nutshell is designed to help experienced Java programmers get the most out of Java 7 and 8, but it’s also a learning path for new developers. Chock full of examples that demonstrate how to take complete advantage of modern Java APIs and development best practices, the first section of this thoroughly updated book provides a fast-paced, no-fluff introduction to the Java programming language and the core runtime aspects of the Java platform.\n" +
         "The second section is a reference to core concepts and APIs that shows you how to perform real programming work in the Java environment.\n" +
@@ -295,10 +308,11 @@ const libraryTestBooks = [
         availableCount: 5,
         status: "AVAILABLE"
     }, {
-        id: "8535902714",
+        id: "1491904240",
         title: "You Don't Know JS: ES6 & Beyond",
         image: "https://books.google.com/books/content/images/frontcover/iOc6CwAAQBAJ?fife=w200-h300",
         author: "Kyle Simpson",
+        isbn: '1491904240',
         category: "JavaScript",
         description: "No matter how much experience you have with JavaScript, odds are you don’t fully understand the language. As part of the \"You Don’t Know JS\" series, this compact guide focuses on new features available in ECMAScript 6 (ES6), the latest version of the standard upon which JavaScript is built.\n" +
         "Like other books in this series, You Don’t Know JS: ES6 & Beyond dives into trickier parts of the language that many JavaScript programmers either avoid or know nothing about. Armed with this knowledge, you can achieve true JavaScript mastery.\n" +
@@ -315,10 +329,11 @@ const libraryTestBooks = [
         availableCount: 1,
         status: "AVAILABLE"
     }, {
-        id: "8535902715",
+        id: "9781640293663",
         title: "Прежде Чем Он Согрешит ",
         image: "https://books.google.com/books/content/images/frontcover/uVVMDwAAQBAJ?fife=w200-h300",
         author: "Блейк Пирс",
+        isbn: "9781640293663",
         category: "Fiction ",
         description: "Блейк Пирс, автор бестселлера «КОГДА ОНА УШЛА» (бестселлера #1 с более чем 900 отзывов с высшей оценкой), представляет книгу #7 в увлекательной серии детективных романов о Макензи Уайт.\n" +
         "В «ПРЕЖДЕ ЧЕМ ОН СОГРЕШИТ» (Загадки Макензи Уайт—Книга 7) по всему Вашингтону полиция находит тела священников, распятые перед входом в храмы. Что это, акт возмездия? Искать ли преступника среди служителей церкви? Или это серийный убийца, открывший охоту на священников и движимый более зловещими мотивами?\n" +
@@ -335,6 +350,7 @@ const libraryTestBooks = [
         title: "The Martian",
         image: "https://books.google.com/books/content/images/frontcover/gdxlAQAAQBAJ?fife=w200-h300",
         author: "Andy Weir",
+        isbn: "B017PNMYSK",
         category: "Fiction ",
         description: "The Sunday Times Bestseller behind the major new film from Ridley Scott starring Matt Damon and Jessica Chastain.\n" +
         "I’m stranded on Mars.\n" +
@@ -355,6 +371,7 @@ const libraryTestBooks = [
         title: "Clean Code: A Handbook of Agile Software Craftsmanship",
         image: "https://books.google.com/books/content/images/frontcover/_i6bDeoCQzsC?fife=w200-h300",
         author: "Robert C. Martin",
+        isbn: "0132350882",
         category: "Programming",
         description: "Even bad code can function. But if code isn’t clean, it can bring a development organization to its knees. Every year, countless hours and significant resources are lost because of poorly written code. But it doesn’t have to be that way.\n" +
         "\n" +
@@ -684,7 +701,8 @@ const userTestBooks = {
             "Style and approach\n" +
             "This is your guide to designing custom web components, and the concepts are explained in a conversational and easy-to-follow style. Each topic is explained through examples, with detailed explanations wherever required.",
             dueDate: new Date(new Date().getTime() + TWO_WEEKS * MILLISECONDS_IN_ONE_DAY),
-            status: "BORROWED"
+            status: "BORROWED",
+            isAllowedLoanExtension: true
         }],
         overdue: [{
             id: "8535902722",
@@ -699,7 +717,8 @@ const userTestBooks = {
             "Quick Start Guide to JavaFX by J.F. DiMarzio\n" +
             "Mastering JavaFX 8 Controls: Create Custom JavaFX 8 Controls for Cross-Platform Applications by Hendrik Ebbers",
             dueDate: new Date(new Date().getTime() - TWO_DAYS * MILLISECONDS_IN_ONE_DAY),
-            status: "OVERDUE"
+            status: "OVERDUE",
+            isAllowedLoanExtension: false
         }],
         shouldReturnSoon: [{
             id: "8535902724",
@@ -731,7 +750,8 @@ const userTestBooks = {
             "Style and approach\n" +
             "This is your guide to designing custom web components, and the concepts are explained in a conversational and easy-to-follow style. Each topic is explained through examples, with detailed explanations wherever required.",
             dueDate: new Date(new Date().getTime() + THREE_DAYS * MILLISECONDS_IN_ONE_DAY),
-            status: "BORROWED"
+            status: "BORROWED",
+            isAllowedLoanExtension: false
         }]
     }
 ;

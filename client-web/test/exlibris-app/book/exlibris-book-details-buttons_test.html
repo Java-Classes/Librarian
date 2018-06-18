@@ -1,0 +1,167 @@
+<!doctype html>
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>exlibris-book-details buttons test</title>
+
+    <script src="../../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../../../bower_components/web-component-tester/browser.js"></script>
+    <script src="../../../node_modules/redux/dist/redux.js"></script>
+
+    <link rel="import" href="../../../src/exlibris-app/book/exlibris-book-details.html">
+    <link rel="import" href="../../../src/exlibris-app/book/book-values.html">
+</head>
+<body>
+
+<test-fixture id="BasicTestFixture">
+    <template>
+        <exlibris-book-details></exlibris-book-details>
+    </template>
+</test-fixture>
+
+<script>
+    suite('exlibris-book-details', function () {
+
+        const BUTTON_TITLES = {
+            RESERVE: 'RESERVE',
+            CANCEL_RESERVATION: 'CANCEL RESERVATION',
+            EXTEND_LOAN_PERIOD: 'EXTEND LOAN PERIOD'
+        };
+
+        const ACTION_UNSUPPORTED_MESSAGE = 'RESERVED BY ANOTHER READER';
+
+        const BOOK_DETAILS_SELECTORS = {
+            WIDE_SCREEN_BUTTON: '#wide-screen-action-part paper-button',
+            NARROW_SCREEN_BUTTON: '#narrow-screen-action-part paper-button',
+            WIDE_SCREEN_MESSAGE: '#wide-screen-action-part span',
+            NARROW_SCREEN_MESSAGE: '#narrow-screen-action-part span'
+        };
+
+        const BOOKS_AND_BUTTONS_COMBINATIONS = [
+            {
+                book: {status: ExlibrisApp.BookStatus.EXPECTED},
+                button: BUTTON_TITLES.RESERVE,
+                actionUnsupportedMessage: ''
+            },
+            {
+                book: {status: ExlibrisApp.BookStatus.EXPECTED_SOON},
+                button: BUTTON_TITLES.RESERVE,
+                actionUnsupportedMessage: ''
+            },
+            {
+                book: {status: ExlibrisApp.BookStatus.AVAILABLE},
+                button: '',
+                actionUnsupportedMessage: ''
+            },
+            {
+                book: {
+                    status: ExlibrisApp.BookStatus.BORROWED,
+                    isAllowedLoanExtension: true
+                },
+                button: BUTTON_TITLES.EXTEND_LOAN_PERIOD,
+                actionUnsupportedMessage: ''
+            },
+            {
+                book: {
+                    status: ExlibrisApp.BookStatus.OVERDUE,
+                    isAllowedLoanExtension: true
+                },
+                button: BUTTON_TITLES.EXTEND_LOAN_PERIOD,
+                actionUnsupportedMessage: ''
+            },
+            {
+                book: {
+                    status: ExlibrisApp.BookStatus.SHOULD_RETURN_SOON,
+                    isAllowedLoanExtension: true
+                },
+                button: BUTTON_TITLES.EXTEND_LOAN_PERIOD,
+                actionUnsupportedMessage: ''
+            },
+            {
+                book: {
+                    status: ExlibrisApp.BookStatus.BORROWED,
+                    isAllowedLoanExtension: false
+                },
+                button: '',
+                actionUnsupportedMessage: ACTION_UNSUPPORTED_MESSAGE
+            },
+            {
+                book: {
+                    status: ExlibrisApp.BookStatus.OVERDUE,
+                    isAllowedLoanExtension: false
+                },
+                button: '',
+                actionUnsupportedMessage: ACTION_UNSUPPORTED_MESSAGE
+            },
+            {
+                book: {
+                    status: ExlibrisApp.BookStatus.SHOULD_RETURN_SOON,
+                    isAllowedLoanExtension: false
+                },
+                button: '',
+                actionUnsupportedMessage: ACTION_UNSUPPORTED_MESSAGE
+            },
+            {
+                book: {status: ExlibrisApp.BookStatus.RESERVED},
+                button: BUTTON_TITLES.CANCEL_RESERVATION,
+                actionUnsupportedMessage: ''
+            },
+            {
+                book: {status: ExlibrisApp.BookStatus.READY_TO_PICK_UP},
+                button: BUTTON_TITLES.CANCEL_RESERVATION,
+                actionUnsupportedMessage: ''
+            }
+        ];
+
+        BOOKS_AND_BUTTONS_COMBINATIONS.forEach(function (combination) {
+            const testMessagePart = combination.button ? combination.button : 'empty';
+            test(`should have ${testMessagePart} button title for the book with status ${combination.book.status}`, done => {
+                const element = fixture('BasicTestFixture');
+                element.set('_book', combination.book);
+                const wideScreenButton = element.shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.WIDE_SCREEN_BUTTON);
+                const narrowScreenButton = element.shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.NARROW_SCREEN_BUTTON);
+                assert.equal(wideScreenButton.innerHTML.trim(), combination.button);
+                assert.equal(narrowScreenButton.innerHTML.trim(), combination.button);
+                done();
+            });
+        });
+
+        BOOKS_AND_BUTTONS_COMBINATIONS.forEach(function (combination) {
+            const testMessagePart = combination.actionUnsupportedMessage ? combination.actionUnsupportedMessage : 'empty';
+            test(`should have ${testMessagePart} action unsupported message for the book with status ${combination.book.status}`, done => {
+                const element = fixture('BasicTestFixture');
+                element.set('_book', combination.book);
+                const wideScreenMessage = element.shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.WIDE_SCREEN_MESSAGE);
+                const narrowScreenMessage = element.shadowRoot.querySelector(BOOK_DETAILS_SELECTORS.NARROW_SCREEN_MESSAGE);
+                assert.equal(wideScreenMessage.innerHTML.trim(), combination.actionUnsupportedMessage);
+                assert.equal(narrowScreenMessage.innerHTML.trim(), combination.actionUnsupportedMessage);
+                done();
+            });
+        });
+    });
+</script>
+</body>
+</html>
