@@ -18,11 +18,15 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <script src="../test_values.js"></script>
-<link rel="import" href="../book-values.html">
+<script src="./loading-status.js"></script>
+<link rel="import" href="../book/book-values.html">
 <link rel="import" href="../actions/exlibris-actions.html">
+<script src="./loading-status.js"></script>
+<link rel="import" href="../actions/exlibris-action.html">
 
 <script>
-    /*global userTestBooks libraryTestBooks expectedSoonLibraryBooks*/
+    /* exported reducer */
+    /*global userTestBooks libraryTestBooks expectedSoonLibraryBooks testCategories*/
     {
         const initialState = {
             overdueBooks: [...userTestBooks.overdue],
@@ -30,7 +34,13 @@
             shouldReturnBooks: userTestBooks.shouldReturnSoon,
             reservedBooks: userTestBooks.reserved,
             allBooks: [...userTestBooks.overdue, ...libraryTestBooks],
-            expectedSoonBooks: expectedSoonLibraryBooks
+            expectedSoonBooks: expectedSoonLibraryBooks,
+            bookDetails: {
+                book: {},
+                loadingStatus: {}
+            },
+            categories: testCategories
+
         };
 
         ExlibrisApp.reducer = (state = initialState, action) => {
@@ -39,9 +49,84 @@
                     //TODO:2018-55-17:yurii.haidamaka add data loading from the server
                     return state;
                 }
+                case ExlibrisApp.ExlibrisActions.FIND_BOOK_BY_ID: {
+                    const id = action.bookId;
+                    const book = findElement(id, state.allBooks, state.expectedSoonBooks, state.borrowedBooks, state.reservedBooks);
+                    if (book) {
+                        return Object.assign({}, state, {
+                            bookDetails: {
+                                book: book,
+                                loadingStatus: ExlibrisApp.LoadingStatus.COMPLETED
+                            }
+                        });
+                    }
+                    return Object.assign({}, state, {
+                        bookDetails: {
+                            book: {},
+                            loadingStatus: ExlibrisApp.LoadingStatus.NOT_FOUND
+                        }
+                    });
+                }
+
+                case ExlibrisApp.ExlibrisActions.RESERVE_BOOK: {
+                    //TODO:2018-21-18:yegor.udovchenko: request reservation
+                    return state;
+                }
+
+                case ExlibrisApp.ExlibrisActions.CANCEL_BOOK_RESERVATION: {
+                    //TODO:2018-21-18:yegor.udovchenko: request cancel reservation
+                    return state;
+                }
+
+                case ExlibrisApp.ExlibrisActions.EXTEND_LOAN_PERIOD: {
+                    //TODO:2018-22-18:yegor.udovchenko: request loan extension
+                }
+                case ExlibrisApp.ExlibrisActions.FILTER_BY_CATEGORY: {
+                    //TODO:2018-51-27:yurii.haidamaka Add requests to the server
+
+                    /*for now we filter the test data*/
+                    const category = action.category;
+                    const filteredBooks = libraryTestBooks.filter(
+                        b => b.category === category);
+                    return Object.assign({}, state, {allBooks: filteredBooks});
+                }
+                case ExlibrisApp.ExlibrisActions.SEARCH_BY_QUERY: {
+                    //TODO:2018-51-27:yurii.haidamaka Add requests to the server
+
+                    /*for now we sort the test data*/
+                    const query = action.query.toLowerCase();
+                    const filteredBooks = libraryTestBooks.filter(
+                        b => b.title.toLowerCase().includes(query) ||
+                            b.author.toLowerCase().includes(query) || b.description.toLowerCase().includes(query));
+                    return Object.assign({}, state, {allBooks: filteredBooks});
+                }
+                case ExlibrisApp.ExlibrisActions.RESET_FILTERS: {
+                    const allBooks = [...state.overdueBooks, ...libraryTestBooks]
+                    return Object.assign({}, state, {allBooks: allBooks});
+                }
+                case ExlibrisApp.ExlibrisActions.FETCH_BOOKS: {
+                    //TODO:2018-55-17:yurii.haidamaka add data loading from the server
+                    return state;
+                }
+
                 default:
                     return state;
             }
         };
+
+        function findElement(id) {
+            let element;
+            let i = 1;
+            while (!element && i < arguments.length) {
+                if (Array.isArray(arguments[i])) {
+                    const filteredArray = arguments[i].filter(x => x.id === id);
+                    if (filteredArray.length > 0) {
+                        element = filteredArray[0];
+                    }
+                }
+                i++;
+            }
+            return element;
+        }
     }
 </script>

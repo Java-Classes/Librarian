@@ -1,0 +1,545 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<link rel="import" href="../shell/exlibris-app-namespace.html">
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="../../../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-image/iron-image.html">
+
+<link rel="import" href="../shell/redux-store.html">
+<link rel="import" href="./book-values.html">
+<link rel="import" href="../actions/exlibris-actions.html">
+<link rel="import" href="./exlibris-book-details-redirect-link.html">
+<script src="../reducers/loading-status.js"></script>
+
+<dom-module id="exlibris-book-details">
+    <template>
+        <style>
+            :host {
+                display: flex;
+                justify-content: center;
+            }
+
+            .book-card {
+                @apply --layout-vertical;
+                @apply --shadow-elevation-8dp;
+                border-radius: 3px;
+                margin: 10px;
+                max-width: 700px;
+                background-color: var(--primary-background-color);
+                color: var(--light-theme-text-color);
+            }
+
+            .book-card .head-part {
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+                align-items: flex-start;
+                width: 100%;
+                height: fit-content;
+            }
+
+            #book-cover {
+                @apply --shadow-elevation-4dp;
+                --iron-image-width: 100%;
+                margin-left: 36px;
+                margin-top: 25px;
+            }
+
+            .book-card .head-part .book-details {
+                display: flex;
+                width: 70%;
+                height: 100%;
+                padding-left: 30px;
+                padding-right: 35px;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            .book-card .head-part .book-details .details-text-part {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                padding-top: 35px;
+            }
+
+            .book-card .head-part .book-details .details-action-part {
+                display: block;
+                width: 100%;
+                margin: 0;
+            }
+
+            .book-card .narrow-screen-action-part {
+                display: none;
+                width: fit-content;
+                margin: 15px 0 0 15px;
+            }
+
+            .action-part-message {
+                @apply --paper-font-button;
+                color: var(--light-theme-secondary-color);
+            }
+
+            paper-button {
+                @apply --paper-font-button;
+                margin: 0;
+                background-color: var(--exlibris-app-primary-color);
+                color: var(--dark-theme-text-color);
+                height: 36px;
+                padding: 0 16px 0 16px;
+            }
+
+            #description {
+                @apply --paper-font-body1;
+                color: var(--exlibris-app-secondary-color);
+                margin-top: 30px;
+                margin-bottom: 30px;
+                padding: 0 36px 0 36px;
+            }
+
+            #title {
+                @apply --paper-font-headline;
+                text-align: left;
+            }
+
+            #author {
+                @apply --paper-font-subhead;
+                color: var(--light-theme-secondary-color);
+            }
+
+            #status-message {
+                @apply --paper-font-body2;
+                white-space: pre;
+                margin: 20px 0 5px 0;
+            }
+
+            @media only screen and (max-width: 900px) {
+                :host {
+                    margin-left: unset;
+                }
+
+                .book-card {
+                    border-radius: 0;
+                    box-shadow: unset;
+                    background-color: unset;
+                    margin: 0;
+                }
+
+                #book-cover {
+                    margin-left: 15px;
+                    margin-top: 15px;
+                }
+
+                .book-card .head-part .book-details .details-action-part {
+                    display: none;
+                }
+
+                .book-card .narrow-screen-action-part {
+                    display: block;
+                }
+
+                .book-card .head-part .book-details {
+                    padding-left: 10px;
+                    padding-right: 15px;
+                }
+
+                .book-card .head-part .book-details .details-text-part {
+                    padding-top: 15px;
+                }
+
+                #description {
+                    margin-top: 8px;
+                    padding: 0 15px 0 15px;
+                }
+
+                #title {
+                    @apply --paper-font-subhead;
+                }
+
+                #author {
+                    @apply --paper-font-body1;
+                }
+            }
+        </style>
+
+        <app-route
+                route="{{route}}"
+                pattern="/:id/:title"
+                data="{{routeData}}"></app-route>
+        <div class="book-card">
+            <div class="head-part">
+                <iron-image id="book-cover" src="[[book.image]]"></iron-image>
+                <div class="book-details">
+                    <div class="details-text-part">
+                        <div id="title">[[book.title]]</div>
+                        <div id="author">[[book.author]]</div>
+                        <exlibris-book-details-redirect-link book-code="[[book.isbn]]"
+                                                             book-title="[[book.title]]"></exlibris-book-details-redirect-link>
+                        <div id="status-message">[[statusMessage]]</div>
+                    </div>
+                    <div class="details-action-part" hidden="true">
+                        <paper-button raised
+                                      on-click="_handleButtonClick"
+                                      hidden="[[!button]]">
+                            [[button.title]]
+                        </paper-button>
+                        <div class="action-part-message">[[actionUnsupportedMessage]]</div>
+                    </div>
+                </div>
+            </div>
+            <div class="narrow-screen-action-part">
+                <paper-button class="small"
+                              on-click="_handleButtonClick"
+                              hidden="[[!button]]">
+                    [[button.title]]
+                </paper-button>
+                <div class="action-part-message">[[actionUnsupportedMessage]]</div>
+            </div>
+            <div id="description">
+                [[book.description]]
+            </div>
+        </div>
+    </template>
+
+    <script>
+        /**
+         * The book details page component.
+         *
+         * This component allows to display the book details page with the book
+         * specific messages, the book cover  and the button when it is supported.
+         * The book is specified by the route which contains the book Id.
+         *
+         * @customElement
+         * @polymer
+         * @appliesMixin ExlibrisApp.ReduxMixin
+         */
+        class ExlibrisBookDetails extends ExlibrisApp.ReduxMixin(Polymer.Element) {
+            static get is() {
+                return 'exlibris-book-details';
+            }
+
+            static get properties() {
+                return {
+                    /**
+                     * Fired when the book loading process has completed with failure.
+                     *
+                     * @event exlibris-book-details-not-found
+                     * @param {detail.path} the route path which caused the book loading failure.
+                     */
+
+                    /**
+                     * The book object to display.
+                     *
+                     * @typedef {Object} Book
+                     * @property {string} id
+                     * @property {string} title the title of a book
+                     * @property {string} image the book cover URL
+                     * @property {string} author authors of the book
+                     * @property {string} category the book category
+                     * @property {number} availableCount the number of items available for borrowing.
+                     * @property {boolean} isAllowedLoanExtension true if the loan extension is provided.
+                     * @property {Date} date the date when the book is expected to become available.
+                     * @property {Date} dueDate the date when the book should be returned.
+                     * @property {BookStatus} status  one of the BookStatus values.
+                     */
+                    book: {
+                        type: Object,
+                        statePath: 'bookDetails.book'
+                    },
+
+                    /**
+                     * The book loading status.
+                     *
+                     * @typedef {ExlibrisApp.LoadingStatus}
+                     */
+                    loadingStatus: {
+                        type: Object,
+                        statePath: "bookDetails.loadingStatus",
+                        observer: "_loadingStatusChanged"
+                    },
+
+                    /**
+                     * The book details button.
+                     *
+                     * @property {string} title the button title
+                     * @property {function} clickHandler the button click handler function
+                     */
+                    button: {
+                        type: Object,
+                        computed: '_chooseButton(book)'
+                    },
+
+                    /**
+                     * The message about the status of the book.
+                     */
+                    statusMessage: {
+                        type: String,
+                        computed: '_calculateStatusMessage(book)'
+                    },
+
+                    /**
+                     * The message about the status of the book.
+                     * Shown instead of the button when it is not supported for the book.
+                     */
+                    actionUnsupportedMessage: {
+                        type: String,
+                        computed: '_calculateActionUnsupportedMessage(book)'
+                    },
+
+                    /**
+                     * The URL part that defines the book Id.
+                     * Should match the pattern `/:title/:id`
+                     */
+                    route: String,
+
+                    /**
+                     * Contains the book Id passed in the route.
+                     *
+                     * @property {string} title the title of the book
+                     * @property {string} id the Id of the book
+                     */
+                    routeData: {
+                        type: Object,
+                        observer: "_routeDataChanged"
+                    }
+                };
+            }
+
+            static get actions() {
+                return {
+                    findBookById(bookId) {
+                        return {
+                            type: ExlibrisApp.ExlibrisActions.FIND_BOOK_BY_ID,
+                            bookId: bookId
+                        }
+                    },
+                    reserveBook(bookId) {
+                        return {
+                            type: ExlibrisApp.ExlibrisActions.RESERVE_BOOK,
+                            bookId: bookId
+                        }
+                    },
+                    cancelBookReservation(bookId) {
+                        return {
+                            type: ExlibrisApp.ExlibrisActions.CANCEL_BOOK_RESERVATION,
+                            bookId: bookId
+                        }
+                    },
+                    extendBookLoanPeriod(bookId) {
+                        return {
+                            type: ExlibrisApp.ExlibrisActions.EXTEND_LOAN_PERIOD,
+                            bookId: bookId
+                        }
+                    }
+                }
+            }
+
+            /**
+             * Dispatches the action to find the book by Id.
+             *
+             * @param {Object} routeData the resolved route parameters.
+             * @private
+             */
+            _routeDataChanged(routeData) {
+                if (this.route && this.route.prefix === '/book-details' && routeData.id) {
+                    this.dispatch('findBookById', routeData.id);
+                }
+            }
+
+            /**
+             * Sets the appropriate button title and the click handler function
+             * according to the passed book parameters.
+             *
+             * @param {Book} book the book object to choose a button.
+             * @returns {Object} the title and the click function of the button for the specified book.
+             * @private
+             */
+            _chooseButton(book) {
+                if (book) {
+                    switch (book.status) {
+                        case ExlibrisApp.BookStatus.EXPECTED_SOON:
+                        case ExlibrisApp.BookStatus.EXPECTED: {
+                            return {
+                                title: 'RESERVE',
+                                clickHandler: this._requestReservation.bind(this)
+                            };
+                        }
+
+                        case ExlibrisApp.BookStatus.OVERDUE:
+                        case ExlibrisApp.BookStatus.BORROWED:
+                        case ExlibrisApp.BookStatus.SHOULD_RETURN_SOON: {
+                            if (book.isAllowedLoanExtension) {
+                                return {
+                                    title: 'EXTEND LOAN PERIOD',
+                                    clickHandler: this._requestLoanExtension.bind(this)
+                                };
+                            }
+                            break;
+                        }
+
+                        case ExlibrisApp.BookStatus.RESERVED:
+                        case ExlibrisApp.BookStatus.READY_TO_PICK_UP: {
+                            return {
+                                title: 'CANCEL RESERVATION',
+                                clickHandler: this._requestCancelReservation.bind(this)
+                            };
+                        }
+                        default:
+                            return null;
+                    }
+                }
+            }
+
+            /**
+             * Calculates the appropriate status message
+             * according to the passed book.
+             *
+             * @param {Book} book the book object.
+             * @returns {string} the status message for the specified book.
+             * @private
+             */
+            _calculateStatusMessage(book) {
+                if (book) {
+                    switch (book.status) {
+                        case ExlibrisApp.BookStatus.AVAILABLE: {
+                            return book.availableCount ? book.availableCount + ' available.\nScan QR code to borrow.' : '';
+                        }
+
+                        case ExlibrisApp.BookStatus.EXPECTED: {
+                            return 'Book not available.';
+                        }
+
+                        case ExlibrisApp.BookStatus.EXPECTED_SOON: {
+                            return 'Arriving to library shortly.';
+                        }
+
+                        case ExlibrisApp.BookStatus.OVERDUE: {
+                            if (book.dueDate) {
+                                const now = new Date();
+                                const numberOfOverdueDays = now.getDate() - book.dueDate.getDate();
+                                return numberOfOverdueDays + ' days overdue.';
+                            }
+                            break;
+                        }
+
+                        case ExlibrisApp.BookStatus.READY_TO_PICK_UP: {
+                            return book.date ? 'Book is ready to pick up.\nBorrow it before ' + book.date.toLocaleDateString() : '';
+                        }
+
+                        case ExlibrisApp.BookStatus.RESERVED: {
+                            return book.date ? 'Reserved for you.\nExpected on ' + book.date.toLocaleDateString() : '';
+                        }
+
+                        case ExlibrisApp.BookStatus.BORROWED:
+                        case ExlibrisApp.BookStatus.SHOULD_RETURN_SOON: {
+                            return book.dueDate ? 'Borrowed by you.\nReturn before ' + book.dueDate.toLocaleDateString() : '';
+                        }
+                    }
+                }
+            }
+
+            /**
+             * Calculates the appropriate message if the button is not supported
+             * for the passed book.
+             *
+             * @param {Book} book the book object.
+             * @returns {string} the message to show when the action button is not supported
+             *                   for the specified book.
+             * @private
+             */
+            _calculateActionUnsupportedMessage(book) {
+                if (book) {
+                    if ((ExlibrisApp.BookStatus.BORROWED === book.status
+                            || ExlibrisApp.BookStatus.SHOULD_RETURN_SOON === book.status
+                            || ExlibrisApp.BookStatus.OVERDUE === book.status) &&
+                        !book.isAllowedLoanExtension) return 'RESERVED BY ANOTHER READER';
+                }
+            }
+
+            /**
+             * Observes the loading status of the book to choose the appropriate
+             * way to display book details page.
+             *
+             * @param {ExlibrisApp.LoadingStatus} loadingStatus the status of the book loading.
+             * @private
+             */
+            _loadingStatusChanged(loadingStatus) {
+                switch (loadingStatus) {
+                    case ExlibrisApp.LoadingStatus.NOT_FOUND: {
+                        this.dispatchEvent(new CustomEvent('exlibris-book-details-not-found', {detail: {path: this.route.path}}));
+                        break;
+                    }
+                    case ExlibrisApp.LoadingStatus.IN_PROGRESS: {
+                        //TODO:2018-35-16:yegor.udovchenko: Show loading progress
+                        break;
+                    }
+                    case ExlibrisApp.LoadingStatus.COMPLETED: {
+                        //TODO:2018-36-16:yegor.udovchenko: End display `loading in progress` view
+                        break;
+                    }
+                }
+            }
+
+            /**
+             * Handles the button click.
+             * Calls the button `clickHandler` function.
+             *
+             * @private
+             */
+            _handleButtonClick() {
+                this.button.clickHandler();
+            }
+
+            /**
+             * Handles the `CANCEL RESERVATION` button click.
+             *
+             * @private
+             */
+            _requestCancelReservation() {
+                this.dispatch('cancelBookReservation', this.book.id);
+            }
+
+            /**
+             * Handles the `RESERVE` button click.
+             *
+             * @private
+             */
+            _requestReservation() {
+                this.dispatch('reserveBook', this.book.id);
+            }
+
+            /**
+             * Handles the `EXTEND LOAN PERIOD` button click.
+             *
+             * @private
+             */
+            _requestLoanExtension() {
+                this.dispatch('extendBookLoanPeriod', this.book.id);
+            }
+        }
+
+        window.customElements.define(ExlibrisBookDetails.is, ExlibrisBookDetails);
+    </script>
+</dom-module>

@@ -19,6 +19,7 @@
   -->
 
 <script>
+    /* exported BookStatus EmptyArrayMessage BookCodePatterns ExternalLinkTemplates*/
 
     ExlibrisApp.BookStatus = {
         OVERDUE: "OVERDUE",
@@ -31,4 +32,23 @@
         READY_TO_PICK_UP: "READY_TO_PICK_UP",
     };
 
+    ExlibrisApp.EmptyArrayMessage = {
+        OVERDUE: "You don't have any overdue books yet.",
+        BORROWED: "You haven't borrowed any books yet.",
+        SHOULD_RETURN_SOON: "You don't have books that you should return soon",
+        RESERVED: "You haven't reserved any books yet",
+        EXPECTED_SOON: "In the near future, the supply of new books to the library is not expected.",
+        ALL: "There are no books in the library."
+    };
+
+    ExlibrisApp.BookCodePatterns = {
+        ISBN_10: /^\d{10}$/g,
+        ISBN_13: /^\d{13}$/g,
+        ASIN: /^[\d, A-Z]{10}$/g
+    };
+
+    ExlibrisApp.ExternalLinkTemplates = {
+        AMAZON: 'https://www.amazon.com/%s/dp/%s/',
+        PLAY_BOOKS: 'https://play.google.com/store/search?q=%s&c=books'
+    };
 </script>

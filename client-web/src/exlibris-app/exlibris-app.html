@@ -35,11 +35,20 @@
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/paper-styles/color.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 
+<link rel="import" href="./actions/exlibris-action.html">
 <link rel="import" href="./menu/exlibris-menu-drawer.html">
 <link rel="import" href="./shell/redux-store.html">
 <link rel="import" href="./global-style.html">
-<link rel="import" href="./exlibris-book-grid.html">
+<link rel="import" href="./book/exlibris-book-details.html">
+<link rel="import" href="./exlibris-book-search.html">
+<link rel="import" href="./exlibris-category-dropdown.html">
+<link rel="import" href="./menu/exlibris-menu-drawer.html">
+<link rel="import" href="./book/exlibris-book-grid.html">
+<link rel="import" href="./book/book-values.html">
 
 <dom-module id="exlibris-app">
     <template>
@@ -67,15 +76,40 @@
                 background-color: var(--exlibris-app-primary-color);
                 color: var(--paper-grey-50);
             }
+
+            exlibris-category-dropdown {
+                margin-left: 48px;
+            }
+
+            @media only screen and (max-width: 600px) {
+                .category {
+                    display: flex;
+                }
+
+                #dropdown {
+                    margin: 0 auto;
+                }
+            }
+
+            exlibris-book-search {
+                width: 40%;
+                margin: 0 auto;
+            }
+
         </style>
 
         <app-location route="{{route}}"
-                      use-hash-as-path></app-location>
+                      use-hash-as-path query-params="{{queryParams}}"></app-location>
 
         <app-route
-                route="{{route}}"
+                route="[[route]]"
                 pattern="/:page"
-                data="{{routeData}}"></app-route>
+                data="{{routeData}}"
+                tail="{{subRoute}}"></app-route>
+        <app-route
+                route="[[route]]"
+                pattern="/all-books/category/:name"
+                data="{{categoryData}}"></app-route>
 
         <app-drawer-layout fullbleed narrow="{{narrow}}">
             <!-- Drawer content -->
@@ -86,6 +120,7 @@
                                       reserved-count="[[reservedBooks.length]]"
                                       borrowed-count="[[borrowedBooks.length]]"></exlibris-menu-drawer>
             </app-drawer>
+
             <!-- Main content -->
             <app-header-layout has-scrolling-region>
                 <app-header slot="header" fixed>
@@ -93,16 +128,23 @@
                         <paper-icon-button id="number" icon="menu"
                                            drawer-toggle></paper-icon-button>
                         <span drawer-toggle>[[appHeaderTitle]]</span>
+                        <exlibris-book-search
+                                on-exlibris-book-search-query-changed="_handleQueryChanged"></exlibris-book-search>
                     </app-toolbar>
                 </app-header>
+                <div class="category">
+                    <exlibris-category-dropdown id="dropdown"
+                                                categories="[[categories]]"></exlibris-category-dropdown>
+                </div>
                 <iron-pages
+                        id="pages"
                         selected="[[routeData.page]]"
                         attr-for-selected="data-page"
                         fallback-selection="view404"
                         role="main">
                     <exlibris-book-grid data-page="all-books"
                                         books="[[allBooks]]"
-                                        no-books-message="[[noBooksMessage.ALL]]"
+                                        no-books-message="[[noAllBooksMessage]]"
                                         on-exlibris-book-grid-lower-threshold="_handleLowerThreshold"></exlibris-book-grid>
                     <exlibris-book-grid data-page="overdue-books"
                                         books="[[overdueBooks]]"
@@ -119,11 +161,15 @@
                     <exlibris-book-grid data-page="should-return-books"
                                         books="[[shouldReturnBooks]]"
                                         no-books-message="[[noBooksMessage.SHOULD_RETURN_SOON]]"></exlibris-book-grid>
+                    <exlibris-book-details data-page="book-details"
+                                           route="[[subRoute]]"
+                                           on-exlibris-book-details-not-found="_showView404"></exlibris-book-details>
                     <div data-page="view404">View404</div>
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
     </template>
+
     <script>
         {
             const EmptyArrayMessage = {
@@ -131,8 +177,7 @@
                 BORROWED: "You haven't borrowed any books yet.",
                 SHOULD_RETURN_SOON: "You don't have books that you should return soon",
                 RESERVED: "You haven't reserved any books yet",
-                EXPECTED_SOON: "In the near future, the supply of new books to the library is not expected.",
-                ALL: "There are no books in the library."
+                EXPECTED_SOON: "In the near future, the supply of new books to the library is not expected."
             };
 
             /**
@@ -223,6 +268,27 @@
                         },
 
                         /**
+                         * The array of categories.
+                         */
+                        categories: {
+                            type: Array,
+                            statePath: 'categories'
+                        },
+
+                        /**
+                         * The message that will be displayed in case of empty `allBooks` array.
+                         */
+                        noAllBooksMessage: {
+                            type: String
+                        },
+
+                        /**
+                         * The query parameters from url.
+                         */
+                        queryParams: Object,
+                        categoryData: Object,
+
+                        /**
                          * The application title values:
                          * key - routeData.page
                          * value - title
@@ -235,22 +301,33 @@
                                 ['borrowed-books']: 'Borrowed Books',
                                 ['reserved-books']: 'Reserved Books',
                                 ['should-return-books']: 'Should Return Books',
-                                ['overdue-books']: 'Overdue Books'
+                                ['overdue-books']: 'Overdue Books',
+                                ['book-details']: 'Book Details'
                             }
                         }
                     };
                 }
 
-                static get observers() {
-                    return [
-                        '_routePageChanged(routeData.page)'
-                    ];
-                }
-
                 static get actions() {
                     return {
+                        filterByCategory: category => ({
+                            type: ExlibrisApp.ExlibrisActions.FILTER_BY_CATEGORY,
+                            category
+                        }),
+                        searchByQuery: query => ({
+                            type: ExlibrisApp.ExlibrisActions.SEARCH_BY_QUERY,
+                            query
+                        }),
+                        resetFilters: () => ({type: ExlibrisApp.ExlibrisActions.RESET_FILTERS}),
                         fetchBooks: () => ({type: ExlibrisApp.ExlibrisActions.FETCH_BOOKS})
                     };
+                }
+
+                static get observers() {
+                    return [
+                        '_routePageChanged(routeData.page)',
+                        '_categoryDataChanged(categoryData.name)',
+                    ];
                 }
 
                 /**
@@ -259,6 +336,27 @@
                 _routePageChanged() {
                     if (!this.route.path) {
                         this.set('route.path', '/all-books');
+                    }
+                    if (this.route.path === '/all-books') {
+                        if (this.queryParams.q !== undefined) {
+                            this.noAllBooksMessage = "We couldn't find anything for your search - " + this.queryParams.q + "."
+                            this.dispatch('searchByQuery', this.queryParams.q);
+                        } else {
+                            this.$.dropdown.reset();
+                            this.dispatch("resetFilters")
+                        }
+                    }
+                }
+
+                /**
+                 * Creates the 'FILTER_BY_CATEGORY' redux action.
+                 * @param {string} name the name of the category
+                 * @private
+                 */
+                _categoryDataChanged(name) {
+                    if (name) {
+                        this.noAllBooksMessage = "There are no books in this category.";
+                        this.dispatch('filterByCategory', name);
                     }
                 }
 
@@ -283,12 +381,35 @@
                     }
                 }
 
+
+                _showView404() {
+                    this.$.pages.select('view404');
+                }
+
+                /**
+                 * Handles the exlibris-book-query-changed event.
+                 *
+                 * @param {object} e
+                 * @private
+                 */
+                _handleQueryChanged(e) {
+                    this.set('route.path', '/all-books');
+                    this.queryParams = {q: e.detail.query};
+                    e.stopPropagation();
+                }
+
+
                 /**
                  * Dispatch the `FETCH_BOOKS` action to the redux store.
                  * @private
                  */
                 _handleLowerThreshold() {
                     this.dispatch('fetchBooks');
+                }
+
+
+                _showView404() {
+                    this.$.pages.select('view404');
                 }
             }
 

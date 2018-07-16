@@ -1,0 +1,151 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-input/iron-input.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import"
+      href="../../bower_components/iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
+
+
+<dom-module id="exlibris-book-search">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            .search {
+                @apply --layout-horizontal;
+                background-color: var(--exlibris-book-search-background-color, #5897f5);
+                border-radius: 3px;
+                height: 40px;
+            }
+
+            #input {
+                margin-right: 10px;
+                border-radius: 0 3px 3px 0;
+                width: 98%;
+                padding: 12px;
+                cursor: text;
+                background: transparent;
+                color: var(--exlibris-book-search-text-color, white);
+                font-size: 15px;
+                border: 0;
+                outline: 0;
+            }
+
+            ::placeholder {
+                color: var(--book-search-placeholder-color, white);
+            }
+
+            .search-icon {
+                margin: auto 0 auto 12px;
+                color: var(--exlibris-book-search-icon-color, white);
+            }
+
+            iron-input {
+                @apply --layout-flex;
+                border-radius: 0 3px 3px 0;
+                background: transparent;
+            }
+
+        </style>
+
+
+        <div class="search">
+            <iron-icon icon="search" class="search-icon"></iron-icon>
+            <iron-input bind-value="{{query}}">
+                <input id="input" is="iron-input" placeholder="Search">
+            </iron-input>
+        </div>
+
+    </template>
+
+    <script>
+        /**
+         * `<exlibris-book-search>` components it is input with search behaviour.
+         *
+         *  Custom property | Description | Default
+         * ----------------|-------------|----------
+         * `--exlibris-book-search-background-color` | Background color of the component | blue
+         * `--exlibris-book-search-text-color` | Text color in search | white
+         * `--exlibris-book-search-placeholder-color` | Placeholder color in search | white
+         * `--exlibris-book-search-icon-color` | Icon color | white
+         *
+         * @customElement
+         * @polymer
+         */
+        class ExlibrisBookSearch extends Polymer.Element {
+            static get is() {
+                return 'exlibris-book-search';
+            }
+
+
+            static get properties() {
+                /**
+                 * Fired after 500 milliseconds as the query was changed.
+                 *
+                 * @event exlibris-book-search-query-changed
+                 * @param {query} the query to search.
+                 */
+
+                /**
+                 * The query from the input.
+                 */
+                return {
+                    query: {
+                        type: String,
+                        observer: '_queryChanged'
+                    }
+                };
+            }
+
+            /**
+             * Dispatched `exlibris-book-search-query-changed` event.
+             *
+             * @private
+             */
+            _dispatchQueryChangedEvent() {
+                this.dispatchEvent(new CustomEvent('exlibris-book-search-query-changed', {
+                    detail: {
+                        query: this.query
+                    }
+                }));
+            }
+
+            /**
+             * Calls `_dispatchQueryChangedEvent` method
+             * after 500 milliseconds as the request was changed.
+             *
+             * @private
+             */
+            _queryChanged() {
+                const MILLISECONDS_IN_HALF_A_SECOND = 500;
+                this._debouncer = Polymer.Debouncer.debounce(
+                    this._debouncer,
+                    Polymer.Async.timeOut.after(MILLISECONDS_IN_HALF_A_SECOND),
+                    () => this._dispatchQueryChangedEvent());
+            }
+        }
+
+        window.customElements.define(ExlibrisBookSearch.is, ExlibrisBookSearch);
+    </script>
+</dom-module>

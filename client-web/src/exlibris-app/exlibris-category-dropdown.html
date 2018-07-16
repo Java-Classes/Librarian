@@ -1,0 +1,112 @@
+<!--
+  ~ Copyright 2018, TeamDev Ltd. All rights reserved.
+  ~
+  ~ Redistribution and use in source and/or binary forms, with or without
+  ~ modification, must retain the above copyright notice and the following
+  ~ disclaimer.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  ~ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  ~ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  ~ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  ~ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  ~ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  ~ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  ~ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+
+<dom-module id="exlibris-category-dropdown">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            paper-dropdown-menu {
+
+                --paper-input-container-focus-color: var(--paper-blue-600);
+
+                --paper-input-container-label: {
+                    color: var(--paper-grey-600);
+                };
+                --paper-input-container-input: {
+                    color: var(--paper-grey-600);
+                };
+            }
+
+            a {
+                text-decoration: none !important;
+                color: var(--paper-grey-900);
+            }
+
+            a:visited {
+                color: var(--paper-grey-900);
+            }
+
+            a:active {
+                color: var(--paper-grey-900);
+            }
+        </style>
+
+        <paper-dropdown-menu label="Category" vertical-offset="60">
+            <paper-listbox id="content" slot="dropdown-content" class="dropdown-content"
+                           selected="[[selectedItem]]">
+                <template is="dom-repeat" items="[[categories]]">
+                    <a href="/#/all-books/category/[[item]]">
+                        <paper-item>[[item]]</paper-item>
+                    </a>
+                </template>
+            </paper-listbox>
+        </paper-dropdown-menu>
+
+    </template>
+
+    <script>
+        /**
+         * `<exlibris-category-dropdown>` shows dropdown menu with categories.
+         *
+         *
+         * @customElement
+         * @polymer
+         */
+        class ExlibrisCategoryDropdown extends Polymer.Element {
+            static get is() {
+                return 'exlibris-category-dropdown';
+            }
+
+            static get properties() {
+                return {
+
+                    /**
+                     * The array of categories to display in the dropdown menu.
+                     */
+                    categories: {
+                        type: Array,
+                        value: []
+                    },
+
+                    /**
+                     * The number of the selected item in the paper-listbox.
+                     */
+                    selectedItem: Object
+                };
+            }
+
+            reset() {
+                this.$.content.selected = null;
+            }
+        }
+
+        window.customElements.define(ExlibrisCategoryDropdown.is, ExlibrisCategoryDropdown);
+    </script>
+</dom-module>
