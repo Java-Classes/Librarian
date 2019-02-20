@@ -45,7 +45,7 @@
                 const author = bookTile.shadowRoot.querySelector(BookTileSelector.AUTHOR_SELECTOR);
                 assert.equal(ExlibrisAppTest.BOOKS[0].author, author.innerHTML);
                 const statusMessage = bookTile.shadowRoot.querySelector(BookTileSelector.STATUS_MESSAGE_SELECTOR);
-                assert.equal(ExlibrisAppTest.BOOKS[0].statusMessage, statusMessage.innerHTML);
+                assert.equal(ExlibrisAppTest.BOOKS[0].statusMessage, statusMessage.innerHTML.toUpperCase());
                 const image = bookTile.shadowRoot.querySelector(BookTileSelector.IRON_IMAGE_SELECTOR);
                 const imageURL = image.shadowRoot.querySelector("img").getAttribute("src");
                 assert.equal(ExlibrisAppTest.BOOKS[0].image, imageURL);
